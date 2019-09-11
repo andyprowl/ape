@@ -1,4 +1,4 @@
-#include "application.h"
+#include "application.hpp"
 
 #include "texture.hpp"
 #include "window.hpp"
@@ -13,15 +13,27 @@ class WorldBuilder
 
 public:
 
-    explicit WorldBuilder(ShaderProgram const & shaderProgram)
-        : shaderProgram{&shaderProgram}
+    explicit WorldBuilder(Application::ShaderSuite const & shaders)
+        : shaders{&shaders}
     {
     }
 
     auto build()
         -> World
     {
-        auto const shape = std::make_shared<Shape>(makeSquare());
+        auto widgets = makeCubeObjects();
+
+        widgets.push_back(makeLamp());
+
+        return World{std::move(widgets)};
+    }
+
+private:
+
+    auto makeCubeObjects() const
+        -> std::vector<Widget>
+    {
+        auto const shape = std::make_shared<Shape>(makeSquare({1.0f, 0.6f, 0.3f}));
 
         auto const containerTextureId = makeTexture("container.jpg", GL_RGB);
 
@@ -42,19 +54,17 @@ public:
                 glm::radians(20.0f * i),
                 glm::vec3{1.0f, 0.3f, 0.5f});
 
-            widgets.emplace_back(shape, textureIds, *shaderProgram, translation * rotation);
+            widgets.emplace_back(shape, textureIds, shaders->objectShader, translation * rotation);
         }
 
-        return World{std::move(widgets)};
+        return widgets;
     }
-
-private:
 
     auto makeWidgetPositions() const
         -> std::vector<glm::vec3>
     {
         return {
-            {0.0f, 0.0f,  0.0f},
+            {0.0f, 0.5f, -3.0f},
             {2.0f, 5.0f, -15.0f},
             {-1.5f, -2.2f, -2.5f},
             {-3.8f, -2.0f, -12.3f},
@@ -66,9 +76,21 @@ private:
             {-1.3f, 1.0f, -1.5f}};
     }
 
+    auto makeLamp() const
+        -> Widget
+    {
+        auto shape = std::make_unique<Shape>(makeSquare(glm::vec3{1.0f, 1.0f, 1.0f}));
+
+        auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
+
+        auto const translation = glm::translate(glm::mat4{1.0f}, glm::vec3{-2.0f, -1.0f, 0.0f});
+
+        return Widget{std::move(shape), {}, shaders->lampShader, translation * scaling};
+    }
+
 private:
 
-    ShaderProgram const * shaderProgram;
+    Application::ShaderSuite const * shaders;
 
 };
 
@@ -76,10 +98,10 @@ private:
 
 Application::Application()
     : window{&createWindow()}
-    , shader{createShaderProgram()}
-    , world{createWorld(shader)}
+    , shaders{createShaderProgramSuite()}
+    , world{createWorld(shaders)}
     , camera{createCamera(*window)}
-    , inputHandler{world, camera, *window, shader}
+    , inputHandler{world, camera, *window, shaders.objectShader}
 {
     captureMouse();
 }
@@ -113,10 +135,17 @@ auto Application::run()
 }
 
 /*static*/
-auto Application::createShaderProgram()
+auto Application::createShaderProgramSuite()
+    -> ShaderSuite
+{
+    return {createObjectShaderProgram(), createLampShaderProgram()};
+}
+
+/*static*/
+auto Application::createObjectShaderProgram()
     -> ShaderProgram
 {
-    auto program = ShaderProgram{"vertex.glsl", "fragment.glsl"};
+    auto program = ShaderProgram{"object.vertex.glsl", "object.fragment.glsl"};
 
     program.use();
 
@@ -124,7 +153,22 @@ auto Application::createShaderProgram()
 
     program.set("colorWeight", 0.5f);
 
-    program.set("transform", glm::mat4{1.0f});
+    program.bindFragmentSamplers({"texSampler1", "texSampler2"});
+
+    return program;
+}
+
+/*static*/
+auto Application::createLampShaderProgram()
+    -> ShaderProgram
+{
+    auto program = ShaderProgram{"lamp.vertex.glsl", "lamp.fragment.glsl"};
+
+    program.use();
+
+    program.set("weight", 0.0f);
+
+    program.set("colorWeight", 1.0f);
 
     program.bindFragmentSamplers({"texSampler1", "texSampler2"});
 
@@ -132,10 +176,10 @@ auto Application::createShaderProgram()
 }
 
 /*static*/
-auto Application::createWorld(ShaderProgram const & program)
+auto Application::createWorld(ShaderSuite const & shaders)
     -> World
 {
-    auto builder = WorldBuilder{program};
+    auto builder = WorldBuilder{shaders};
 
     return builder.build();
 }
@@ -178,6 +222,8 @@ auto Application::render()
 
     setupCamera();
 
+    setupLights();
+
     drawWorld();
 }
 
@@ -200,9 +246,25 @@ auto Application::setupCamera()
 
     auto const proj = camera.getProjection();
 
-    shader.set("view", view);
+    shaders.objectShader.use();
 
-    shader.set("proj", proj);
+    shaders.objectShader.set("view", view);
+
+    shaders.objectShader.set("proj", proj);
+
+    shaders.lampShader.use();
+
+    shaders.lampShader.set("view", view);
+
+    shaders.lampShader.set("proj", proj);
+}
+
+auto Application::setupLights()
+    -> void
+{
+    shaders.objectShader.use();
+
+    shaders.objectShader.set("lightColor", glm::vec3{1.0f, 1.0f, 1.0f});
 }
 
 auto Application::drawWorld()

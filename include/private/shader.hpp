@@ -73,6 +73,9 @@ public:
     auto set(std::string const & name, std::array<float, 4u> const & value) const
         -> void;
 
+    auto set(std::string const & name, glm::vec3 const & value) const
+        -> void;
+
     auto set(std::string const & name, glm::mat4 const & value) const
         -> void;
 

@@ -236,6 +236,14 @@ auto ShaderProgram::set(std::string const & name, std::array<float, 4u> const & 
     glUniform4f(location, value[0], value[1], value[2], value[3]);
 }
 
+auto ShaderProgram::set(std::string const & name, glm::vec3 const & value) const
+    -> void
+{
+    const auto location = glGetUniformLocation(id, name.c_str());
+
+    glUniform3f(location, value.x, value.y, value.z);
+}
+
 auto ShaderProgram::set(std::string const & name, glm::mat4 const & value) const
     -> void
 {

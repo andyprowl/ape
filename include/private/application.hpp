@@ -11,6 +11,27 @@ class Application
 
 public:
 
+    class ShaderSuite
+    {
+
+    public:
+
+        ShaderSuite(ShaderProgram objectShader, ShaderProgram lampShader)
+            : objectShader{std::move(objectShader)}
+            , lampShader{std::move(lampShader)}
+        {
+        }
+
+    public:
+
+        ShaderProgram objectShader;
+
+        ShaderProgram lampShader;
+
+    };
+
+public:
+
     Application();
 
     Application(Application &&) = delete;
@@ -25,10 +46,16 @@ public:
 
 private:
 
-    static auto createShaderProgram()
+    static auto createShaderProgramSuite()
+        -> ShaderSuite;
+
+    static auto createObjectShaderProgram()
         -> ShaderProgram;
 
-    static auto createWorld(ShaderProgram const & program)
+    static auto createLampShaderProgram()
+        -> ShaderProgram;
+
+    static auto createWorld(ShaderSuite const & shaders)
         -> World;
 
     static auto createCamera(GLFWwindow & window)
@@ -52,6 +79,9 @@ private:
     auto setupCamera()
         -> void;
 
+    auto setupLights()
+        -> void;
+
     auto drawWorld()
         -> void;
 
@@ -68,7 +98,7 @@ private:
 
     GLFWwindow * window;
 
-    ShaderProgram shader;
+    ShaderSuite shaders;
 
     World world;
 

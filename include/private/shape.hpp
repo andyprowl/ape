@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
 
 #include <vector>
 
@@ -56,5 +56,5 @@ private:
 
 };
 
-auto makeSquare()
+auto makeSquare(glm::vec3 const & color)
     -> Shape;

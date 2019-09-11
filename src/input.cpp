@@ -173,8 +173,7 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
     {
         rotateWidgetAroundX(world->widgets[0], +rotationDelta);
     }
-    
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
         rotateWidgetAroundX(world->widgets[0], -rotationDelta);
     }
