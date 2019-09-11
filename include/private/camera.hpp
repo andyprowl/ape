@@ -15,9 +15,17 @@ class Camera
 
 public:
 
-    Camera(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up);
+    Camera(
+        glm::vec3 const & position,
+        glm::vec3 const & direction,
+        glm::vec3 const & up,
+        float fieldOfView,
+        float aspectRatio);
 
     auto getView() const
+        -> glm::mat4;
+
+    auto getProjection() const
         -> glm::mat4;
 
     auto getPosition() const
@@ -38,9 +46,24 @@ public:
     auto setUp(glm::vec3 const & newUp)
         -> void;
 
+    auto getFieldOfView() const
+        -> float;
+
+    auto setFieldOfView(float newFieldOfView)
+        -> void;
+
+    auto getAspectRatio() const
+        -> float;
+
+    auto setAspectRatio(float newAspectRatio)
+        -> void;
+
 private:
 
     auto makeView() const
+        -> glm::mat4;
+
+    auto makeProjection() const
         -> glm::mat4;
 
 private:
@@ -51,6 +74,12 @@ private:
 
     glm::vec3 up;
 
+    float fieldOfView;
+
+    float aspectRatio;
+
     glm::mat4 view;
+
+    glm::mat4 projection;
 
 };

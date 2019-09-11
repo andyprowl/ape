@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mouse.hpp"
+#include "wheel.hpp"
 
 #include "glfw.hpp"
 
@@ -18,7 +19,14 @@ public:
 
 private:
 
+    auto registerForWheelNotifications()
+        -> void;
+
+private:
+
     MouseTracker mouseTracker;
+
+    MouseWheelPublisher wheelPublisher;
 
     Camera * camera;
 

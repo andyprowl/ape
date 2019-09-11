@@ -1,6 +1,7 @@
 #include "manipulator.hpp"
 
 #include "camera.hpp"
+#include "math.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -8,12 +9,6 @@
 
 namespace
 {
-
-auto clamp(float const value, float const min, float const max)
-    -> float
-{
-    return std::max(min, std::min(value, max));
-}
 
 auto getInitialYaw(Camera const & camera)
     -> float
@@ -34,11 +29,13 @@ auto getInitialYaw(Camera const & camera)
 
 CameraManipulator::CameraManipulator(GLFWwindow & window, Camera & camera, float const sensitivity)
     : mouseTracker{window}
+    , wheelPublisher{window}
     , camera{&camera}
     , pitch{0.0}
     , yaw{getInitialYaw(camera)}
     , sensitivity{sensitivity}
 {
+    registerForWheelNotifications();
 }
 
 auto CameraManipulator::update(double const lastFrameDuration)
@@ -60,4 +57,19 @@ auto CameraManipulator::update(double const lastFrameDuration)
         cos(glm::radians(pitch)) * sin(glm::radians(yaw))};
 
     camera->setDirection(newDirection);
+}
+
+auto CameraManipulator::registerForWheelNotifications()
+    -> void
+{
+    wheelPublisher.registerHandler([this] (double const offset)
+    {
+        auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
+
+        auto const newFieldOfView = currentFieldOfView - static_cast<float>(offset * 2.0);
+
+        auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 60.0f);
+
+        camera->setFieldOfView(glm::radians(clampedFieldOfView));
+    });
 }

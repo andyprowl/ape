@@ -77,8 +77,8 @@ private:
 Application::Application()
     : window{&createWindow()}
     , shader{createShaderProgram()}
-    , world{buildWorld(shader)}
-    , camera{{0.0f, 0.0f, 3.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}
+    , world{createWorld(shader)}
+    , camera{createCamera(*window)}
     , inputHandler{world, camera, *window, shader}
 {
     captureMouse();
@@ -132,12 +132,29 @@ auto Application::createShaderProgram()
 }
 
 /*static*/
-auto Application::buildWorld(ShaderProgram const & program)
+auto Application::createWorld(ShaderProgram const & program)
     -> World
 {
     auto builder = WorldBuilder{program};
 
     return builder.build();
+}
+
+/*static*/
+auto Application::createCamera(GLFWwindow & window)
+    -> Camera
+{
+    auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
+
+    auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
+
+    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+    auto const fieldOfView = glm::radians(45.0f);
+
+    auto const aspectRatio = getWindowRatio(window);
+
+    return {position, direction, up, fieldOfView, aspectRatio};
 }
 
 auto Application::wasTerminationRequested() const
@@ -177,11 +194,11 @@ auto Application::clear()
 auto Application::setupCamera()
     -> void
 {
+    camera.setAspectRatio(getWindowRatio(*window));
+
     auto const view = camera.getView();
 
-    auto const fov = glm::radians(45.0f);
-
-    auto const proj = glm::perspective(fov, getWindowRatio(*window), 0.1f, 100.0f);
+    auto const proj = camera.getProjection();
 
     shader.set("view", view);
 

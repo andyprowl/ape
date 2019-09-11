@@ -7,11 +7,19 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up)
+Camera::Camera(
+    glm::vec3 const & position,
+    glm::vec3 const & direction,
+    glm::vec3 const & up,
+    float const fieldOfView,
+    float const aspectRatio)
     : position{position}
     , direction{normalize(direction)}
     , up{glm::normalize(up)}
+    , fieldOfView{fieldOfView}
+    , aspectRatio{aspectRatio}
     , view{makeView()}
+    , projection{makeProjection()}
 {
 }
 
@@ -19,6 +27,12 @@ auto Camera::getView() const
     -> glm::mat4
 {
     return view;
+}
+
+auto Camera::getProjection() const
+    -> glm::mat4
+{
+    return projection;
 }
 
 auto Camera::getPosition() const
@@ -63,8 +77,42 @@ auto Camera::setUp(glm::vec3 const & newUp)
     view = makeView();
 }
 
+auto Camera::getFieldOfView() const
+    -> float
+{
+    return fieldOfView;
+}
+
+auto Camera::setFieldOfView(float const newFieldOfView)
+    -> void
+{
+    fieldOfView = newFieldOfView;
+
+    projection = makeProjection();
+}
+
+auto Camera::getAspectRatio() const
+    -> float
+{
+    return aspectRatio;
+}
+
+auto Camera::setAspectRatio(float const newAspectRatio)
+    -> void
+{
+    aspectRatio = newAspectRatio;
+
+    projection = makeProjection();
+}
+
 auto Camera::makeView() const
     -> glm::mat4
 {
     return glm::lookAt(position, position + direction, up);
+}
+
+auto Camera::makeProjection() const
+    -> glm::mat4
+{
+    return glm::perspective(fieldOfView, aspectRatio, 0.1f, 100.0f);
 }
