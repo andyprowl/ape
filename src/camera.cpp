@@ -7,13 +7,12 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
-Camera::Camera(glm::vec3 const & position, glm::vec3 const & lookAt, glm::vec3 const & up)
+Camera::Camera(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up)
     : position{position}
-    , lookAt{lookAt}
+    , direction{normalize(direction)}
     , up{glm::normalize(up)}
     , view{makeView()}
 {
-    assert(lookAt != position);
 }
 
 auto Camera::getView() const
@@ -31,25 +30,21 @@ auto Camera::getPosition() const
 auto Camera::setPosition(glm::vec3 const & newPosition)
     -> void
 {
-    auto const offset = (newPosition - position);
-
     position = newPosition;
-
-    lookAt += offset;
 
     view = makeView();
 }
 
-auto Camera::getLookAt() const
+auto Camera::getDirection() const
     -> glm::vec3
 {
-    return lookAt;
+    return direction;
 }
 
-auto Camera::setLookAt(glm::vec3 const & newLookAt)
+auto Camera::setDirection(glm::vec3 const & newDirection)
     -> void
 {
-    lookAt = newLookAt;
+    direction = glm::normalize(newDirection);
 
     view = makeView();
 }
@@ -68,14 +63,8 @@ auto Camera::setUp(glm::vec3 const & newUp)
     view = makeView();
 }
 
-auto Camera::getDirection() const
-    -> glm::vec3
-{
-    return glm::normalize(lookAt - position);
-}
-
 auto Camera::makeView() const
     -> glm::mat4
 {
-    return glm::lookAt(position, lookAt, up);
+    return glm::lookAt(position, position + direction, up);
 }

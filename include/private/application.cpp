@@ -78,9 +78,10 @@ Application::Application()
     : window{&createWindow()}
     , shader{createShaderProgram()}
     , world{buildWorld(shader)}
-    , camera{{0.0f, 0.0f, 3.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 1.0f, 0.0f}}
+    , camera{{0.0f, 0.0f, 3.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}}
     , inputHandler{world, camera, *window, shader}
 {
+    captureMouse();
 }
 
 Application::~Application()
@@ -88,10 +89,16 @@ Application::~Application()
     glfwTerminate();
 }
 
+auto Application::captureMouse() const
+    -> void
+{
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
 auto Application::run()
     -> void
 {
-    while (!shouldClose())
+    while (!wasTerminationRequested())
     {
         processInput();
 
@@ -133,7 +140,7 @@ auto Application::buildWorld(ShaderProgram const & program)
     return builder.build();
 }
 
-auto Application::shouldClose() const
+auto Application::wasTerminationRequested() const
     -> bool
 {
     return glfwWindowShouldClose(window);
@@ -172,7 +179,7 @@ auto Application::setupCamera()
 {
     auto const view = camera.getView();
 
-    auto const fov = glm::radians(60.0f);
+    auto const fov = glm::radians(45.0f);
 
     auto const proj = glm::perspective(fov, getWindowRatio(*window), 0.1f, 100.0f);
 

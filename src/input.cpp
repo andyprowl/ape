@@ -2,7 +2,6 @@
 
 #include "camera.hpp"
 #include "shader.hpp"
-#include "widget.hpp"
 #include "world.hpp"
 
 #include <glm/mat4x4.hpp>
@@ -20,17 +19,11 @@ auto rotateCameraHorizontally(Camera & camera, float const radians)
 
     auto const position = camera.getPosition();
 
-    auto const lookAt = camera.getLookAt();
+    auto const direction = camera.getDirection();
 
-    auto const direction = glm::vec4{lookAt - position, 1.0f};
+    auto const newDirection = rotation * glm::vec4{direction, 1.0f};
 
-    auto const newDirection = rotation * direction;
-
-    auto const lookAtOffset = newDirection - direction;
-
-    auto const newLookAt = lookAt + glm::vec3{lookAtOffset};
-
-    camera.setLookAt(newLookAt);
+    camera.setDirection(newDirection);
 }
 
 auto moveCameraAlongDirection(Camera & camera, float const magnitude)
@@ -72,14 +65,19 @@ InputHandler::InputHandler(
     , camera{&camera}
     , window{&window}
     , program{&program}
+    , cameraManipulator{window, camera, 0.1f}
 {
 }
 
-auto InputHandler::processInput(double const lastFrameDuration) const
+auto InputHandler::processInput(double const lastFrameDuration)
     -> void
 {
     processTerminationRequest();
     
+    processMouseCapture();
+
+    processMouseMovement(lastFrameDuration);
+
     processRotationalMovement(lastFrameDuration);
 
     processLateralMovement(lastFrameDuration);
@@ -96,6 +94,25 @@ auto InputHandler::processTerminationRequest() const
     {
         glfwSetWindowShouldClose(window, true);
     }
+}
+
+auto InputHandler::processMouseCapture() const
+    -> void
+{
+    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+}
+
+auto InputHandler::processMouseMovement(double const lastFrameDuration)
+    -> void
+{
+    cameraManipulator.update(lastFrameDuration);
 }
 
 auto InputHandler::processRotationalMovement(double const lastFrameDuration) const

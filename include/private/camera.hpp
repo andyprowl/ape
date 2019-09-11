@@ -1,7 +1,7 @@
 #pragma once
 
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
+#include "glfw.hpp"
+
 #include <glm/mat4x4.hpp>
 
 #include <vector>
@@ -15,7 +15,7 @@ class Camera
 
 public:
 
-    Camera(glm::vec3 const & position, glm::vec3 const & lookAt, glm::vec3 const & up);
+    Camera(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up);
 
     auto getView() const
         -> glm::mat4;
@@ -26,10 +26,10 @@ public:
     auto setPosition(glm::vec3 const & newPosition)
         -> void;
 
-    auto getLookAt() const
+    auto getDirection() const
         -> glm::vec3;
 
-    auto setLookAt(glm::vec3 const & newLookAt)
+    auto setDirection(glm::vec3 const & newDirection)
         -> void;
 
     auto getUp() const
@@ -37,9 +37,6 @@ public:
 
     auto setUp(glm::vec3 const & newUp)
         -> void;
-
-    auto getDirection() const
-        -> glm::vec3;
 
 private:
 
@@ -50,17 +47,10 @@ private:
 
     glm::vec3 position;
 
-    glm::vec3 lookAt;
+    glm::vec3 direction;
 
     glm::vec3 up;
 
     glm::mat4 view;
 
 };
-
-auto render(
-    GLFWwindow & window,
-    World & world,
-    Camera const & camera,
-    ShaderProgram const & program)
-    -> void;

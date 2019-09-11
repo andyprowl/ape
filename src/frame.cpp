@@ -1,4 +1,4 @@
-#include "tracker.hpp"
+#include "frame.hpp"
 
 FrameTimeTracker::FrameTimeTracker()
     : lastTime{glfwGetTime()}

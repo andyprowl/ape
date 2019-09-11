@@ -1,8 +1,8 @@
 #pragma once
 
-#include "glad/glad.h"
+#include "position.hpp"
 
-#include <GLFW/glfw3.h>
+#include "glfw.hpp"
 
 #include <stdexcept>
 #include <string>
@@ -36,3 +36,6 @@ auto createWindow()
 
 auto getWindowRatio(GLFWwindow & window)
     -> float;
+
+auto getWindowCenter(GLFWwindow & window)
+    -> Position;

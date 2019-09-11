@@ -1,8 +1,7 @@
 #pragma once
 
-#include "glad/glad.h"
-
-#include <GLFW/glfw3.h>
+#include "manipulator.hpp"
+#include "mouse.hpp"
 
 #include <vector>
 
@@ -22,12 +21,18 @@ public:
         GLFWwindow & window,
         ShaderProgram const & program);
 
-    auto processInput(double lastFrameDuration) const
+    auto processInput(double lastFrameDuration)
         -> void;
 
 private:
 
     auto processTerminationRequest() const
+        -> void;
+
+    auto processMouseCapture() const
+        -> void;
+
+    auto processMouseMovement(double lastFrameDuration)
         -> void;
 
     auto processRotationalMovement(double lastFrameDuration) const
@@ -57,5 +62,7 @@ private:
     GLFWwindow * window;
     
     ShaderProgram const * program;
+
+    CameraManipulator cameraManipulator;
 
 };

@@ -3,7 +3,7 @@
 #include "camera.hpp"
 #include "input.hpp"
 #include "shader.hpp"
-#include "tracker.hpp"
+#include "frame.hpp"
 #include "world.hpp"
 
 class Application
@@ -31,7 +31,10 @@ private:
     static auto buildWorld(ShaderProgram const & program)
         -> World;
 
-    auto shouldClose() const
+    auto captureMouse() const
+        -> void;
+
+    auto wasTerminationRequested() const
         -> bool;
 
     auto processInput()

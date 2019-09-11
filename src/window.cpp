@@ -32,7 +32,7 @@ auto printCapabilities()
 auto makeGlfwWindow()
     -> GLFWwindow &
 {
-    auto window = glfwCreateWindow(800, 600, "LearnOpenGL", nullptr, nullptr);
+    auto window = glfwCreateWindow(1024, 768, "LearnOpenGL", nullptr, nullptr);
     
     if (window == nullptr)
     {
@@ -66,7 +66,7 @@ auto createWindow()
 
     printCapabilities();
 
-    glViewport(0, 0, 800, 600);
+    glViewport(0, 0, 1024, 768);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -85,4 +85,16 @@ auto getWindowRatio(GLFWwindow & window)
     glfwGetWindowSize(&window, &width, &height);
 
     return (static_cast<float>(width) / height);
+}
+
+auto getWindowCenter(GLFWwindow & window)
+    -> Position
+{
+    auto width = int{};
+
+    auto height = int{};
+
+    glfwGetWindowSize(&window, &width, &height);
+
+    return {width / 2.0, height / 2.0};
 }
