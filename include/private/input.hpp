@@ -50,6 +50,9 @@ private:
     auto processShapeScaling(double lastFrameDuration) const
         -> void;
 
+    auto processLightRevolution(double lastFrameDuration) const
+        -> void;
+
     auto processStyleModification(double lastFrameDuration) const
         -> void;
 

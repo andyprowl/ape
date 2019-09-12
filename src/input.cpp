@@ -54,12 +54,30 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
     camera.setPosition(newPosition);
 }
 
-auto rotateWidgetAroundX(Widget & widget, float const radians)
+auto rotateWidgetAroundOwnX(Widget & widget, float const radians)
     -> void
 {
-    auto const rot = glm::rotate(widget.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
+    auto const rotation = glm::rotate(widget.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
     
-    widget.setModelTransformation(rot);
+    widget.setModelTransformation(rotation);
+}
+
+auto rotateWidgetAroundWorldY(Widget & widget, float const radians)
+    -> void
+{
+    auto const position = widget.getPosition();
+    
+    auto const revolution = glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f});
+
+    auto const newPosition = glm::vec3{revolution * glm::vec4{position, 1.0f}};
+
+    auto const transformation  = 
+        glm::translate(glm::mat4{1.0f}, newPosition) *
+        glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f}) *
+        glm::translate(glm::mat4{1.0f}, -position) *
+        widget.getModelTransformation();
+
+    widget.setModelTransformation(transformation);
 }
 
 } // unnamed namespace
@@ -91,6 +109,8 @@ auto InputHandler::processInput(double const lastFrameDuration)
     processLateralMovement(lastFrameDuration);
 
     processShapeModification(lastFrameDuration);
+
+    processLightRevolution(lastFrameDuration);
 
     processStyleModification(lastFrameDuration);
 }
@@ -179,11 +199,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateWidgetAroundX(world->widgets[0], +rotationDelta);
+        rotateWidgetAroundOwnX(world->widgets[0], +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateWidgetAroundX(world->widgets[0], -rotationDelta);
+        rotateWidgetAroundOwnX(world->widgets[0], -rotationDelta);
     }
 }
 
@@ -199,6 +219,21 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
         world->widgets[1].scaleUniformly(1 - scalingDelta);
+    }
+}
+
+auto InputHandler::processLightRevolution(double const lastFrameDuration) const
+    -> void
+{
+    auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
+
+    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    {
+        rotateWidgetAroundWorldY(world->widgets.back(), +rotationDelta);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    {
+        rotateWidgetAroundWorldY(world->widgets.back(), -rotationDelta);
     }
 }
 

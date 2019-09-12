@@ -65,6 +65,7 @@ private:
         -> std::vector<glm::vec3>
     {
         return {
+            {0.0f, 0.0f, 0.0f},
             {0.0f, 0.5f, -3.0f},
             {2.0f, 5.0f, -15.0f},
             {-1.5f, -2.2f, -2.5f},

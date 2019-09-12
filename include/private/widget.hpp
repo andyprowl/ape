@@ -24,6 +24,9 @@ public:
     auto draw() const
         -> void;
 
+    auto getPosition() const
+        -> glm::vec3;
+
     auto getModelTransformation() const
         -> glm::mat4;
     

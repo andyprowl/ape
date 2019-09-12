@@ -45,6 +45,12 @@ auto Widget::draw() const
     shape->draw();
 }
 
+auto Widget::getPosition() const
+    -> glm::vec3
+{
+    return glm::vec3{modelTransformation[3]};
+}
+
 auto Widget::getModelTransformation() const
     -> glm::mat4
 {
