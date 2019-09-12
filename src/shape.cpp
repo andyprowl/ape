@@ -33,7 +33,7 @@ auto makeVertexBufferObject(std::vector<float> const & vertices)
         vertices.data(),
         GL_STATIC_DRAW);
 
-    auto const stride = 8 * sizeof(float);
+    auto const stride = 11 * sizeof(float);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(0));
 
@@ -43,9 +43,13 @@ auto makeVertexBufferObject(std::vector<float> const & vertices)
 
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(6));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(6));
 
     glEnableVertexAttribArray(2);
+
+    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(9));
+
+    glEnableVertexAttribArray(3);
 
     return vboId;
 }
@@ -135,129 +139,4 @@ auto Shape::draw() const
     glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
     
     glBindVertexArray(0);
-}
-
-class SquareBuilder
-{
-
-public:
-
-    using Vertex = std::tuple<glm::vec3, glm::vec3, glm::vec2>;
-
-    using Face = std::array<Vertex, 4u>;
-
-public:
-
-    SquareBuilder()
-    {
-        vertices.reserve(6 * 4 * (3 + 3 + 2));
-    }
-
-    auto build(glm::vec3 const & color)
-        -> Shape
-    {
-        auto face = Face{{
-            Vertex{{-0.5f, -0.5f, -0.5f}, color, {0.0f, 0.0f}},
-            Vertex{{0.5f, -0.5f, -0.5f}, color, {1.0f, 0.0f}},
-            Vertex{{0.5f, -0.5f, 0.5f}, color, {1.0f, 1.0f}},
-            Vertex{{-0.5f, -0.5f, 0.5f}, color, {0.0f, 1.0f}}}};
-
-        addFace(face, glm::mat4{1.0f});
-
-        addFace(face, translate({0.0f, 1.0f, 0.0f}));
-
-        addFace(face, rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
-
-        addFace(face, translate({0.0f, 0.0f, -1.0f}) * rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
-
-        addFace(face, rotate(-90.0f, {0.0f, 1.0f, 0.0f}) * rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
-
-        addFace(
-            face,
-            translate({1.0f, 0.0f, 0.0f}) *
-            rotate(-90.0f, {0.0f, 1.0f, 0.0f}) *
-            rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
-
-        return Shape{std::move(vertices), std::move(indices)};
-    }
-
-private:
-
-    static auto rotate(float const degrees, glm::vec3 const & axis)
-        -> glm::mat4
-    {
-        return glm::rotate(glm::mat4{1.0f}, glm::radians(degrees), axis);
-    }
-
-    static auto translate(glm::vec3 const & offset)
-        -> glm::mat4
-    {
-        return glm::translate(glm::mat4{1.0f}, offset);
-    }
-
-    auto addFace(Face const & face, glm::mat4 const & transformation)
-        -> void
-    {
-        for (auto const & v : face)
-        {
-            auto const tv = transformation * glm::vec4{std::get<0>(v), 1.0f};
-
-            pushVertex(glm::vec3{transformation * glm::vec4{std::get<0>(v), 1.0f}});
-
-            pushVertex(std::get<1>(v));
-
-            pushVertex(std::get<2>(v));
-        }
-
-        pushFaceIndices();
-    }
-
-    auto pushVertex(glm::vec3 const & v)
-        -> void
-    {
-        vertices.push_back(v.x);
-
-        vertices.push_back(v.y);
-
-        vertices.push_back(v.z);
-    }
-
-    auto pushVertex(glm::vec2 const & v)
-        -> void
-    {
-        vertices.push_back(v.x);
-
-        vertices.push_back(v.y);
-    }
-
-    auto pushFaceIndices()
-        -> void
-    {
-        auto const base = (vertices.size() / 8) - 4;
-
-        indices.push_back(base + 0);
-
-        indices.push_back(base + 1);
-
-        indices.push_back(base + 3);
-
-        indices.push_back(base + 1);
-
-        indices.push_back(base + 2);
-
-        indices.push_back(base + 3);
-    }
-
-private:
-
-    std::vector<float> vertices;
-
-    std::vector<unsigned int> indices;
-
-};
-
-auto makeSquare(glm::vec3 const & color)
-    -> Shape
-{
-    return SquareBuilder{}.build(color);
 }

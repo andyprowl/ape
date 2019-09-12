@@ -197,19 +197,21 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 auto InputHandler::processStyleModification(double const lastFrameDuration) const
     -> void
 {
+    program->use();
+
     auto const transitionDelta = glm::radians(static_cast<float>(lastFrameDuration * 50.0f));
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        const auto weight = program->getFloat("weight");
+        const auto weight = program->getFloat("textureWeight");
 
-        program->set("weight", std::min(1.0f, weight + transitionDelta));
+        program->set("textureWeight", std::min(1.0f, weight + transitionDelta));
     }
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-        const auto weight = program->getFloat("weight");
+        const auto weight = program->getFloat("textureWeight");
 
-        program->set("weight", std::max(0.0f, weight - transitionDelta));
+        program->set("textureWeight", std::max(0.0f, weight - transitionDelta));
     }
     
     if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)

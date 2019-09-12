@@ -11,27 +11,6 @@ class Application
 
 public:
 
-    class ShaderSuite
-    {
-
-    public:
-
-        ShaderSuite(ShaderProgram objectShader, ShaderProgram lampShader)
-            : objectShader{std::move(objectShader)}
-            , lampShader{std::move(lampShader)}
-        {
-        }
-
-    public:
-
-        ShaderProgram objectShader;
-
-        ShaderProgram lampShader;
-
-    };
-
-public:
-
     Application();
 
     Application(Application &&) = delete;
@@ -46,16 +25,10 @@ public:
 
 private:
 
-    static auto createShaderProgramSuite()
-        -> ShaderSuite;
-
-    static auto createObjectShaderProgram()
+    static auto createShaderProgram()
         -> ShaderProgram;
 
-    static auto createLampShaderProgram()
-        -> ShaderProgram;
-
-    static auto createWorld(ShaderSuite const & shaders)
+    static auto createWorld(ShaderProgram const & shader)
         -> World;
 
     static auto createCamera(GLFWwindow & window)
@@ -98,7 +71,7 @@ private:
 
     GLFWwindow * window;
 
-    ShaderSuite shaders;
+    ShaderProgram shader;
 
     World world;
 

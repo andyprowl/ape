@@ -55,6 +55,3 @@ private:
     int numOfVertices;
 
 };
-
-auto makeSquare(glm::vec3 const & color)
-    -> Shape;
