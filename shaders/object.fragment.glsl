@@ -22,6 +22,8 @@ uniform vec3 lightColor;
 
 uniform vec3 lightPosition;
 
+uniform vec3 viewPosition;
+
 void main()
 {
     vec2 invertedCoord = vec2(1.0 - textureCoords.x, textureCoords.y);
@@ -43,5 +45,15 @@ void main()
 
     vec4 diffuseLight = vec4(lightColor * diffusion, 1.0);
 
-    fragColor = surfaceColor * (ambientLight + diffuseLight);
+    float specularLightIntensity = 0.8;
+
+    vec3 viewDirection = normalize(viewPosition - fragmentPosition);
+
+    vec3 reflectDirection = reflect(-lightDirection, vertexNormal);
+
+    float specularFactor = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
+
+    vec4 specularLight = vec4(specularLightIntensity * specularFactor * lightColor, 1.0);
+
+    fragColor = surfaceColor * (ambientLight + diffuseLight + specularLight);
 }

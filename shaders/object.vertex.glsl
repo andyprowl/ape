@@ -30,8 +30,6 @@ void main()
 
     fragmentPosition = vec3(model * vec4(aPos, 1.0));
 
-    //mat3 normalMatrix = mat3(transpose(inverse(model)));
-
     vertexNormal = normalize(normalMatrix * aNormal);
 
     vertexColor = aColor;

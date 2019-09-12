@@ -229,6 +229,8 @@ auto Application::setupCamera()
 
     shader.use();
 
+    shader.set("viewPosition", camera.getPosition());
+
     shader.set("view", view);
 
     shader.set("proj", proj);
