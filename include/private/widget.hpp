@@ -30,6 +30,12 @@ public:
     auto setModelTransformation(glm::mat4 const & newTransformation)
         -> void;
 
+    auto scaleUniformly(float factor)
+        -> void;
+
+    auto translate(glm::vec3 const & offset)
+        -> void;
+
 private:
 
     auto bindTextures() const
@@ -45,10 +51,6 @@ private:
 
     glm::mat4 modelTransformation;
 
+    glm::mat3 normalMatrix;
+
 };
-
-auto rotateWidgetAroundX(Widget & widget, float radians)
-    -> void;
-
-auto scaleWidget(Widget & widget, float factor)
-    -> void;

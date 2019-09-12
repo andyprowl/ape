@@ -244,6 +244,14 @@ auto ShaderProgram::set(std::string const & name, glm::vec3 const & value) const
     glUniform3f(location, value.x, value.y, value.z);
 }
 
+auto ShaderProgram::set(std::string const & name, glm::mat3 const & value) const
+    -> void
+{
+    const auto location = glGetUniformLocation(id, name.c_str());
+
+    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+}
+
 auto ShaderProgram::set(std::string const & name, glm::mat4 const & value) const
     -> void
 {

@@ -54,6 +54,14 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
     camera.setPosition(newPosition);
 }
 
+auto rotateWidgetAroundX(Widget & widget, float const radians)
+    -> void
+{
+    auto const rot = glm::rotate(widget.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
+    
+    widget.setModelTransformation(rot);
+}
+
 } // unnamed namespace
 
 InputHandler::InputHandler(
@@ -186,11 +194,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        scaleWidget(world->widgets[1], 1 + scalingDelta);
+        world->widgets[1].scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        scaleWidget(world->widgets[1], 1 - scalingDelta);
+        world->widgets[1].scaleUniformly(1 - scalingDelta);
     }
 }
 

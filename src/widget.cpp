@@ -7,6 +7,17 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace
+{
+
+auto computeNormalMatrix(glm::mat4 const & model)
+    -> glm::mat3
+{
+    return glm::mat3{glm::transpose(glm::inverse(model))};
+}
+
+} // unnamed namespace
+
 Widget::Widget(
     std::shared_ptr<Shape const> shape,
     std::vector<int> textureIds,
@@ -16,6 +27,7 @@ Widget::Widget(
     , textureIds{std::move(textureIds)}
     , shaderProgram{&shaderProgram}
     , modelTransformation{modelTransformation}
+    , normalMatrix{computeNormalMatrix(modelTransformation)}
 {
 }
 
@@ -27,6 +39,8 @@ auto Widget::draw() const
     shaderProgram->use();
 
     shaderProgram->set("model", modelTransformation);
+
+    shaderProgram->set("normalMatrix", normalMatrix);
 
     shape->draw();
 }
@@ -41,6 +55,20 @@ auto Widget::setModelTransformation(glm::mat4 const & newTransformation)
     -> void
 {
     modelTransformation = newTransformation;
+
+    normalMatrix = computeNormalMatrix(modelTransformation);
+}
+
+auto Widget::scaleUniformly(float const factor)
+    -> void
+{
+    modelTransformation = glm::scale(modelTransformation, glm::vec3{factor, factor, factor});
+}
+
+auto Widget::translate(glm::vec3 const & offset)
+    -> void
+{
+    modelTransformation = glm::translate(modelTransformation, offset);
 }
 
 auto Widget::bindTextures() const
@@ -52,25 +80,4 @@ auto Widget::bindTextures() const
 
         glBindTexture(GL_TEXTURE_2D, textureIds[i]);
     }
-}
-
-auto rotateWidgetAroundX(Widget & widget, float const radians)
-    -> void
-{
-    auto const rot = glm::rotate(
-        widget.getModelTransformation(),
-        radians,
-        glm::vec3{1.0f, 0.0f, 0.0f});
-    
-    widget.setModelTransformation(rot);
-}
-
-auto scaleWidget(Widget & widget, float const factor)
-    -> void
-{
-    auto const scaling = glm::scale(
-        widget.getModelTransformation(),
-        glm::vec3{factor, factor, factor});
-    
-    widget.setModelTransformation(scaling);
 }
