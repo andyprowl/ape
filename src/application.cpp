@@ -1,10 +1,13 @@
 #include "application.hpp"
 
+#include "material.h"
 #include "square.h"
 #include "texture.hpp"
 #include "window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <vector>
 
 namespace
 {
@@ -14,8 +17,10 @@ class WorldBuilder
 
 public:
 
-    explicit WorldBuilder(ShaderProgram const & shader)
+    WorldBuilder(ShaderProgram const & shader)
         : shader{&shader}
+        , objectPositions{makeObjectPositions()}
+        , materials{makeMaterials()}
     {
     }
 
@@ -31,37 +36,7 @@ public:
 
 private:
 
-    auto makeCubeObjects(glm::vec3 const & objectColor) const
-        -> std::vector<Widget>
-    {
-        auto const shape = std::make_shared<Shape>(makeSquare(objectColor));
-
-        auto const containerTextureId = makeTexture("container.jpg", GL_RGB);
-
-        auto const awesomeTextureId = makeTexture("awesomeface.png", GL_RGBA);
-
-        auto const textureIds = std::vector<int>{containerTextureId, awesomeTextureId};
-
-        auto const positions = makeWidgetPositions();
-
-        auto widgets = std::vector<Widget>{};
-
-        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
-        {
-            auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
-
-            auto const rotation = glm::rotate(
-                glm::mat4{1.0f},
-                glm::radians(20.0f * i),
-                glm::vec3{1.0f, 0.3f, 0.5f});
-
-            widgets.emplace_back(shape, textureIds, *shader, translation * rotation);
-        }
-
-        return widgets;
-    }
-
-    auto makeWidgetPositions() const
+    static auto makeObjectPositions()
         -> std::vector<glm::vec3>
     {
         return {
@@ -78,6 +53,69 @@ private:
             {-1.3f, 1.0f, -1.5f}};
     }
 
+    static auto makeMaterials()
+        -> std::vector<Material>
+    {
+        auto const emerald = Material{
+            {0.0215f, 0.1745f, 0.0215f},
+            {0.07568f, 0.61424f, 0.07568f},
+            {0.633f, 0.727811f, 0.633f},
+            0.6f};
+
+        auto const redPlastic = Material{
+            {0.0f, 0.0f, 0.0f},
+            {0.5f, 0.0f, 0.0f},
+            {0.7f, 0.6f, 0.6f},
+            0.25f};
+        
+        auto const greenRubber = Material{
+            {0.0f, 0.05f, 0.0f},
+            {0.4f, 0.5f, 0.4f},
+            {0.04f, 0.7f, 0.04f},
+            0.078125f};
+        
+        auto const cyanPlastic = Material{
+            {0.0f, 0.1f, 0.06f},
+            {0.0f, 0.50980392f, 0.50980392f},
+            {0.50196078f , 0.50196078f, 0.50196078f},
+            0.25f};
+
+        return {emerald, redPlastic, greenRubber, cyanPlastic};
+    }
+
+    auto makeCubeObjects(glm::vec3 const & objectColor) const
+        -> std::vector<Widget>
+    {
+        auto const shape = std::make_shared<Shape>(makeSquare(objectColor));
+
+        auto const containerTextureId = makeTexture("container.jpg", GL_RGB);
+
+        auto const awesomeTextureId = makeTexture("awesomeface.png", GL_RGBA);
+
+        auto const textureIds = std::vector<int>{containerTextureId, awesomeTextureId};
+
+        auto widgets = std::vector<Widget>{};
+
+        for (auto i = 0; i < static_cast<int>(objectPositions.size()); ++i)
+        {
+            auto const translation = glm::translate(glm::mat4{1.0f}, objectPositions[i]);
+
+            auto const rotation = glm::rotate(
+                glm::mat4{1.0f},
+                glm::radians(20.0f * i),
+                glm::vec3{1.0f, 0.3f, 0.5f});
+
+            widgets.emplace_back(
+                shape,
+                textureIds,
+                materials[i % materials.size()],
+                *shader,
+                translation * rotation);
+        }
+
+        return widgets;
+    }
+
     auto makeLamp() const
         -> Widget
     {
@@ -89,10 +127,19 @@ private:
 
         auto const translation = glm::translate(glm::mat4{1.0f}, glm::vec3{-2.0f, -1.0f, 0.0f});
 
-        return Widget{std::move(shape), {textureId, textureId}, *shader, translation * scaling};
+        return Widget{
+            std::move(shape),
+            {textureId, textureId},
+            materials[0],
+            *shader,
+            translation * scaling};
     }
 
 private:
+
+    std::vector<glm::vec3> objectPositions;
+
+    std::vector<Material> materials;
 
     ShaderProgram const * shader;
 

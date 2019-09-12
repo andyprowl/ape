@@ -21,10 +21,12 @@ auto computeNormalMatrix(glm::mat4 const & model)
 Widget::Widget(
     std::shared_ptr<Shape const> shape,
     std::vector<int> textureIds,
+    Material const & material,
     ShaderProgram const & shaderProgram,
     glm::mat4 const & modelTransformation)
     : shape{std::move(shape)}
     , textureIds{std::move(textureIds)}
+    , material{material}
     , shaderProgram{&shaderProgram}
     , modelTransformation{modelTransformation}
     , normalMatrix{computeNormalMatrix(modelTransformation)}
@@ -34,15 +36,15 @@ Widget::Widget(
 auto Widget::draw() const
     -> void
 {
-    bindTextures();
-
     shaderProgram->use();
 
-    shaderProgram->set("model", modelTransformation);
+    bindTextures();
 
-    shaderProgram->set("normalMatrix", normalMatrix);
+    setTransformationsInShader();
 
-    shape->draw();
+    setMaterialInShader();
+
+    drawShape();
 }
 
 auto Widget::getPosition() const
@@ -77,6 +79,12 @@ auto Widget::translate(glm::vec3 const & offset)
     modelTransformation = glm::translate(modelTransformation, offset);
 }
 
+auto Widget::getMaterial() const
+    -> Material
+{
+    return material;
+}
+
 auto Widget::bindTextures() const
     -> void
 {
@@ -86,4 +94,30 @@ auto Widget::bindTextures() const
 
         glBindTexture(GL_TEXTURE_2D, textureIds[i]);
     }
+}
+
+auto Widget::setTransformationsInShader() const
+    -> void
+{
+    shaderProgram->set("model", modelTransformation);
+
+    shaderProgram->set("normalMatrix", normalMatrix);
+}
+
+auto Widget::setMaterialInShader() const
+    -> void
+{
+    shaderProgram->set("material.ambientColor", material.ambientColor);
+
+    shaderProgram->set("material.diffuseColor", material.diffuseColor);
+
+    shaderProgram->set("material.specularColor", material.specularColor);
+
+    shaderProgram->set("material.shininess", material.shininess);
+}
+
+auto Widget::drawShape() const
+    -> void
+{
+    shape->draw();
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "material.h"
 #include "shape.hpp"
 
 #include <glm/mat4x4.hpp>
@@ -18,6 +19,7 @@ public:
     Widget(
         std::shared_ptr<Shape const> shape,
         std::vector<int> textureIds,
+        Material const & material,
         ShaderProgram const & shaderProgram,
         glm::mat4 const & modelTransformation = glm::mat4{1.0f});
 
@@ -39,9 +41,21 @@ public:
     auto translate(glm::vec3 const & offset)
         -> void;
 
+    auto getMaterial() const
+        -> Material;
+
 private:
 
     auto bindTextures() const
+        -> void;
+
+    auto setTransformationsInShader() const
+        -> void;
+
+    auto setMaterialInShader() const
+        -> void;
+
+    auto drawShape() const
         -> void;
 
 private:
@@ -49,6 +63,8 @@ private:
     std::shared_ptr<Shape const> shape;
 
     std::vector<int> textureIds;
+
+    Material material;
 
     ShaderProgram const * shaderProgram;
 
