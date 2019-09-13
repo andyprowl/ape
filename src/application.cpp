@@ -93,7 +93,7 @@ private:
 
         auto const specularMapId = makeTexture("ground.jpg", GL_RGB);
 
-        auto const shininess = 256.0f;
+        auto const shininess = 16.0f;
 
         return {ambientColor, diffuseMapId, specularMapId, shininess};
     }
