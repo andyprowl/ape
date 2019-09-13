@@ -17,8 +17,9 @@ class WorldBuilder
 
 public:
 
-    WorldBuilder(ShaderProgram const & shader)
+    WorldBuilder(GLFWwindow & window, ShaderProgram const & shader)
         : shader{&shader}
+        , window{&window}
         , objectPositions{makeObjectPositions()}
         , materials{makeMaterials()}
     {
@@ -27,16 +28,28 @@ public:
     auto build(glm::vec3 const & objectColor)
         -> World
     {
-        auto widgets = makeCubeObjects(objectColor);
+        auto widgets = createWidgets(objectColor);
 
-        widgets.push_back(makeLamp());
+        auto light = createLight(widgets.back());
 
-        return World{std::move(widgets)};
+        auto camera = createCamera();
+
+        return World{std::move(widgets), std::move(light), std::move(camera)};
     }
 
 private:
 
-    static auto makeObjectPositions()
+    auto createWidgets(glm::vec3 const & objectColor) const
+        -> std::vector<Widget>
+    {
+        auto widgets = makeCubeObjects(objectColor);
+
+        widgets.push_back(makeLamp());
+
+        return widgets;
+    }
+
+    auto makeObjectPositions() const
         -> std::vector<glm::vec3>
     {
         return {
@@ -53,34 +66,40 @@ private:
             {-1.3f, 1.0f, -1.5f}};
     }
 
-    static auto makeMaterials()
+    auto makeMaterials() const
         -> std::vector<Material>
     {
         auto const emerald = Material{
             {0.0215f, 0.1745f, 0.0215f},
             {0.07568f, 0.61424f, 0.07568f},
             {0.633f, 0.727811f, 0.633f},
-            0.6f};
+            32.0f};
 
         auto const redPlastic = Material{
             {0.0f, 0.0f, 0.0f},
             {0.5f, 0.0f, 0.0f},
             {0.7f, 0.6f, 0.6f},
-            0.25f};
+            256.0f};
         
         auto const greenRubber = Material{
             {0.0f, 0.05f, 0.0f},
             {0.4f, 0.5f, 0.4f},
             {0.04f, 0.7f, 0.04f},
-            0.078125f};
+            64.0f};
         
         auto const cyanPlastic = Material{
             {0.0f, 0.1f, 0.06f},
             {0.0f, 0.50980392f, 0.50980392f},
             {0.50196078f , 0.50196078f, 0.50196078f},
-            0.25f};
+            16.0f};
 
-        return {emerald, redPlastic, greenRubber, cyanPlastic};
+        auto const custom = Material{
+            {1.0f, 0.5f, 0.31f},
+            {1.0f, 0.5f, 0.31f},
+            {0.5f, 0.5f, 0.5f},
+            32.0f};
+
+        return {emerald, redPlastic, greenRubber, cyanPlastic, custom};
     }
 
     auto makeCubeObjects(glm::vec3 const & objectColor) const
@@ -125,7 +144,7 @@ private:
 
         auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
 
-        auto const translation = glm::translate(glm::mat4{1.0f}, glm::vec3{-2.0f, -1.0f, 0.0f});
+        auto const translation = glm::translate(glm::mat4{1.0f}, glm::vec3{0.0f, 0.0f, 2.0f});
 
         return Widget{
             std::move(shape),
@@ -135,13 +154,45 @@ private:
             translation * scaling};
     }
 
+    auto createLight(Widget & body) const
+        -> Light
+    {
+        const auto position = body.getPosition();
+
+        auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
+
+        auto const diffuse = glm::vec3{0.5f, 0.5f, 0.5f};
+
+        auto const specular = glm::vec3{1.0f, 1.0f, 1.0f};
+
+        return {position, ambient, diffuse, specular};
+    }
+
+    auto createCamera() const
+        -> Camera
+    {
+        auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
+
+        auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
+
+        auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+        auto const fieldOfView = glm::radians(45.0f);
+
+        auto const aspectRatio = getWindowRatio(*window);
+
+        return {position, direction, up, fieldOfView, aspectRatio};
+    }
+
 private:
+
+    ShaderProgram const * shader;
+
+    GLFWwindow * window;
 
     std::vector<glm::vec3> objectPositions;
 
     std::vector<Material> materials;
-
-    ShaderProgram const * shader;
 
 };
 
@@ -150,9 +201,8 @@ private:
 Application::Application()
     : window{&createWindow()}
     , shader{createShaderProgram()}
-    , world{createWorld(shader)}
-    , camera{createCamera(*window)}
-    , inputHandler{world, camera, *window, shader}
+    , world{createWorld(*window, shader)}
+    , inputHandler{world, *window, shader}
 {
     captureMouse();
 }
@@ -203,31 +253,14 @@ auto Application::createShaderProgram()
 }
 
 /*static*/
-auto Application::createWorld(ShaderProgram const & shader)
+auto Application::createWorld(GLFWwindow & window, ShaderProgram const & shader)
     -> World
 {
-    auto builder = WorldBuilder{shader};
+    auto builder = WorldBuilder{window, shader};
 
-    auto const objectColor = glm::vec3{1.0f, 0.5f, 0.31f};
+    auto const objectColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
     return builder.build(objectColor);
-}
-
-/*static*/
-auto Application::createCamera(GLFWwindow & window)
-    -> Camera
-{
-    auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
-
-    auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
-
-    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
-
-    auto const fieldOfView = glm::radians(45.0f);
-
-    auto const aspectRatio = getWindowRatio(window);
-
-    return {position, direction, up, fieldOfView, aspectRatio};
 }
 
 auto Application::wasTerminationRequested() const
@@ -259,7 +292,7 @@ auto Application::render()
 auto Application::clear()
     -> void
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -269,19 +302,19 @@ auto Application::clear()
 auto Application::setupCamera()
     -> void
 {
-    camera.setAspectRatio(getWindowRatio(*window));
+    world.camera.setAspectRatio(getWindowRatio(*window));
 
-    auto const view = camera.getView();
+    auto const view = world.camera.getView();
 
-    auto const proj = camera.getProjection();
+    auto const proj = world.camera.getProjection();
 
     shader.use();
 
-    shader.set("viewPosition", camera.getPosition());
+    shader.set("viewPosition", world.camera.getPosition());
 
-    shader.set("view", view);
+    shader.set("transform.view", view);
 
-    shader.set("proj", proj);
+    shader.set("transform.proj", proj);
 }
 
 auto Application::setupLights()
@@ -289,13 +322,13 @@ auto Application::setupLights()
 {
     shader.use();
 
-    shader.set("lightColor", glm::vec3{1.0f, 1.0f, 1.0f});
+    shader.set("light.position", world.light.position);
 
-    const auto model = world.widgets.back().getModelTransformation();
-    
-    const auto position = glm::vec3{model[3]};
+    shader.set("light.ambient", world.light.ambient);
 
-    shader.set("lightPosition", position);
+    shader.set("light.diffuse", world.light.diffuse);
+
+    shader.set("light.specular", world.light.specular);
 }
 
 auto Application::drawWorld()

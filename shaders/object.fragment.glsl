@@ -1,25 +1,33 @@
-#version 330 core
+// #include is a custom extension
+#include "common.glsi"
 
 struct Material
 {
 
-    vec3 ambientColor;
+    vec3 ambient;
 
-    vec3 diffuseColor;
+    vec3 diffuse;
 
-    vec3 specularColor;
+    vec3 specular;
 
     float shininess;
 
 };
 
-in vec3 vertexNormal;
+struct Light
+{
 
-in vec3 fragmentPosition;
+    vec3 position;
+  
+    vec3 ambient;
 
-in vec3 vertexColor;
+    vec3 diffuse;
 
-in vec2 textureCoords;
+    vec3 specular;
+
+};
+
+in Vertex vertex;
 
 out vec4 fragColor;
 
@@ -33,52 +41,50 @@ uniform float colorWeight;
 
 uniform Material material;
 
-uniform vec3 lightColor;
-
-uniform vec3 lightPosition;
+uniform Light light;
 
 uniform vec3 viewPosition;
 
 vec4 computeSurfaceColor()
 {
-    vec2 invertedCoord = vec2(1.0 - textureCoords.x, textureCoords.y);
+    vec2 invertedCoord = vec2(1.0 - vertex.textureCoords.x, vertex.textureCoords.y);
 
-    vec4 texColor = mix(
+    vec4 textureColor = mix(
         texture(texSampler1, invertedCoord),
         texture(texSampler2, invertedCoord),
         textureWeight);
 
-    return mix(texColor, vec4(vertexColor, 1.0), colorWeight);
+    return mix(textureColor, vec4(vertex.color, 1.0), colorWeight);
 }
 
 vec3 computeAmbientLight()
 {
-    return lightColor * material.ambientColor;
+    return light.ambient * material.ambient;
 }
 
 vec3 computeDiffuseLight(vec3 lightDirection)
 {
-    float diffusion = max(dot(vertexNormal, lightDirection), 0.0);
+    float diffusion = max(dot(vertex.normal, lightDirection), 0.0);
 
-    return lightColor * (material.diffuseColor * diffusion);
+    return light.diffuse * (diffusion * material.diffuse);
 }
 
 vec3 computeSpecularLight(vec3 lightDirection)
 {
-    vec3 viewDirection = normalize(viewPosition - fragmentPosition);
+    vec3 viewDirection = normalize(viewPosition - vertex.position);
 
-    vec3 reflectDirection = reflect(-lightDirection, vertexNormal);
+    vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
 
-    float specularFactor = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
+    float reflection = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
 
-    return material.shininess * specularFactor * material.specularColor;
+    return light.specular * (reflection * material.specular);
 }
 
 vec3 computePhongLightEffect()
 {
     vec3 ambientLight = computeAmbientLight();
 
-    vec3 lightDirection = normalize(lightPosition - fragmentPosition);
+    vec3 lightDirection = normalize(light.position - vertex.position);
 
     vec3 diffuseLight = computeDiffuseLight(lightDirection);
 

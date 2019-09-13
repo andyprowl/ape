@@ -28,11 +28,8 @@ private:
     static auto createShaderProgram()
         -> ShaderProgram;
 
-    static auto createWorld(ShaderProgram const & shader)
+    static auto createWorld(GLFWwindow & window, ShaderProgram const & shader)
         -> World;
-
-    static auto createCamera(GLFWwindow & window)
-        -> Camera;
 
     auto captureMouse() const
         -> void;
@@ -74,8 +71,6 @@ private:
     ShaderProgram shader;
 
     World world;
-
-    Camera camera;
 
     InputHandler inputHandler;
 

@@ -2,31 +2,31 @@
 
 #include <glm/vec3.hpp>
 
-class Material
+class Light
 {
 
 public:
 
-    Material(
+    Light(
+        glm::vec3 const & position,
         glm::vec3 const & ambient,
         glm::vec3 const & diffuse,
-        glm::vec3 const & specular,
-        float const shininess)
-        : ambient{ambient}
+        glm::vec3 const & specular)
+        : position{position}
+        , ambient{ambient}
         , diffuse{diffuse}
         , specular{specular}
-        , shininess{shininess}
     {
     }
 
 public:
+
+    glm::vec3 position;
 
     glm::vec3 ambient;
 
     glm::vec3 diffuse;
 
     glm::vec3 specular;
-
-    float shininess;
 
 };

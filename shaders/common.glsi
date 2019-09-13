@@ -1,0 +1,14 @@
+#version 330 core
+
+struct Vertex
+{
+
+    vec3 normal;
+
+    vec3 position;
+
+    vec3 color;
+
+    vec2 textureCoords;
+
+};

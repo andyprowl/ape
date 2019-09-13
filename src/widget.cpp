@@ -99,19 +99,19 @@ auto Widget::bindTextures() const
 auto Widget::setTransformationsInShader() const
     -> void
 {
-    shaderProgram->set("model", modelTransformation);
+    shaderProgram->set("transform.model", modelTransformation);
 
-    shaderProgram->set("normalMatrix", normalMatrix);
+    shaderProgram->set("transform.normal", normalMatrix);
 }
 
 auto Widget::setMaterialInShader() const
     -> void
 {
-    shaderProgram->set("material.ambientColor", material.ambientColor);
+    shaderProgram->set("material.ambient", material.ambient);
 
-    shaderProgram->set("material.diffuseColor", material.diffuseColor);
+    shaderProgram->set("material.diffuse", material.diffuse);
 
-    shaderProgram->set("material.specularColor", material.specularColor);
+    shaderProgram->set("material.specular", material.specular);
 
     shaderProgram->set("material.shininess", material.shininess);
 }

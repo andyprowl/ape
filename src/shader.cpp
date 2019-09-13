@@ -11,6 +11,20 @@
 namespace
 {
 
+auto const includeDirective = std::string{"#include"};
+
+auto extractIncludedFileName(std::string const & content, std::size_t const directiveStartIndex)
+    -> std::string
+{
+    auto const includeKeywordEnd = directiveStartIndex + includeDirective.length();
+
+    auto const fileNameStart = content.find('\"', includeKeywordEnd) + 1;
+
+    auto const fileNameEnd = content.find('\"', fileNameStart + 1);
+
+    return content.substr(fileNameStart, fileNameEnd - fileNameStart);
+}
+
 auto checkShaderCompilationOutcome(int const shaderId, std::string const & filename)
     -> void
 {
@@ -55,6 +69,19 @@ auto checkShaderLinkingOutcome(int const shaderId)
 
 } // unnamed namespace
 
+auto extractBasePath(std::string const & filename)
+    -> std::string
+{
+    auto const lastSlash = filename.find_last_of("\\/");
+
+    if (lastSlash == std::string::npos)
+    {
+        return filename;
+    }
+
+    return filename.substr(0, lastSlash);
+}
+
 auto readShader(std::string const & filename)
     -> std::string
 {
@@ -66,21 +93,50 @@ auto readShader(std::string const & filename)
 
     shaderFile.seekg(0, std::ifstream::beg);
 
-    auto data = std::string(fileSize + 1, '\0');
+    auto data = std::string(fileSize, '\0');
 
     shaderFile.read(&data[0], fileSize);
 
     return data;
 }
 
+auto preprocessShader(std::string content)
+    -> std::string
+{
+    auto includeStart = content.find('\n' + includeDirective);
+
+    while (includeStart != std::string::npos)
+    {
+        auto fileName = extractIncludedFileName(content, includeStart);
+
+        auto const includedContent = readShader(fileName);
+            
+        auto preprocessedContent = preprocessShader(includedContent);
+
+        auto const includeEnd = content.find('\n', includeStart + fileName.length() + 3);
+
+        auto prologue = content.substr(0, includeStart);
+
+        auto epilogue = content.substr(includeEnd + 1);
+
+        content = prologue + std::move(preprocessedContent) + epilogue;
+
+        includeStart = content.find(includeDirective, includeStart + content.length());
+    }
+
+    return content;
+}
+
 auto compileShader(std::string const & filename, int const shaderType)
     -> int
 {
-    auto const shader = readShader(filename);
+    auto const originalCode = readShader(filename);
+
+    auto const preprocessedCode = preprocessShader(originalCode);
 
     auto const shaderId = glCreateShader(shaderType);
     
-    auto const shaderCode = shader.data();
+    auto const shaderCode = preprocessedCode.data();
 
     glShaderSource(shaderId, 1, &shaderCode, nullptr);
 

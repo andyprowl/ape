@@ -15,11 +15,7 @@ class InputHandler
 
 public:
 
-    InputHandler(
-        World & world,
-        Camera & camera,
-        GLFWwindow & window,
-        ShaderProgram const & program);
+    InputHandler(World & world, GLFWwindow & window, ShaderProgram const & program);
 
     auto processInput(double lastFrameDuration)
         -> void;
@@ -60,8 +56,6 @@ private:
 
     World * world;
 
-    Camera * camera;
-    
     GLFWwindow * window;
     
     ShaderProgram const * program;

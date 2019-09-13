@@ -1,4 +1,18 @@
-#version 330 core
+// #include is a custom extension
+#include "common.glsi"
+
+struct Transform
+{
+
+    mat4 model;
+
+    mat4 view;
+
+    mat4 proj;
+
+    mat3 normal;
+
+};
 
 layout (location = 0) in vec3 aPos;
 
@@ -8,31 +22,19 @@ layout (location = 2) in vec3 aColor;
 
 layout (location = 3) in vec2 aTexCoord;
 
-out vec3 fragmentPosition;
+out Vertex vertex;
 
-out vec3 vertexNormal;
-
-out vec3 vertexColor;
-
-out vec2 textureCoords;
-
-uniform mat4 model;
-
-uniform mat4 view;
-
-uniform mat4 proj;
-
-uniform mat3 normalMatrix;
+uniform Transform transform;
 
 void main()
 {
-    gl_Position = proj * view * model * vec4(aPos, 1.0);
+    gl_Position = transform.proj * transform.view * transform.model * vec4(aPos, 1.0);
 
-    fragmentPosition = vec3(model * vec4(aPos, 1.0));
+    vertex.position = vec3(transform.model * vec4(aPos, 1.0));
 
-    vertexNormal = normalize(normalMatrix * aNormal);
+    vertex.normal = normalize(transform.normal * aNormal);
 
-    vertexColor = aColor;
+    vertex.color = aColor;
 
-    textureCoords = aTexCoord;
+    vertex.textureCoords = aTexCoord;
 }

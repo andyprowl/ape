@@ -62,36 +62,38 @@ auto rotateWidgetAroundOwnX(Widget & widget, float const radians)
     widget.setModelTransformation(rotation);
 }
 
-auto rotateWidgetAroundWorldY(Widget & widget, float const radians)
+auto rotateLightAroundWorldY(World & world, float const radians)
     -> void
 {
-    auto const position = widget.getPosition();
+    auto const position = world.light.position;
     
     auto const revolution = glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f});
 
     auto const newPosition = glm::vec3{revolution * glm::vec4{position, 1.0f}};
 
+    world.light.position = newPosition;
+
+    auto & body = world.widgets.back();
+
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
         glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f}) *
         glm::translate(glm::mat4{1.0f}, -position) *
-        widget.getModelTransformation();
+        body.getModelTransformation();
 
-    widget.setModelTransformation(transformation);
+    body.setModelTransformation(transformation);
 }
 
 } // unnamed namespace
 
 InputHandler::InputHandler(
     World & world,
-    Camera & camera,
     GLFWwindow & window,
     ShaderProgram const & program)
     : world{&world}
-    , camera{&camera}
     , window{&window}
     , program{&program}
-    , cameraManipulator{window, camera, 0.1f}
+    , cameraManipulator{window, world.camera, 0.1f}
 {
 }
 
@@ -150,11 +152,11 @@ auto InputHandler::processRotationalMovement(double const lastFrameDuration) con
 
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
-        rotateCameraHorizontally(*camera, +rotationDelta);
+        rotateCameraHorizontally(world->camera, +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
     {
-        rotateCameraHorizontally(*camera, -rotationDelta);
+        rotateCameraHorizontally(world->camera, -rotationDelta);
     }
 }
 
@@ -166,21 +168,21 @@ auto InputHandler::processLateralMovement(double const lastFrameDuration) const
     if ((glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) ||
         (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(*camera, +translationDelta);
+        moveCameraAlongDirection(world->camera, +translationDelta);
     }
     else if ((glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) ||
              (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(*camera, -translationDelta);
+        moveCameraAlongDirection(world->camera, -translationDelta);
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        moveCameraSideways(*camera, -translationDelta);
+        moveCameraSideways(world->camera, -translationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        moveCameraSideways(*camera, +translationDelta);
+        moveCameraSideways(world->camera, +translationDelta);
     }
 }
 
@@ -229,11 +231,11 @@ auto InputHandler::processLightRevolution(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
     {
-        rotateWidgetAroundWorldY(world->widgets.back(), +rotationDelta);
+        rotateLightAroundWorldY(*world, +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
     {
-        rotateWidgetAroundWorldY(world->widgets.back(), -rotationDelta);
+        rotateLightAroundWorldY(*world, -rotationDelta);
     }
 }
 
