@@ -54,7 +54,9 @@ struct SpotLight
 
     vec3 direction;
 
-    float cutoffCosine;
+    float innerCutoffCosine;
+
+    float outerCutoffCosine;
 
     LightColor color;
 
@@ -166,7 +168,21 @@ vec3 computePointLighting()
 
 vec3 computeSpotLight(SpotLight light)
 {
-    return vec3(0.0, 0.0, 0.0);
+    vec3 lightDirection = normalize(light.position - vertex.position);
+
+    float angleCosine = dot(lightDirection, normalize(-light.direction));
+    
+    float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
+
+    float intensity = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
+
+    vec3 ambientLight = computeAmbientLight(light.color);
+
+    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+
+    vec3 specularLight = computeDiffuseLight(light.color, lightDirection);
+
+    return intensity * (ambientLight + diffuseLight + specularLight);
 }
 
 vec3 computeSpotLighting()
@@ -212,7 +228,6 @@ vec3 computeDirectionalLighting()
 
 void main()
 {
-
     vec3 pointLighting = computePointLighting();
 
     vec3 spotLighting = computeSpotLighting();

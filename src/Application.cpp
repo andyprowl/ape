@@ -6,6 +6,7 @@
 #include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 
 #include <vector>
 
@@ -45,6 +46,8 @@ private:
         createGroundTileBodies(bodies);
 
         createCubeBodies(bodies);
+
+        createFlashLightBodies(bodies);
 
         createLampBodies(bodies);
 
@@ -200,10 +203,67 @@ private:
         return {ambientColor, diffuseMapId, specularMapId, shininess};
     }
 
+    auto createFlashLightBodies(std::vector<Body> & bodies) const
+        -> void
+    {
+        auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
+
+        auto const positions = getFlashLightBodyPositions();
+
+        auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.3f, 0.1f, 0.1f});
+
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            auto const position = positions[i];
+
+            auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+            auto const rotation = computeFlashLightBodyRotationMatrix(position);
+
+            auto const material = getFlashLightMaterial();
+
+            bodies.emplace_back(shape, material, *shader, translation * rotation * scaling);
+        }
+    }
+
+    auto getFlashLightBodyPositions() const
+        -> std::vector<glm::vec3>
+    {
+        return {
+            {2.4f, 1.0f, 0.0f},
+            {-3.5f, 0.5f, 3.5f}};
+    }
+
+    auto computeFlashLightBodyRotationMatrix(glm::vec3 const & position) const
+        -> glm::mat4
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        auto const base = glm::normalize(glm::vec3{position.x, 0.0f, 0.0f});
+
+        auto const direction = glm::normalize(position);
+
+        return glm::orientation(direction, base);
+    }
+    
+    auto getFlashLightMaterial() const
+        -> Material
+    {
+        auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
+
+        auto const diffuseMapId = makeTexture("White.png", GL_RGB);
+
+        auto const specularMapId = makeTexture("White.png", GL_RGB);
+
+        auto const shininess = 32.0f;
+
+        return {ambientColor, diffuseMapId, specularMapId, shininess};
+    }
+
     auto createLighting() const
         -> Lighting
     {
-        return {createPointLights(), {}, createDirectionalLights()};
+        return {createPointLights(), createSpotLights(), createDirectionalLights()};
     }
 
     auto createPointLights() const
@@ -237,6 +297,40 @@ private:
         auto const attenuation = Attenuation{1.0f, 0.09f, 0.032f};
 
         lights.emplace_back(position, attenuation, color);
+    }
+
+    auto createSpotLights() const
+        -> std::vector<SpotLight>
+    {
+        auto lights = std::vector<SpotLight>{};
+
+        const auto positions = getFlashLightBodyPositions();
+
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            const auto position = positions[i];
+
+            createSpotLight(position, -position, lights); 
+        }
+
+        return lights;
+    }
+
+    auto createSpotLight(
+        glm::vec3 const & position,
+        glm::vec3 const & direction,
+        std::vector<SpotLight> & lights) const
+        -> void
+    {
+        auto const ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+
+        auto const diffuse = glm::vec3{0.8f, 0.8f, 0.2f};
+
+        auto const specular = glm::vec3{0.5f, 0.5f, 0.1f};
+
+        auto const color = Light::Color{ambient, diffuse, specular};
+
+        lights.emplace_back(position, direction, glm::radians(15.0f), glm::radians(20.0f), color);
     }
     
     auto createDirectionalLights() const
@@ -426,7 +520,7 @@ auto Application::setupLights()
 
     setupPointLights();
 
-    //setupSpotLights();
+    setupSpotLights();
 
     setupDirectionalLights();
 }
@@ -457,6 +551,35 @@ auto Application::setupPointLights()
         shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
 
         shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
+    }
+}
+
+auto Application::setupSpotLights()
+    -> void
+{
+    auto const numOfSpotLights = static_cast<int>(world.lighting.spot.size());
+
+    shader.set("lighting.numOfSpotLights", numOfSpotLights);
+
+    for (auto i = 0; i < numOfSpotLights; ++i)
+    {
+        auto const & light = world.lighting.spot[i];
+
+        auto uniformPrefix = "lighting.spot[" + std::to_string(i) + "]";
+
+        shader.set(uniformPrefix + ".position", light.position);
+
+        shader.set(uniformPrefix + ".direction", light.direction);
+
+        shader.set(uniformPrefix + ".innerCutoffCosine", glm::cos(light.innerCutoffAngle));
+
+        shader.set(uniformPrefix + ".outerCutoffCosine", glm::cos(light.outerCutoffAngle));
+
+        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
+
+        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
+
+        shader.set(uniformPrefix + ".color.specular", light.color.specular);
     }
 }
 

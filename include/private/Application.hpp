@@ -55,6 +55,9 @@ private:
     auto setupPointLights()
         -> void;
 
+    auto setupSpotLights()
+        -> void;
+
     auto setupDirectionalLights()
         -> void;
 

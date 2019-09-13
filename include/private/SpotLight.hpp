@@ -10,11 +10,14 @@ public:
     SpotLight(
         glm::vec3 const & position,
         glm::vec3 const & direction,
-        float const cutoffAngle,
+        float const innerCutoffAngle,
+        float const outerCutoffAngle,
         Color const & color)
         : Light{color}
         , position{position}
         , direction{direction}
+        , innerCutoffAngle{innerCutoffAngle}
+        , outerCutoffAngle{outerCutoffAngle}
     {
     }
     
@@ -24,6 +27,8 @@ public:
 
     glm::vec3 direction;
 
-    float cutoffAngle;
+    float innerCutoffAngle;
+
+    float outerCutoffAngle;
 
 };
