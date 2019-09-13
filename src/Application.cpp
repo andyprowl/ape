@@ -129,7 +129,7 @@ private:
             {0.0f, 0.0f, 0.0f},
             {0.0f, 0.5f, -3.0f},
             {2.0f, 5.0f, -15.0f},
-            {-1.5f, -1.2f, -2.5f},
+            {-1.5f, -1.0f, -2.5f},
             {-3.8f, -1.0f, -12.3f},
             {2.4f, -0.4f, -3.5f},
             {-1.7f, 3.0f, -7.5f},
@@ -203,7 +203,7 @@ private:
     auto createLighting() const
         -> Lighting
     {
-        return {createPointLights(), {}, {}};
+        return {createPointLights(), {}, createDirectionalLights()};
     }
 
     auto createPointLights() const
@@ -223,7 +223,7 @@ private:
         return lights;
     }
 
-    auto createPointLight(glm::vec3 const & position, std::vector<PointLight> & pointLights) const
+    auto createPointLight(glm::vec3 const & position, std::vector<PointLight> & lights) const
         -> void
     {
         auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
@@ -236,9 +236,48 @@ private:
 
         auto const attenuation = Attenuation{1.0f, 0.09f, 0.032f};
 
-        pointLights.emplace_back(position, attenuation, color);
+        lights.emplace_back(position, attenuation, color);
+    }
+    
+    auto createDirectionalLights() const
+        -> std::vector<DirectionalLight>
+    {
+        auto lights = std::vector<DirectionalLight>{};
+
+        const auto positions = getDirectionalLightDirections();
+
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            const auto position = positions[i];
+
+            createDirectionalLight(position, lights); 
+        }
+
+        return lights;
     }
 
+    auto getDirectionalLightDirections() const
+        -> std::vector<glm::vec3>
+    {
+        return {{0.0f, -1.0f, 0.0f}};
+    }
+
+    auto createDirectionalLight(
+        glm::vec3 const & direction,
+        std::vector<DirectionalLight> & lights) const
+        -> void
+    {
+        auto const ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+
+        auto const diffuse = glm::vec3{0.4f, 0.4f, 0.4f};
+
+        auto const specular = glm::vec3{0.2f, 0.2f, 0.2f};
+
+        auto const color = Light::Color{ambient, diffuse, specular};
+
+        lights.emplace_back(direction, color);
+    }
+    
     auto createCamera() const
         -> Camera
     {
@@ -389,7 +428,7 @@ auto Application::setupLights()
 
     //setupSpotLights();
 
-    //setupDirectionalLights();
+    setupDirectionalLights();
 }
 
 auto Application::setupPointLights()
@@ -418,6 +457,29 @@ auto Application::setupPointLights()
         shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
 
         shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
+    }
+}
+
+auto Application::setupDirectionalLights()
+    -> void
+{
+    auto const numOfDirectionalLights = static_cast<int>(world.lighting.directional.size());
+
+    shader.set("lighting.numOfDirectionalLights", numOfDirectionalLights);
+
+    for (auto i = 0; i < numOfDirectionalLights; ++i)
+    {
+        auto const & light = world.lighting.directional[i];
+
+        auto uniformPrefix = "lighting.directional[" + std::to_string(i) + "]";
+
+        shader.set(uniformPrefix + ".direction", light.direction);
+
+        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
+
+        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
+
+        shader.set(uniformPrefix + ".color.specular", light.color.specular);
     }
 }
 

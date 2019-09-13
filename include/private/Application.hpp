@@ -55,6 +55,9 @@ private:
     auto setupPointLights()
         -> void;
 
+    auto setupDirectionalLights()
+        -> void;
+
     auto drawWorld()
         -> void;
 

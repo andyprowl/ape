@@ -100,23 +100,23 @@ uniform Lighting lighting;
 
 uniform vec3 viewPosition;
 
-vec3 computePointLightAmbient(PointLight light)
+vec3 computeAmbientLight(LightColor color)
 {
     vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
 
-    return light.color.ambient * material.ambient * diffuseColor;
+    return color.ambient * material.ambient * diffuseColor;
 }
 
-vec3 computePointLightDiffuse(PointLight light, vec3 lightDirection)
+vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
 {
     float diffusion = max(dot(vertex.normal, lightDirection), 0.0);
 
     vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
 
-    return light.color.diffuse * (diffusion * diffuseColor);
+    return color.diffuse * (diffusion * diffuseColor);
 }
 
-vec3 computePointLightSpecular(PointLight light, vec3 lightDirection)
+vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
 {
     vec3 viewDirection = normalize(viewPosition - vertex.position);
 
@@ -126,18 +126,18 @@ vec3 computePointLightSpecular(PointLight light, vec3 lightDirection)
 
     vec3 specularColor = vec3(texture(material.specular, vertex.textureCoords));
 
-    return light.color.specular * (reflection * specularColor);
+    return color.specular * (reflection * specularColor);
 }
 
 vec3 computePointLight(PointLight light)
 {
     vec3 lightDirection = normalize(light.position - vertex.position);
 
-    vec3 ambientLight = computePointLightAmbient(light);
+    vec3 ambientLight = computeAmbientLight(light.color);
 
-    vec3 diffuseLight = computePointLightDiffuse(light, lightDirection);
+    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
 
-    vec3 specularLight = computePointLightSpecular(light, lightDirection);
+    vec3 specularLight = computeDiffuseLight(light.color, lightDirection);
 
     float sourceDistance = length(light.position - vertex.position);
 
@@ -185,7 +185,15 @@ vec3 computeSpotLighting()
 
 vec3 computeDirectionalLight(DirectionalLight light)
 {
-    return vec3(0.0, 0.0, 0.0);
+    vec3 lightDirection = normalize(-light.direction);
+
+    vec3 ambientLight = computeAmbientLight(light.color);
+
+    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+
+    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+
+    return (ambientLight + diffuseLight + specularLight);
 }
 
 vec3 computeDirectionalLighting()
