@@ -1,7 +1,7 @@
 #pragma once
 
 #include "camera.hpp"
-#include "light.h"
+#include "light.hpp"
 #include "widget.hpp"
 
 #include <vector>

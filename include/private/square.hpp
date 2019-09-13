@@ -2,5 +2,5 @@
 
 #include "shape.hpp"
 
-auto makeSquare(glm::vec3 const & color)
+auto makeSquare()
     -> Shape;

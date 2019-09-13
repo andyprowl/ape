@@ -33,7 +33,7 @@ auto makeVertexBufferObject(std::vector<float> const & vertices)
         vertices.data(),
         GL_STATIC_DRAW);
 
-    auto const stride = 11 * sizeof(float);
+    auto const stride = 8 * sizeof(float);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(0));
 
@@ -43,13 +43,9 @@ auto makeVertexBufferObject(std::vector<float> const & vertices)
 
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(6));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(6));
 
     glEnableVertexAttribArray(2);
-
-    glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(9));
-
-    glEnableVertexAttribArray(3);
 
     return vboId;
 }

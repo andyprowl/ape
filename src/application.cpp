@@ -1,7 +1,7 @@
 #include "application.hpp"
 
-#include "material.h"
-#include "square.h"
+#include "material.hpp"
+#include "square.hpp"
 #include "texture.hpp"
 #include "window.hpp"
 
@@ -25,10 +25,10 @@ public:
     {
     }
 
-    auto build(glm::vec3 const & objectColor)
+    auto build()
         -> World
     {
-        auto widgets = createWidgets(objectColor);
+        auto widgets = createWidgets();
 
         auto light = createLight(widgets.back());
 
@@ -39,10 +39,10 @@ public:
 
 private:
 
-    auto createWidgets(glm::vec3 const & objectColor) const
+    auto createWidgets() const
         -> std::vector<Widget>
     {
-        auto widgets = makeCubeObjects(objectColor);
+        auto widgets = makeCubeObjects();
 
         widgets.push_back(makeLamp());
 
@@ -102,10 +102,10 @@ private:
         return {emerald, redPlastic, greenRubber, cyanPlastic, custom};
     }
 
-    auto makeCubeObjects(glm::vec3 const & objectColor) const
+    auto makeCubeObjects() const
         -> std::vector<Widget>
     {
-        auto const shape = std::make_shared<Shape>(makeSquare(objectColor));
+        auto const shape = std::make_shared<Shape>(makeSquare());
 
         auto const containerTextureId = makeTexture("container.jpg", GL_RGB);
 
@@ -138,7 +138,7 @@ private:
     auto makeLamp() const
         -> Widget
     {
-        auto shape = std::make_unique<Shape>(makeSquare(glm::vec3{1.0f, 1.0f, 1.0f}));
+        auto shape = std::make_unique<Shape>(makeSquare());
 
         auto const textureId = makeTexture("white.png", GL_RGBA);
 
@@ -258,9 +258,7 @@ auto Application::createWorld(GLFWwindow & window, ShaderProgram const & shader)
 {
     auto builder = WorldBuilder{window, shader};
 
-    auto const objectColor = glm::vec3{1.0f, 1.0f, 1.0f};
-
-    return builder.build(objectColor);
+    return builder.build();
 }
 
 auto Application::wasTerminationRequested() const

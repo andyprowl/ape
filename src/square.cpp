@@ -1,4 +1,4 @@
-#include "square.h"
+#include "square.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -19,8 +19,6 @@ public:
         
         glm::vec3 normal;
         
-        glm::vec3 color;
-        
         glm::vec2 textureCoords;
 
     };
@@ -31,17 +29,23 @@ public:
 
     SquareBuilder()
     {
-        vertices.reserve(6 * 4 * (3 + 3 + 2));
+        auto const numOfFaces = 6;
+
+        auto const numOfVerticesPerFace = 4;
+
+        auto const numOfFloatsPerVertex = 3 + 3 + 2; // position, normal, textureCoords
+        
+        vertices.reserve(numOfFaces * numOfVerticesPerFace * numOfFloatsPerVertex);
     }
 
-    auto build(glm::vec3 const & color)
+    auto build()
         -> Shape
     {
         auto const face = Face{{
-            Vertex{{-0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, color, {0.0f, 0.0f}},
-            Vertex{{0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, color, {1.0f, 0.0f}},
-            Vertex{{0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, color, {1.0f, 1.0f}},
-            Vertex{{-0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, color, {0.0f, 1.0f}}}};
+            Vertex{{-0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
+            Vertex{{0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
+            Vertex{{0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},
+            Vertex{{-0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}}}};
 
         // low
         addFace(face, translate({0.0f, -0.5f, 0.0f}));
@@ -93,8 +97,6 @@ private:
 
             pushVertex(glm::normalize(transform(v.normal, transformation)));
 
-            pushVertex(v.color);
-
             pushVertex(v.textureCoords);
         }
 
@@ -122,7 +124,7 @@ private:
     auto pushFaceIndices()
         -> void
     {
-        auto const stride = 11;
+        auto const stride = 8;
 
         auto const base = (vertices.size() / stride) - 4;
 
@@ -147,8 +149,8 @@ private:
 
 };
 
-auto makeSquare(glm::vec3 const & color)
+auto makeSquare()
     -> Shape
 {
-    return SquareBuilder{}.build(color);
+    return SquareBuilder{}.build();
 }

@@ -49,12 +49,10 @@ vec4 computeSurfaceColor()
 {
     vec2 invertedCoord = vec2(1.0 - vertex.textureCoords.x, vertex.textureCoords.y);
 
-    vec4 textureColor = mix(
+    return mix(
         texture(texSampler1, invertedCoord),
         texture(texSampler2, invertedCoord),
         textureWeight);
-
-    return mix(textureColor, vec4(vertex.color, 1.0), colorWeight);
 }
 
 vec3 computeAmbientLight()
