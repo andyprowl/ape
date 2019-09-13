@@ -1,4 +1,4 @@
-#include "wheel.hpp"
+#include "Wheel.hpp"
 
 #include <cassert>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "manipulator.hpp"
-#include "mouse.hpp"
+#include "Manipulator.hpp"
+#include "Mouse.hpp"
 
 #include <vector>
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "position.hpp"
+#include "Position.hpp"
 
-#include "glfw.hpp"
+#include "GLFW.hpp"
 
 class MouseTracker
 {

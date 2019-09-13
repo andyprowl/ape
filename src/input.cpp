@@ -1,8 +1,8 @@
-#include "input.hpp"
+#include "Input.hpp"
 
-#include "camera.hpp"
-#include "shader.hpp"
-#include "world.hpp"
+#include "Camera.hpp"
+#include "Shader.hpp"
+#include "World.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -65,15 +65,17 @@ auto rotateBodyAroundOwnX(Body & body, float const radians)
 auto rotateLightAroundWorldY(World & world, float const radians)
     -> void
 {
-    auto const position = world.light.position;
+    auto & light = world.lighting.point[0];
+
+    auto const position = light.position;
     
     auto const revolution = glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f});
 
     auto const newPosition = glm::vec3{revolution * glm::vec4{position, 1.0f}};
 
-    world.light.position = newPosition;
+    light.position = newPosition;
 
-    auto & body = world.bodies.back();
+    auto & body = *(world.bodies.end() - 2);
 
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
@@ -199,11 +201,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(*(world->bodies.end() - 2), +rotationDelta);
+        rotateBodyAroundOwnX(*(world->bodies.end() - 3), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(*(world->bodies.end() - 2), -rotationDelta);
+        rotateBodyAroundOwnX(*(world->bodies.end() - 3), -rotationDelta);
     }
 }
 
@@ -214,11 +216,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        (world->bodies.end() - 2)->scaleUniformly(1 + scalingDelta);
+        (world->bodies.end() - 3)->scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        (world->bodies.end() - 2)->scaleUniformly(1 - scalingDelta);
+        (world->bodies.end() - 3)->scaleUniformly(1 - scalingDelta);
     }
 }
 

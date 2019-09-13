@@ -1,5 +1,5 @@
 // #include is a custom extension
-#include "vertex.glsi"
+#include "Vertex.glsi"
 
 struct Material
 {
@@ -14,7 +14,18 @@ struct Material
 
 };
 
-struct Light
+struct Attenuation
+{
+
+    float constant;
+
+    float linear;
+
+    float quadratic;
+
+};
+
+struct LightColor
 {
 
     vec3 ambient;
@@ -23,7 +34,61 @@ struct Light
 
     vec3 specular;
 
+};
+
+struct PointLight
+{
+
     vec3 position;
+
+    LightColor color;
+
+    Attenuation attenuation;
+
+};
+
+struct SpotLight
+{
+
+    vec3 position;
+
+    vec3 direction;
+
+    float cutoffCosine;
+
+    LightColor color;
+
+};
+
+struct DirectionalLight
+{
+
+    vec3 direction;
+
+    LightColor color;
+
+};
+
+struct Lighting
+{
+
+    #define MAX_NUM_OF_POINT_LIGHTS 8
+
+    #define MAX_NUM_OF_SPOT_LIGHTS 8
+
+    #define MAX_NUM_OF_DIRECTIONAL_LIGHTS 8
+
+    PointLight point[MAX_NUM_OF_POINT_LIGHTS];
+
+    int numOfPointLights;
+
+    SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
+
+    int numOfSpotLights;
+
+    DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+
+    int numOfDirectionalLights;
 
 };
 
@@ -31,27 +96,27 @@ in Vertex vertex;
 
 uniform Material material;
 
-uniform Light light;
+uniform Lighting lighting;
 
 uniform vec3 viewPosition;
 
-vec3 computeAmbientLight()
+vec3 computePointLightAmbient(PointLight light)
 {
     vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
 
-    return light.ambient * material.ambient * diffuseColor;
+    return light.color.ambient * material.ambient * diffuseColor;
 }
 
-vec3 computeDiffuseLight(vec3 lightDirection)
+vec3 computePointLightDiffuse(PointLight light, vec3 lightDirection)
 {
     float diffusion = max(dot(vertex.normal, lightDirection), 0.0);
 
     vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
 
-    return light.diffuse * (diffusion * diffuseColor);
+    return light.color.diffuse * (diffusion * diffuseColor);
 }
 
-vec3 computeSpecularLight(vec3 lightDirection)
+vec3 computePointLightSpecular(PointLight light, vec3 lightDirection)
 {
     vec3 viewDirection = normalize(viewPosition - vertex.position);
 
@@ -61,18 +126,82 @@ vec3 computeSpecularLight(vec3 lightDirection)
 
     vec3 specularColor = vec3(texture(material.specular, vertex.textureCoords));
 
-    return light.specular * (reflection * specularColor);
+    return light.color.specular * (reflection * specularColor);
+}
+
+vec3 computePointLight(PointLight light)
+{
+    vec3 lightDirection = normalize(light.position - vertex.position);
+
+    vec3 ambientLight = computePointLightAmbient(light);
+
+    vec3 diffuseLight = computePointLightDiffuse(light, lightDirection);
+
+    vec3 specularLight = computePointLightSpecular(light, lightDirection);
+
+    return ambientLight + diffuseLight + specularLight;
+}
+
+vec3 computePointLighting()
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < lighting.numOfPointLights; ++i)
+    {
+        PointLight light = lighting.point[i];
+
+        color += computePointLight(light);
+    }
+
+    return color;
+}
+
+vec3 computeSpotLight(SpotLight light)
+{
+    return vec3(0.0, 0.0, 0.0);
+}
+
+vec3 computeSpotLighting()
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < lighting.numOfSpotLights; ++i)
+    {
+        SpotLight light = lighting.spot[i];
+
+        color += computeSpotLight(light);
+    }
+
+    return color;
+}
+
+vec3 computeDirectionalLight(DirectionalLight light)
+{
+    return vec3(0.0, 0.0, 0.0);
+}
+
+vec3 computeDirectionalLighting()
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
+
+    for (int i = 0; i < lighting.numOfDirectionalLights; ++i)
+    {
+        DirectionalLight light = lighting.directional[i];
+
+        color += computeDirectionalLight(light);
+    }
+
+    return color;
 }
 
 void main()
 {
-    vec3 ambientLight = computeAmbientLight();
 
-    vec3 lightDirection = normalize(light.position - vertex.position);
+    vec3 pointLighting = computePointLighting();
 
-    vec3 diffuseLight = computeDiffuseLight(lightDirection);
+    vec3 spotLighting = computeSpotLighting();
 
-    vec3 specularLight = computeSpecularLight(lightDirection);
+    vec3 directionalLighting = computeDirectionalLighting();
 
-    gl_FragColor = vec4(ambientLight + diffuseLight + specularLight, 1.0);
+    gl_FragColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
 }

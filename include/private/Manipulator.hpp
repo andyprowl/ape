@@ -1,9 +1,9 @@
 #pragma once
 
-#include "mouse.hpp"
-#include "wheel.hpp"
+#include "Mouse.hpp"
+#include "Wheel.hpp"
 
-#include "glfw.hpp"
+#include "GLFW.hpp"
 
 class Camera;
 

@@ -1,4 +1,4 @@
-#include "square.hpp"
+#include "Square.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -1,6 +1,6 @@
-#include "mouse.hpp"
+#include "Mouse.hpp"
 
-#include "window.hpp"
+#include "Window.hpp"
 
 MouseTracker::MouseTracker(GLFWwindow & window)
     : window{&window}

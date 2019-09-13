@@ -1,9 +1,9 @@
-#include "camera.hpp"
+#include "Camera.hpp"
 
-#include "shader.hpp"
-#include "body.hpp"
-#include "window.hpp"
-#include "world.hpp"
+#include "Shader.hpp"
+#include "Body.hpp"
+#include "Window.hpp"
+#include "World.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

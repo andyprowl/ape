@@ -1,7 +1,7 @@
-#include "manipulator.hpp"
+#include "Manipulator.hpp"
 
-#include "camera.hpp"
-#include "math.hpp"
+#include "Camera.hpp"
+#include "Math.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 

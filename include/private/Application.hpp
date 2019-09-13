@@ -1,10 +1,10 @@
 #pragma once
 
-#include "camera.hpp"
-#include "input.hpp"
-#include "shader.hpp"
-#include "frame.hpp"
-#include "world.hpp"
+#include "Camera.hpp"
+#include "Input.hpp"
+#include "Shader.hpp"
+#include "Frame.hpp"
+#include "World.hpp"
 
 class Application
 {
@@ -50,6 +50,9 @@ private:
         -> void;
 
     auto setupLights()
+        -> void;
+
+    auto setupPointLights()
         -> void;
 
     auto drawWorld()

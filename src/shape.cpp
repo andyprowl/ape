@@ -1,4 +1,4 @@
-#include "shape.hpp"
+#include "Shape.hpp"
 
 #include "glad/glad.h"
 

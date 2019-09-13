@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glfw.hpp"
+#include "GLFW.hpp"
 
 #include <exception>
 #include <functional>

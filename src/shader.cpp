@@ -1,6 +1,6 @@
-#include "shader.hpp"
+#include "Shader.hpp"
 
-#include "glfw.hpp"
+#include "GLFW.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 

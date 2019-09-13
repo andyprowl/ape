@@ -1,9 +1,9 @@
-#include "application.hpp"
+#include "Application.hpp"
 
-#include "material.hpp"
-#include "square.hpp"
-#include "texture.hpp"
-#include "window.hpp"
+#include "Material.hpp"
+#include "Square.hpp"
+#include "Texture.hpp"
+#include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -28,11 +28,11 @@ public:
     {
         auto bodies = createBodies();
 
-        auto light = createLampLight(bodies.back());
+        auto lighting = createLighting();
 
         auto camera = createCamera();
 
-        return World{std::move(bodies), std::move(light), std::move(camera)};
+        return World{std::move(bodies), std::move(lighting), std::move(camera)};
     }
 
 private:
@@ -46,7 +46,7 @@ private:
 
         createCubeBodies(bodies);
 
-        createLamp(bodies);
+        createLampBodies(bodies);
 
         return bodies;
     }
@@ -89,9 +89,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = makeTexture("ground.jpg", GL_RGB);
+        auto const diffuseMapId = makeTexture("ConcreteGround.jpg", GL_RGB);
 
-        auto const specularMapId = makeTexture("ground.jpg", GL_RGB);
+        auto const specularMapId = makeTexture("ConcreteGround.jpg", GL_RGB);
 
         auto const shininess = 16.0f;
 
@@ -150,29 +150,40 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
-        auto const diffuseMapId = makeTexture("container.diffuse.png", GL_RGBA);
+        auto const diffuseMapId = makeTexture("Container.Diffuse.png", GL_RGBA);
 
-        auto const specularMapId = makeTexture("container.specular.png", GL_RGBA);
+        auto const specularMapId = makeTexture("Container.Specular.png", GL_RGBA);
 
         auto const shininess = 32.0f;
 
         return {ambientColor, diffuseMapId, specularMapId, shininess};
     }
 
-    auto createLamp(std::vector<Body> & bodies) const
+    auto createLampBodies(std::vector<Body> & bodies) const
         -> void
     {
-        auto shape = std::make_unique<Shape>(makeSquare(SquareNormalDirection::inbound));
+        auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
 
-        auto const position = glm::vec3{0.0f, 0.0f, 5.0f};
+        auto const positions = getLampBodyPositions();
 
         auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
 
-        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
 
-        auto const material = getLampMaterial();
+            auto const material = getLampMaterial();
 
-        bodies.emplace_back(std::move(shape), material, *shader, translation * scaling);
+            bodies.emplace_back(shape, material, *shader, translation * scaling);
+        }
+    }
+
+    auto getLampBodyPositions() const
+        -> std::vector<glm::vec3>
+    {
+        return {
+            {0.0f, 0.0f, 5.0f},
+            {0.0f, 1.0f, -5.0f}};
     }
 
     auto getLampMaterial() const
@@ -189,18 +200,43 @@ private:
         return {ambientColor, diffuseMapId, specularMapId, shininess};
     }
 
-    auto createLampLight(Body & lampBody) const
-        -> Light
+    auto createLighting() const
+        -> Lighting
     {
-        const auto position = lampBody.getPosition();
+        return {createPointLights(), {}, {}};
+    }
 
+    auto createPointLights() const
+        -> std::vector<PointLight>
+    {
+        auto lights = std::vector<PointLight>{};
+
+        const auto positions = getLampBodyPositions();
+
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            const auto position = positions[i];
+
+            createPointLight(position, lights); 
+        }
+
+        return lights;
+    }
+
+    auto createPointLight(glm::vec3 const & position, std::vector<PointLight> & pointLights) const
+        -> void
+    {
         auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
 
         auto const diffuse = glm::vec3{0.8f, 0.5f, 0.7f};
 
         auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
 
-        return {position, ambient, diffuse, specular};
+        auto const color = Light::Color{ambient, diffuse, specular};
+
+        auto const attenuation = Attenuation{1.0f, 0.09f, 0.032f};
+
+        pointLights.emplace_back(position, attenuation, color);
     }
 
     auto createCamera() const
@@ -270,7 +306,7 @@ auto Application::run()
 auto Application::createShaderProgram()
     -> ShaderProgram
 {
-    auto program = ShaderProgram{"object.vertex.glsl", "object.fragment.glsl"};
+    auto program = ShaderProgram{"Object.Vertex.glsl", "Object.Fragment.glsl"};
 
     program.use();
 
@@ -349,13 +385,32 @@ auto Application::setupLights()
 {
     shader.use();
 
-    shader.set("light.position", world.light.position);
+    setupPointLights();
 
-    shader.set("light.ambient", world.light.ambient);
+    //setupSpotLights();
 
-    shader.set("light.diffuse", world.light.diffuse);
+    //setupDirectionalLights();
+}
 
-    shader.set("light.specular", world.light.specular);
+auto Application::setupPointLights()
+    -> void
+{
+    auto const numOfPointLights = static_cast<int>(world.lighting.point.size());
+
+    shader.set("lighting.numOfPointLights", numOfPointLights);
+
+    for (auto i = 0; i < numOfPointLights; ++i)
+    {
+        auto uniformPrefix = "lighting.point[" + std::to_string(i) + "]";
+
+        shader.set(uniformPrefix + ".position", world.lighting.point[i].position);
+
+        shader.set(uniformPrefix + ".color.ambient", world.lighting.point[i].color.ambient);
+
+        shader.set(uniformPrefix + ".color.diffuse", world.lighting.point[i].color.diffuse);
+
+        shader.set(uniformPrefix + ".color.specular", world.lighting.point[i].color.specular);
+    }
 }
 
 auto Application::drawWorld()

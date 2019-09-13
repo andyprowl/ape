@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shape.hpp"
+#include "Shape.hpp"
 
 enum class SquareNormalDirection
 {

@@ -1,7 +1,7 @@
-#include "body.hpp"
+#include "Body.hpp"
 
-#include "shader.hpp"
-#include "shape.hpp"
+#include "Shader.hpp"
+#include "Shape.hpp"
 
 #include "glad/glad.h"
 
