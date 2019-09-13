@@ -401,15 +401,23 @@ auto Application::setupPointLights()
 
     for (auto i = 0; i < numOfPointLights; ++i)
     {
+        auto const & light = world.lighting.point[i];
+
         auto uniformPrefix = "lighting.point[" + std::to_string(i) + "]";
 
-        shader.set(uniformPrefix + ".position", world.lighting.point[i].position);
+        shader.set(uniformPrefix + ".position", light.position);
 
-        shader.set(uniformPrefix + ".color.ambient", world.lighting.point[i].color.ambient);
+        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
 
-        shader.set(uniformPrefix + ".color.diffuse", world.lighting.point[i].color.diffuse);
+        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
 
-        shader.set(uniformPrefix + ".color.specular", world.lighting.point[i].color.specular);
+        shader.set(uniformPrefix + ".color.specular", light.color.specular);
+
+        shader.set(uniformPrefix + ".attenuation.constant", light.attenuation.constant);
+
+        shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
+
+        shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
     }
 }
 

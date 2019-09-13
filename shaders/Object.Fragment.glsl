@@ -139,7 +139,15 @@ vec3 computePointLight(PointLight light)
 
     vec3 specularLight = computePointLightSpecular(light, lightDirection);
 
-    return ambientLight + diffuseLight + specularLight;
+    float sourceDistance = length(light.position - vertex.position);
+
+    float attenuation = 
+        1.0 / 
+        (light.attenuation.constant + 
+         light.attenuation.linear * sourceDistance +
+         light.attenuation.quadratic * (sourceDistance * sourceDistance));
+
+    return attenuation * (ambientLight + diffuseLight + specularLight);
 }
 
 vec3 computePointLighting()
