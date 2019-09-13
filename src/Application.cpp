@@ -494,7 +494,7 @@ auto Application::clear()
 {
     auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
 
-    glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
+    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
