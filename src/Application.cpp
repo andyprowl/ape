@@ -191,9 +191,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = makeTexture("white.png", GL_RGB);
+        auto const diffuseMapId = makeTexture("White.png", GL_RGB);
 
-        auto const specularMapId = makeTexture("white.png", GL_RGB);
+        auto const specularMapId = makeTexture("White.png", GL_RGB);
 
         auto const shininess = 32.0f;
 
