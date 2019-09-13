@@ -5,9 +5,9 @@
 
 #include <vector>
 
+class Body;
 class Camera;
 class ShaderProgram;
-class Widget;
 class World;
 
 class InputHandler
@@ -47,9 +47,6 @@ private:
         -> void;
 
     auto processLightRevolution(double lastFrameDuration) const
-        -> void;
-
-    auto processStyleModification(double lastFrameDuration) const
         -> void;
 
 private:

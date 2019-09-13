@@ -20,150 +20,185 @@ public:
     WorldBuilder(GLFWwindow & window, ShaderProgram const & shader)
         : shader{&shader}
         , window{&window}
-        , objectPositions{makeObjectPositions()}
-        , materials{makeMaterials()}
     {
     }
 
     auto build()
         -> World
     {
-        auto widgets = createWidgets();
+        auto bodies = createBodies();
 
-        auto light = createLight(widgets.back());
+        auto light = createLampLight(bodies.back());
 
         auto camera = createCamera();
 
-        return World{std::move(widgets), std::move(light), std::move(camera)};
+        return World{std::move(bodies), std::move(light), std::move(camera)};
     }
 
 private:
 
-    auto createWidgets() const
-        -> std::vector<Widget>
+    auto createBodies() const
+        -> std::vector<Body>
     {
-        auto widgets = makeCubeObjects();
-
-        widgets.push_back(makeLamp());
-
-        return widgets;
-    }
-
-    auto makeObjectPositions() const
-        -> std::vector<glm::vec3>
-    {
-        return {
-            {0.0f, 0.0f, 0.0f},
-            {0.0f, 0.5f, -3.0f},
-            {2.0f, 5.0f, -15.0f},
-            {-1.5f, -2.2f, -2.5f},
-            {-3.8f, -2.0f, -12.3f},
-            {2.4f, -0.4f, -3.5f},
-            {-1.7f, 3.0f, -7.5f},
-            {1.3f, -2.0f, -2.5f},
-            {1.5f, 2.0f, -2.5f},
-            {1.5f, 0.2f, -1.5f},
-            {-1.3f, 1.0f, -1.5f}};
-    }
-
-    auto makeMaterials() const
-        -> std::vector<Material>
-    {
-        auto const emerald = Material{
-            {0.0215f, 0.1745f, 0.0215f},
-            {0.07568f, 0.61424f, 0.07568f},
-            {0.633f, 0.727811f, 0.633f},
-            32.0f};
-
-        auto const redPlastic = Material{
-            {0.0f, 0.0f, 0.0f},
-            {0.5f, 0.0f, 0.0f},
-            {0.7f, 0.6f, 0.6f},
-            256.0f};
+        auto bodies = std::vector<Body>{};
         
-        auto const greenRubber = Material{
-            {0.0f, 0.05f, 0.0f},
-            {0.4f, 0.5f, 0.4f},
-            {0.04f, 0.7f, 0.04f},
-            64.0f};
-        
-        auto const cyanPlastic = Material{
-            {0.0f, 0.1f, 0.06f},
-            {0.0f, 0.50980392f, 0.50980392f},
-            {0.50196078f , 0.50196078f, 0.50196078f},
-            16.0f};
+        createGroundTileBodies(bodies);
 
-        auto const custom = Material{
-            {1.0f, 0.5f, 0.31f},
-            {1.0f, 0.5f, 0.31f},
-            {0.5f, 0.5f, 0.5f},
-            32.0f};
+        createCubeBodies(bodies);
 
-        return {emerald, redPlastic, greenRubber, cyanPlastic, custom};
+        createLamp(bodies);
+
+        return bodies;
     }
 
-    auto makeCubeObjects() const
-        -> std::vector<Widget>
+    auto createGroundTileBodies(std::vector<Body> & bodies) const
+        -> void
     {
-        auto const shape = std::make_shared<Shape>(makeSquare());
+        auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
 
-        auto const containerTextureId = makeTexture("container.jpg", GL_RGB);
+        auto const material = getGroundMaterial();
 
-        auto const awesomeTextureId = makeTexture("awesomeface.png", GL_RGBA);
-
-        auto const textureIds = std::vector<int>{containerTextureId, awesomeTextureId};
-
-        auto widgets = std::vector<Widget>{};
-
-        for (auto i = 0; i < static_cast<int>(objectPositions.size()); ++i)
+        for (auto row = -5; row < +5; ++row)
         {
-            auto const translation = glm::translate(glm::mat4{1.0f}, objectPositions[i]);
+            for (auto col = -5; col < +5; ++col)
+            {
+                createGroundTileBody(row, col, shape, material, bodies);
+            }
+        }
+    }
+
+    auto createGroundTileBody(
+        int const row,
+        int const col,
+        std::shared_ptr<Shape> shape,
+        Material const & material,
+        std::vector<Body> & bodies) const
+        -> void
+    {
+        auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{5.0f, 0.01f, 5.0f});
+
+        auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
+
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        bodies.emplace_back(std::move(shape), material, *shader, translation * scaling);
+    }
+
+    auto getGroundMaterial() const
+        -> Material
+    {
+        auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
+
+        auto const diffuseMapId = makeTexture("ground.jpg", GL_RGB);
+
+        auto const specularMapId = makeTexture("ground.jpg", GL_RGB);
+
+        auto const shininess = 256.0f;
+
+        return {ambientColor, diffuseMapId, specularMapId, shininess};
+    }
+
+    auto createCubeBodies(std::vector<Body> & bodies) const
+        -> void
+    {
+        auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
+
+        auto const positions = getCubeBodyPositions();
+
+        auto const materials = getCubeBodyMaterials();
+
+        for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+        {
+            auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
 
             auto const rotation = glm::rotate(
                 glm::mat4{1.0f},
                 glm::radians(20.0f * i),
                 glm::vec3{1.0f, 0.3f, 0.5f});
 
-            widgets.emplace_back(
-                shape,
-                textureIds,
-                materials[i % materials.size()],
-                *shader,
-                translation * rotation);
-        }
+            auto const & material = materials[i % materials.size()];
 
-        return widgets;
+            bodies.emplace_back(shape, material, *shader, translation * rotation);
+        }
     }
 
-    auto makeLamp() const
-        -> Widget
+    auto getCubeBodyPositions() const
+        -> std::vector<glm::vec3>
     {
-        auto shape = std::make_unique<Shape>(makeSquare());
+        return {
+            {0.0f, 0.0f, 0.0f},
+            {0.0f, 0.5f, -3.0f},
+            {2.0f, 5.0f, -15.0f},
+            {-1.5f, -1.2f, -2.5f},
+            {-3.8f, -1.0f, -12.3f},
+            {2.4f, -0.4f, -3.5f},
+            {-1.7f, 3.0f, -7.5f},
+            {1.3f, -1.0f, -2.5f},
+            {1.5f, 2.0f, -2.5f},
+            {1.5f, 0.2f, -1.5f},
+            {-1.3f, 1.0f, -1.5f}};
+    }
 
-        auto const textureId = makeTexture("white.png", GL_RGBA);
+    auto getCubeBodyMaterials() const
+        -> std::vector<Material>
+    {
+        return {getContainerMaterial()};
+    }
+
+    auto getContainerMaterial() const
+        -> Material
+    {
+        auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
+
+        auto const diffuseMapId = makeTexture("container.diffuse.png", GL_RGBA);
+
+        auto const specularMapId = makeTexture("container.specular.png", GL_RGBA);
+
+        auto const shininess = 32.0f;
+
+        return {ambientColor, diffuseMapId, specularMapId, shininess};
+    }
+
+    auto createLamp(std::vector<Body> & bodies) const
+        -> void
+    {
+        auto shape = std::make_unique<Shape>(makeSquare(SquareNormalDirection::inbound));
+
+        auto const position = glm::vec3{0.0f, 0.0f, 5.0f};
 
         auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
 
-        auto const translation = glm::translate(glm::mat4{1.0f}, glm::vec3{0.0f, 0.0f, 2.0f});
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        return Widget{
-            std::move(shape),
-            {textureId, textureId},
-            materials[0],
-            *shader,
-            translation * scaling};
+        auto const material = getLampMaterial();
+
+        bodies.emplace_back(std::move(shape), material, *shader, translation * scaling);
     }
 
-    auto createLight(Widget & body) const
+    auto getLampMaterial() const
+        -> Material
+    {
+        auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
+
+        auto const diffuseMapId = makeTexture("white.png", GL_RGB);
+
+        auto const specularMapId = makeTexture("white.png", GL_RGB);
+
+        auto const shininess = 32.0f;
+
+        return {ambientColor, diffuseMapId, specularMapId, shininess};
+    }
+
+    auto createLampLight(Body & lampBody) const
         -> Light
     {
-        const auto position = body.getPosition();
+        const auto position = lampBody.getPosition();
 
         auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
 
-        auto const diffuse = glm::vec3{0.5f, 0.5f, 0.5f};
+        auto const diffuse = glm::vec3{0.8f, 0.5f, 0.7f};
 
-        auto const specular = glm::vec3{1.0f, 1.0f, 1.0f};
+        auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
 
         return {position, ambient, diffuse, specular};
     }
@@ -189,10 +224,6 @@ private:
     ShaderProgram const * shader;
 
     GLFWwindow * window;
-
-    std::vector<glm::vec3> objectPositions;
-
-    std::vector<Material> materials;
 
 };
 
@@ -243,11 +274,7 @@ auto Application::createShaderProgram()
 
     program.use();
 
-    program.set("textureWeight", 0.5f);
-
-    program.set("colorWeight", 0.5f);
-
-    program.bindFragmentSamplers({"texSampler1", "texSampler2"});
+    program.bindFragmentSamplers({"material.diffuse", "material.specular"});
 
     return program;
 }
@@ -290,7 +317,9 @@ auto Application::render()
 auto Application::clear()
     -> void
 {
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
+
+    glClearColor(backgroundColor.x, backgroundColor.y, backgroundColor.z, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -332,9 +361,9 @@ auto Application::setupLights()
 auto Application::drawWorld()
     -> void
 {
-    for (auto & widget : world.widgets)
+    for (auto & body : world.bodies)
     {
-        widget.draw();
+        body.draw();
     }
 }
 

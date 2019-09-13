@@ -2,7 +2,7 @@
 
 #include "camera.hpp"
 #include "light.hpp"
-#include "widget.hpp"
+#include "body.hpp"
 
 #include <vector>
 
@@ -11,8 +11,8 @@ class World
 
 public:
 
-    World(std::vector<Widget> widgets, Light const & light, Camera const & camera)
-        : widgets{std::move(widgets)}
+    World(std::vector<Body> bodies, Light const & light, Camera const & camera)
+        : bodies{std::move(bodies)}
         , light{light}
         , camera{camera}
     {
@@ -20,7 +20,7 @@ public:
 
 public:
 
-    std::vector<Widget> widgets;
+    std::vector<Body> bodies;
 
     Light light;
 

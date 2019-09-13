@@ -1,4 +1,4 @@
-#include "widget.hpp"
+#include "body.hpp"
 
 #include "shader.hpp"
 #include "shape.hpp"
@@ -18,14 +18,12 @@ auto computeNormalMatrix(glm::mat4 const & model)
 
 } // unnamed namespace
 
-Widget::Widget(
+Body::Body(
     std::shared_ptr<Shape const> shape,
-    std::vector<int> textureIds,
     Material const & material,
     ShaderProgram const & shaderProgram,
     glm::mat4 const & modelTransformation)
     : shape{std::move(shape)}
-    , textureIds{std::move(textureIds)}
     , material{material}
     , shaderProgram{&shaderProgram}
     , modelTransformation{modelTransformation}
@@ -33,12 +31,10 @@ Widget::Widget(
 {
 }
 
-auto Widget::draw() const
+auto Body::draw() const
     -> void
 {
     shaderProgram->use();
-
-    bindTextures();
 
     setTransformationsInShader();
 
@@ -47,19 +43,19 @@ auto Widget::draw() const
     drawShape();
 }
 
-auto Widget::getPosition() const
+auto Body::getPosition() const
     -> glm::vec3
 {
     return glm::vec3{modelTransformation[3]};
 }
 
-auto Widget::getModelTransformation() const
+auto Body::getModelTransformation() const
     -> glm::mat4
 {
     return modelTransformation;
 }
 
-auto Widget::setModelTransformation(glm::mat4 const & newTransformation)
+auto Body::setModelTransformation(glm::mat4 const & newTransformation)
     -> void
 {
     modelTransformation = newTransformation;
@@ -67,36 +63,25 @@ auto Widget::setModelTransformation(glm::mat4 const & newTransformation)
     normalMatrix = computeNormalMatrix(modelTransformation);
 }
 
-auto Widget::scaleUniformly(float const factor)
+auto Body::scaleUniformly(float const factor)
     -> void
 {
     modelTransformation = glm::scale(modelTransformation, glm::vec3{factor, factor, factor});
 }
 
-auto Widget::translate(glm::vec3 const & offset)
+auto Body::translate(glm::vec3 const & offset)
     -> void
 {
     modelTransformation = glm::translate(modelTransformation, offset);
 }
 
-auto Widget::getMaterial() const
+auto Body::getMaterial() const
     -> Material
 {
     return material;
 }
 
-auto Widget::bindTextures() const
-    -> void
-{
-    for (auto i = 0; i < static_cast<int>(textureIds.size()); ++i)
-    {
-        glActiveTexture(GL_TEXTURE0 + i);
-
-        glBindTexture(GL_TEXTURE_2D, textureIds[i]);
-    }
-}
-
-auto Widget::setTransformationsInShader() const
+auto Body::setTransformationsInShader() const
     -> void
 {
     shaderProgram->set("transform.model", modelTransformation);
@@ -104,19 +89,23 @@ auto Widget::setTransformationsInShader() const
     shaderProgram->set("transform.normal", normalMatrix);
 }
 
-auto Widget::setMaterialInShader() const
+auto Body::setMaterialInShader() const
     -> void
 {
     shaderProgram->set("material.ambient", material.ambient);
 
-    shaderProgram->set("material.diffuse", material.diffuse);
-
-    shaderProgram->set("material.specular", material.specular);
-
     shaderProgram->set("material.shininess", material.shininess);
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, material.diffuseMapId);
+
+    glActiveTexture(GL_TEXTURE1);
+
+    glBindTexture(GL_TEXTURE_2D, material.specularMapId);
 }
 
-auto Widget::drawShape() const
+auto Body::drawShape() const
     -> void
 {
     shape->draw();

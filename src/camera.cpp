@@ -1,7 +1,7 @@
 #include "camera.hpp"
 
 #include "shader.hpp"
-#include "widget.hpp"
+#include "body.hpp"
 #include "window.hpp"
 #include "world.hpp"
 

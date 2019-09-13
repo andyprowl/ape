@@ -2,5 +2,11 @@
 
 #include "shape.hpp"
 
-auto makeSquare()
+enum class SquareNormalDirection
+{
+    inbound,
+    outbound
+};
+
+auto makeSquare(SquareNormalDirection normalDirection)
     -> Shape;

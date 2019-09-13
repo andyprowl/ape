@@ -54,12 +54,12 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
     camera.setPosition(newPosition);
 }
 
-auto rotateWidgetAroundOwnX(Widget & widget, float const radians)
+auto rotateBodyAroundOwnX(Body & body, float const radians)
     -> void
 {
-    auto const rotation = glm::rotate(widget.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
+    auto const rotation = glm::rotate(body.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
     
-    widget.setModelTransformation(rotation);
+    body.setModelTransformation(rotation);
 }
 
 auto rotateLightAroundWorldY(World & world, float const radians)
@@ -73,7 +73,7 @@ auto rotateLightAroundWorldY(World & world, float const radians)
 
     world.light.position = newPosition;
 
-    auto & body = world.widgets.back();
+    auto & body = world.bodies.back();
 
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
@@ -113,8 +113,6 @@ auto InputHandler::processInput(double const lastFrameDuration)
     processShapeModification(lastFrameDuration);
 
     processLightRevolution(lastFrameDuration);
-
-    processStyleModification(lastFrameDuration);
 }
 
 auto InputHandler::processTerminationRequest() const
@@ -201,11 +199,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateWidgetAroundOwnX(world->widgets[0], +rotationDelta);
+        rotateBodyAroundOwnX(*(world->bodies.end() - 2), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateWidgetAroundOwnX(world->widgets[0], -rotationDelta);
+        rotateBodyAroundOwnX(*(world->bodies.end() - 2), -rotationDelta);
     }
 }
 
@@ -216,11 +214,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        world->widgets[1].scaleUniformly(1 + scalingDelta);
+        (world->bodies.end() - 2)->scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        world->widgets[1].scaleUniformly(1 - scalingDelta);
+        (world->bodies.end() - 2)->scaleUniformly(1 - scalingDelta);
     }
 }
 
@@ -236,39 +234,5 @@ auto InputHandler::processLightRevolution(double const lastFrameDuration) const
     else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
     {
         rotateLightAroundWorldY(*world, -rotationDelta);
-    }
-}
-
-auto InputHandler::processStyleModification(double const lastFrameDuration) const
-    -> void
-{
-    program->use();
-
-    auto const transitionDelta = glm::radians(static_cast<float>(lastFrameDuration * 50.0f));
-
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        const auto weight = program->getFloat("textureWeight");
-
-        program->set("textureWeight", std::min(1.0f, weight + transitionDelta));
-    }
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        const auto weight = program->getFloat("textureWeight");
-
-        program->set("textureWeight", std::max(0.0f, weight - transitionDelta));
-    }
-    
-    if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
-    {
-        const auto weight = program->getFloat("colorWeight");
-
-        program->set("colorWeight", std::min(1.0f, weight + transitionDelta));
-    }
-    else if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-    {
-        const auto weight = program->getFloat("colorWeight");
-
-        program->set("colorWeight", std::max(0.0f, weight - transitionDelta));
     }
 }

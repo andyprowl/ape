@@ -10,16 +10,22 @@ class SquareBuilder
 
 public:
 
+    using Position = glm::vec3;
+
+    using Normal = glm::vec3;
+
+    using TextureCoordinates = glm::vec2;
+
     class Vertex
     {
 
     public:
 
-        glm::vec3 position;
+        Position position;
         
-        glm::vec3 normal;
+        Normal normal;
         
-        glm::vec2 textureCoords;
+        TextureCoordinates textureCoords;
 
     };
 
@@ -38,16 +44,12 @@ public:
         vertices.reserve(numOfFaces * numOfVerticesPerFace * numOfFloatsPerVertex);
     }
 
-    auto build()
+    auto build(SquareNormalDirection const normalDirection)
         -> Shape
     {
-        auto const face = Face{{
-            Vertex{{-0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},
-            Vertex{{0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},
-            Vertex{{0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},
-            Vertex{{-0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}}}};
+        auto const face = getBottomFace(normalDirection);
 
-        // low
+        // bottom
         addFace(face, translate({0.0f, -0.5f, 0.0f}));
 
         // top
@@ -70,6 +72,29 @@ public:
 
 private:
 
+    static auto getBottomFace(SquareNormalDirection const normalDirection)
+        -> Face
+    {
+        auto const normal = getBottomFaceNormal(normalDirection);
+
+        return {{
+            {Position{-0.5f, 0.0f, -0.5f}, normal, TextureCoordinates{0.0f, 0.0f}},
+            {Position{0.5f, 0.0f, -0.5f}, normal, TextureCoordinates{1.0f, 0.0f}},
+            {Position{0.5f, 0.0f, 0.5f}, normal, TextureCoordinates{1.0f, 1.0f}},
+            {Position{-0.5f, 0.0f, 0.5f}, normal, TextureCoordinates{0.0f, 1.0f}}}};
+    }
+
+    static auto getBottomFaceNormal(SquareNormalDirection const normalDirection)
+        -> Normal
+    {
+        auto const outboundNormal = glm::vec3{0.0f, -1.0f, 0.0f};
+
+        auto const isOutbound = (normalDirection == SquareNormalDirection::outbound);
+
+        auto const normalModifier = isOutbound ? 1.0f : -1.0f;
+
+        return (normalModifier * outboundNormal);
+    }
     static auto rotate(float const degrees, glm::vec3 const & axis)
         -> glm::mat4
     {
@@ -149,8 +174,8 @@ private:
 
 };
 
-auto makeSquare()
+auto makeSquare(SquareNormalDirection const normalDirection)
     -> Shape
 {
-    return SquareBuilder{}.build();
+    return SquareBuilder{}.build(normalDirection);
 }

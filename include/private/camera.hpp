@@ -6,8 +6,8 @@
 
 #include <vector>
 
+class Body;
 class ShaderProgram;
-class Widget;
 class World;
 
 class Camera

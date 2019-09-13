@@ -9,12 +9,12 @@ public:
 
     Material(
         glm::vec3 const & ambient,
-        glm::vec3 const & diffuse,
-        glm::vec3 const & specular,
+        int const diffuseMapId,
+        int const specularMapId,
         float const shininess)
         : ambient{ambient}
-        , diffuse{diffuse}
-        , specular{specular}
+        , diffuseMapId{diffuseMapId}
+        , specularMapId{specularMapId}
         , shininess{shininess}
     {
     }
@@ -23,9 +23,9 @@ public:
 
     glm::vec3 ambient;
 
-    glm::vec3 diffuse;
+    int diffuseMapId;
 
-    glm::vec3 specular;
+    int specularMapId;
 
     float shininess;
 
