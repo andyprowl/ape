@@ -201,11 +201,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(*(world->bodies.end() - 3), +rotationDelta);
+        rotateBodyAroundOwnX(world->bodies.front(), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(*(world->bodies.end() - 3), -rotationDelta);
+        rotateBodyAroundOwnX(world->bodies.front(), -rotationDelta);
     }
 }
 
@@ -216,11 +216,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        (world->bodies.end() - 3)->scaleUniformly(1 + scalingDelta);
+        world->bodies[1].scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        (world->bodies.end() - 3)->scaleUniformly(1 - scalingDelta);
+        world->bodies[1].scaleUniformly(1 - scalingDelta);
     }
 }
 

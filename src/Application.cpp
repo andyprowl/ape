@@ -43,9 +43,9 @@ private:
     {
         auto bodies = std::vector<Body>{};
         
-        createGroundTileBodies(bodies);
-
         createCubeBodies(bodies);
+
+        createGroundTileBodies(bodies);
 
         createFlashLightBodies(bodies);
 
