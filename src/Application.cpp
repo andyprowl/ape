@@ -231,7 +231,7 @@ private:
     {
         return {
             {2.4f, 1.0f, 0.0f},
-            {-3.5f, 0.5f, 3.5f}};
+            {-2.5f, 1.5f, 2.5f}};
     }
 
     auto computeFlashLightBodyRotationMatrix(glm::vec3 const & position) const
@@ -292,9 +292,9 @@ private:
 
         auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
 
-        auto const color = Light::Color{ambient, diffuse, specular};
-
         auto const attenuation = Attenuation{1.0f, 0.09f, 0.032f};
+
+        auto const color = Light::Color{ambient, diffuse, specular};
 
         lights.emplace_back(position, attenuation, color);
     }
@@ -330,7 +330,11 @@ private:
 
         auto const color = Light::Color{ambient, diffuse, specular};
 
-        lights.emplace_back(position, direction, glm::radians(15.0f), glm::radians(20.0f), color);
+        auto const cutoff = SpotLight::CutoffAngle{glm::radians(15.0f), glm::radians(20.0f)};
+
+        auto const attenuation = Attenuation{1.0f, 0.02f, 0.012f};
+
+        lights.emplace_back(position, direction, cutoff, attenuation, color);
     }
     
     auto createDirectionalLights() const
@@ -353,7 +357,9 @@ private:
     auto getDirectionalLightDirections() const
         -> std::vector<glm::vec3>
     {
-        return {{0.0f, -1.0f, 0.0f}};
+        return {
+            //{0.0f, -1.0f, 0.0f}
+            };
     }
 
     auto createDirectionalLight(
@@ -571,15 +577,21 @@ auto Application::setupSpotLights()
 
         shader.set(uniformPrefix + ".direction", light.direction);
 
-        shader.set(uniformPrefix + ".innerCutoffCosine", glm::cos(light.innerCutoffAngle));
+        shader.set(uniformPrefix + ".innerCutoffCosine", glm::cos(light.cutoff.inner));
 
-        shader.set(uniformPrefix + ".outerCutoffCosine", glm::cos(light.outerCutoffAngle));
+        shader.set(uniformPrefix + ".outerCutoffCosine", glm::cos(light.cutoff.outer));
 
         shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
 
         shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
 
         shader.set(uniformPrefix + ".color.specular", light.color.specular);
+
+        shader.set(uniformPrefix + ".attenuation.constant", light.attenuation.constant);
+
+        shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
+
+        shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
     }
 }
 

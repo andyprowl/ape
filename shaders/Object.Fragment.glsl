@@ -58,6 +58,8 @@ struct SpotLight
 
     float outerCutoffCosine;
 
+    Attenuation attenuation;
+
     LightColor color;
 
 };
@@ -139,7 +141,7 @@ vec3 computePointLight(PointLight light)
 
     vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
 
-    vec3 specularLight = computeDiffuseLight(light.color, lightDirection);
+    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
 
     float sourceDistance = length(light.position - vertex.position);
 
@@ -180,9 +182,17 @@ vec3 computeSpotLight(SpotLight light)
 
     vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
 
-    vec3 specularLight = computeDiffuseLight(light.color, lightDirection);
+    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
 
-    return intensity * (ambientLight + diffuseLight + specularLight);
+    float sourceDistance = length(light.position - vertex.position);
+
+    float attenuation = 
+        1.0 / 
+        (light.attenuation.constant + 
+         light.attenuation.linear * sourceDistance +
+         light.attenuation.quadratic * (sourceDistance * sourceDistance));
+
+    return attenuation * intensity * (ambientLight + diffuseLight + specularLight);
 }
 
 vec3 computeSpotLighting()

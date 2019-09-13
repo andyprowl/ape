@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Attenuation.hpp"
 #include "Light.hpp"
 
 class SpotLight : public Light
@@ -7,17 +8,38 @@ class SpotLight : public Light
 
 public:
 
+    class CutoffAngle
+    {
+
+    public:
+
+        CutoffAngle(float const inner, float const outer)
+            : inner{inner}
+            , outer{outer}
+        {
+        }
+    
+    public:
+    
+        float inner;
+        
+        float outer;
+
+    };
+
+public:
+
     SpotLight(
         glm::vec3 const & position,
         glm::vec3 const & direction,
-        float const innerCutoffAngle,
-        float const outerCutoffAngle,
+        CutoffAngle const & cutoff,
+        Attenuation const & attenuation,
         Color const & color)
         : Light{color}
         , position{position}
         , direction{direction}
-        , innerCutoffAngle{innerCutoffAngle}
-        , outerCutoffAngle{outerCutoffAngle}
+        , cutoff{cutoff}
+        , attenuation{attenuation}
     {
     }
     
@@ -27,8 +49,8 @@ public:
 
     glm::vec3 direction;
 
-    float innerCutoffAngle;
+    CutoffAngle cutoff;
 
-    float outerCutoffAngle;
+    Attenuation attenuation;
 
 };
