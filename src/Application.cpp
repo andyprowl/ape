@@ -92,13 +92,13 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = makeTexture("ConcreteGround.jpg", GL_RGB);
+        auto diffuseMap = Texture{"ConcreteGround.jpg"};
 
-        auto const specularMapId = makeTexture("ConcreteGround.jpg", GL_RGB);
+        auto specularMap = Texture{"ConcreteGround.jpg"};
 
         auto const shininess = 16.0f;
 
-        return {ambientColor, diffuseMapId, specularMapId, shininess};
+        return {ambientColor, std::move(diffuseMap), std::move(specularMap), shininess};
     }
 
     auto createCubeBodies(std::vector<Body> & bodies) const
@@ -153,9 +153,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
-        auto const diffuseMapId = makeTexture("Container.Diffuse.png", GL_RGBA);
+        auto const diffuseMapId = Texture{"Container.Diffuse.png"};
 
-        auto const specularMapId = makeTexture("Container.Specular.png", GL_RGBA);
+        auto const specularMapId = Texture{"Container.Specular.png"};
 
         auto const shininess = 32.0f;
 
@@ -194,9 +194,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = makeTexture("White.png", GL_RGB);
+        auto const diffuseMapId = Texture{"White.png"};
 
-        auto const specularMapId = makeTexture("White.png", GL_RGB);
+        auto const specularMapId = Texture{"White.png"};
 
         auto const shininess = 32.0f;
 
@@ -251,9 +251,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = makeTexture("White.png", GL_RGB);
+        auto const diffuseMapId = Texture{"White.png"};
 
-        auto const specularMapId = makeTexture("White.png", GL_RGB);
+        auto const specularMapId = Texture{"White.png"};
 
         auto const shininess = 32.0f;
 

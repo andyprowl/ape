@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Size.h"
+
+#include "glad/glad.h"
 #include "stb/stbimage.h"
 
 #include <memory>
@@ -18,7 +21,7 @@ public:
 
 };
 
-class TextureDataDeleter
+class TextureBytesDeleter
 {
 
 public:
@@ -31,35 +34,69 @@ public:
 
 };
 
-using TextureDataPtr = std::unique_ptr<unsigned char, TextureDataDeleter>;
+using TextureBytesPtr = std::unique_ptr<unsigned char, TextureBytesDeleter>;
 
-class TextureData
+class TextureDescriptor
 {
 
 public:
 
-    TextureData()
-        : width{0}
-        , height{0}
-        , numOfChannels{0}
-        , data{nullptr}
+    TextureDescriptor(
+        Size<int> const size,
+        int const numOfChannels,
+        GLenum format,
+        TextureBytesPtr bytes)
+        : size{size}
+        , numOfChannels{numOfChannels}
+        , format{format}
+        , bytes{std::move(bytes)}
     {
     }
 
 public:
 
-    int width;
-    
-    int height;
+    Size<int> size;
 
     int numOfChannels;
 
-    TextureDataPtr data;
+    GLenum format;
+
+    TextureBytesPtr bytes;
 
 };
 
-auto readTextureData(std::string const & filename)
-    -> TextureData;
+class Texture
+{
 
-auto makeTexture(std::string const & filename, int format)
-    -> int;
+public:
+
+    explicit Texture(std::string filename);
+    
+    Texture(TextureDescriptor descriptor, std::string filename);
+
+    auto bind(int unit) const
+        -> void;
+
+    auto getFilename() const
+        -> std::string;
+
+    auto getFormat() const
+        -> GLenum;
+
+    auto getSize() const
+        -> Size<int>;
+
+private:
+
+    int id;
+
+    std::string filename;
+
+    GLenum format;
+
+    Size<int> size;
+
+};
+
+auto readTextureDescriptor(std::string const & filename)
+    -> TextureDescriptor;

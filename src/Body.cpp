@@ -96,13 +96,9 @@ auto Body::setMaterialInShader() const
 
     shaderProgram->set("material.shininess", material.shininess);
 
-    glActiveTexture(GL_TEXTURE0);
+    material.diffuseMap.bind(0);
 
-    glBindTexture(GL_TEXTURE_2D, material.diffuseMapId);
-
-    glActiveTexture(GL_TEXTURE1);
-
-    glBindTexture(GL_TEXTURE_2D, material.specularMapId);
+    material.specularMap.bind(1);
 }
 
 auto Body::drawShape() const

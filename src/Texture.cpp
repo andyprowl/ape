@@ -1,34 +1,44 @@
 #include "Texture.hpp"
 
-#include "glad/glad.h"
 #include "stb/stbimage.h"
 
-auto readTextureData(std::string const & filename)
-    -> TextureData
+#include <cassert>
+
+namespace
 {
-    const auto filepath = std::string{textureFolder} + "/" + filename;
 
-    auto tex = TextureData{};
-    
-    stbi_set_flip_vertically_on_load(true);
-
-    auto const data = stbi_load(filepath.c_str(), &tex.width, &tex.height, &tex.numOfChannels, 0);
-
-    tex.data.reset(data);
-
-    if (tex.data == nullptr)
+auto determineFormat(int const numOfChannels)
+    -> GLenum
+{
+    switch (numOfChannels)
     {
-        throw CouldNotLoadTexture{filename};
-    }
+        case 1:
+        {
+            return GL_RED;
+        }
 
-    return tex;
+        case 3:
+        {
+            return GL_RGB;
+        }
+
+        case 4:
+        {
+            return GL_RGBA;
+        }
+
+        default:
+        {
+            assert(false);
+
+            return GL_RED;
+        }
+    }
 }
 
-auto makeTexture(std::string const & filename, int const format)
+auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
     -> int
 {
-    auto texData = readTextureData(filename);
-
     auto textureId = unsigned int{};
 
     glGenTextures(1, &textureId);
@@ -46,15 +56,79 @@ auto makeTexture(std::string const & filename, int const format)
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
-        format,
-        texData.width,
-        texData.height,
+        descriptor.format,
+        descriptor.size.width,
+        descriptor.size.height,
         0,
-        format,
+        descriptor.format,
         GL_UNSIGNED_BYTE,
-        texData.data.get());
+        descriptor.bytes.get());
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
     return textureId;
+}
+
+} // unnamed namespace
+
+Texture::Texture(std::string filename)
+    : Texture{readTextureDescriptor(filename), filename}
+{
+}
+    
+Texture::Texture(TextureDescriptor descriptor, std::string filename)
+    : id{makeOpenGLTextureObject(descriptor)}
+    , filename{std::move(filename)}
+    , format{determineFormat(descriptor.numOfChannels)}
+    , size{descriptor.size}
+{
+}
+
+auto Texture::bind(int const unit) const
+    -> void
+{
+    glActiveTexture(GL_TEXTURE0 + unit);
+
+    glBindTexture(GL_TEXTURE_2D, id);
+}
+
+auto Texture::getFilename() const
+    -> std::string
+{
+    return filename;
+}
+
+auto Texture::getFormat() const
+    -> GLenum
+{
+    return format;
+}
+
+auto Texture::getSize() const
+    -> Size<int>
+{
+    return size;
+}
+
+auto readTextureDescriptor(std::string const & filename)
+    -> TextureDescriptor
+{
+    const auto filepath = std::string{textureFolder} + "/" + filename;
+
+    stbi_set_flip_vertically_on_load(true);
+
+    auto size = Size<int>{0, 0};
+
+    auto numOfChannels = 0;
+
+    auto const bytes = stbi_load(filepath.c_str(), &size.width, &size.height, &numOfChannels, 0);
+
+    if (bytes == nullptr)
+    {
+        throw CouldNotLoadTexture{filename};
+    }
+
+    auto format = determineFormat(numOfChannels);
+
+    return {size, numOfChannels, format, TextureBytesPtr{bytes}};
 }
