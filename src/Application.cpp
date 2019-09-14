@@ -1,7 +1,7 @@
 #include "Application.hpp"
 
 #include "Window.hpp"
-#include "WorldBuilder.hpp"
+#include "SceneBuilder.hpp"
 
 #include <glm/trigonometric.hpp>
 
@@ -10,8 +10,8 @@
 Application::Application()
     : window{&createWindow()}
     , shader{createShaderProgram()}
-    , world{createWorld(*window, shader)}
-    , inputHandler{world, *window, shader}
+    , scene{createScene(*window, shader)}
+    , inputHandler{scene, *window, shader}
 {
     captureMouse();
 }
@@ -58,10 +58,10 @@ auto Application::createShaderProgram()
 }
 
 /*static*/
-auto Application::createWorld(GLFWwindow & window, ShaderProgram const & shader)
-    -> World
+auto Application::createScene(GLFWwindow & window, ShaderProgram const & shader)
+    -> Scene
 {
-    auto builder = WorldBuilder{window, shader};
+    auto builder = SceneBuilder{window, shader};
 
     return builder.build();
 }
@@ -89,7 +89,7 @@ auto Application::render()
 
     setupLights();
 
-    drawWorld();
+    drawScene();
 }
 
 auto Application::clear()
@@ -107,15 +107,15 @@ auto Application::clear()
 auto Application::setupCamera()
     -> void
 {
-    world.camera.setAspectRatio(getWindowRatio(*window));
+    scene.camera.setAspectRatio(getWindowRatio(*window));
 
-    auto const view = world.camera.getView();
+    auto const view = scene.camera.getView();
 
-    auto const proj = world.camera.getProjection();
+    auto const proj = scene.camera.getProjection();
 
     shader.use();
 
-    shader.set("viewPosition", world.camera.getPosition());
+    shader.set("viewPosition", scene.camera.getPosition());
 
     shader.set("transform.view", view);
 
@@ -137,13 +137,13 @@ auto Application::setupLights()
 auto Application::setupPointLights()
     -> void
 {
-    auto const numOfPointLights = static_cast<int>(world.lighting.point.size());
+    auto const numOfPointLights = static_cast<int>(scene.lighting.point.size());
 
     shader.set("lighting.numOfPointLights", numOfPointLights);
 
     for (auto i = 0; i < numOfPointLights; ++i)
     {
-        auto const & light = world.lighting.point[i];
+        auto const & light = scene.lighting.point[i];
 
         auto uniformPrefix = "lighting.point[" + std::to_string(i) + "]";
 
@@ -166,13 +166,13 @@ auto Application::setupPointLights()
 auto Application::setupSpotLights()
     -> void
 {
-    auto const numOfSpotLights = static_cast<int>(world.lighting.spot.size());
+    auto const numOfSpotLights = static_cast<int>(scene.lighting.spot.size());
 
     shader.set("lighting.numOfSpotLights", numOfSpotLights);
 
     for (auto i = 0; i < numOfSpotLights; ++i)
     {
-        auto const & light = world.lighting.spot[i];
+        auto const & light = scene.lighting.spot[i];
 
         auto uniformPrefix = "lighting.spot[" + std::to_string(i) + "]";
 
@@ -201,13 +201,13 @@ auto Application::setupSpotLights()
 auto Application::setupDirectionalLights()
     -> void
 {
-    auto const numOfDirectionalLights = static_cast<int>(world.lighting.directional.size());
+    auto const numOfDirectionalLights = static_cast<int>(scene.lighting.directional.size());
 
     shader.set("lighting.numOfDirectionalLights", numOfDirectionalLights);
 
     for (auto i = 0; i < numOfDirectionalLights; ++i)
     {
-        auto const & light = world.lighting.directional[i];
+        auto const & light = scene.lighting.directional[i];
 
         auto uniformPrefix = "lighting.directional[" + std::to_string(i) + "]";
 
@@ -221,10 +221,10 @@ auto Application::setupDirectionalLights()
     }
 }
 
-auto Application::drawWorld()
+auto Application::drawScene()
     -> void
 {
-    for (auto & body : world.bodies)
+    for (auto & body : scene.bodies)
     {
         body.draw();
     }

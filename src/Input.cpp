@@ -1,8 +1,8 @@
 #include "Input.hpp"
 
 #include "Camera.hpp"
+#include "Scene.hpp"
 #include "Shader.hpp"
-#include "World.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -62,10 +62,10 @@ auto rotateBodyAroundOwnX(Body & body, float const radians)
     body.setModelTransformation(rotation);
 }
 
-auto rotateLightAroundWorldY(World & world, float const radians)
+auto rotateLightAroundSceneY(Scene & scene, float const radians)
     -> void
 {
-    auto & light = world.lighting.point[0];
+    auto & light = scene.lighting.point[0];
 
     auto const position = light.position;
     
@@ -75,7 +75,7 @@ auto rotateLightAroundWorldY(World & world, float const radians)
 
     light.position = newPosition;
 
-    auto & body = *(world.bodies.end() - 2);
+    auto & body = *(scene.bodies.end() - 2);
 
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
@@ -89,13 +89,13 @@ auto rotateLightAroundWorldY(World & world, float const radians)
 } // unnamed namespace
 
 InputHandler::InputHandler(
-    World & world,
+    Scene & scene,
     GLFWwindow & window,
     ShaderProgram const & program)
-    : world{&world}
+    : scene{&scene}
     , window{&window}
     , program{&program}
-    , cameraManipulator{window, world.camera, 0.1f}
+    , cameraManipulator{window, scene.camera, 0.1f}
 {
 }
 
@@ -152,11 +152,11 @@ auto InputHandler::processRotationalMovement(double const lastFrameDuration) con
 
     if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
-        rotateCameraHorizontally(world->camera, +rotationDelta);
+        rotateCameraHorizontally(scene->camera, +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
     {
-        rotateCameraHorizontally(world->camera, -rotationDelta);
+        rotateCameraHorizontally(scene->camera, -rotationDelta);
     }
 }
 
@@ -168,21 +168,21 @@ auto InputHandler::processLateralMovement(double const lastFrameDuration) const
     if ((glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) ||
         (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(world->camera, +translationDelta);
+        moveCameraAlongDirection(scene->camera, +translationDelta);
     }
     else if ((glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) ||
              (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(world->camera, -translationDelta);
+        moveCameraAlongDirection(scene->camera, -translationDelta);
     }
 
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        moveCameraSideways(world->camera, -translationDelta);
+        moveCameraSideways(scene->camera, -translationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        moveCameraSideways(world->camera, +translationDelta);
+        moveCameraSideways(scene->camera, +translationDelta);
     }
 }
 
@@ -201,11 +201,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(world->bodies.front(), +rotationDelta);
+        rotateBodyAroundOwnX(scene->bodies.front(), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(world->bodies.front(), -rotationDelta);
+        rotateBodyAroundOwnX(scene->bodies.front(), -rotationDelta);
     }
 }
 
@@ -216,11 +216,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        world->bodies[1].scaleUniformly(1 + scalingDelta);
+        scene->bodies[1].scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        world->bodies[1].scaleUniformly(1 - scalingDelta);
+        scene->bodies[1].scaleUniformly(1 - scalingDelta);
     }
 }
 
@@ -231,10 +231,10 @@ auto InputHandler::processLightRevolution(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
     {
-        rotateLightAroundWorldY(*world, +rotationDelta);
+        rotateLightAroundSceneY(*scene, +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
     {
-        rotateLightAroundWorldY(*world, -rotationDelta);
+        rotateLightAroundSceneY(*scene, -rotationDelta);
     }
 }

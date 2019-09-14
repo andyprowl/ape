@@ -8,7 +8,7 @@
 
 class Body;
 class ShaderProgram;
-class World;
+class Scene;
 
 class Camera
 {

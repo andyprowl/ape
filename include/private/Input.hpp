@@ -8,14 +8,14 @@
 class Body;
 class Camera;
 class ShaderProgram;
-class World;
+class Scene;
 
 class InputHandler
 {
 
 public:
 
-    InputHandler(World & world, GLFWwindow & window, ShaderProgram const & program);
+    InputHandler(Scene & scene, GLFWwindow & window, ShaderProgram const & program);
 
     auto processInput(double lastFrameDuration)
         -> void;
@@ -51,7 +51,7 @@ private:
 
 private:
 
-    World * world;
+    Scene * scene;
 
     GLFWwindow * window;
     

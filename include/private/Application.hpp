@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "Input.hpp"
-#include "Shader.hpp"
 #include "Frame.hpp"
-#include "World.hpp"
+#include "Input.hpp"
+#include "Scene.hpp"
+#include "Shader.hpp"
 
 class Application
 {
@@ -28,8 +28,8 @@ private:
     static auto createShaderProgram()
         -> ShaderProgram;
 
-    static auto createWorld(GLFWwindow & window, ShaderProgram const & shader)
-        -> World;
+    static auto createScene(GLFWwindow & window, ShaderProgram const & shader)
+        -> Scene;
 
     auto captureMouse() const
         -> void;
@@ -61,7 +61,7 @@ private:
     auto setupDirectionalLights()
         -> void;
 
-    auto drawWorld()
+    auto drawScene()
         -> void;
 
     auto swapBuffers()
@@ -79,7 +79,7 @@ private:
 
     ShaderProgram shader;
 
-    World world;
+    Scene scene;
 
     InputHandler inputHandler;
 
