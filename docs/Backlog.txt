@@ -3,6 +3,7 @@
  - Lateral (strafe) movement while looking down is very slow
  - Implement hierarchical scene/mesh model supporting attachments and transforms
  - Separate framework from concrete application (esp. world creation and input handling)
+ - Create a library which can be used also from Qt
  - Define the game loop:
   - handle input
   - update model (physics etc.)
@@ -12,3 +13,4 @@
  - Support planar shapes/meshes 
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
  - Make it possible to use the classes with both GLFW and with Qt (make it framework-independent in general)
+ - Allow multiple diffuse maps and specular maps for every material
