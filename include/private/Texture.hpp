@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Size.h"
+#include "Size.hpp"
 
 #include "glad/glad.h"
 #include "stb/stbimage.h"

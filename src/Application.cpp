@@ -1,7 +1,7 @@
 #include "Application.hpp"
 
 #include "Window.hpp"
-#include "WorldBuilder.h"
+#include "WorldBuilder.hpp"
 
 #include <glm/trigonometric.hpp>
 

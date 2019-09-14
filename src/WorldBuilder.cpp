@@ -1,4 +1,4 @@
-#include "WorldBuilder.h"
+#include "WorldBuilder.hpp"
 
 #include "Square.hpp"
 #include "Window.hpp"
