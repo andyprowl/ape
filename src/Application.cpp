@@ -2,7 +2,7 @@
 
 #include "Material.hpp"
 #include "Square.hpp"
-#include "Texture.hpp"
+#include "TextureRepository.hpp"
 #include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -92,9 +92,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto diffuseMap = Texture{"ConcreteGround.jpg"};
+        auto diffuseMap = loadTexture("ConcreteGround.jpg");
 
-        auto specularMap = Texture{"ConcreteGround.jpg"};
+        auto specularMap = loadTexture("ConcreteGround.jpg");
 
         auto const shininess = 16.0f;
 
@@ -153,9 +153,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
-        auto const diffuseMapId = Texture{"Container.Diffuse.png"};
+        auto const diffuseMapId = loadTexture("Container.Diffuse.png");
 
-        auto const specularMapId = Texture{"Container.Specular.png"};
+        auto const specularMapId = loadTexture("Container.Specular.png");
 
         auto const shininess = 32.0f;
 
@@ -194,9 +194,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = Texture{"White.png"};
+        auto const diffuseMapId = loadTexture("White.png");
 
-        auto const specularMapId = Texture{"White.png"};
+        auto const specularMapId = loadTexture("White.png");
 
         auto const shininess = 32.0f;
 
@@ -251,9 +251,9 @@ private:
     {
         auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-        auto const diffuseMapId = Texture{"White.png"};
+        auto const diffuseMapId = loadTexture("White.png");
 
-        auto const specularMapId = Texture{"White.png"};
+        auto const specularMapId = loadTexture("White.png");
 
         auto const shininess = 32.0f;
 
@@ -394,11 +394,26 @@ private:
         return {position, direction, up, fieldOfView, aspectRatio};
     }
 
+    auto loadTexture(std::string filename) const
+        -> Texture const &
+    {
+        auto const texture = textures.findTexture(filename);
+
+        if (texture != nullptr)
+        {
+            return *texture;
+        }
+
+        return textures.addTexture(Texture{filename});
+    }
+
 private:
 
     ShaderProgram const * shader;
 
     GLFWwindow * window;
+
+    mutable TextureRepository textures;
 
 };
 
