@@ -19,10 +19,9 @@ public:
     Body(
         std::shared_ptr<Shape const> shape,
         Material const & material,
-        ShaderProgram const & shaderProgram,
         glm::mat4 const & modelTransformation = glm::mat4{1.0f});
 
-    auto draw() const
+    auto draw(ShaderProgram const & shaderProgram) const
         -> void;
 
     auto getPosition() const
@@ -45,10 +44,10 @@ public:
 
 private:
 
-    auto setTransformationsInShader() const
+    auto setTransformationsInShader(ShaderProgram const & shaderProgram) const
         -> void;
 
-    auto setMaterialInShader() const
+    auto setMaterialInShader(ShaderProgram const & shaderProgram) const
         -> void;
 
     auto drawShape() const

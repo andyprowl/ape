@@ -14,7 +14,7 @@ class SceneBuilder
 
 public:
 
-    SceneBuilder(GLFWwindow & window, ShaderProgram const & shader);
+    explicit SceneBuilder(GLFWwindow & window);
 
     auto build() const
         -> Scene;

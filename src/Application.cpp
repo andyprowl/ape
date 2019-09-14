@@ -10,7 +10,7 @@
 Application::Application()
     : window{&createWindow()}
     , shader{createShaderProgram()}
-    , scene{createScene(*window, shader)}
+    , scene{createScene(*window)}
     , inputHandler{scene, *window, shader}
 {
     captureMouse();
@@ -58,10 +58,10 @@ auto Application::createShaderProgram()
 }
 
 /*static*/
-auto Application::createScene(GLFWwindow & window, ShaderProgram const & shader)
+auto Application::createScene(GLFWwindow & window)
     -> Scene
 {
-    auto builder = SceneBuilder{window, shader};
+    auto builder = SceneBuilder{window};
 
     return builder.build();
 }
@@ -226,7 +226,7 @@ auto Application::drawScene()
 {
     for (auto & body : scene.bodies)
     {
-        body.draw();
+        body.draw(shader);
     }
 }
 

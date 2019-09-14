@@ -28,7 +28,7 @@ private:
     static auto createShaderProgram()
         -> ShaderProgram;
 
-    static auto createScene(GLFWwindow & window, ShaderProgram const & shader)
+    static auto createScene(GLFWwindow & window)
         -> Scene;
 
     auto captureMouse() const

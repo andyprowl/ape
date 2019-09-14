@@ -38,7 +38,12 @@ public:
 
     Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
 
+    Shape(Shape const & rhs) = delete;
+
     Shape(Shape && rhs) noexcept;
+
+    auto operator = (Shape const & rhs)
+        -> Shape & = delete;
 
     auto operator = (Shape && rhs) noexcept
         -> Shape &;
