@@ -1,4 +1,5 @@
 #include "Square.hpp"
+#include "Vertex.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -8,40 +9,17 @@
 class SquareBuilder
 {
 
-public:
-
-    using Position = glm::vec3;
-
-    using Normal = glm::vec3;
-
-    using TextureCoordinates = glm::vec2;
-
-    class Vertex
-    {
-
-    public:
-
-        Position position;
-        
-        Normal normal;
-        
-        TextureCoordinates textureCoords;
-
-    };
-
     using Face = std::array<Vertex, 4u>;
+
+    static int const numOfFaces = 6;
+
+    static int const numOfVerticesPerFace = 4;
 
 public:
 
     SquareBuilder()
     {
-        auto const numOfFaces = 6;
-
-        auto const numOfVerticesPerFace = 4;
-
-        auto const numOfFloatsPerVertex = 3 + 3 + 2; // position, normal, textureCoords
-        
-        vertices.reserve(numOfFaces * numOfVerticesPerFace * numOfFloatsPerVertex);
+        vertices.reserve(numOfFaces * numOfVerticesPerFace);
     }
 
     auto build(SquareNormalDirection const normalDirection)
@@ -75,6 +53,10 @@ private:
     static auto getBottomFace(SquareNormalDirection const normalDirection)
         -> Face
     {
+        using Position = glm::vec3;
+
+        using TextureCoordinates = glm::vec2;
+
         auto const normal = getBottomFaceNormal(normalDirection);
 
         return {{
@@ -85,7 +67,7 @@ private:
     }
 
     static auto getBottomFaceNormal(SquareNormalDirection const normalDirection)
-        -> Normal
+        -> glm::vec3
     {
         auto const outboundNormal = glm::vec3{0.0f, -1.0f, 0.0f};
 
@@ -118,57 +100,37 @@ private:
     {
         for (auto const & v : face)
         {
-            pushVertex(transform(v.position, transformation));
+            auto const position = transform(v.position, transformation);
 
-            pushVertex(glm::normalize(transform(v.normal, transformation)));
+            auto const normal = glm::normalize(transform(v.normal, transformation));
 
-            pushVertex(v.textureCoords);
+            vertices.emplace_back(position, normal, v.textureCoordinates);
         }
 
         pushFaceIndices();
     }
 
-    auto pushVertex(glm::vec3 const & v)
-        -> void
-    {
-        vertices.push_back(v.x);
-
-        vertices.push_back(v.y);
-
-        vertices.push_back(v.z);
-    }
-
-    auto pushVertex(glm::vec2 const & v)
-        -> void
-    {
-        vertices.push_back(v.x);
-
-        vertices.push_back(v.y);
-    }
-
     auto pushFaceIndices()
         -> void
     {
-        auto const stride = 8;
+        auto const firstFaceVertexIndex = vertices.size() - numOfVerticesPerFace;
 
-        auto const base = (vertices.size() / stride) - 4;
+        indices.push_back(firstFaceVertexIndex + 0);
 
-        indices.push_back(base + 0);
+        indices.push_back(firstFaceVertexIndex + 1);
 
-        indices.push_back(base + 1);
+        indices.push_back(firstFaceVertexIndex + 3);
 
-        indices.push_back(base + 3);
+        indices.push_back(firstFaceVertexIndex + 1);
 
-        indices.push_back(base + 1);
+        indices.push_back(firstFaceVertexIndex + 2);
 
-        indices.push_back(base + 2);
-
-        indices.push_back(base + 3);
+        indices.push_back(firstFaceVertexIndex + 3);
     }
 
 private:
 
-    std::vector<float> vertices;
+    std::vector<Vertex> vertices;
 
     std::vector<unsigned int> indices;
 

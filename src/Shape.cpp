@@ -12,13 +12,19 @@
 namespace
 {
 
-auto encodeFloatOffset(int const numOfFloats)
-    -> void *
-{
-    return reinterpret_cast<void *>(numOfFloats * sizeof(float));
-};
+#define encodeComponentOffset(component) (void*)(offsetof(Vertex, component))
 
-auto makeVertexBufferObject(std::vector<float> const & vertices)
+auto setAttribute(int const position, int const numOfFloats, void * componentOffset)
+    -> void
+{
+    auto const stride = sizeof(Vertex);
+
+    glVertexAttribPointer(position, numOfFloats, GL_FLOAT, GL_FALSE, stride, componentOffset);
+
+    glEnableVertexAttribArray(position);
+}
+
+auto makeVertexBufferObject(std::vector<Vertex> const & vertices)
     -> unsigned int
 {
     auto vboId = static_cast<unsigned int>(0);
@@ -27,25 +33,15 @@ auto makeVertexBufferObject(std::vector<float> const & vertices)
 
     glBindBuffer(GL_ARRAY_BUFFER, vboId);
 
-    glBufferData(
-        GL_ARRAY_BUFFER,
-        vertices.size() * sizeof(float),
-        vertices.data(),
-        GL_STATIC_DRAW);
+    auto const vertexBufferSize = vertices.size() * sizeof(Vertex);
 
-    auto const stride = 8 * sizeof(float);
+    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(0));
+    setAttribute(0, 3, encodeComponentOffset(position));
 
-    glEnableVertexAttribArray(0);
+    setAttribute(1, 3, encodeComponentOffset(normal));
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(3));
-
-    glEnableVertexAttribArray(1);
-
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, encodeFloatOffset(6));
-
-    glEnableVertexAttribArray(2);
+    setAttribute(2, 2, encodeComponentOffset(textureCoordinates));
 
     return vboId;
 }
@@ -61,7 +57,7 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
 
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
-        indices.size() * sizeof(float),
+        indices.size() * sizeof(unsigned int),
         indices.data(),
         GL_STATIC_DRAW);
 
@@ -69,7 +65,7 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
 }
 
 auto makeVertices(
-    std::vector<float> const & vertices,
+    std::vector<Vertex> const & vertices,
     std::vector<unsigned int> const & indices)
     -> Shape::ObjectIdSet
 {
@@ -90,7 +86,7 @@ auto makeVertices(
 
 } // unnamed namespace
 
-Shape::Shape(std::vector<float> const & vertices, std::vector<unsigned int> const & indices)
+Shape::Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices)
     : objectIds{makeVertices(vertices, indices)}
     , numOfVertices{static_cast<int>(indices.size())}
 {

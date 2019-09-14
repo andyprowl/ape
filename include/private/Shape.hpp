@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glm/vec3.hpp>
+#include "Vertex.hpp"
 
 #include <vector>
 
@@ -36,7 +36,7 @@ public:
 
 public:
 
-    Shape(std::vector<float> const & vertices, std::vector<unsigned int> const & indices);
+    Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
 
     Shape(Shape && rhs) noexcept;
 
