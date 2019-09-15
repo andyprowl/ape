@@ -65,22 +65,22 @@ public:
         auto const face = getBottomFace();
 
         // bottom
-        addFace(face, translate({0.0f, -0.5f, 0.0f}));
+        addScaledFace(face, translate({0.0f, -0.5f, 0.0f}));
 
         // top
-        addFace(face, translate({0.0f, 0.5f, 0.0f}) * rotate(180.0f, {1.0f, 0.0f, 0.0f}));
+        addScaledFace(face, translate({0.0f, 0.5f, 0.0f}) * rotate(180.0f, {1.0f, 0.0f, 0.0f}));
 
         // front
-        addFace(face, translate({0.0f, 0.0f, 0.5f}) * rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
+        addScaledFace(face, translate({0.0f, 0.0f, 0.5f}) * rotate(-90.0f, {1.0f, 0.0f, 0.0f}));
 
         // back
-        addFace(face, translate({0.0f, 0.0f, -0.5f}) * rotate(90.0f, {1.0f, 0.0f, 0.0f}));
+        addScaledFace(face, translate({0.0f, 0.0f, -0.5f}) * rotate(90.0f, {1.0f, 0.0f, 0.0f}));
 
         // left
-        addFace(face, translate({-0.5f, 0.0f, 0.0f}) * rotate(-90.0f, {0.0f, 0.0f, 1.0f}));
+        addScaledFace(face, translate({-0.5f, 0.0f, 0.0f}) * rotate(-90.0f, {0.0f, 0.0f, 1.0f}));
 
         // right
-        addFace(face, translate({0.5f, 0.0f, 0.0f}) * rotate(90.0f, {0.0f, 0.0f, 1.0f}));
+        addScaledFace(face, translate({0.5f, 0.0f, 0.0f}) * rotate(90.0f, {0.0f, 0.0f, 1.0f}));
 
         return Shape{std::move(vertices), std::move(indices)};
     }
@@ -111,7 +111,7 @@ private:
         return (normalModifier * outboundNormal);
     }
 
-    auto addFace(Face const & face, glm::mat4 const & transformation)
+    auto addScaledFace(Face const & face, glm::mat4 const & transformation)
         -> void
     {
         auto scaling = scale(size);
