@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Normal.hpp"
 #include "Scene.hpp"
 #include "TextureRepository.hpp"
 
@@ -105,6 +106,9 @@ private:
 
     auto loadTexture(std::string filename) const
         -> Texture const &;
+
+    auto makeBox(NormalDirection const normalDirection, glm::vec3 const & size) const
+        -> std::shared_ptr<Shape>;
 
 private:
 

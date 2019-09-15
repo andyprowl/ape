@@ -1,6 +1,6 @@
 #include "SceneBuilder.hpp"
 
-#include "Square.hpp"
+#include "BoxBuilder.hpp"
 #include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -42,7 +42,7 @@ auto SceneBuilder::createBodies() const
 auto SceneBuilder::createGroundTileBodies(std::vector<Mesh> & bodies) const
     -> void
 {
-    auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
+    auto const shape = makeBox(NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
 
     auto const material = getGroundMaterial();
 
@@ -63,13 +63,11 @@ auto SceneBuilder::createGroundTileMesh(
     std::vector<Mesh> & bodies) const
     -> void
 {
-    auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{5.0f, 0.01f, 5.0f});
-
     auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
 
     auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-    bodies.emplace_back(std::move(shape), material, translation * scaling);
+    bodies.emplace_back(std::move(shape), material, translation);
 }
 
 auto SceneBuilder::getGroundMaterial() const
@@ -89,7 +87,7 @@ auto SceneBuilder::getGroundMaterial() const
 auto SceneBuilder::createCubeBodies(std::vector<Mesh> & bodies) const
     -> void
 {
-    auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
+    auto const shape = makeBox(NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
 
     auto const positions = getCubeMeshPositions();
 
@@ -150,11 +148,9 @@ auto SceneBuilder::getContainerMaterial() const
 auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
     -> void
 {
-    auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
+    auto const shape = makeBox(NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
 
     auto const positions = getLampMeshPositions();
-
-    auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -162,7 +158,7 @@ auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getLampMaterial();
 
-        bodies.emplace_back(shape, material, translation * scaling);
+        bodies.emplace_back(shape, material, translation);
     }
 }
 
@@ -191,11 +187,9 @@ auto SceneBuilder::getLampMaterial() const
 auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
     -> void
 {
-    auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
+    auto const shape = makeBox(NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
 
     auto const positions = getFlashLightMeshPositions();
-
-    auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.3f, 0.1f, 0.1f});
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -207,7 +201,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getFlashLightMaterial();
 
-        bodies.emplace_back(shape, material, translation * rotation * scaling);
+        bodies.emplace_back(shape, material, translation * rotation);
     }
 }
 
@@ -392,4 +386,16 @@ auto SceneBuilder::loadTexture(std::string filename) const
     }
 
     return textures.addTexture(Texture{filename});
+}
+
+auto SceneBuilder::makeBox(
+    NormalDirection const normalDirection,
+    glm::vec3 const & size) const
+    -> std::shared_ptr<Shape>
+{
+    auto const builder = BoxBuilder{};
+
+    auto square = builder.build(normalDirection, size);
+
+    return std::make_shared<Shape>(std::move(square));
 }

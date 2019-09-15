@@ -1,4 +1,4 @@
-#include "Square.hpp"
+#include "BoxBuilder.hpp"
 #include "Vertex.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -6,8 +6,39 @@
 #include <array>
 #include <vector>
 
-class SquareBuilder
+namespace
 {
+
+auto rotate(float const degrees, glm::vec3 const & axis)
+    -> glm::mat4
+{
+    return glm::rotate(glm::mat4{1.0f}, glm::radians(degrees), axis);
+}
+
+auto scale(glm::vec3 const & factor)
+    -> glm::mat4
+{
+    return glm::scale(glm::mat4{1.0f}, factor);
+}
+
+auto translate(glm::vec3 const & offset)
+    -> glm::mat4
+{
+    return glm::translate(glm::mat4{1.0f}, offset);
+}
+
+auto transform(glm::vec3 const & v, glm::mat4 const & transformation)
+    -> glm::vec3
+{
+    return glm::vec3{transformation * glm::vec4{v, 1.0f}};
+}
+
+class StatefulBuilder
+{
+
+    using Size = BoxBuilder::Size;
+
+    using Position = BoxBuilder::Position;
 
     using Face = std::array<Vertex, 4u>;
 
@@ -17,15 +48,21 @@ class SquareBuilder
 
 public:
 
-    SquareBuilder()
+    StatefulBuilder(
+        NormalDirection const normalDirection,
+        Size const & size,
+        Position const & center)
+        : normalDirection{normalDirection}
+        , size{size}
+        , center{center}
     {
         vertices.reserve(numOfFaces * numOfVerticesPerFace);
     }
 
-    auto build(SquareNormalDirection const normalDirection)
+    auto build()
         -> Shape
     {
-        auto const face = getBottomFace(normalDirection);
+        auto const face = getBottomFace();
 
         // bottom
         addFace(face, translate({0.0f, -0.5f, 0.0f}));
@@ -50,57 +87,38 @@ public:
 
 private:
 
-    static auto getBottomFace(SquareNormalDirection const normalDirection)
+    auto getBottomFace() const
         -> Face
     {
-        using Position = glm::vec3;
-
-        using TextureCoordinates = glm::vec2;
-
-        auto const normal = getBottomFaceNormal(normalDirection);
-
+        auto const normal = getBottomFaceNormal();
+        
         return {{
-            {Position{-0.5f, 0.0f, -0.5f}, normal, TextureCoordinates{0.0f, 0.0f}},
-            {Position{0.5f, 0.0f, -0.5f}, normal, TextureCoordinates{1.0f, 0.0f}},
-            {Position{0.5f, 0.0f, 0.5f}, normal, TextureCoordinates{1.0f, 1.0f}},
-            {Position{-0.5f, 0.0f, 0.5f}, normal, TextureCoordinates{0.0f, 1.0f}}}};
+            {center + Position{-0.5f, 0.0f, -0.5f}, normal, {0.0f, 0.0f}},
+            {center + Position{0.5f, 0.0f, -0.5f}, normal, {1.0f, 0.0f}},
+            {center + Position{0.5f, 0.0f, 0.5f}, normal, {1.0f, 1.0f}},
+            {center + Position{-0.5f, 0.0f, 0.5f}, normal, {0.0f, 1.0f}}}};
     }
 
-    static auto getBottomFaceNormal(SquareNormalDirection const normalDirection)
+    auto getBottomFaceNormal() const
         -> glm::vec3
     {
         auto const outboundNormal = glm::vec3{0.0f, -1.0f, 0.0f};
 
-        auto const isOutbound = (normalDirection == SquareNormalDirection::outbound);
+        auto const isOutbound = (normalDirection == NormalDirection::outbound);
 
         auto const normalModifier = isOutbound ? 1.0f : -1.0f;
 
         return (normalModifier * outboundNormal);
     }
-    static auto rotate(float const degrees, glm::vec3 const & axis)
-        -> glm::mat4
-    {
-        return glm::rotate(glm::mat4{1.0f}, glm::radians(degrees), axis);
-    }
-
-    static auto translate(glm::vec3 const & offset)
-        -> glm::mat4
-    {
-        return glm::translate(glm::mat4{1.0f}, offset);
-    }
-
-    static auto transform(glm::vec3 const & v, glm::mat4 const & transformation)
-        -> glm::vec3
-    {
-        return glm::vec3{transformation * glm::vec4{v, 1.0f}};
-    }
 
     auto addFace(Face const & face, glm::mat4 const & transformation)
         -> void
     {
+        auto scaling = scale(size);
+
         for (auto const & v : face)
         {
-            auto const position = transform(v.position, transformation);
+            auto const position = transform(v.position, scaling * transformation);
 
             auto const normal = glm::normalize(transform(v.normal, transformation));
 
@@ -130,14 +148,25 @@ private:
 
 private:
 
+    NormalDirection normalDirection;
+
+    Size size;
+
+    Position center;
+
     std::vector<Vertex> vertices;
 
     std::vector<unsigned int> indices;
 
 };
 
-auto makeSquare(SquareNormalDirection const normalDirection)
+} // unnamed namespace
+
+auto BoxBuilder::build(
+    NormalDirection const normalDirection,
+    Size const & size,
+    Position const & center) const
     -> Shape
 {
-    return SquareBuilder{}.build(normalDirection);
+    return StatefulBuilder{normalDirection, size, center}.build();
 }
