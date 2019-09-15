@@ -1,6 +1,6 @@
 #include "Camera.hpp"
 
-#include "Body.hpp"
+#include "Mesh.hpp"
 #include "Scene.hpp"
 #include "Shader.hpp"
 #include "Window.hpp"

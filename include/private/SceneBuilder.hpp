@@ -22,50 +22,50 @@ public:
 private:
 
     auto createBodies() const
-        -> std::vector<Body>;
+        -> std::vector<Mesh>;
 
-    auto createGroundTileBodies(std::vector<Body> & bodies) const
+    auto createGroundTileBodies(std::vector<Mesh> & bodies) const
         -> void;
 
-    auto createGroundTileBody(
+    auto createGroundTileMesh(
         int const row,
         int const col,
         std::shared_ptr<Shape> shape,
         Material const & material,
-        std::vector<Body> & bodies) const
+        std::vector<Mesh> & bodies) const
         -> void;
 
     auto getGroundMaterial() const
         -> Material;
 
-    auto createCubeBodies(std::vector<Body> & bodies) const
+    auto createCubeBodies(std::vector<Mesh> & bodies) const
         -> void;
 
-    auto getCubeBodyPositions() const
+    auto getCubeMeshPositions() const
         -> std::vector<glm::vec3>;
 
-    auto getCubeBodyMaterials() const
+    auto getCubeMeshMaterials() const
         -> std::vector<Material>;
 
     auto getContainerMaterial() const
         -> Material;
 
-    auto createLampBodies(std::vector<Body> & bodies) const
+    auto createLampBodies(std::vector<Mesh> & bodies) const
         -> void;
 
-    auto getLampBodyPositions() const
+    auto getLampMeshPositions() const
         -> std::vector<glm::vec3>;
 
     auto getLampMaterial() const
         -> Material;
 
-    auto createFlashLightBodies(std::vector<Body> & bodies) const
+    auto createFlashLightBodies(std::vector<Mesh> & bodies) const
         -> void;
 
-    auto getFlashLightBodyPositions() const
+    auto getFlashLightMeshPositions() const
         -> std::vector<glm::vec3>;
 
-    auto computeFlashLightBodyRotationMatrix(glm::vec3 const & position) const
+    auto computeFlashLightMeshRotationMatrix(glm::vec3 const & position) const
         -> glm::mat4;
     
     auto getFlashLightMaterial() const

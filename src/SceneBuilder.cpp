@@ -24,9 +24,9 @@ auto SceneBuilder::build() const
 }
 
 auto SceneBuilder::createBodies() const
-    -> std::vector<Body>
+    -> std::vector<Mesh>
 {
-    auto bodies = std::vector<Body>{};
+    auto bodies = std::vector<Mesh>{};
         
     createCubeBodies(bodies);
 
@@ -39,7 +39,7 @@ auto SceneBuilder::createBodies() const
     return bodies;
 }
 
-auto SceneBuilder::createGroundTileBodies(std::vector<Body> & bodies) const
+auto SceneBuilder::createGroundTileBodies(std::vector<Mesh> & bodies) const
     -> void
 {
     auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
@@ -50,17 +50,17 @@ auto SceneBuilder::createGroundTileBodies(std::vector<Body> & bodies) const
     {
         for (auto col = -5; col < +5; ++col)
         {
-            createGroundTileBody(row, col, shape, material, bodies);
+            createGroundTileMesh(row, col, shape, material, bodies);
         }
     }
 }
 
-auto SceneBuilder::createGroundTileBody(
+auto SceneBuilder::createGroundTileMesh(
     int const row,
     int const col,
     std::shared_ptr<Shape> shape,
     Material const & material,
-    std::vector<Body> & bodies) const
+    std::vector<Mesh> & bodies) const
     -> void
 {
     auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{5.0f, 0.01f, 5.0f});
@@ -86,14 +86,14 @@ auto SceneBuilder::getGroundMaterial() const
     return {ambientColor, std::move(diffuseMap), std::move(specularMap), shininess};
 }
 
-auto SceneBuilder::createCubeBodies(std::vector<Body> & bodies) const
+auto SceneBuilder::createCubeBodies(std::vector<Mesh> & bodies) const
     -> void
 {
     auto const shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::outbound));
 
-    auto const positions = getCubeBodyPositions();
+    auto const positions = getCubeMeshPositions();
 
-    auto const materials = getCubeBodyMaterials();
+    auto const materials = getCubeMeshMaterials();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -110,7 +110,7 @@ auto SceneBuilder::createCubeBodies(std::vector<Body> & bodies) const
     }
 }
 
-auto SceneBuilder::getCubeBodyPositions() const
+auto SceneBuilder::getCubeMeshPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -127,7 +127,7 @@ auto SceneBuilder::getCubeBodyPositions() const
         {-1.3f, 1.0f, -1.5f}};
 }
 
-auto SceneBuilder::getCubeBodyMaterials() const
+auto SceneBuilder::getCubeMeshMaterials() const
     -> std::vector<Material>
 {
     return {getContainerMaterial()};
@@ -147,12 +147,12 @@ auto SceneBuilder::getContainerMaterial() const
     return {ambientColor, diffuseMapId, specularMapId, shininess};
 }
 
-auto SceneBuilder::createLampBodies(std::vector<Body> & bodies) const
+auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
     -> void
 {
     auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
 
-    auto const positions = getLampBodyPositions();
+    auto const positions = getLampMeshPositions();
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.2f, 0.2f, 0.2f});
 
@@ -166,7 +166,7 @@ auto SceneBuilder::createLampBodies(std::vector<Body> & bodies) const
     }
 }
 
-auto SceneBuilder::getLampBodyPositions() const
+auto SceneBuilder::getLampMeshPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -188,12 +188,12 @@ auto SceneBuilder::getLampMaterial() const
     return {ambientColor, diffuseMapId, specularMapId, shininess};
 }
 
-auto SceneBuilder::createFlashLightBodies(std::vector<Body> & bodies) const
+auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
     -> void
 {
     auto shape = std::make_shared<Shape>(makeSquare(SquareNormalDirection::inbound));
 
-    auto const positions = getFlashLightBodyPositions();
+    auto const positions = getFlashLightMeshPositions();
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, glm::vec3{0.3f, 0.1f, 0.1f});
 
@@ -203,7 +203,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Body> & bodies) const
 
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        auto const rotation = computeFlashLightBodyRotationMatrix(position);
+        auto const rotation = computeFlashLightMeshRotationMatrix(position);
 
         auto const material = getFlashLightMaterial();
 
@@ -211,7 +211,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Body> & bodies) const
     }
 }
 
-auto SceneBuilder::getFlashLightBodyPositions() const
+auto SceneBuilder::getFlashLightMeshPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -219,7 +219,7 @@ auto SceneBuilder::getFlashLightBodyPositions() const
         {-2.5f, 1.5f, 2.5f}};
 }
 
-auto SceneBuilder::computeFlashLightBodyRotationMatrix(glm::vec3 const & position) const
+auto SceneBuilder::computeFlashLightMeshRotationMatrix(glm::vec3 const & position) const
     -> glm::mat4
 {
     auto const translation = glm::translate(glm::mat4{1.0f}, position);
@@ -256,7 +256,7 @@ auto SceneBuilder::createPointLights() const
 {
     auto lights = std::vector<PointLight>{};
 
-    const auto positions = getLampBodyPositions();
+    const auto positions = getLampMeshPositions();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -291,7 +291,7 @@ auto SceneBuilder::createSpotLights() const
 {
     auto lights = std::vector<SpotLight>{};
 
-    const auto positions = getFlashLightBodyPositions();
+    const auto positions = getFlashLightMeshPositions();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {

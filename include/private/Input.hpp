@@ -5,8 +5,8 @@
 
 #include <vector>
 
-class Body;
 class Camera;
+class Mesh;
 class ShaderProgram;
 class Scene;
 

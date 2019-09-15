@@ -54,12 +54,12 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
     camera.setPosition(newPosition);
 }
 
-auto rotateBodyAroundOwnX(Body & body, float const radians)
+auto rotateMeshAroundOwnX(Mesh & mesh, float const radians)
     -> void
 {
-    auto const rotation = glm::rotate(body.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
+    auto const rotation = glm::rotate(mesh.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
     
-    body.setModelTransformation(rotation);
+    mesh.setModelTransformation(rotation);
 }
 
 auto rotateLightAroundSceneY(Scene & scene, float const radians)
@@ -75,15 +75,15 @@ auto rotateLightAroundSceneY(Scene & scene, float const radians)
 
     light.position = newPosition;
 
-    auto & body = *(scene.bodies.end() - 2);
+    auto & mesh = *(scene.bodies.end() - 2);
 
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
         glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f}) *
         glm::translate(glm::mat4{1.0f}, -position) *
-        body.getModelTransformation();
+        mesh.getModelTransformation();
 
-    body.setModelTransformation(transformation);
+    mesh.setModelTransformation(transformation);
 }
 
 } // unnamed namespace
@@ -201,11 +201,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(scene->bodies.front(), +rotationDelta);
+        rotateMeshAroundOwnX(scene->bodies.front(), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateBodyAroundOwnX(scene->bodies.front(), -rotationDelta);
+        rotateMeshAroundOwnX(scene->bodies.front(), -rotationDelta);
     }
 }
 

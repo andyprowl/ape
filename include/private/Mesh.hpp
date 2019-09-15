@@ -11,12 +11,12 @@
 class ShaderProgram;
 class Shape;
 
-class Body
+class Mesh
 {
 
 public:
 
-    Body(
+    Mesh(
         std::shared_ptr<Shape const> shape,
         Material const & material,
         glm::mat4 const & modelTransformation = glm::mat4{1.0f});

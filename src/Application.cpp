@@ -224,9 +224,9 @@ auto Application::setupDirectionalLights()
 auto Application::drawScene()
     -> void
 {
-    for (auto & body : scene.bodies)
+    for (auto & mesh : scene.bodies)
     {
-        body.draw(shader);
+        mesh.draw(shader);
     }
 }
 

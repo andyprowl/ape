@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class Body;
+class Mesh;
 class ShaderProgram;
 class Scene;
 

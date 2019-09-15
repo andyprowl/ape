@@ -1,4 +1,4 @@
-#include "Body.hpp"
+#include "Mesh.hpp"
 
 #include "Shader.hpp"
 #include "Shape.hpp"
@@ -18,7 +18,7 @@ auto computeNormalMatrix(glm::mat4 const & model)
 
 } // unnamed namespace
 
-Body::Body(
+Mesh::Mesh(
     std::shared_ptr<Shape const> shape,
     Material const & material,
     glm::mat4 const & modelTransformation)
@@ -29,7 +29,7 @@ Body::Body(
 {
 }
 
-auto Body::draw(ShaderProgram const & shaderProgram) const
+auto Mesh::draw(ShaderProgram const & shaderProgram) const
     -> void
 {
     shaderProgram.use();
@@ -41,19 +41,19 @@ auto Body::draw(ShaderProgram const & shaderProgram) const
     drawShape();
 }
 
-auto Body::getPosition() const
+auto Mesh::getPosition() const
     -> glm::vec3
 {
     return glm::vec3{modelTransformation[3]};
 }
 
-auto Body::getModelTransformation() const
+auto Mesh::getModelTransformation() const
     -> glm::mat4
 {
     return modelTransformation;
 }
 
-auto Body::setModelTransformation(glm::mat4 const & newTransformation)
+auto Mesh::setModelTransformation(glm::mat4 const & newTransformation)
     -> void
 {
     modelTransformation = newTransformation;
@@ -61,25 +61,25 @@ auto Body::setModelTransformation(glm::mat4 const & newTransformation)
     normalMatrix = computeNormalMatrix(modelTransformation);
 }
 
-auto Body::scaleUniformly(float const factor)
+auto Mesh::scaleUniformly(float const factor)
     -> void
 {
     modelTransformation = glm::scale(modelTransformation, glm::vec3{factor, factor, factor});
 }
 
-auto Body::translate(glm::vec3 const & offset)
+auto Mesh::translate(glm::vec3 const & offset)
     -> void
 {
     modelTransformation = glm::translate(modelTransformation, offset);
 }
 
-auto Body::getMaterial() const
+auto Mesh::getMaterial() const
     -> Material
 {
     return material;
 }
 
-auto Body::setTransformationsInShader(ShaderProgram const & shaderProgram) const
+auto Mesh::setTransformationsInShader(ShaderProgram const & shaderProgram) const
     -> void
 {
     shaderProgram.set("transform.model", modelTransformation);
@@ -87,7 +87,7 @@ auto Body::setTransformationsInShader(ShaderProgram const & shaderProgram) const
     shaderProgram.set("transform.normal", normalMatrix);
 }
 
-auto Body::setMaterialInShader(ShaderProgram const & shaderProgram) const
+auto Mesh::setMaterialInShader(ShaderProgram const & shaderProgram) const
     -> void
 {
     shaderProgram.set("material.ambient", material.ambient);
@@ -99,7 +99,7 @@ auto Body::setMaterialInShader(ShaderProgram const & shaderProgram) const
     material.specularMap.bind(1);
 }
 
-auto Body::drawShape() const
+auto Mesh::drawShape() const
     -> void
 {
     shape->draw();
