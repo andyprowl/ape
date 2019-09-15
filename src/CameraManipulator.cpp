@@ -1,4 +1,4 @@
-#include "Manipulator.hpp"
+#include "CameraManipulator.hpp"
 
 #include "Camera.hpp"
 #include "Math.hpp"
@@ -27,7 +27,7 @@ auto getInitialYaw(Camera const & camera)
 
 } // unnamed namespace
 
-CameraManipulator::CameraManipulator(GLFWwindow & window, Camera & camera, float const sensitivity)
+CameraCameraManipulator::CameraCameraManipulator(GLFWwindow & window, Camera & camera, float const sensitivity)
     : mouseTracker{window}
     , wheelPublisher{window}
     , camera{&camera}
@@ -38,7 +38,7 @@ CameraManipulator::CameraManipulator(GLFWwindow & window, Camera & camera, float
     registerForWheelNotifications();
 }
 
-auto CameraManipulator::update(double const lastFrameDuration)
+auto CameraCameraManipulator::update(double const lastFrameDuration)
     -> void
 {
     mouseTracker.update();
@@ -59,7 +59,7 @@ auto CameraManipulator::update(double const lastFrameDuration)
     camera->setDirection(newDirection);
 }
 
-auto CameraManipulator::registerForWheelNotifications()
+auto CameraCameraManipulator::registerForWheelNotifications()
     -> void
 {
     wheelPublisher.registerHandler([this] (double const offset)

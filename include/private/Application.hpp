@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Camera.hpp"
-#include "Frame.hpp"
-#include "Input.hpp"
+#include "FrameTimeTracker.hpp"
+#include "InputHandler.hpp"
 #include "Scene.hpp"
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 
 class Application
 {

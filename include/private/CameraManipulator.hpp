@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Mouse.hpp"
-#include "Wheel.hpp"
+#include "MouseTracker.hpp"
+#include "MouseWheelPublisher.hpp"
 
 #include "GLFW.hpp"
 
 class Camera;
 
-class CameraManipulator
+class CameraCameraManipulator
 {
 
 public:
 
-    CameraManipulator(GLFWwindow & window, Camera & camera, float sensitivity);
+    CameraCameraManipulator(GLFWwindow & window, Camera & camera, float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;

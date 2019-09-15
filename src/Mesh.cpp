@@ -1,6 +1,6 @@
 #include "Mesh.hpp"
 
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 #include "Shape.hpp"
 
 #include "glad/glad.h"

@@ -1,4 +1,4 @@
-#include "Wheel.hpp"
+#include "MouseWheelPublisher.hpp"
 
 #include <cassert>
 

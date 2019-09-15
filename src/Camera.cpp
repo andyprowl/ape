@@ -2,7 +2,7 @@
 
 #include "Mesh.hpp"
 #include "Scene.hpp"
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 #include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>

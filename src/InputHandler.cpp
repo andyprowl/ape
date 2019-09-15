@@ -1,8 +1,8 @@
-#include "Input.hpp"
+#include "InputHandler.hpp"
 
 #include "Camera.hpp"
 #include "Scene.hpp"
-#include "Shader.hpp"
+#include "ShaderProgram.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>

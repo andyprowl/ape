@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Manipulator.hpp"
-#include "Mouse.hpp"
+#include "CameraManipulator.hpp"
+#include "MouseTracker.hpp"
 
 #include <vector>
 
@@ -57,6 +57,6 @@ private:
     
     ShaderProgram const * program;
 
-    CameraManipulator cameraManipulator;
+    CameraCameraManipulator cameraManipulator;
 
 };
