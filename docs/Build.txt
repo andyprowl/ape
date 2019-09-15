@@ -1,5 +1,9 @@
-cmake <src-dir> -G "Visual Studio 15 2017" -Dassimp_DIR=<cmake-config-dir> -Dglfw3_DIR=<cmake-config-dir> -DGLM_DIR="<src-dir>"
+cmake <src-dir> -G "Visual Studio 15 2017" [-Dassimp_DIR=<cmake-config-dir>] -Dglfw3_DIR=<cmake-config-dir> -DGLM_DIR="<src-dir>"
 
 Example:
 
 cmake ..\OpenGLTest -Dassimp_DIR="c:\Program Files (x86)\Assimp\lib\cmake\assimp-4.1" -Dglfw3_DIR="c:\Program Files (x86)\GLFW\lib\cmake\glfw3" -DGLM_DIR="c:\Users\H216918\Documents\Visual Studio 2017\Projects\glm-0.9.9.6\glm"
+
+Note:
+
+Assimp's explicit config directory specification seems to be unnecessary.
