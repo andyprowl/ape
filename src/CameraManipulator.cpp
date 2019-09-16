@@ -1,78 +1,124 @@
 #include "CameraManipulator.hpp"
 
-#include "Camera.hpp"
-#include "Math.hpp"
+#include "Scene.hpp"
 
-#include <glm/gtc/matrix_transform.hpp>
-
-#include <algorithm>
+#include <glm/trigonometric.hpp>
 
 namespace
 {
 
-auto getInitialYaw(Camera const & camera)
-    -> float
+auto rotateCameraAroundUpVector(Camera & camera, float const radians)
+    -> void
 {
-    const auto currentDirection = camera.getDirection();
+    auto const rotation = glm::rotate(glm::mat4{1.0f}, radians, camera.getUp());
 
-    const auto yawDirection = glm::normalize(glm::vec3{
-        cos(glm::radians(0.0)) * cos(glm::radians(0.0)),
-        sin(glm::radians(0.0)),
-        cos(glm::radians(0.0)) * sin(glm::radians(0.0))});
+    auto const position = camera.getPosition();
 
-    const auto angle = glm::acos(glm::dot(currentDirection, yawDirection));
+    auto const direction = camera.getDirection();
 
-    return glm::degrees(-angle);
+    auto const newDirection = rotation * glm::vec4{direction, 1.0f};
+
+    camera.setDirection(newDirection);
+}
+
+auto moveCameraAlongDirection(Camera & camera, float const magnitude)
+    -> void
+{
+    auto const position = camera.getPosition();
+
+    auto const direction = camera.getDirection();
+
+    auto const newPosition = position + (direction * magnitude);
+
+    camera.setPosition(newPosition);
+}
+
+auto moveCameraSideways(Camera & camera, float const magnitude)
+    -> void
+{
+    auto const position = camera.getPosition();
+
+    auto const direction = camera.getDirection();
+
+    auto const up = camera.getUp();
+
+    auto const movementDirection = glm::cross(direction, up);
+
+    auto const newPosition = position + (movementDirection * magnitude);
+
+    camera.setPosition(newPosition);
 }
 
 } // unnamed namespace
 
-CameraCameraManipulator::CameraCameraManipulator(
-    GLFWwindow & window,
-    Camera & camera,
-    float const sensitivity)
-    : mouseTracker{window}
-    , wheelPublisher{window}
-    , camera{&camera}
-    , pitch{0.0}
-    , yaw{getInitialYaw(camera)}
-    , sensitivity{sensitivity}
+CameraManipulator::CameraManipulator(Scene & scene, GLFWwindow & window, float const sensitivity)
+    : scene{&scene}
+    , window{&window}
+    , sightDriver{window, scene.camera, sensitivity}
 {
-    registerForWheelNotifications();
 }
 
-auto CameraCameraManipulator::update(double const /*lastFrameDuration*/)
+auto CameraManipulator::update(double lastFrameDuration)
     -> void
 {
-    mouseTracker.update();
+    processMouseMovement(lastFrameDuration);
 
-    const auto movement = mouseTracker.getLastMovement();
+    processRotationalMovement(lastFrameDuration);
 
-    const auto offset = Movement{movement.deltaX * sensitivity, -movement.deltaY * sensitivity};
+    processStraightMovement(lastFrameDuration);
 
-    yaw += static_cast<float>(offset.deltaX);
-
-    pitch = clamp(pitch + static_cast<float>(offset.deltaY), -89.0f, 89.0f);
-
-    const auto newDirection = glm::vec3{
-        cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
-        sin(glm::radians(pitch)),
-        cos(glm::radians(pitch)) * sin(glm::radians(yaw))};
-
-    camera->setDirection(newDirection);
+    processStrafeMovement(lastFrameDuration);
 }
 
-auto CameraCameraManipulator::registerForWheelNotifications()
+auto CameraManipulator::processMouseMovement(double const lastFrameDuration)
     -> void
 {
-    wheelPublisher.registerHandler([this] (double const offset)
+    sightDriver.update(lastFrameDuration);
+}
+
+auto CameraManipulator::processRotationalMovement(double const lastFrameDuration) const
+    -> void
+{
+    auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
+
+    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
     {
-        auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
+        rotateCameraAroundUpVector(scene->camera, +rotationDelta);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    {
+        rotateCameraAroundUpVector(scene->camera, -rotationDelta);
+    }
+}
 
-        auto const newFieldOfView = currentFieldOfView - static_cast<float>(offset * 2.0);
+auto CameraManipulator::processStraightMovement(double lastFrameDuration) const
+    -> void
+{
+    auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
-        auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 60.0f);
+    if ((glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) ||
+        (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS))
+    {
+        moveCameraAlongDirection(scene->camera, +translationDelta);
+    }
+    else if ((glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) ||
+             (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS))
+    {
+        moveCameraAlongDirection(scene->camera, -translationDelta);
+    }
+}
 
-        camera->setFieldOfView(glm::radians(clampedFieldOfView));
-    });
+auto CameraManipulator::processStrafeMovement(double const lastFrameDuration) const
+    -> void
+{
+    auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    {
+        moveCameraSideways(scene->camera, -translationDelta);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    {
+        moveCameraSideways(scene->camera, +translationDelta);
+    }
 }

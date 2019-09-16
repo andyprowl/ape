@@ -31,13 +31,7 @@ private:
     auto processFullScreenToggle() const
         -> void;
 
-    auto processMouseMovement(double lastFrameDuration)
-        -> void;
-
-    auto processRotationalMovement(double lastFrameDuration) const
-        -> void;
-
-    auto processLateralMovement(double lastFrameDuration) const
+    auto processCameraManipulation(double lastFrameDuration)
         -> void;
 
     auto processShapeModification(double lastFrameDuration) const
@@ -60,6 +54,6 @@ private:
     
     ShaderProgram const * program;
 
-    CameraCameraManipulator cameraManipulator;
+    CameraManipulator cameraManipulator;
 
 };

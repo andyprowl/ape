@@ -5,11 +5,6 @@
 #include "ShaderProgram.hpp"
 #include "Window.hpp"
 
-// Quaternion implementation uses some non-standard extensions.
-disableCompilerWarnings()
-#include <glm/gtc/quaternion.hpp>
-disableCompilerWarnings()
-
 #include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera(
@@ -73,26 +68,6 @@ auto Camera::getDirection() const
     -> glm::vec3
 {
     return direction;
-}
-
-auto rotationBetweenVectors(glm::vec3 const & start, glm::vec3 const & dest)
-    -> glm::mat4
-{
-    auto const cosTheta = glm::dot(start, dest);
-
-    auto const rotationAxis = glm::cross(start, dest);
-
-    auto const s = glm::sqrt((1 + cosTheta) * 2);
-
-    auto const invs = 1 / s;
-
-    auto const quat = glm::quat{
-        s * 0.5f, 
-        rotationAxis.x * invs,
-        rotationAxis.y * invs,
-        rotationAxis.z * invs};
-
-    return glm::mat4{quat};
 }
 
 auto Camera::setDirection(glm::vec3 const & newDirection)

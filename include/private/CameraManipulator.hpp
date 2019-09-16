@@ -1,39 +1,41 @@
 #pragma once
 
-#include "MouseTracker.hpp"
-#include "MouseWheelPublisher.hpp"
+#include "CameraSightMouseDriver.hpp"
 
 #include "GLFW.hpp"
 
-class Camera;
+class Scene;
 
-class CameraCameraManipulator
+class CameraManipulator
 {
 
 public:
 
-    CameraCameraManipulator(GLFWwindow & window, Camera & camera, float sensitivity);
+    CameraManipulator(Scene & scene, GLFWwindow & window, float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;
 
 private:
 
-    auto registerForWheelNotifications()
+    auto processMouseMovement(double lastFrameDuration)
+        -> void;
+
+    auto processRotationalMovement(double lastFrameDuration) const
+        -> void;
+
+    auto processStraightMovement(double lastFrameDuration) const
+        -> void;
+
+    auto processStrafeMovement(double lastFrameDuration) const
         -> void;
 
 private:
 
-    MouseTracker mouseTracker;
+    Scene * scene;
 
-    MouseWheelPublisher wheelPublisher;
+    GLFWwindow * window;
 
-    Camera * camera;
-
-    float pitch;
-
-    float yaw;
-
-    float sensitivity;
+    CameraSightMouseDriver sightDriver;
 
 };

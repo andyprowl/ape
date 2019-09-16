@@ -12,48 +12,6 @@
 namespace
 {
 
-auto rotateCameraHorizontally(Camera & camera, float const radians)
-    -> void
-{
-    auto const rotation = glm::rotate(glm::mat4{1.0f}, radians, camera.getUp());
-
-    auto const position = camera.getPosition();
-
-    auto const direction = camera.getDirection();
-
-    auto const newDirection = rotation * glm::vec4{direction, 1.0f};
-
-    camera.setDirection(newDirection);
-}
-
-auto moveCameraAlongDirection(Camera & camera, float const magnitude)
-    -> void
-{
-    auto const position = camera.getPosition();
-
-    auto const direction = camera.getDirection();
-
-    auto const newPosition = position + (direction * magnitude);
-
-    camera.setPosition(newPosition);
-}
-
-auto moveCameraSideways(Camera & camera, float const magnitude)
-    -> void
-{
-    auto const position = camera.getPosition();
-
-    auto const direction = camera.getDirection();
-
-    auto const up = camera.getUp();
-
-    auto const movementDirection = glm::cross(direction, up);
-
-    auto const newPosition = position + (movementDirection * magnitude);
-
-    camera.setPosition(newPosition);
-}
-
 auto rotateMeshAroundOwnX(Mesh & mesh, float const radians)
     -> void
 {
@@ -95,7 +53,7 @@ InputHandler::InputHandler(
     : scene{&scene}
     , window{&window}
     , program{&program}
-    , cameraManipulator{window, scene.camera, 0.1f}
+    , cameraManipulator{scene, window, 0.1f}
 {
 }
 
@@ -108,11 +66,7 @@ auto InputHandler::processInput(double const lastFrameDuration)
 
     processFullScreenToggle();
 
-    processMouseMovement(lastFrameDuration);
-
-    processRotationalMovement(lastFrameDuration);
-
-    processLateralMovement(lastFrameDuration);
+    processCameraManipulation(lastFrameDuration);
 
     processShapeModification(lastFrameDuration);
 
@@ -160,51 +114,10 @@ auto InputHandler::processFullScreenToggle() const
     }
 }
 
-auto InputHandler::processMouseMovement(double const lastFrameDuration)
+auto InputHandler::processCameraManipulation(double const lastFrameDuration)
     -> void
 {
     cameraManipulator.update(lastFrameDuration);
-}
-
-auto InputHandler::processRotationalMovement(double const lastFrameDuration) const
-    -> void
-{
-    auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
-
-    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-    {
-        rotateCameraHorizontally(scene->camera, +rotationDelta);
-    }
-    else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
-    {
-        rotateCameraHorizontally(scene->camera, -rotationDelta);
-    }
-}
-
-auto InputHandler::processLateralMovement(double const lastFrameDuration) const
-    -> void
-{
-    auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
-
-    if ((glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) ||
-        (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS))
-    {
-        moveCameraAlongDirection(scene->camera, +translationDelta);
-    }
-    else if ((glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) ||
-             (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS))
-    {
-        moveCameraAlongDirection(scene->camera, -translationDelta);
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-    {
-        moveCameraSideways(scene->camera, -translationDelta);
-    }
-    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-    {
-        moveCameraSideways(scene->camera, +translationDelta);
-    }
 }
 
 auto InputHandler::processShapeModification(double const lastFrameDuration) const
