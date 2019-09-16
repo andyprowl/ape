@@ -1,6 +1,6 @@
 #pragma once
 
-#include "TextureDescriptor.h"
+#include "TextureDescriptor.hpp"
 
 class Texture
 {

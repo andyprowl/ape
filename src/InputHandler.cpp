@@ -106,6 +106,8 @@ auto InputHandler::processInput(double const lastFrameDuration)
     
     processMouseCapture();
 
+    processFullScreenToggle();
+
     processMouseMovement(lastFrameDuration);
 
     processRotationalMovement(lastFrameDuration);
@@ -136,6 +138,29 @@ auto InputHandler::processMouseCapture() const
     else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
     {
         glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+}
+
+auto InputHandler::processFullScreenToggle() const
+    -> void
+{
+    if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS)
+    {
+        auto const monitor = glfwGetPrimaryMonitor();
+
+        // get reolution of monitor
+        const auto mode = glfwGetVideoMode(monitor);
+
+        // switch to full screen
+        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+    }
+    else if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS)
+    {
+        auto width = int{};
+
+        auto height = int{};
+
+        glfwSetWindowMonitor(window, nullptr, 100, 100, 1024, 768, GLFW_DONT_CARE);
     }
 }
 

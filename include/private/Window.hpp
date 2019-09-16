@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Position.hpp"
+#include "Size.hpp"
 
 #include "GLFW.hpp"
 
@@ -39,3 +40,6 @@ auto getWindowRatio(GLFWwindow & window)
 
 auto getWindowCenter(GLFWwindow & window)
     -> Position;
+
+auto getWindowSize(GLFWwindow & window)
+    -> Size<int>;

@@ -14,7 +14,7 @@ public:
         , attenuation{attenuation}
     {
     }
-    
+
 public:
 
     glm::vec3 position;

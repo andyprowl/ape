@@ -83,6 +83,11 @@ auto Application::processInput()
 auto Application::render()
     -> void
 {
+    if (!isWindowReady())
+    {
+        return;
+    }
+
     clear();
 
     setupCamera();
@@ -90,6 +95,14 @@ auto Application::render()
     setupLights();
 
     drawScene();
+}
+
+auto Application::isWindowReady() const
+    -> bool
+{
+    auto const size = getWindowSize(*window);
+
+    return (size.height > 0);
 }
 
 auto Application::clear()
@@ -107,19 +120,15 @@ auto Application::clear()
 auto Application::setupCamera()
     -> void
 {
-    scene.camera.setAspectRatio(getWindowRatio(*window));
+    auto const aspectRatio = getWindowRatio(*window);
 
-    auto const view = scene.camera.getView();
-
-    auto const proj = scene.camera.getProjection();
+    scene.camera.setAspectRatio(aspectRatio);
 
     shader.use();
 
     shader.set("viewPosition", scene.camera.getPosition());
 
-    shader.set("transform.view", view);
-
-    shader.set("transform.proj", proj);
+    shader.set("transform.camera", scene.camera.getGlobalTransformation());
 }
 
 auto Application::setupLights()

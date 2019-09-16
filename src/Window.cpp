@@ -29,11 +29,40 @@ auto printCapabilities()
     std::cout << "Maximum number of vertex attributes: " << numOfAttributes << "\n";
 }
 
-auto makeGlfwWindow()
+auto makeRegularGlfwWindow()
+    -> GLFWwindow *
+{
+    return glfwCreateWindow(1024, 768, "LearnOpenGL", nullptr, nullptr);
+}
+
+auto makeFullScreenGlfwWindow()
+    -> GLFWwindow *
+{
+    auto const monitor = glfwGetPrimaryMonitor();
+
+    const auto mode = glfwGetVideoMode(monitor);
+    
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+
+    return glfwCreateWindow(
+        mode->width,
+        mode->height,
+        "LearnOpenGL",
+        glfwGetPrimaryMonitor(),
+        nullptr);
+}
+
+auto makeGlfwWindow(bool const fullscreen)
     -> GLFWwindow &
 {
-    auto window = glfwCreateWindow(1024, 768, "LearnOpenGL", nullptr, nullptr);
-    
+    auto const window = fullscreen ? makeFullScreenGlfwWindow() : makeRegularGlfwWindow();
+
     if (window == nullptr)
     {
         throw CouldNotCreateWindow{};
@@ -48,6 +77,14 @@ auto onResize(GLFWwindow * const window, int const width, int const height)
     glViewport(0, 0, width, height);
 }
 
+auto fitViewport(GLFWwindow & window)
+    -> void
+{
+    auto const size = getWindowSize(window);
+
+    glViewport(0, 0, size.width, size.height);
+}
+
 } // unnamed namespace
 
 auto createWindow()
@@ -55,7 +92,7 @@ auto createWindow()
 {
     initGLFW();
 
-    auto & window = makeGlfwWindow();
+    auto & window = makeGlfwWindow(false);
 
     glfwMakeContextCurrent(&window);
     
@@ -66,7 +103,7 @@ auto createWindow()
 
     printCapabilities();
 
-    glViewport(0, 0, 1024, 768);
+    fitViewport(window);
 
     glEnable(GL_DEPTH_TEST);
 
@@ -97,4 +134,16 @@ auto getWindowCenter(GLFWwindow & window)
     glfwGetWindowSize(&window, &width, &height);
 
     return {width / 2.0, height / 2.0};
+}
+
+auto getWindowSize(GLFWwindow & window)
+    -> Size<int>
+{
+    auto width = int{};
+
+    auto height = int{};
+
+    glfwGetWindowSize(&window, &width, &height);
+
+    return {width, height};
 }

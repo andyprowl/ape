@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GLFW.hpp"
+#include "Transformable.hpp"
 
 #include <glm/mat4x4.hpp>
 
@@ -10,7 +11,7 @@ class Mesh;
 class ShaderProgram;
 class Scene;
 
-class Camera
+class Camera : public Transformable
 {
 
 public:
@@ -65,6 +66,12 @@ private:
 
     auto makeProjection() const
         -> glm::mat4;
+
+    auto updateView()
+        -> void;
+
+    auto updateProjection()
+        -> void;
 
 private:
 

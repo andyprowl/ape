@@ -43,6 +43,9 @@ private:
     auto render()
         -> void;
 
+    auto isWindowReady() const
+        -> bool;
+
     auto clear()
         -> void;
 

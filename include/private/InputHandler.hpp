@@ -28,6 +28,9 @@ private:
     auto processMouseCapture() const
         -> void;
 
+    auto processFullScreenToggle() const
+        -> void;
+
     auto processMouseMovement(double lastFrameDuration)
         -> void;
 

@@ -13,7 +13,8 @@ Camera::Camera(
     glm::vec3 const & up,
     float const fieldOfView,
     float const aspectRatio)
-    : position{position}
+    : Transformable{}
+    , position{position}
     , direction{normalize(direction)}
     , up{glm::normalize(up)}
     , fieldOfView{fieldOfView}
@@ -21,6 +22,7 @@ Camera::Camera(
     , view{makeView()}
     , projection{makeProjection()}
 {
+    setLocalTransformation(projection * view);
 }
 
 auto Camera::getView() const
@@ -46,7 +48,7 @@ auto Camera::setPosition(glm::vec3 const & newPosition)
 {
     position = newPosition;
 
-    view = makeView();
+    updateView();
 }
 
 auto Camera::getDirection() const
@@ -60,7 +62,7 @@ auto Camera::setDirection(glm::vec3 const & newDirection)
 {
     direction = glm::normalize(newDirection);
 
-    view = makeView();
+    updateView();
 }
 
 auto Camera::getUp() const
@@ -74,7 +76,7 @@ auto Camera::setUp(glm::vec3 const & newUp)
 {
     up = newUp;
 
-    view = makeView();
+    updateView();
 }
 
 auto Camera::getFieldOfView() const
@@ -88,7 +90,7 @@ auto Camera::setFieldOfView(float const newFieldOfView)
 {
     fieldOfView = newFieldOfView;
 
-    projection = makeProjection();
+    updateProjection();
 }
 
 auto Camera::getAspectRatio() const
@@ -102,7 +104,7 @@ auto Camera::setAspectRatio(float const newAspectRatio)
 {
     aspectRatio = newAspectRatio;
 
-    projection = makeProjection();
+    updateProjection();
 }
 
 auto Camera::makeView() const
@@ -115,4 +117,20 @@ auto Camera::makeProjection() const
     -> glm::mat4
 {
     return glm::perspective(fieldOfView, aspectRatio, 0.1f, 100.0f);
+}
+
+auto Camera::updateView()
+    -> void
+{
+    view = makeView();
+
+    setLocalTransformation(projection * view);
+}
+
+auto Camera::updateProjection()
+    -> void
+{
+    projection = makeProjection();
+
+    setLocalTransformation(projection * view);
 }

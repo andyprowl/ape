@@ -1,5 +1,15 @@
-// #include is a custom extension
-#include "Vertex.glsi"
+#version 330 core
+
+struct Vertex
+{
+
+    vec3 normal;
+
+    vec3 position;
+
+    vec2 textureCoords;
+
+};
 
 struct Material
 {

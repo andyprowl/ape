@@ -1,14 +1,22 @@
-// #include is a custom extension
-#include "vertex.glsi"
+#version 330 core
+
+struct Vertex
+{
+
+    vec3 normal;
+
+    vec3 position;
+
+    vec2 textureCoords;
+
+};
 
 struct Transform
 {
 
     mat4 model;
 
-    mat4 view;
-
-    mat4 proj;
+    mat4 camera;
 
     mat3 normal;
 
@@ -26,7 +34,7 @@ uniform Transform transform;
 
 void main()
 {
-    gl_Position = transform.proj * transform.view * transform.model * vec4(aPosition, 1.0);
+    gl_Position = transform.camera * transform.model * vec4(aPosition, 1.0);
 
     vertex.position = vec3(transform.model * vec4(aPosition, 1.0));
 

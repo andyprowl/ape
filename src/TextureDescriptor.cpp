@@ -1,4 +1,4 @@
-#include "TextureDescriptor.h"
+#include "TextureDescriptor.hpp"
 
 #include <cassert>
 
