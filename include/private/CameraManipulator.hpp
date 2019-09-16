@@ -21,7 +21,7 @@ private:
     auto processMouseMovement(double lastFrameDuration)
         -> void;
 
-    auto processRotationalMovement(double lastFrameDuration) const
+    auto processKeyboardBasedRotation(double lastFrameDuration) const
         -> void;
 
     auto processStraightMovement(double lastFrameDuration) const

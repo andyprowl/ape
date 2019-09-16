@@ -63,7 +63,7 @@ auto CameraManipulator::update(double lastFrameDuration)
 {
     processMouseMovement(lastFrameDuration);
 
-    processRotationalMovement(lastFrameDuration);
+    processKeyboardBasedRotation(lastFrameDuration);
 
     processStraightMovement(lastFrameDuration);
 
@@ -76,7 +76,7 @@ auto CameraManipulator::processMouseMovement(double const lastFrameDuration)
     sightDriver.update(lastFrameDuration);
 }
 
-auto CameraManipulator::processRotationalMovement(double const lastFrameDuration) const
+auto CameraManipulator::processKeyboardBasedRotation(double const lastFrameDuration) const
     -> void
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
