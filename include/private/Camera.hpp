@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GLFW.hpp"
-#include "Transformable.hpp"
 
 #include <glm/mat4x4.hpp>
 
@@ -11,7 +10,7 @@ class Mesh;
 class ShaderProgram;
 class Scene;
 
-class Camera : public Transformable
+class Camera
 {
 
 public:
@@ -60,10 +59,6 @@ public:
         -> void;
 
 private:
-
-    // virtual (from Transformable)
-    auto onContextTransformationChanged(glm::mat4 const & contextTransformation)
-        -> void override;
 
     auto makeView() const
         -> glm::mat4;

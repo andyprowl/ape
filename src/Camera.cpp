@@ -13,8 +13,7 @@ Camera::Camera(
     glm::vec3 const & up,
     float const fieldOfView,
     float const aspectRatio)
-    : Transformable{}
-    , position{position}
+    : position{position}
     , direction{normalize(direction)}
     , up{glm::normalize(up)}
     , fieldOfView{fieldOfView}
@@ -133,13 +132,6 @@ auto Camera::setAspectRatio(float const newAspectRatio)
     updateProjection();
 }
 
-// override (from Transformable)
-auto Camera::onContextTransformationChanged(glm::mat4 const & contextTransformation)
-    -> void
-{
-    transformation = projection * contextTransformation * view;
-}
-
 auto Camera::makeView() const
     -> glm::mat4
 {
@@ -171,5 +163,5 @@ auto Camera::updateProjection()
 auto Camera::updateTransformation()
     -> void
 {
-    transformation = projection * getContextTransformation() * view;
+    transformation = projection * view;
 }
