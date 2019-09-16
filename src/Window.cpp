@@ -71,7 +71,7 @@ auto makeGlfwWindow(bool const fullscreen)
     return *window;
 }
 
-auto onResize(GLFWwindow * const window, int const width, int const height)
+auto onResize(GLFWwindow * const /*window*/, int const width, int const height)
     -> void
 {
     glViewport(0, 0, width, height);

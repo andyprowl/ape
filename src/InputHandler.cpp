@@ -156,10 +156,6 @@ auto InputHandler::processFullScreenToggle() const
     }
     else if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS)
     {
-        auto width = int{};
-
-        auto height = int{};
-
         glfwSetWindowMonitor(window, nullptr, 100, 100, 1024, 768, GLFW_DONT_CARE);
     }
 }

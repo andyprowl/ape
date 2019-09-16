@@ -11,7 +11,20 @@ class Transformer : public Transformable
 
 public:
 
-    using Transformable::Transformable;
+    Transformer();
+
+    explicit Transformer(glm::mat4 const & localTransformation);
+
+    Transformer(Transformer * transformer, glm::mat4 const & localTransformation);
+
+    auto getLocalTransformation() const
+        -> glm::mat4;
+
+    auto getGlobalTransformation() const
+        -> glm::mat4;
+
+    auto setLocalTransformation(glm::mat4 const & newTransformation)
+        -> void;
 
 private:
 
@@ -22,7 +35,7 @@ private:
 private:
 
     // virtual (from Transformable)
-    auto onTransformationChanged(BaseTransformationKind kind)
+    auto onContextTransformationChanged(glm::mat4 const & contextTransformation)
         -> void override;
 
     // To be invoked by Transformable.
@@ -39,5 +52,9 @@ private:
 private:
 
     SubjectCollection subjects;
+
+    glm::mat4 localTransformation;
+
+    glm::mat4 globalTransformation;
 
 };

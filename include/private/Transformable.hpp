@@ -11,23 +11,18 @@ public:
 
     Transformable();
 
-    explicit Transformable(glm::mat4 const & localTransformation);
-
-    Transformable(Transformer * transformer, glm::mat4 const & localTransformation);
+    explicit Transformable(Transformer * transformer);
 
     virtual ~Transformable() = default;
 
     auto getTransformer() const
         -> Transformer *;
 
-    auto getLocalTransformation() const
-        -> glm::mat4;
-
-    auto getGlobalTransformation() const
-        -> glm::mat4;
-
     auto setTransformer(Transformer & newTransformer)
         -> void;
+
+    auto getContextTransformation() const
+        -> glm::mat4;
 
 protected:
 
@@ -49,34 +44,18 @@ protected:
     auto operator = (Transformable && rhs) noexcept
         -> Transformable & = default;
 
-    auto setLocalTransformation(glm::mat4 const & newTransformation)
-        -> void;
-
 private:
 
     friend class Transformer;
 
 private:
 
-    virtual auto onTransformationChanged(BaseTransformationKind const)
-        -> void
-    {
-        // Default implementation intentionally a NOP.
-    }
-
     // To be invoked by the parent Transformer.
-    auto onContextTransformationChanged(glm::mat4 const & contextTransformation)
-        -> void;
-
-    auto getContextTransformation() const
-        -> glm::mat4;
+    virtual auto onContextTransformationChanged(glm::mat4 const & contextTransformation)
+        -> void = 0;
 
 private:
 
     Transformer * transformer;
-
-    glm::mat4 localTransformation;
-
-    glm::mat4 globalTransformation;
 
 };

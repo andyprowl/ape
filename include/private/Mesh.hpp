@@ -59,8 +59,6 @@ private:
 
     Material material;
 
-    ShaderProgram const * shaderProgram;
-
     glm::mat4 modelTransformation;
 
     glm::mat3 normalMatrix;

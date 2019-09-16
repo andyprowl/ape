@@ -1,9 +1,14 @@
 #include "Camera.hpp"
 
+#include "CompilerWarnings.hpp"
 #include "Mesh.hpp"
-#include "Scene.hpp"
 #include "ShaderProgram.hpp"
 #include "Window.hpp"
+
+// Quaternion implementation uses some non-standard extensions.
+disableCompilerWarnings()
+#include <glm/gtc/quaternion.hpp>
+disableCompilerWarnings()
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -21,8 +26,8 @@ Camera::Camera(
     , aspectRatio{aspectRatio}
     , view{makeView()}
     , projection{makeProjection()}
+    , transformation{projection * view}
 {
-    setLocalTransformation(projection * view);
 }
 
 auto Camera::getView() const
@@ -37,6 +42,12 @@ auto Camera::getProjection() const
     return projection;
 }
 
+auto Camera::getTransformation() const
+    -> glm::mat4
+{
+    return projection * view;
+}
+
 auto Camera::getPosition() const
     -> glm::vec3
 {
@@ -46,9 +57,16 @@ auto Camera::getPosition() const
 auto Camera::setPosition(glm::vec3 const & newPosition)
     -> void
 {
+    if (position == newPosition)
+    {
+        return;
+    }
+
+    auto const offset = newPosition - position;
+
     position = newPosition;
 
-    updateView();
+    view = glm::translate(view, -offset);
 }
 
 auto Camera::getDirection() const
@@ -57,11 +75,42 @@ auto Camera::getDirection() const
     return direction;
 }
 
+auto rotationBetweenVectors(glm::vec3 const & start, glm::vec3 const & dest)
+    -> glm::mat4
+{
+    auto const cosTheta = glm::dot(start, dest);
+
+    auto const rotationAxis = glm::cross(start, dest);
+
+    auto const s = glm::sqrt((1 + cosTheta) * 2);
+
+    auto const invs = 1 / s;
+
+    auto const quat = glm::quat{
+        s * 0.5f, 
+        rotationAxis.x * invs,
+        rotationAxis.y * invs,
+        rotationAxis.z * invs};
+
+    return glm::mat4{quat};
+}
+
 auto Camera::setDirection(glm::vec3 const & newDirection)
     -> void
 {
-    direction = glm::normalize(newDirection);
+    auto const normalizedDirection = glm::normalize(newDirection);
 
+    if (direction == normalizedDirection)
+    {
+        return;
+    }
+
+    direction = normalizedDirection;
+
+    auto const right = glm::normalize(glm::cross(direction, glm::vec3{0.0, 1.0, 0.0}));
+    
+    up = glm::cross(right, direction);
+    
     updateView();
 }
 
@@ -69,14 +118,6 @@ auto Camera::getUp() const
     -> glm::vec3
 {
     return up;
-}
-
-auto Camera::setUp(glm::vec3 const & newUp)
-    -> void
-{
-    up = newUp;
-
-    updateView();
 }
 
 auto Camera::getFieldOfView() const
@@ -88,6 +129,11 @@ auto Camera::getFieldOfView() const
 auto Camera::setFieldOfView(float const newFieldOfView)
     -> void
 {
+    if (fieldOfView == newFieldOfView)
+    {
+        return;
+    }
+
     fieldOfView = newFieldOfView;
 
     updateProjection();
@@ -102,9 +148,21 @@ auto Camera::getAspectRatio() const
 auto Camera::setAspectRatio(float const newAspectRatio)
     -> void
 {
+    if (aspectRatio == newAspectRatio)
+    {
+        return;
+    }
+
     aspectRatio = newAspectRatio;
 
     updateProjection();
+}
+
+// override (from Transformable)
+auto Camera::onContextTransformationChanged(glm::mat4 const & contextTransformation)
+    -> void
+{
+    transformation = projection * contextTransformation * view;
 }
 
 auto Camera::makeView() const
@@ -124,7 +182,7 @@ auto Camera::updateView()
 {
     view = makeView();
 
-    setLocalTransformation(projection * view);
+    updateTransformation();
 }
 
 auto Camera::updateProjection()
@@ -132,5 +190,11 @@ auto Camera::updateProjection()
 {
     projection = makeProjection();
 
-    setLocalTransformation(projection * view);
+    updateTransformation();
+}
+
+auto Camera::updateTransformation()
+    -> void
+{
+    transformation = projection * getContextTransformation() * view;
 }

@@ -128,7 +128,7 @@ auto Application::setupCamera()
 
     shader.set("viewPosition", scene.camera.getPosition());
 
-    shader.set("transform.camera", scene.camera.getGlobalTransformation());
+    shader.set("transform.camera", scene.camera.getTransformation());
 }
 
 auto Application::setupLights()

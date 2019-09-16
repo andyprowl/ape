@@ -5,7 +5,13 @@ project(OpenGLTest)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+include("cmake/CompilerSettings.cmake")
+
 include("cmake/Dependencies.cmake")
+
+SetStrictWarningPolicy()
+
+SetCpp14StandardCompliance()
 
 ImportDependencies()
 

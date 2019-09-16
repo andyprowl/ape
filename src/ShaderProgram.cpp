@@ -1,8 +1,12 @@
 #include "ShaderProgram.hpp"
 
+#include "CompilerWarnings.hpp"
 #include "GLFW.hpp"
 
+// Non-standard extensions used in GLM
+disableCompilerWarnings()
 #include <glm/gtc/type_ptr.hpp>
+restoreCompilerWarnings()
 
 #include <fstream>
 #include <iostream>

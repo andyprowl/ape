@@ -27,7 +27,10 @@ auto getInitialYaw(Camera const & camera)
 
 } // unnamed namespace
 
-CameraCameraManipulator::CameraCameraManipulator(GLFWwindow & window, Camera & camera, float const sensitivity)
+CameraCameraManipulator::CameraCameraManipulator(
+    GLFWwindow & window,
+    Camera & camera,
+    float const sensitivity)
     : mouseTracker{window}
     , wheelPublisher{window}
     , camera{&camera}
@@ -38,7 +41,7 @@ CameraCameraManipulator::CameraCameraManipulator(GLFWwindow & window, Camera & c
     registerForWheelNotifications();
 }
 
-auto CameraCameraManipulator::update(double const lastFrameDuration)
+auto CameraCameraManipulator::update(double const /*lastFrameDuration*/)
     -> void
 {
     mouseTracker.update();

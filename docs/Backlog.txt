@@ -1,6 +1,5 @@
  - Build 64-bit version of the necessary libraries (GLFW)
  - Use pre-cached attribute IDs instead of names for setting uniforms
- - Lateral (strafe) movement while looking down is very slow
  - Implement hierarchical scene/mesh model supporting attachments and transforms
  - Separate framework from concrete application (esp. world creation and input handling)
  - Create a library which can be used also from Qt

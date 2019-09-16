@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Transformable.hpp"
+
 #include <glm/vec3.hpp>
 
 class ShaderProgram;

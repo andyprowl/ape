@@ -29,6 +29,9 @@ public:
     auto getProjection() const
         -> glm::mat4;
 
+    auto getTransformation() const
+        -> glm::mat4;
+
     auto getPosition() const
         -> glm::vec3;
 
@@ -44,9 +47,6 @@ public:
     auto getUp() const
         -> glm::vec3;
 
-    auto setUp(glm::vec3 const & newUp)
-        -> void;
-
     auto getFieldOfView() const
         -> float;
 
@@ -61,6 +61,10 @@ public:
 
 private:
 
+    // virtual (from Transformable)
+    auto onContextTransformationChanged(glm::mat4 const & contextTransformation)
+        -> void override;
+
     auto makeView() const
         -> glm::mat4;
 
@@ -71,6 +75,9 @@ private:
         -> void;
 
     auto updateProjection()
+        -> void;
+    
+    auto updateTransformation()
         -> void;
 
 private:
@@ -88,5 +95,7 @@ private:
     glm::mat4 view;
 
     glm::mat4 projection;
+
+    glm::mat4 transformation;
 
 };
