@@ -208,143 +208,15 @@ auto ShaderProgram::use() const
     glUseProgram(id);
 }
 
-auto ShaderProgram::getBool(std::string const & name) const
-    -> bool
+auto ShaderProgram::getUniformLocation(std::string const & name) const
+    -> int
 {
-    const auto location = glGetUniformLocation(id, name.c_str());
+    auto const location = glGetUniformLocation(id, name.c_str());
 
-    auto value = int{};
-
-    glGetUniformiv(id, location, &value);
-
-    return (value != 0);
-}
-
-auto ShaderProgram::getFloat(std::string const & name) const
-    -> float
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    auto value = float{};
-
-    glGetUniformfv(id, location, &value);
-
-    return value;
-}
-
-auto ShaderProgram::getMat4(std::string const & name) const
-    -> glm::mat4
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    auto value = std::array<float, 16>{0};
-
-    glGetUniformfv(id, location, value.data());
-
-    return glm::mat4{
-        value[0], value[1], value[2], value[3],
-        value[4], value[5], value[6], value[7],
-        value[8], value[9], value[10], value[11],
-        value[12], value[13], value[14], value[15]};
-}
-
-auto ShaderProgram::set(std::string const & name, bool const value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform1i(location, value);
-}
-
-auto ShaderProgram::set(std::string const & name, int const value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform1i(location, value);
-}
-
-auto ShaderProgram::set(std::string const & name, float const value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform1f(location, value);
-}
-
-auto ShaderProgram::set(std::string const & name, std::array<float, 2u> const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform2f(location, value[0], value[1]);
-}
-
-auto ShaderProgram::set(std::string const & name, std::array<float, 3u> const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform3f(location, value[0], value[1], value[2]);
-}
-
-auto ShaderProgram::set(std::string const & name, std::array<float, 4u> const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform4f(location, value[0], value[1], value[2], value[3]);
-}
-
-auto ShaderProgram::set(std::string const & name, glm::vec2 const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform2f(location, value.x, value.y);
-}
-
-auto ShaderProgram::set(std::string const & name, glm::vec3 const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform3f(location, value.x, value.y, value.z);
-}
-
-auto ShaderProgram::set(std::string const & name, glm::vec4 const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniform4f(location, value.x, value.y, value.z, value.w);
-}
-
-auto ShaderProgram::set(std::string const & name, glm::mat3 const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
-}
-
-auto ShaderProgram::set(std::string const & name, glm::mat4 const & value) const
-    -> void
-{
-    const auto location = glGetUniformLocation(id, name.c_str());
-
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
-}
-
-auto ShaderProgram::bindFragmentSamplers(std::vector<std::string> const & samplerIds) const
-    -> void
-{
-    use();
-
-    for (auto i = 0; i < static_cast<int>(samplerIds.size()); ++i)
+    if (location < 0)
     {
-        auto const & samplerId = samplerIds[i];
-
-        set(samplerId, i);
+        throw UniformNotFound{name};
     }
+
+    return location;
 }

@@ -1,7 +1,6 @@
 #include "Camera.hpp"
 
 #include "CompilerWarnings.hpp"
-#include "Mesh.hpp"
 #include "ShaderProgram.hpp"
 #include "Window.hpp"
 

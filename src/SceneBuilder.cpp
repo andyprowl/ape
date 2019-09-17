@@ -6,8 +6,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-SceneBuilder::SceneBuilder(GLFWwindow & window)
+SceneBuilder::SceneBuilder(GLFWwindow & window, ShaderProgram const & shader)
     : window{&window}
+    , shader{&shader}
 {
 }
 
@@ -67,7 +68,7 @@ auto SceneBuilder::createGroundTileMesh(
 
     auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-    bodies.emplace_back(std::move(shape), material, translation);
+    bodies.emplace_back(std::move(shape), *shader, material, translation);
 }
 
 auto SceneBuilder::getGroundMaterial() const
@@ -104,7 +105,7 @@ auto SceneBuilder::createCubeBodies(std::vector<Mesh> & bodies) const
 
         auto const & material = materials[i % materials.size()];
 
-        bodies.emplace_back(shape, material, translation * rotation);
+        bodies.emplace_back(shape, *shader, material, translation * rotation);
     }
 }
 
@@ -158,7 +159,7 @@ auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getLampMaterial();
 
-        bodies.emplace_back(shape, material, translation);
+        bodies.emplace_back(shape, *shader, material, translation);
     }
 }
 
@@ -201,7 +202,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getFlashLightMaterial();
 
-        bodies.emplace_back(shape, material, translation * rotation);
+        bodies.emplace_back(shape, *shader, material, translation * rotation);
     }
 }
 
@@ -338,9 +339,7 @@ auto SceneBuilder::createDirectionalLights() const
 auto SceneBuilder::getDirectionalLightDirections() const
     -> std::vector<glm::vec3>
 {
-    return {
-        //{0.0f, -1.0f, 0.0f}
-        };
+    return {};
 }
 
 auto SceneBuilder::createDirectionalLight(

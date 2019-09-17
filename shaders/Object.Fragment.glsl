@@ -86,6 +86,10 @@ struct DirectionalLight
 struct Lighting
 {
 
+    // By convention we call the uniform that contains the size of a uniform array UA as
+    // UAArraySize, so for example the size of the "point" array is held in a uniform named
+    // pointArraySize.
+
     #define MAX_NUM_OF_POINT_LIGHTS 8
 
     #define MAX_NUM_OF_SPOT_LIGHTS 8
@@ -94,19 +98,21 @@ struct Lighting
 
     PointLight point[MAX_NUM_OF_POINT_LIGHTS];
 
-    int numOfPointLights;
+    int pointArraySize;
 
     SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    int numOfSpotLights;
+    int spotArraySize;
 
     DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
-    int numOfDirectionalLights;
+    int directionalArraySize;
 
 };
 
 in Vertex vertex;
+
+out vec4 fragmentColor;
 
 uniform Material material;
 
@@ -168,7 +174,7 @@ vec3 computePointLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.numOfPointLights; ++i)
+    for (int i = 0; i < lighting.pointArraySize; ++i)
     {
         PointLight light = lighting.point[i];
 
@@ -209,7 +215,7 @@ vec3 computeSpotLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.numOfSpotLights; ++i)
+    for (int i = 0; i < lighting.spotArraySize; ++i)
     {
         SpotLight light = lighting.spot[i];
 
@@ -236,7 +242,7 @@ vec3 computeDirectionalLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.numOfDirectionalLights; ++i)
+    for (int i = 0; i < lighting.directionalArraySize; ++i)
     {
         DirectionalLight light = lighting.directional[i];
 
@@ -254,5 +260,5 @@ void main()
 
     vec3 directionalLighting = computeDirectionalLighting();
 
-    gl_FragColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
+    fragmentColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
 }

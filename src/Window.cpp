@@ -29,13 +29,13 @@ auto printCapabilities()
     std::cout << "Maximum number of vertex attributes: " << numOfAttributes << "\n";
 }
 
-auto makeRegularGlfwWindow()
+auto makeRegularGlfwWindow(std::string const & title)
     -> GLFWwindow *
 {
-    return glfwCreateWindow(1024, 768, "LearnOpenGL", nullptr, nullptr);
+    return glfwCreateWindow(1024, 768, title.c_str(), nullptr, nullptr);
 }
 
-auto makeFullScreenGlfwWindow()
+auto makeFullScreenGlfwWindow(std::string const & title)
     -> GLFWwindow *
 {
     auto const monitor = glfwGetPrimaryMonitor();
@@ -50,18 +50,13 @@ auto makeFullScreenGlfwWindow()
 
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    return glfwCreateWindow(
-        mode->width,
-        mode->height,
-        "LearnOpenGL",
-        glfwGetPrimaryMonitor(),
-        nullptr);
+    return glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
 }
 
-auto makeGlfwWindow(bool const fullscreen)
+auto makeGlfwWindow(std::string const & title, bool const fullscreen)
     -> GLFWwindow &
 {
-    auto const window = fullscreen ? makeFullScreenGlfwWindow() : makeRegularGlfwWindow();
+    auto const window = fullscreen ? makeFullScreenGlfwWindow(title) : makeRegularGlfwWindow(title);
 
     if (window == nullptr)
     {
@@ -87,12 +82,12 @@ auto fitViewport(GLFWwindow & window)
 
 } // unnamed namespace
 
-auto createWindow()
+auto createWindow(std::string const & title, bool const fullScreen)
     -> GLFWwindow &
 {
     initGLFW();
 
-    auto & window = makeGlfwWindow(false);
+    auto & window = makeGlfwWindow(title, fullScreen);
 
     glfwMakeContextCurrent(&window);
     

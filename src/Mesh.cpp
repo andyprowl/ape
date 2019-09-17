@@ -20,23 +20,26 @@ auto computeNormalMatrix(glm::mat4 const & model)
 
 Mesh::Mesh(
     std::shared_ptr<Shape const> shape,
+    ShaderProgram const & shader,
     Material const & material,
     glm::mat4 const & modelTransformation)
     : shape{std::move(shape)}
+    , shader{&shader}
     , material{material}
     , modelTransformation{modelTransformation}
     , normalMatrix{computeNormalMatrix(modelTransformation)}
+    , uniforms{shader}
 {
 }
 
-auto Mesh::draw(ShaderProgram const & shaderProgram) const
+auto Mesh::draw() const
     -> void
 {
-    shaderProgram.use();
+    shader->use();
 
-    setTransformationsInShader(shaderProgram);
+    setTransformationsInShader();
 
-    setMaterialInShader(shaderProgram);
+    setMaterialInShader();
 
     drawShape();
 }
@@ -79,20 +82,20 @@ auto Mesh::getMaterial() const
     return material;
 }
 
-auto Mesh::setTransformationsInShader(ShaderProgram const & shaderProgram) const
+auto Mesh::setTransformationsInShader() const
     -> void
 {
-    shaderProgram.set("transform.model", modelTransformation);
+    uniforms.modelTransformation = modelTransformation;
 
-    shaderProgram.set("transform.normal", normalMatrix);
+    uniforms.normalMatrix = normalMatrix;
 }
 
-auto Mesh::setMaterialInShader(ShaderProgram const & shaderProgram) const
+auto Mesh::setMaterialInShader() const
     -> void
 {
-    shaderProgram.set("material.ambient", material.ambient);
+    uniforms.materialAmbient = material.ambient;
 
-    shaderProgram.set("material.shininess", material.shininess);
+    uniforms.materialShininess= material.shininess;
 
     material.diffuseMap.bind(0);
 

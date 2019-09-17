@@ -8,10 +8,11 @@
 #include <vector>
 
 Application::Application()
-    : window{&createWindow()}
-    , shader{createShaderProgram()}
-    , scene{createScene(*window)}
+    : window{&createWindow("3D Engine", false)}
+    , shader{"Object.Vertex.glsl", "Object.Fragment.glsl"}
+    , scene{createScene(*window, shader)}
     , inputHandler{scene, *window, shader}
+    , uniforms{shader}
 {
     captureMouse();
 }
@@ -30,6 +31,8 @@ auto Application::captureMouse() const
 auto Application::run()
     -> void
 {
+    bindMaterialSamplers();
+
     while (!wasTerminationRequested())
     {
         processInput();
@@ -45,25 +48,22 @@ auto Application::run()
 }
 
 /*static*/
-auto Application::createShaderProgram()
-    -> ShaderProgram
-{
-    auto program = ShaderProgram{"Object.Vertex.glsl", "Object.Fragment.glsl"};
-
-    program.use();
-
-    program.bindFragmentSamplers({"material.diffuse", "material.specular"});
-
-    return program;
-}
-
-/*static*/
-auto Application::createScene(GLFWwindow & window)
+auto Application::createScene(GLFWwindow & window, ShaderProgram & shader)
     -> Scene
 {
-    auto builder = SceneBuilder{window};
+    auto builder = SceneBuilder{window, shader};
 
     return builder.build();
+}
+
+auto Application::bindMaterialSamplers() const
+    -> void
+{
+    shader.use();
+
+    shader.getUniform<int>("material.diffuse") = 0;
+
+    shader.getUniform<int>("material.specular") = 1;
 }
 
 auto Application::wasTerminationRequested() const
@@ -126,9 +126,9 @@ auto Application::setupCamera()
 
     shader.use();
 
-    shader.set("viewPosition", scene.camera.getPosition());
+    uniforms.cameraPosition.set(scene.camera.getPosition());
 
-    shader.set("transform.camera", scene.camera.getTransformation());
+    uniforms.cameraTransformation.set(scene.camera.getTransformation());
 }
 
 auto Application::setupLights()
@@ -136,98 +136,7 @@ auto Application::setupLights()
 {
     shader.use();
 
-    setupPointLights();
-
-    setupSpotLights();
-
-    setupDirectionalLights();
-}
-
-auto Application::setupPointLights()
-    -> void
-{
-    auto const numOfPointLights = static_cast<int>(scene.lighting.point.size());
-
-    shader.set("lighting.numOfPointLights", numOfPointLights);
-
-    for (auto i = 0; i < numOfPointLights; ++i)
-    {
-        auto const & light = scene.lighting.point[i];
-
-        auto uniformPrefix = "lighting.point[" + std::to_string(i) + "]";
-
-        shader.set(uniformPrefix + ".position", light.position);
-
-        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
-
-        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
-
-        shader.set(uniformPrefix + ".color.specular", light.color.specular);
-
-        shader.set(uniformPrefix + ".attenuation.constant", light.attenuation.constant);
-
-        shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
-
-        shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
-    }
-}
-
-auto Application::setupSpotLights()
-    -> void
-{
-    auto const numOfSpotLights = static_cast<int>(scene.lighting.spot.size());
-
-    shader.set("lighting.numOfSpotLights", numOfSpotLights);
-
-    for (auto i = 0; i < numOfSpotLights; ++i)
-    {
-        auto const & light = scene.lighting.spot[i];
-
-        auto uniformPrefix = "lighting.spot[" + std::to_string(i) + "]";
-
-        shader.set(uniformPrefix + ".position", light.position);
-
-        shader.set(uniformPrefix + ".direction", light.direction);
-
-        shader.set(uniformPrefix + ".innerCutoffCosine", glm::cos(light.cutoff.inner));
-
-        shader.set(uniformPrefix + ".outerCutoffCosine", glm::cos(light.cutoff.outer));
-
-        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
-
-        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
-
-        shader.set(uniformPrefix + ".color.specular", light.color.specular);
-
-        shader.set(uniformPrefix + ".attenuation.constant", light.attenuation.constant);
-
-        shader.set(uniformPrefix + ".attenuation.linear", light.attenuation.linear);
-
-        shader.set(uniformPrefix + ".attenuation.quadratic", light.attenuation.quadratic);
-    }
-}
-
-auto Application::setupDirectionalLights()
-    -> void
-{
-    auto const numOfDirectionalLights = static_cast<int>(scene.lighting.directional.size());
-
-    shader.set("lighting.numOfDirectionalLights", numOfDirectionalLights);
-
-    for (auto i = 0; i < numOfDirectionalLights; ++i)
-    {
-        auto const & light = scene.lighting.directional[i];
-
-        auto uniformPrefix = "lighting.directional[" + std::to_string(i) + "]";
-
-        shader.set(uniformPrefix + ".direction", light.direction);
-
-        shader.set(uniformPrefix + ".color.ambient", light.color.ambient);
-
-        shader.set(uniformPrefix + ".color.diffuse", light.color.diffuse);
-
-        shader.set(uniformPrefix + ".color.specular", light.color.specular);
-    }
+    uniforms.lighting.set(scene.lighting);
 }
 
 auto Application::drawScene()
@@ -235,7 +144,7 @@ auto Application::drawScene()
 {
     for (auto & mesh : scene.bodies)
     {
-        mesh.draw(shader);
+        mesh.draw();
     }
 }
 

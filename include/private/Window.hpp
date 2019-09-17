@@ -32,7 +32,7 @@ public:
 
 };
 
-auto createWindow()
+auto createWindow(std::string const & title, bool fullScreen)
     -> GLFWwindow &;
 
 auto getWindowRatio(GLFWwindow & window)

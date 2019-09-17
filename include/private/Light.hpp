@@ -36,7 +36,7 @@ public:
 
 public:
 
-    Light(Color const & color)
+    explicit Light(Color const & color)
         : color{color}
     {
     }

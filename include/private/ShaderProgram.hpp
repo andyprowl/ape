@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Uniform.hpp"
+
 #include <glm/mat4x4.hpp>
 
 #include <stdexcept>
@@ -34,6 +36,18 @@ public:
 
 };
 
+class UniformNotFound : public std::logic_error
+{
+
+public:
+
+    explicit UniformNotFound(std::string name)
+        : logic_error{"The uniform '" + std::move(name) + "' was not found"}
+    {
+    }
+
+};
+
 class ShaderProgram
 {
 
@@ -46,50 +60,19 @@ public:
     auto use() const
         -> void;
 
-    auto getBool(std::string const & name) const
-        -> bool;
+    template<typename T>
+    auto getUniform(std::string const & name) const
+        -> Uniform<T>
+    {
+        const auto location = getUniformLocation(name);
 
-    auto getFloat(std::string const & name) const
-        -> float;
+        return Uniform<T>{id, location};
+    }
 
-    auto getMat4(std::string const & name) const
-        -> glm::mat4;
+private:
 
-    auto set(std::string const & name, bool value) const
-        -> void;
-
-    auto set(std::string const & name, int value) const
-        -> void;
-
-    auto set(std::string const & name, float value) const
-        -> void;
-
-    auto set(std::string const & name, std::array<float, 2u> const & value) const
-        -> void;
-
-    auto set(std::string const & name, std::array<float, 3u> const & value) const
-        -> void;
-
-    auto set(std::string const & name, std::array<float, 4u> const & value) const
-        -> void;
-
-    auto set(std::string const & name, glm::vec2 const & value) const
-        -> void;
-
-    auto set(std::string const & name, glm::vec3 const & value) const
-        -> void;
-
-    auto set(std::string const & name, glm::vec4 const & value) const
-        -> void;
-
-    auto set(std::string const & name, glm::mat3 const & value) const
-        -> void;
-
-    auto set(std::string const & name, glm::mat4 const & value) const
-        -> void;
-
-    auto bindFragmentSamplers(std::vector<std::string> const & samplerIds) const
-        -> void;
+    auto getUniformLocation(std::string const & name) const
+        -> int;
 
 private:
 

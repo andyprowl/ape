@@ -15,7 +15,7 @@ class SceneBuilder
 
 public:
 
-    explicit SceneBuilder(GLFWwindow & window);
+    SceneBuilder(GLFWwindow & window, ShaderProgram const & shader);
 
     auto build() const
         -> Scene;
@@ -112,9 +112,9 @@ private:
 
 private:
 
-    ShaderProgram const * shader;
-
     GLFWwindow * window;
+
+    ShaderProgram const * shader;
 
     mutable TextureRepository textures;
 
