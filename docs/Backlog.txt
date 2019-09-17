@@ -1,4 +1,3 @@
- - Build 64-bit version of the necessary libraries (GLFW)
  - Implement hierarchical scene/mesh model supporting attachments and transforms
  - Separate framework from concrete application (esp. world creation and input handling)
  - Create a library which can be used also from Qt
