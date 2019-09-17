@@ -9,7 +9,7 @@
   - render
   - swap buffers
  - Extract light setup from Application, consider making Light a self-rendering, polymorphic type
- - Support planar shapes/meshes 
+ - Support planar shapes/meshes
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
  - Allow multiple diffuse maps and specular maps for every material
  - Allow importing models using Assimp

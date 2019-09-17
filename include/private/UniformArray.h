@@ -80,11 +80,11 @@ public:
     auto set(ValueType const & values)
         -> void
     {
-        auto numOfValues = values.size();
+        auto numOfValues = static_cast<int>(values.size());
 
         resize(numOfValues);
 
-        for (auto i = 0; i < static_cast<int>(numOfValues); ++i)
+        for (auto i = 0; i < numOfValues; ++i)
         {
             uniforms[i] = values[i];
         }

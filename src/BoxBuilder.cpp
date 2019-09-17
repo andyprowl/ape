@@ -131,7 +131,8 @@ private:
     auto pushFaceIndices()
         -> void
     {
-        auto const firstFaceVertexIndex = vertices.size() - numOfVerticesPerFace;
+        auto const firstFaceVertexIndex = 
+            static_cast<unsigned int>(vertices.size() - numOfVerticesPerFace);
 
         indices.push_back(firstFaceVertexIndex + 0);
 
