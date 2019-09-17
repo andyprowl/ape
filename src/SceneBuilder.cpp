@@ -278,7 +278,7 @@ auto SceneBuilder::createPointLight(
 
     auto const color = Light::Color{ambient, diffuse, specular};
 
-    lights.emplace_back(position, attenuation, color);
+    lights.emplace_back(position, attenuation, color, true);
 }
 
 auto SceneBuilder::createSpotLights() const
@@ -316,7 +316,7 @@ auto SceneBuilder::createSpotLight(
 
     auto const attenuation = Attenuation{1.0f, 0.02f, 0.012f};
 
-    lights.emplace_back(position, direction, cutoff, attenuation, color);
+    lights.emplace_back(position, direction, cutoff, attenuation, color, true);
 }
 
 auto SceneBuilder::createDirectionalLights() const
@@ -355,7 +355,7 @@ auto SceneBuilder::createDirectionalLight(
 
     auto const color = Light::Color{ambient, diffuse, specular};
 
-    lights.emplace_back(direction, color);
+    lights.emplace_back(direction, color, true);
 }
     
 auto SceneBuilder::createCamera() const

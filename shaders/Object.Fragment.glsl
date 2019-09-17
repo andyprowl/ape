@@ -55,6 +55,8 @@ struct PointLight
 
     Attenuation attenuation;
 
+    bool isTurnedOn;
+
 };
 
 struct SpotLight
@@ -72,6 +74,8 @@ struct SpotLight
 
     LightColor color;
 
+    bool isTurnedOn;
+
 };
 
 struct DirectionalLight
@@ -80,6 +84,8 @@ struct DirectionalLight
     vec3 direction;
 
     LightColor color;
+
+    bool isTurnedOn;
 
 };
 
@@ -178,7 +184,10 @@ vec3 computePointLighting()
     {
         PointLight light = lighting.point[i];
 
-        color += computePointLight(light);
+        if (light.isTurnedOn)
+        {
+            color += computePointLight(light);
+        }
     }
 
     return color;
@@ -219,7 +228,10 @@ vec3 computeSpotLighting()
     {
         SpotLight light = lighting.spot[i];
 
-        color += computeSpotLight(light);
+        if (light.isTurnedOn)
+        {
+            color += computeSpotLight(light);
+        }
     }
 
     return color;
@@ -246,7 +258,10 @@ vec3 computeDirectionalLighting()
     {
         DirectionalLight light = lighting.directional[i];
 
-        color += computeDirectionalLight(light);
+        if (light.isTurnedOn)
+        {
+            color += computeDirectionalLight(light);
+        }
     }
 
     return color;

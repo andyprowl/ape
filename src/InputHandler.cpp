@@ -1,6 +1,7 @@
 #include "InputHandler.hpp"
 
 #include "Camera.hpp"
+#include "KeyboardPublisher.hpp"
 #include "Scene.hpp"
 #include "ShaderProgram.hpp"
 
@@ -49,12 +50,24 @@ auto rotateLightAroundSceneY(Scene & scene, float const radians)
 InputHandler::InputHandler(
     Scene & scene,
     GLFWwindow & window,
+    MouseWheelPublisher & wheelPublisher,
+    KeyboardPublisher & keyboardPublisher,
     ShaderProgram const & program)
     : scene{&scene}
     , window{&window}
     , program{&program}
-    , cameraManipulator{scene, window, 0.1f}
+    , cameraManipulator{scene, window, wheelPublisher, 0.1f}
 {
+    registerKeyboardEventHandler(keyboardPublisher);
+}
+
+auto InputHandler::registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
+    -> void
+{
+    keyboardPublisher.registerHandler([this] (auto const ... args)
+    {
+        onKeyboardEvent(std::forward<decltype(args)>(args)...);
+    });
 }
 
 auto InputHandler::processInput(double const lastFrameDuration)
@@ -170,5 +183,22 @@ auto InputHandler::processLightRevolution(double const lastFrameDuration) const
     else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
     {
         rotateLightAroundSceneY(*scene, -rotationDelta);
+    }
+}
+
+auto InputHandler::onKeyboardEvent(
+    int const key,
+    int const /*scancode*/,
+    int const action,
+    int const /*mods*/) const
+    -> void
+{
+    if ((key == GLFW_KEY_1) && (action == GLFW_PRESS))
+    {
+        scene->lighting.spot[0].isTurnedOn = !(scene->lighting.spot[0].isTurnedOn);
+    }
+    else if ((key == GLFW_KEY_2) && (action == GLFW_PRESS))
+    {
+        scene->lighting.spot[1].isTurnedOn = !(scene->lighting.spot[1].isTurnedOn);
     }
 }

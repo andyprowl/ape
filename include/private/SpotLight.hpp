@@ -34,8 +34,9 @@ public:
         glm::vec3 const & direction,
         CutoffAngle const & cutoff,
         Attenuation const & attenuation,
-        Color const & color)
-        : Light{color}
+        Color const & color,
+        bool const isTurnedOn)
+        : Light{color, isTurnedOn}
         , position{position}
         , direction{direction}
         , cutoff{cutoff}

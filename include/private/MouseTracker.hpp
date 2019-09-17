@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Movement.h"
+#include "Movement.hpp"
 #include "Position.hpp"
 
 #include "GLFW.hpp"

@@ -2,7 +2,7 @@
 
 #include "Lighting.hpp"
 #include "ShaderProgram.hpp"
-#include "UniformArray.h"
+#include "UniformArray.hpp"
 
 class AttenuationUniform
 {
@@ -117,13 +117,14 @@ public:
         : position{program, prefix + ".position"}
         , color{program, prefix + ".color"}
         , attenuation{program, prefix + ".attenuation"}
+        , isTurnedOn{program, prefix + ".isTurnedOn"}
     {
     }
 
     auto get() const
         -> ValueType
     {
-        return {position.get(), attenuation.get(), color.get()};
+        return {position.get(), attenuation.get(), color.get(), isTurnedOn.get()};
     }
 
     auto set(ValueType const & light)
@@ -134,6 +135,8 @@ public:
         color = light.color;
 
         attenuation = light.attenuation;
+
+        isTurnedOn = light.isTurnedOn;
     }
 
     auto operator = (ValueType const & light)
@@ -151,6 +154,8 @@ public:
     LightColorUniform color;
 
     AttenuationUniform attenuation;
+
+    Uniform<bool> isTurnedOn;
 
 };
 
@@ -170,6 +175,7 @@ public:
         , outerCutoffCosine{program, prefix + ".outerCutoffCosine"}
         , color{program, prefix + ".color"}
         , attenuation{program, prefix + ".attenuation"}
+        , isTurnedOn{program, prefix + ".isTurnedOn"}
     {
     }
 
@@ -181,7 +187,8 @@ public:
             direction.get(),
             {glm::acos(innerCutoffCosine.get()), glm::acos(outerCutoffCosine.get())},
             attenuation.get(),
-            color.get()};
+            color.get(),
+            isTurnedOn.get()};
     }
 
     auto set(ValueType const & light)
@@ -198,6 +205,8 @@ public:
         color = light.color;
 
         attenuation = light.attenuation;
+
+        isTurnedOn = light.isTurnedOn;
     }
 
     auto operator = (ValueType const & light)
@@ -222,6 +231,8 @@ public:
 
     AttenuationUniform attenuation;
 
+    Uniform<bool> isTurnedOn;
+
 };
 
 class DirectionalLightUniform
@@ -236,13 +247,14 @@ public:
     DirectionalLightUniform(ShaderProgram const & program, std::string const & prefix)
         : direction{program, prefix + ".direction"}
         , color{program, prefix + ".color"}
+        , isTurnedOn{program, prefix + ".isTurnedOn"}
     {
     }
 
     auto get() const
         -> ValueType
     {
-        return {direction.get(), color.get()};
+        return {direction.get(), color.get(), isTurnedOn.get()};
     }
 
     auto set(ValueType const & light)
@@ -251,6 +263,8 @@ public:
         direction = light.direction;
 
         color = light.color;
+
+        isTurnedOn = light.isTurnedOn;
     }
 
     auto operator = (ValueType const & light)
@@ -266,6 +280,8 @@ public:
     Uniform<glm::vec3> direction;
 
     LightColorUniform color;
+
+    Uniform<bool> isTurnedOn;
 
 };
 

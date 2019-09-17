@@ -11,7 +11,11 @@ class CameraManipulator
 
 public:
 
-    CameraManipulator(Scene & scene, GLFWwindow & window, float sensitivity);
+    CameraManipulator(
+        Scene & scene,
+        GLFWwindow & window,
+        MouseWheelPublisher & wheelPublisher,
+        float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;

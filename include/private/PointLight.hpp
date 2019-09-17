@@ -10,8 +10,12 @@ class PointLight : public Light
 
 public:
 
-    PointLight(glm::vec3 const & position, Attenuation const & attenuation, Color const & color)
-        : Light{color}
+    PointLight(
+        glm::vec3 const & position,
+        Attenuation const & attenuation,
+        Color const & color,
+        bool const isTurnedOn)
+        : Light{color, isTurnedOn}
         , position{position}
         , attenuation{attenuation}
     {

@@ -3,7 +3,9 @@
 #include "Camera.hpp"
 #include "FrameTimeTracker.hpp"
 #include "InputHandler.hpp"
-#include "LightingUniform.h"
+#include "KeyboardPublisher.hpp"
+#include "LightingUniform.hpp"
+#include "MouseWheelPublisher.hpp"
 #include "Scene.hpp"
 #include "ShaderProgram.hpp"
 
@@ -95,6 +97,10 @@ private:
 private:
 
     GLFWwindow * window;
+
+    MouseWheelPublisher wheelPublisher;
+
+    KeyboardPublisher keyboardPublisher;
 
     ShaderProgram shader;
 

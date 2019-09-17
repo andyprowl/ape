@@ -6,7 +6,7 @@
 #include <functional>
 #include <unordered_map>
 
-class DuplicateMouseWheelPublisher : public std::exception
+class DuplicateKeyboardPublisher : public std::exception
 {
 
 public:
@@ -15,23 +15,23 @@ public:
     auto what() const noexcept
         -> char const * override
     {
-        return "There cannot be two instances of MouseWheelPublisher";
+        return "There cannot be two instances of KeyboardPublisher";
     }
 
 };
 
-class MouseWheelPublisher
+class KeyboardPublisher
 {
 
 public:
 
     using Cookie = int;
 
-    using Handler = std::function<auto (double offset) -> void>;
+    using Handler = std::function<auto (int key, int scancode, int action, int mods) -> void>;
 
 public:
 
-    explicit MouseWheelPublisher(GLFWwindow & window);
+    explicit KeyboardPublisher(GLFWwindow & window);
 
     auto registerHandler(Handler handler)
         -> Cookie;
@@ -39,7 +39,7 @@ public:
     auto unregisterHandler(Cookie cookie)
         -> void;
 
-    auto onMouseWheel(double offset) const
+    auto onKeyboardEvent(int key, int scancode, int action, int mods) const
         -> void;
 
 private:

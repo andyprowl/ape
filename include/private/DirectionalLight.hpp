@@ -7,8 +7,8 @@ class DirectionalLight : public Light
 
 public:
 
-    DirectionalLight(glm::vec3 const & direction, Color const & color)
-        : Light{color}
+    DirectionalLight(glm::vec3 const & direction, Color const & color, bool const isTurnedOn)
+        : Light{color, isTurnedOn}
         , direction{direction}
     {
     }

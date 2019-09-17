@@ -36,13 +36,16 @@ public:
 
 public:
 
-    explicit Light(Color const & color)
+    Light(Color const & color, bool const isTurnedOn)
         : color{color}
+        , isTurnedOn{isTurnedOn}
     {
     }
 
 public:
 
     Color color;
+
+    bool isTurnedOn;
 
 };

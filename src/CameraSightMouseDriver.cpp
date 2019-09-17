@@ -30,9 +30,10 @@ auto getInitialYaw(Camera const & camera)
 CameraSightMouseDriver::CameraSightMouseDriver(
     GLFWwindow & window,
     Camera & camera,
+    MouseWheelPublisher & wheelPublisher,
     float const sensitivity)
     : mouseTracker{window}
-    , wheelPublisher{window}
+    , wheelPublisher{&wheelPublisher}
     , camera{&camera}
     , pitch{0.0}
     , yaw{getInitialYaw(camera)}
@@ -65,7 +66,7 @@ auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
 auto CameraSightMouseDriver::registerForWheelNotifications()
     -> void
 {
-    wheelPublisher.registerHandler([this] (double const offset)
+    wheelPublisher->registerHandler([this] (double const offset)
     {
         auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
 

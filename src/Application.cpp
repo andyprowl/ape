@@ -9,9 +9,11 @@
 
 Application::Application()
     : window{&createWindow("3D Engine", false)}
+    , wheelPublisher{*window}
+    , keyboardPublisher{*window}
     , shader{"Object.Vertex.glsl", "Object.Fragment.glsl"}
     , scene{createScene(*window, shader)}
-    , inputHandler{scene, *window, shader}
+    , inputHandler{scene, *window, wheelPublisher, keyboardPublisher, shader}
     , uniforms{shader}
 {
     captureMouse();

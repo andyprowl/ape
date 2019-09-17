@@ -51,10 +51,14 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
 
 } // unnamed namespace
 
-CameraManipulator::CameraManipulator(Scene & scene, GLFWwindow & window, float const sensitivity)
+CameraManipulator::CameraManipulator(
+    Scene & scene, 
+    GLFWwindow & window, 
+    MouseWheelPublisher & wheelPublisher,
+    float const sensitivity)
     : scene{&scene}
     , window{&window}
-    , sightDriver{window, scene.camera, sensitivity}
+    , sightDriver{window, scene.camera, wheelPublisher, sensitivity}
 {
 }
 

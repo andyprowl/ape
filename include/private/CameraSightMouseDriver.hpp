@@ -6,13 +6,18 @@
 #include "GLFW.hpp"
 
 class Camera;
+class MouseWheelPublisher;
 
 class CameraSightMouseDriver
 {
 
 public:
 
-    CameraSightMouseDriver(GLFWwindow & window, Camera & camera, float sensitivity);
+    CameraSightMouseDriver(
+        GLFWwindow & window,
+        Camera & camera,
+        MouseWheelPublisher & wheelPublisher,
+        float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;
@@ -26,9 +31,9 @@ private:
 
     MouseTracker mouseTracker;
 
-    MouseWheelPublisher wheelPublisher;
-
     Camera * camera;
+
+    MouseWheelPublisher * wheelPublisher;
 
     float pitch;
 
