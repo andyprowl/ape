@@ -126,6 +126,10 @@ Shape::~Shape()
 auto Shape::draw() const
     -> void
 {
+    // Culling is not appropriate for all shapes. This should be done conditionally in the future.
+    // However, when appropriate, it will save at least 50% of fragment shader calls.
+    glEnable(GL_CULL_FACE);
+
     glBindVertexArray(objectIds.vertexArrayObjectId);
 
     glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
