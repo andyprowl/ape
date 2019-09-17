@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Signal.hpp"
+
 #include "GLFW.hpp"
 
 #include <glm/mat4x4.hpp>
@@ -12,6 +14,10 @@ class Scene;
 
 class Camera
 {
+
+public:
+
+    using TransformEventSignature = auto (glm::mat4 const & t) -> void;
 
 public:
 
@@ -58,6 +64,14 @@ public:
     auto setAspectRatio(float newAspectRatio)
         -> void;
 
+public:
+
+    Signal<TransformEventSignature> onViewChanged;
+
+    Signal<TransformEventSignature> onProjectionChanged;
+
+    Signal<TransformEventSignature> onTransformationChanged;
+
 private:
 
     auto makeView() const
@@ -66,13 +80,10 @@ private:
     auto makeProjection() const
         -> glm::mat4;
 
-    auto updateView()
+    auto setViewAndFireEvent(glm::mat4 const & newView)
         -> void;
 
-    auto updateProjection()
-        -> void;
-    
-    auto updateTransformation()
+    auto setProjectionAndFireEvent(glm::mat4 const & newProjection)
         -> void;
 
 private:

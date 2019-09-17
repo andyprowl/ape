@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Signal.hpp"
+
 #include "GLFW.hpp"
 
 #include <exception>
@@ -25,30 +27,19 @@ class MouseWheelPublisher
 
 public:
 
-    using Cookie = int;
-
-    using Handler = std::function<auto (double offset) -> void>;
+    using WheelEventSignature = auto (double offset) -> void;
 
 public:
 
     explicit MouseWheelPublisher(GLFWwindow & window);
 
-    auto registerHandler(Handler handler)
-        -> Cookie;
+public:
 
-    auto unregisterHandler(Cookie cookie)
-        -> void;
-
-    auto onMouseWheel(double offset) const
-        -> void;
+    Signal<WheelEventSignature> onWheelEvent;
 
 private:
 
     auto ensureUniqueInstance() const
         -> void;
-
-private:
-
-    std::unordered_map<Cookie, Handler> registrations;
 
 };

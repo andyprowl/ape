@@ -59,7 +59,7 @@ auto Camera::setPosition(glm::vec3 const & newPosition)
 
     position = newPosition;
 
-    view = glm::translate(view, -offset);
+    setViewAndFireEvent(glm::translate(view, -offset));
 }
 
 auto Camera::getDirection() const
@@ -84,7 +84,7 @@ auto Camera::setDirection(glm::vec3 const & newDirection)
     
     up = glm::cross(right, direction);
     
-    updateView();
+    setViewAndFireEvent(makeView());
 }
 
 auto Camera::getUp() const
@@ -109,7 +109,7 @@ auto Camera::setFieldOfView(float const newFieldOfView)
 
     fieldOfView = newFieldOfView;
 
-    updateProjection();
+    setProjectionAndFireEvent(makeProjection());
 }
 
 auto Camera::getAspectRatio() const
@@ -128,7 +128,7 @@ auto Camera::setAspectRatio(float const newAspectRatio)
 
     aspectRatio = newAspectRatio;
 
-    updateProjection();
+    setProjectionAndFireEvent(makeProjection());
 }
 
 auto Camera::makeView() const
@@ -143,24 +143,26 @@ auto Camera::makeProjection() const
     return glm::perspective(fieldOfView, aspectRatio, 0.1f, 100.0f);
 }
 
-auto Camera::updateView()
+auto Camera::setViewAndFireEvent(glm::mat4 const & newView)
     -> void
 {
-    view = makeView();
+    view = newView;
 
-    updateTransformation();
-}
-
-auto Camera::updateProjection()
-    -> void
-{
-    projection = makeProjection();
-
-    updateTransformation();
-}
-
-auto Camera::updateTransformation()
-    -> void
-{
     transformation = projection * view;
+
+    onViewChanged.fire(view);
+
+    onTransformationChanged.fire(view);
+}
+
+auto Camera::setProjectionAndFireEvent(glm::mat4 const & newProjection)
+    -> void
+{
+    projection = newProjection;
+
+    transformation = projection * view;
+
+    onProjectionChanged.fire(view);
+
+    onTransformationChanged.fire(view);
 }

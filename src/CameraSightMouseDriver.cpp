@@ -66,7 +66,7 @@ auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
 auto CameraSightMouseDriver::registerForWheelNotifications()
     -> void
 {
-    wheelPublisher->registerHandler([this] (double const offset)
+    wheelPublisher->onWheelEvent.registerHandler([this] (double const offset)
     {
         auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Signal.hpp"
+
 #include "GLFW.hpp"
 
 #include <exception>
@@ -25,30 +27,19 @@ class KeyboardPublisher
 
 public:
 
-    using Cookie = int;
-
-    using Handler = std::function<auto (int key, int scancode, int action, int mods) -> void>;
+    using KeyboardEventSignature = auto (int key, int scancode, int action, int mods) -> void;
 
 public:
 
     explicit KeyboardPublisher(GLFWwindow & window);
 
-    auto registerHandler(Handler handler)
-        -> Cookie;
+public:
 
-    auto unregisterHandler(Cookie cookie)
-        -> void;
-
-    auto onKeyboardEvent(int key, int scancode, int action, int mods) const
-        -> void;
+    Signal<KeyboardEventSignature> onKeyboardEvent;
 
 private:
 
     auto ensureUniqueInstance() const
         -> void;
-
-private:
-
-    std::unordered_map<Cookie, Handler> registrations;
 
 };

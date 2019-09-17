@@ -64,7 +64,7 @@ InputHandler::InputHandler(
 auto InputHandler::registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
     -> void
 {
-    keyboardPublisher.registerHandler([this] (auto const ... args)
+    keyboardPublisher.onKeyboardEvent.registerHandler([this] (auto const ... args)
     {
         onKeyboardEvent(std::forward<decltype(args)>(args)...);
     });
