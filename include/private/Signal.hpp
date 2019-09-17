@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ScopedSignalConnection.hpp"
+
 #include <functional>
 #include <unordered_map>
 
@@ -16,13 +18,16 @@ public:
 public:
 
     auto registerHandler(Handler handler)
-        -> Cookie
+        -> ScopedSignalConnection
     {
         auto const cookie = static_cast<int>(registrations.size());
 
         registrations.emplace(cookie, std::move(handler));
 
-        return cookie;
+        return ScopedSignalConnection{[=]
+        { 
+            return unregisterHandler(cookie);
+        }};
     }
 
     auto unregisterHandler(Cookie cookie)

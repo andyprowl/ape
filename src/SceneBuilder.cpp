@@ -15,11 +15,11 @@ SceneBuilder::SceneBuilder(GLFWwindow & window, ShaderProgram const & shader)
 auto SceneBuilder::build() const
     -> Scene
 {
+    auto camera = createCamera();
+
     auto bodies = createBodies();
 
     auto lighting = createLighting();
-
-    auto camera = createCamera();
 
     return Scene{std::move(bodies), std::move(lighting), std::move(camera)};
 }
@@ -210,7 +210,7 @@ auto SceneBuilder::getFlashLightMeshPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {2.4f, 1.0f, 0.0f},
+        {2.4f, 1.0f, 2.0f},
         {-2.5f, 1.5f, 2.5f}};
 }
 
@@ -294,6 +294,8 @@ auto SceneBuilder::createSpotLights() const
 
         createSpotLight(position, -position, lights); 
     }
+
+    createSpotLight({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, lights); 
 
     return lights;
 }

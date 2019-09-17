@@ -38,8 +38,8 @@ CameraSightMouseDriver::CameraSightMouseDriver(
     , pitch{0.0}
     , yaw{getInitialYaw(camera)}
     , sensitivity{sensitivity}
+    , wheelHandlerConnection{registerForWheelNotifications()}
 {
-    registerForWheelNotifications();
 }
 
 auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
@@ -64,9 +64,9 @@ auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
 }
 
 auto CameraSightMouseDriver::registerForWheelNotifications()
-    -> void
+    -> ScopedSignalConnection
 {
-    wheelPublisher->onWheelEvent.registerHandler([this] (double const offset)
+    return wheelPublisher->onWheelEvent.registerHandler([this] (double const offset)
     {
         auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
 

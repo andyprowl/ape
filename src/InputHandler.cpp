@@ -13,6 +13,12 @@
 namespace
 {
 
+auto toggle(bool & b)
+    -> void
+{
+    b = !b;
+}
+
 auto rotateMeshAroundOwnX(Mesh & mesh, float const radians)
     -> void
 {
@@ -57,14 +63,14 @@ InputHandler::InputHandler(
     , window{&window}
     , program{&program}
     , cameraManipulator{scene, window, wheelPublisher, 0.1f}
+    , keyboardHandlerConnection{registerKeyboardEventHandler(keyboardPublisher)}
 {
-    registerKeyboardEventHandler(keyboardPublisher);
 }
 
 auto InputHandler::registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
-    -> void
+    -> ScopedSignalConnection
 {
-    keyboardPublisher.onKeyboardEvent.registerHandler([this] (auto const ... args)
+    return keyboardPublisher.onKeyboardEvent.registerHandler([this] (auto const ... args)
     {
         onKeyboardEvent(std::forward<decltype(args)>(args)...);
     });
@@ -190,15 +196,44 @@ auto InputHandler::onKeyboardEvent(
     int const key,
     int const /*scancode*/,
     int const action,
-    int const /*mods*/) const
+    int const mods) const
     -> void
 {
-    if ((key == GLFW_KEY_1) && (action == GLFW_PRESS))
+    if (action != GLFW_PRESS)
     {
-        scene->lighting.spot[0].isTurnedOn = !(scene->lighting.spot[0].isTurnedOn);
+        return;
     }
-    else if ((key == GLFW_KEY_2) && (action == GLFW_PRESS))
+
+    auto const index = key - GLFW_KEY_1;
+
+    if (mods & GLFW_MOD_SHIFT)
     {
-        scene->lighting.spot[1].isTurnedOn = !(scene->lighting.spot[1].isTurnedOn);
+        togglePointLight(index);
     }
+    else
+    {
+        toggleSpotLight(index);
+    }
+}
+
+auto InputHandler::togglePointLight(int const index) const
+    -> void
+{
+    if (index >= static_cast<int>(scene->lighting.point.size()))
+    {
+        return;
+    }
+
+    toggle(scene->lighting.point[index].isTurnedOn);
+}
+
+auto InputHandler::toggleSpotLight(int const index) const
+    -> void
+{
+    if (index >= static_cast<int>(scene->lighting.spot.size()))
+    {
+        return;
+    }
+
+    toggle(scene->lighting.spot[index].isTurnedOn);
 }

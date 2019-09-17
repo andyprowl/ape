@@ -1,7 +1,9 @@
 #include "Application.hpp"
 
-#include "Window.hpp"
+#include "CameraDrivenPipeline.h"
+#include "CameraSpotlightSynchronizer.h"
 #include "SceneBuilder.hpp"
+#include "Window.hpp"
 
 #include <glm/trigonometric.hpp>
 
@@ -33,6 +35,8 @@ auto Application::captureMouse() const
 auto Application::run()
     -> void
 {
+    auto const synchronizer = CameraSpotlightSynchronizer{scene.camera, scene.lighting.spot.back()};
+
     bindMaterialSamplers();
 
     while (!wasTerminationRequested())

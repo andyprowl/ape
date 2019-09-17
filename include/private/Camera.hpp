@@ -66,11 +66,11 @@ public:
 
 public:
 
-    Signal<TransformEventSignature> onViewChanged;
+    mutable Signal<TransformEventSignature> onViewChanged;
 
-    Signal<TransformEventSignature> onProjectionChanged;
+    mutable Signal<TransformEventSignature> onProjectionChanged;
 
-    Signal<TransformEventSignature> onTransformationChanged;
+    mutable Signal<TransformEventSignature> onTransformationChanged;
 
 private:
 

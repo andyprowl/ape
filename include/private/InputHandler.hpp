@@ -30,7 +30,7 @@ public:
 private:
 
     auto registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
-        -> void;
+        -> ScopedSignalConnection;
 
     auto processTerminationRequest() const
         -> void;
@@ -59,6 +59,12 @@ private:
     auto onKeyboardEvent(int key, int scancode, int action, int mods) const
         -> void;
 
+    auto togglePointLight(int index) const
+        -> void;
+
+    auto toggleSpotLight(int index) const
+        -> void;
+
 private:
 
     Scene * scene;
@@ -68,5 +74,7 @@ private:
     ShaderProgram const * program;
 
     CameraManipulator cameraManipulator;
+
+    ScopedSignalConnection keyboardHandlerConnection;
 
 };

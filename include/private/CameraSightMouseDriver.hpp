@@ -25,7 +25,7 @@ public:
 private:
 
     auto registerForWheelNotifications()
-        -> void;
+        -> ScopedSignalConnection;
 
 private:
 
@@ -40,5 +40,7 @@ private:
     float yaw;
 
     float sensitivity;
+
+    ScopedSignalConnection wheelHandlerConnection;
 
 };
