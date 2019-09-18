@@ -41,7 +41,7 @@ private:
 
     public:
 
-        CameraUniform camera;
+        Uniform<Camera> camera;
 
         LightingUniform lighting;
     

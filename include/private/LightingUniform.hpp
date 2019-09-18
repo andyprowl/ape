@@ -2,9 +2,9 @@
 
 #include "Lighting.hpp"
 #include "ShaderProgram.hpp"
-#include "UniformArray.hpp"
 
-class AttenuationUniform
+template<>
+class Uniform<Attenuation>
 {
 
 public:
@@ -13,7 +13,7 @@ public:
 
 public:
 
-    AttenuationUniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram const & program, std::string const & prefix)
         : constant{program, prefix + ".constant"}
         , linear{program, prefix + ".linear"}
         , quadratic{program, prefix + ".quadratic"}
@@ -37,7 +37,7 @@ public:
     }
 
     auto operator = (ValueType const & attenuation)
-        -> AttenuationUniform &
+        -> Uniform &
     {
         set(attenuation);
 
@@ -54,7 +54,8 @@ public:
 
 };
 
-class LightColorUniform
+template<>
+class Uniform<Light::Color>
 {
 
 public:
@@ -63,7 +64,7 @@ public:
 
 public:
 
-    LightColorUniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram const & program, std::string const & prefix)
         : ambient{program, prefix + ".ambient"}
         , diffuse{program, prefix + ".diffuse"}
         , specular{program, prefix + ".specular"}
@@ -87,7 +88,7 @@ public:
     }
 
     auto operator = (ValueType const & color)
-        -> LightColorUniform &
+        -> Uniform &
     {
         set(color);
 
@@ -151,9 +152,9 @@ public:
 
     Uniform<glm::vec3> position;
 
-    LightColorUniform color;
+    Uniform<Light::Color> color;
 
-    AttenuationUniform attenuation;
+    Uniform<Attenuation> attenuation;
 
     Uniform<bool> isTurnedOn;
 
@@ -227,9 +228,9 @@ public:
 
     Uniform<float> outerCutoffCosine;
 
-    LightColorUniform color;
+    Uniform<Light::Color> color;
 
-    AttenuationUniform attenuation;
+    Uniform<Attenuation> attenuation;
 
     Uniform<bool> isTurnedOn;
 
@@ -279,7 +280,7 @@ public:
 
     Uniform<glm::vec3> direction;
 
-    LightColorUniform color;
+    Uniform<Light::Color> color;
 
     Uniform<bool> isTurnedOn;
 
@@ -327,10 +328,10 @@ public:
 
 public:
 
-    UniformArray<PointLightUniform> point;
+    Uniform<std::vector<PointLightUniform>> point;
 
-    UniformArray<SpotLightUniform> spot;
+    Uniform<std::vector<SpotLightUniform>> spot;
 
-    UniformArray<DirectionalLightUniform> directional;
+    Uniform<std::vector<DirectionalLightUniform>> directional;
 
 };

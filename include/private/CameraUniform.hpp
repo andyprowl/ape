@@ -3,12 +3,13 @@
 #include "Camera.hpp"
 #include "Uniform.hpp"
 
-class CameraUniform
+template<>
+class Uniform<Camera>
 {
 
 public:
 
-    CameraUniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram const & program, std::string const & prefix)
         : cameraPosition{program, prefix + ".position"}
         , cameraTransformation{program, prefix + ".transform"}
     {
