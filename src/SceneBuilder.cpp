@@ -251,11 +251,11 @@ auto SceneBuilder::createPointLights() const
 {
     auto lights = std::vector<PointLight>{};
 
-    const auto positions = getLampMeshPositions();
+    auto const positions = getLampMeshPositions();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
-        const auto position = positions[i];
+        auto const position = positions[i];
 
         createPointLight(position, lights); 
     }
@@ -286,37 +286,49 @@ auto SceneBuilder::createSpotLights() const
 {
     auto lights = std::vector<SpotLight>{};
 
-    const auto positions = getFlashLightMeshPositions();
+    auto const positions = getFlashLightMeshPositions();
+
+    auto const colors = getSpotLightColors();
+
+    assert(colors.size() == positions.size() + 1);
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
-        const auto position = positions[i];
+        auto const position = positions[i];
 
-        createSpotLight(position, -position, lights); 
+        createSpotLight(position, -position, colors[i], lights); 
     }
 
-    createSpotLight({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, lights); 
+    createSpotLight({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, colors.back(), lights); 
 
     return lights;
+}
+
+auto SceneBuilder::getSpotLightColors() const
+    -> std::vector<Light::Color>
+{
+    using Ambient = glm::vec3;
+
+    using Diffuse = glm::vec3;
+    
+    using Specular = glm::vec3;
+
+    return {
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.8f, 0.8f, 0.2f}, Specular{0.5f, 0.5f, 0.1f}},
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.2f, 0.3f, 0.9f}, Specular{0.5f, 0.7f, 0.8f}},
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.9f, 0.8f, 0.6f}, Specular{1.0f, 0.9f, 0.7f}}};
 }
 
 auto SceneBuilder::createSpotLight(
     glm::vec3 const & position,
     glm::vec3 const & direction,
+    Light::Color const & color,
     std::vector<SpotLight> & lights) const
     -> void
 {
-    auto const ambient = glm::vec3{0.0f, 0.0f, 0.0f};
+    auto const cutoff = SpotLight::CutoffAngle{glm::radians(10.0f), glm::radians(20.0f)};
 
-    auto const diffuse = glm::vec3{0.8f, 0.8f, 0.2f};
-
-    auto const specular = glm::vec3{0.5f, 0.5f, 0.1f};
-
-    auto const color = Light::Color{ambient, diffuse, specular};
-
-    auto const cutoff = SpotLight::CutoffAngle{glm::radians(15.0f), glm::radians(20.0f)};
-
-    auto const attenuation = Attenuation{1.0f, 0.02f, 0.012f};
+    auto const attenuation = Attenuation{1.0f, 0.01f, 0.0052f};
 
     lights.emplace_back(position, direction, cutoff, attenuation, color, true);
 }
@@ -326,11 +338,11 @@ auto SceneBuilder::createDirectionalLights() const
 {
     auto lights = std::vector<DirectionalLight>{};
 
-    const auto positions = getDirectionalLightDirections();
+    auto const positions = getDirectionalLightDirections();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
-        const auto position = positions[i];
+        auto const position = positions[i];
 
         createDirectionalLight(position, lights); 
     }

@@ -84,12 +84,16 @@ private:
     auto createSpotLights() const
         -> std::vector<SpotLight>;
 
+    auto getSpotLightColors() const
+        -> std::vector<Light::Color>;
+
     auto createSpotLight(
         glm::vec3 const & position,
         glm::vec3 const & direction,
+        Light::Color const & color,
         std::vector<SpotLight> & lights) const
         -> void;
-    
+
     auto createDirectionalLights() const
         -> std::vector<DirectionalLight>;
 
