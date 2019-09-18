@@ -14,7 +14,7 @@
 Application::Application()
     : window{"APE 3D Engine", false}
     , shader{createShader()}
-    , scene{createScene(window, shader)}
+    , scene{createScene(window)}
     , renderer{shader, {0.0f, 0.0f, 0.0f}}
     , inputHandler{scene, window, shader}
     , resizeHandlerConnection{registerWindowResizeHandler()}
@@ -60,10 +60,10 @@ auto Application::createShader()
 }
 
 /* static */
-auto Application::createScene(Window const & window, ShaderProgram & shader)
+auto Application::createScene(Window const & window)
     -> Scene
 {
-    auto builder = SceneBuilder{window, shader};
+    auto builder = SceneBuilder{window};
 
     return builder.build();
 }

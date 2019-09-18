@@ -32,7 +32,7 @@ private:
     static auto createShader()
         -> ShaderProgram;
     
-    static auto createScene(Window const & window, ShaderProgram & shader)
+    static auto createScene(Window const & window)
         -> Scene;
 
     auto registerWindowResizeHandler()

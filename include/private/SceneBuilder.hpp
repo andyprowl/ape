@@ -6,7 +6,6 @@
 
 #include <vector>
 
-class ShaderProgram;
 class Window;
 
 class SceneBuilder
@@ -14,7 +13,7 @@ class SceneBuilder
 
 public:
 
-    SceneBuilder(Window const & window, ShaderProgram const & shader);
+    explicit SceneBuilder(Window const & window);
 
     auto build() const
         -> Scene;
@@ -116,8 +115,6 @@ private:
 private:
 
     Window const * window;
-
-    ShaderProgram const * shader;
 
     mutable TextureRepository textures;
 

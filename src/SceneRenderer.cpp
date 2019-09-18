@@ -40,6 +40,26 @@ auto SceneRenderer::drawScene(Scene const & s) const
 {
     for (auto const & mesh : s.meshes)
     {
-        mesh.draw();
+        drawMesh(mesh);
     }
+}
+
+auto SceneRenderer::drawMesh(Mesh const & m) const
+    -> void
+{
+    auto const material = m.getMaterial();
+
+    uniforms.modelTransformation = m.getModelTransformation();
+
+    uniforms.normalMatrix = m.getNormalMatrix();
+
+    uniforms.materialAmbient = material.ambient;
+
+    uniforms.materialShininess = material.shininess;
+
+    material.diffuseMap.bind(0);
+
+    material.specularMap.bind(1);
+
+    m.getShape().draw();
 }

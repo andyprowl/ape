@@ -20,28 +20,19 @@ auto computeNormalMatrix(glm::mat4 const & model)
 
 Mesh::Mesh(
     std::shared_ptr<Shape const> shape,
-    ShaderProgram const & shader,
     Material const & material,
     glm::mat4 const & modelTransformation)
     : shape{std::move(shape)}
-    , shader{&shader}
     , material{material}
     , modelTransformation{modelTransformation}
     , normalMatrix{computeNormalMatrix(modelTransformation)}
-    , uniforms{shader}
 {
 }
 
-auto Mesh::draw() const
-    -> void
+auto Mesh::getShape() const
+    -> Shape const &
 {
-    shader->use();
-
-    setTransformationsInShader();
-
-    setMaterialInShader();
-
-    drawShape();
+    return *shape;
 }
 
 auto Mesh::getPosition() const
@@ -64,6 +55,12 @@ auto Mesh::setModelTransformation(glm::mat4 const & newTransformation)
     normalMatrix = computeNormalMatrix(modelTransformation);
 }
 
+auto Mesh::getNormalMatrix() const
+    -> glm::mat3
+{
+    return normalMatrix;
+}
+
 auto Mesh::scaleUniformly(float const factor)
     -> void
 {
@@ -80,30 +77,4 @@ auto Mesh::getMaterial() const
     -> Material
 {
     return material;
-}
-
-auto Mesh::setTransformationsInShader() const
-    -> void
-{
-    uniforms.modelTransformation = modelTransformation;
-
-    uniforms.normalMatrix = normalMatrix;
-}
-
-auto Mesh::setMaterialInShader() const
-    -> void
-{
-    uniforms.materialAmbient = material.ambient;
-
-    uniforms.materialShininess = material.shininess;
-
-    material.diffuseMap.bind(0);
-
-    material.specularMap.bind(1);
-}
-
-auto Mesh::drawShape() const
-    -> void
-{
-    shape->draw();
 }

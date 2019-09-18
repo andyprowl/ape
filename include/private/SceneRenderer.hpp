@@ -26,6 +26,10 @@ private:
         UniformSet(ShaderProgram const & shader)
             : camera{shader, "camera"}
             , lighting{shader, "lighting"}
+            , modelTransformation{shader, "model.transform"}
+            , normalMatrix{shader, "model.normal"}
+            , materialAmbient{shader, "material.ambient"}
+            , materialShininess{shader, "material.shininess"}
         {
         }
 
@@ -35,6 +39,14 @@ private:
 
         Uniform<Lighting> lighting;
 
+        Uniform<glm::mat4> modelTransformation;
+
+        Uniform<glm::mat3> normalMatrix;
+
+        Uniform<glm::vec3> materialAmbient;
+
+        Uniform<float> materialShininess;
+
     };
 
 private:
@@ -43,6 +55,9 @@ private:
         -> void;
 
     auto drawScene(Scene const & s) const
+        -> void;
+
+    auto drawMesh(Mesh const & m) const
         -> void;
 
 private:

@@ -6,9 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-SceneBuilder::SceneBuilder(Window const & window, ShaderProgram const & shader)
+SceneBuilder::SceneBuilder(Window const & window)
     : window{&window}
-    , shader{&shader}
 {
 }
 
@@ -68,7 +67,7 @@ auto SceneBuilder::createGroundTileMesh(
 
     auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-    meshes.emplace_back(std::move(shape), *shader, material, translation);
+    meshes.emplace_back(std::move(shape), material, translation);
 }
 
 auto SceneBuilder::getGroundMaterial() const
@@ -105,7 +104,7 @@ auto SceneBuilder::createCubeBodies(std::vector<Mesh> & meshes) const
 
         auto const & material = materials[i % materials.size()];
 
-        meshes.emplace_back(shape, *shader, material, translation * rotation);
+        meshes.emplace_back(shape, material, translation * rotation);
     }
 }
 
@@ -159,7 +158,7 @@ auto SceneBuilder::createLampBodies(std::vector<Mesh> & meshes) const
 
         auto const material = getLampMaterial();
 
-        meshes.emplace_back(shape, *shader, material, translation);
+        meshes.emplace_back(shape, material, translation);
     }
 }
 
@@ -202,7 +201,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & meshes) const
 
         auto const material = getFlashLightMaterial();
 
-        meshes.emplace_back(shape, *shader, material, translation * rotation);
+        meshes.emplace_back(shape, material, translation * rotation);
     }
 }
 
