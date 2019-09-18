@@ -32,9 +32,6 @@ private:
     auto processMouseCapture() const
         -> void;
 
-    auto processFullScreenToggle() const
-        -> void;
-
     auto processCameraManipulation(double lastFrameDuration)
         -> void;
 
@@ -51,6 +48,12 @@ private:
         -> void;
 
     auto onKeyboardEvent(int key, int scancode, int action, int mods) const
+        -> void;
+
+    auto processLightToggling(int key, int mods) const
+        -> void;
+
+    auto processFullScreenToggling(int key) const
         -> void;
 
     auto togglePointLight(int index) const

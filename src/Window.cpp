@@ -119,16 +119,11 @@ auto createWindow(std::string const & title, bool const fullScreen)
 Window::Window(std::string const & title, bool const createAsFullScreen)
     : handle{&createWindow(title, createAsFullScreen)}
     , isFullScreenModeOn{createAsFullScreen}
-    , lastWindowedPosition{getPosition()}
-    , lastWindowedSize{getSize()}
+    , lastWindowedArea{getPosition(), getSize()}
 {
     theWindow = this;
 
-    glfwSetScrollCallback(handle, ::onMouseWheel);
-
-    glfwSetFramebufferSizeCallback(handle, ::onResize);
-
-    glfwSetKeyCallback(handle, ::onKeyboard);
+    registerEventHandlers();
 }
 
 auto Window::getAspectRatio() const
@@ -241,9 +236,7 @@ auto Window::setFullScreen()
         return;
     }
 
-    lastWindowedSize = getSize();
-
-    lastWindowedPosition = getPosition();
+    lastWindowedArea = WindowArea{getPosition(), getSize()};
 
     auto const monitor = glfwGetPrimaryMonitor();
 
@@ -252,6 +245,8 @@ auto Window::setFullScreen()
     glfwSetWindowMonitor(handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 
     isFullScreenModeOn = true;
+
+    onResize.fire(lastWindowedArea.size);
 }
 
 auto Window::exitFullScreen()
@@ -265,10 +260,22 @@ auto Window::exitFullScreen()
     glfwSetWindowMonitor(
         handle,
         nullptr,
-        lastWindowedPosition.x,
-        lastWindowedPosition.y,
-        lastWindowedSize.width,
-        lastWindowedSize.height, GLFW_DONT_CARE);
+        lastWindowedArea.position.x,
+        lastWindowedArea.position.y,
+        lastWindowedArea.size.width,
+        lastWindowedArea.size.height, GLFW_DONT_CARE);
 
     isFullScreenModeOn = false;
+
+    onResize.fire(lastWindowedArea.size);
+}
+
+auto Window::registerEventHandlers()
+    -> void
+{
+    glfwSetScrollCallback(handle, ::onMouseWheel);
+
+    glfwSetFramebufferSizeCallback(handle, ::onResize);
+
+    glfwSetKeyCallback(handle, ::onKeyboard);
 }

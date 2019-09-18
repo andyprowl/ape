@@ -83,8 +83,6 @@ auto InputHandler::processInput(double const lastFrameDuration)
     
     processMouseCapture();
 
-    processFullScreenToggle();
-
     processCameraManipulation(lastFrameDuration);
 
     processShapeModification(lastFrameDuration);
@@ -111,24 +109,6 @@ auto InputHandler::processMouseCapture() const
     else if (window->getKeyStatus(GLFW_KEY_N) == GLFW_PRESS)
     {
         window->captureMouse();
-    }
-}
-
-auto InputHandler::processFullScreenToggle() const
-    -> void
-{
-    if (window->getKeyStatus(GLFW_KEY_F11) != GLFW_PRESS)
-    {
-        return;
-    }
-
-    if (!window->isFullScreen())
-    {
-        window->setFullScreen();
-    }
-    else
-    {
-        window->exitFullScreen();
     }
 }
 
@@ -203,6 +183,19 @@ auto InputHandler::onKeyboardEvent(
         return;
     }
 
+    processLightToggling(key, mods);
+
+    processFullScreenToggling(key);
+}
+
+auto InputHandler::processLightToggling(int const key, int const mods) const
+    -> void
+{
+    if ((key < GLFW_KEY_1) || (key > GLFW_KEY_9))
+    {
+        return;
+    }
+
     auto const index = key - GLFW_KEY_1;
 
     if (mods & GLFW_MOD_SHIFT)
@@ -212,6 +205,24 @@ auto InputHandler::onKeyboardEvent(
     else
     {
         toggleSpotLight(index);
+    }
+}
+
+auto InputHandler::processFullScreenToggling(int const key) const
+    -> void
+{
+    if (key != GLFW_KEY_F11)
+    {
+        return;
+    }
+
+    if (!window->isFullScreen())
+    {
+        window->setFullScreen();
+    }
+    else
+    {
+        window->exitFullScreen();
     }
 }
 

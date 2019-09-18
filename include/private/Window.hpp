@@ -92,12 +92,36 @@ public:
 
 private:
 
+    class WindowArea
+    {
+
+    public:
+
+        WindowArea(Position<int> const & position, Size<int> const & size)
+            : position{position}
+            , size{size}
+        {
+        }
+
+    public:
+    
+        Position<int> position;
+
+        Size<int> size;
+    
+    };
+
+private:
+
+    auto registerEventHandlers()
+        -> void;
+
+private:
+
     GLFWwindow * handle;
 
     bool isFullScreenModeOn;
 
-    Position<int> lastWindowedPosition;
-
-    Size<int> lastWindowedSize;
+    WindowArea lastWindowedArea;
 
 };

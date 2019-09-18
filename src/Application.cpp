@@ -17,13 +17,9 @@ Application::Application()
     , scene{createScene(window, shader)}
     , renderer{shader, {0.0f, 0.0f, 0.0f}}
     , inputHandler{scene, window, shader}
+    , resizeHandlerConnection{registerWindowResizeHandler()}
 {
     window.captureMouse();
-
-    window.onResize.registerHandler([this] (Size<int> const & /*newSize*/)
-    {
-        setViewport();
-    });
 }
 
 Application::~Application()
@@ -70,6 +66,15 @@ auto Application::createScene(Window const & window, ShaderProgram & shader)
     auto builder = SceneBuilder{window, shader};
 
     return builder.build();
+}
+
+auto Application::registerWindowResizeHandler()
+    -> ScopedSignalConnection
+{
+    return window.onResize.registerHandler([this] (Size<int> const & /*newSize*/)
+    {
+        setViewport();
+    });
 }
 
 auto Application::setViewport()

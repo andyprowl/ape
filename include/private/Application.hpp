@@ -6,6 +6,7 @@
 #include "LightingUniform.hpp"
 #include "Scene.hpp"
 #include "SceneRenderer.hpp"
+#include "ScopedSignalConnection.hpp"
 #include "ShaderProgram.hpp"
 #include "Window.hpp"
 
@@ -33,6 +34,9 @@ private:
     
     static auto createScene(Window const & window, ShaderProgram & shader)
         -> Scene;
+
+    auto registerWindowResizeHandler()
+        -> ScopedSignalConnection;
 
     auto setViewport()
         -> void;
@@ -65,5 +69,7 @@ private:
     InputHandler inputHandler;
 
     FrameTimeTracker timeTracker;
+
+    ScopedSignalConnection resizeHandlerConnection;
 
 };
