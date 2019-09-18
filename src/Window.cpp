@@ -67,7 +67,7 @@ auto makeFullScreenGlfwWindow(std::string const & title)
 {
     auto const monitor = glfwGetPrimaryMonitor();
 
-    const auto mode = glfwGetVideoMode(monitor);
+    auto const mode = glfwGetVideoMode(monitor);
     
     glfwWindowHint(GLFW_RED_BITS, mode->redBits);
 
@@ -240,7 +240,7 @@ auto Window::setFullScreen()
 
     auto const monitor = glfwGetPrimaryMonitor();
 
-    const auto mode = glfwGetVideoMode(monitor);
+    auto const mode = glfwGetVideoMode(monitor);
 
     glfwSetWindowMonitor(handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
 

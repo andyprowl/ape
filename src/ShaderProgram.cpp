@@ -93,7 +93,7 @@ auto readShader(std::string const & filename)
         std::string{shaderFolder} + "\\" + filename,
         std::ifstream::ate | std::ifstream::binary};
 
-    const auto fileSize = static_cast<std::size_t>(shaderFile.tellg());
+    auto const fileSize = static_cast<std::size_t>(shaderFile.tellg());
 
     shaderFile.seekg(0, std::ifstream::beg);
 
@@ -166,7 +166,7 @@ auto compileFragmentShader(std::string const & filename)
 auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
     -> int
 {
-    const auto shaderProgramId = glCreateProgram();
+    auto const shaderProgramId = glCreateProgram();
 
     glAttachShader(shaderProgramId, vertexShaderId);
 
@@ -188,9 +188,9 @@ auto makeShaderProgram(
     std::string const & fragmentShaderFilename)
     -> int
 {
-    const auto vertexShaderId = compileVertexShader(vertexShaderFilename);
+    auto const vertexShaderId = compileVertexShader(vertexShaderFilename);
 
-    const auto fragmentShaderId = compileFragmentShader(fragmentShaderFilename);
+    auto const fragmentShaderId = compileFragmentShader(fragmentShaderFilename);
 
     return linkShaderProgram(vertexShaderId, fragmentShaderId);
 }

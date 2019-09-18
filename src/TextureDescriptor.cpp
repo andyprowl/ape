@@ -5,7 +5,7 @@
 auto readTextureDescriptor(std::string const & filename)
     -> TextureDescriptor
 {
-    const auto filepath = std::string{textureFolder} + "/" + filename;
+    auto const filepath = std::string{textureFolder} + "/" + filename;
 
     stbi_set_flip_vertically_on_load(true);
 

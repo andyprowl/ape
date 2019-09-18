@@ -14,14 +14,14 @@ namespace
 auto getInitialYaw(Camera const & camera)
     -> float
 {
-    const auto currentDirection = camera.getDirection();
+    auto const currentDirection = camera.getDirection();
 
-    const auto yawDirection = glm::normalize(glm::vec3{
+    auto const yawDirection = glm::normalize(glm::vec3{
         cos(glm::radians(0.0)) * cos(glm::radians(0.0)),
         sin(glm::radians(0.0)),
         cos(glm::radians(0.0)) * sin(glm::radians(0.0))});
 
-    const auto angle = glm::acos(glm::dot(currentDirection, yawDirection));
+    auto const angle = glm::acos(glm::dot(currentDirection, yawDirection));
 
     return glm::degrees(-angle);
 }
@@ -47,15 +47,15 @@ auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
 {
     mouseTracker.update();
 
-    const auto movement = mouseTracker.getLastMovement();
+    auto const movement = mouseTracker.getLastMovement();
 
-    const auto offset = Movement{movement.deltaX * sensitivity, -movement.deltaY * sensitivity};
+    auto const offset = Movement{movement.deltaX * sensitivity, -movement.deltaY * sensitivity};
 
     yaw += static_cast<float>(offset.deltaX);
 
     pitch = clamp(pitch + static_cast<float>(offset.deltaY), -89.0f, 89.0f);
 
-    const auto newDirection = glm::vec3{
+    auto const newDirection = glm::vec3{
         cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
         sin(glm::radians(pitch)),
         cos(glm::radians(pitch)) * sin(glm::radians(yaw))};

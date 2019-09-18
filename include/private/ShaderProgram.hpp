@@ -64,7 +64,7 @@ public:
     auto getUniform(std::string const & name) const
         -> Uniform<T>
     {
-        const auto location = getUniformLocation(name);
+        auto const location = getUniformLocation(name);
 
         return Uniform<T>{id, location};
     }

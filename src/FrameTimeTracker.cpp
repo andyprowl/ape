@@ -11,7 +11,7 @@ FrameTimeTracker::FrameTimeTracker()
 auto FrameTimeTracker::update()
     -> void
 {
-    const auto currentTime = glfwGetTime();
+    auto const currentTime = glfwGetTime();
 
     lastFrameDuration = currentTime - lastTime;
 

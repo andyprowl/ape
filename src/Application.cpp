@@ -100,7 +100,7 @@ auto Application::processInput()
 {
     glfwPollEvents();
 
-    const auto lastFrameDuration = timeTracker.getLastFrameDuration();
+    auto const lastFrameDuration = timeTracker.getLastFrameDuration();
 
     inputHandler.processInput(lastFrameDuration);
 }

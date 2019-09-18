@@ -40,7 +40,7 @@ public:
     auto fire(Args const & ... args) const
         -> void
     {
-        for (const auto & registration : registrations)
+        for (auto const & registration : registrations)
         {
             registration.second(args...);
         }
