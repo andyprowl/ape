@@ -132,9 +132,7 @@ auto Application::setupCamera()
 
     shader.use();
 
-    uniforms.cameraPosition.set(scene.camera.getPosition());
-
-    uniforms.cameraTransformation.set(scene.camera.getTransformation());
+    uniforms.camera.set(scene.camera);
 }
 
 auto Application::setupLights()
@@ -148,7 +146,7 @@ auto Application::setupLights()
 auto Application::drawScene()
     -> void
 {
-    for (auto & mesh : scene.bodies)
+    for (auto & mesh : scene.meshes)
     {
         mesh.draw();
     }

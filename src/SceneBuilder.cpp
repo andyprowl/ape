@@ -17,30 +17,30 @@ auto SceneBuilder::build() const
 {
     auto camera = createCamera();
 
-    auto bodies = createBodies();
+    auto meshes = createBodies();
 
     auto lighting = createLighting();
 
-    return Scene{std::move(bodies), std::move(lighting), std::move(camera)};
+    return Scene{std::move(meshes), std::move(lighting), std::move(camera)};
 }
 
 auto SceneBuilder::createBodies() const
     -> std::vector<Mesh>
 {
-    auto bodies = std::vector<Mesh>{};
+    auto meshes = std::vector<Mesh>{};
         
-    createCubeBodies(bodies);
+    createCubeBodies(meshes);
 
-    createGroundTileBodies(bodies);
+    createGroundTileBodies(meshes);
 
-    createFlashLightBodies(bodies);
+    createFlashLightBodies(meshes);
 
-    createLampBodies(bodies);
+    createLampBodies(meshes);
 
-    return bodies;
+    return meshes;
 }
 
-auto SceneBuilder::createGroundTileBodies(std::vector<Mesh> & bodies) const
+auto SceneBuilder::createGroundTileBodies(std::vector<Mesh> & meshes) const
     -> void
 {
     auto const shape = makeBox(NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
@@ -51,7 +51,7 @@ auto SceneBuilder::createGroundTileBodies(std::vector<Mesh> & bodies) const
     {
         for (auto col = -5; col < +5; ++col)
         {
-            createGroundTileMesh(row, col, shape, material, bodies);
+            createGroundTileMesh(row, col, shape, material, meshes);
         }
     }
 }
@@ -61,14 +61,14 @@ auto SceneBuilder::createGroundTileMesh(
     int const col,
     std::shared_ptr<Shape> shape,
     Material const & material,
-    std::vector<Mesh> & bodies) const
+    std::vector<Mesh> & meshes) const
     -> void
 {
     auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
 
     auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-    bodies.emplace_back(std::move(shape), *shader, material, translation);
+    meshes.emplace_back(std::move(shape), *shader, material, translation);
 }
 
 auto SceneBuilder::getGroundMaterial() const
@@ -85,7 +85,7 @@ auto SceneBuilder::getGroundMaterial() const
     return {ambientColor, std::move(diffuseMap), std::move(specularMap), shininess};
 }
 
-auto SceneBuilder::createCubeBodies(std::vector<Mesh> & bodies) const
+auto SceneBuilder::createCubeBodies(std::vector<Mesh> & meshes) const
     -> void
 {
     auto const shape = makeBox(NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
@@ -105,7 +105,7 @@ auto SceneBuilder::createCubeBodies(std::vector<Mesh> & bodies) const
 
         auto const & material = materials[i % materials.size()];
 
-        bodies.emplace_back(shape, *shader, material, translation * rotation);
+        meshes.emplace_back(shape, *shader, material, translation * rotation);
     }
 }
 
@@ -146,7 +146,7 @@ auto SceneBuilder::getContainerMaterial() const
     return {ambientColor, diffuseMapId, specularMapId, shininess};
 }
 
-auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
+auto SceneBuilder::createLampBodies(std::vector<Mesh> & meshes) const
     -> void
 {
     auto const shape = makeBox(NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
@@ -159,7 +159,7 @@ auto SceneBuilder::createLampBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getLampMaterial();
 
-        bodies.emplace_back(shape, *shader, material, translation);
+        meshes.emplace_back(shape, *shader, material, translation);
     }
 }
 
@@ -185,7 +185,7 @@ auto SceneBuilder::getLampMaterial() const
     return {ambientColor, diffuseMapId, specularMapId, shininess};
 }
 
-auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
+auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & meshes) const
     -> void
 {
     auto const shape = makeBox(NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
@@ -202,7 +202,7 @@ auto SceneBuilder::createFlashLightBodies(std::vector<Mesh> & bodies) const
 
         auto const material = getFlashLightMaterial();
 
-        bodies.emplace_back(shape, *shader, material, translation * rotation);
+        meshes.emplace_back(shape, *shader, material, translation * rotation);
     }
 }
 

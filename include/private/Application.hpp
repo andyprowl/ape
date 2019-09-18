@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Camera.hpp"
+#include "CameraUniform.hpp"
 #include "FrameTimeTracker.hpp"
 #include "InputHandler.hpp"
 #include "KeyboardPublisher.hpp"
@@ -34,17 +34,14 @@ private:
     public:
 
         UniformSet(ShaderProgram const & program)
-            : cameraPosition{program, "viewPosition"}
-            , cameraTransformation{program, "transform.camera"}
+            : camera{program, "camera"}
             , lighting{program, "lighting"}
         {
         }
 
     public:
 
-        Uniform<glm::vec3> cameraPosition;
-
-        Uniform<glm::mat4> cameraTransformation;
+        CameraUniform camera;
 
         LightingUniform lighting;
     

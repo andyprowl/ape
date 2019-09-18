@@ -3,11 +3,20 @@
 struct Vertex
 {
 
+    vec3 position;
+
     vec3 normal;
+
+    vec2 textureCoords;
+
+};
+
+struct Camera
+{
 
     vec3 position;
 
-    vec2 textureCoords;
+    mat4 transform;
 
 };
 
@@ -120,11 +129,11 @@ in Vertex vertex;
 
 out vec4 fragmentColor;
 
+uniform Camera camera;
+
 uniform Material material;
 
 uniform Lighting lighting;
-
-uniform vec3 viewPosition;
 
 vec3 computeAmbientLight(LightColor color)
 {
@@ -144,7 +153,7 @@ vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
 
 vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
 {
-    vec3 viewDirection = normalize(viewPosition - vertex.position);
+    vec3 viewDirection = normalize(camera.position - vertex.position);
 
     vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
 

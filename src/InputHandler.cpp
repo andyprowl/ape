@@ -40,7 +40,7 @@ auto rotateLightAroundSceneY(Scene & scene, float const radians)
 
     light.position = newPosition;
 
-    auto & mesh = *(scene.bodies.end() - 2);
+    auto & mesh = *(scene.meshes.end() - 2);
 
     auto const transformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
@@ -154,11 +154,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateMeshAroundOwnX(scene->bodies.front(), +rotationDelta);
+        rotateMeshAroundOwnX(scene->meshes.front(), +rotationDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateMeshAroundOwnX(scene->bodies.front(), -rotationDelta);
+        rotateMeshAroundOwnX(scene->meshes.front(), -rotationDelta);
     }
 }
 
@@ -169,11 +169,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        scene->bodies[1].scaleUniformly(1 + scalingDelta);
+        scene->meshes[1].scaleUniformly(1 + scalingDelta);
     }
     else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        scene->bodies[1].scaleUniformly(1 - scalingDelta);
+        scene->meshes[1].scaleUniformly(1 - scalingDelta);
     }
 }
 

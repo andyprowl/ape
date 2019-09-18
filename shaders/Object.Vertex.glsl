@@ -3,42 +3,51 @@
 struct Vertex
 {
 
-    vec3 normal;
-
     vec3 position;
+
+    vec3 normal;
 
     vec2 textureCoords;
 
 };
 
-struct Transform
+struct Camera
 {
 
-    mat4 model;
+    vec3 position;
 
-    mat4 camera;
+    mat4 transform;
+
+};
+
+struct Model
+{
+
+    mat4 transform;
 
     mat3 normal;
 
 };
 
-layout (location = 0) in vec3 aPosition;
+layout (location = 0) in vec3 positionAttribute;
 
-layout (location = 1) in vec3 aNormal;
+layout (location = 1) in vec3 normalAttribute;
 
-layout (location = 2) in vec2 aTextureCoords;
+layout (location = 2) in vec2 textureCoordsAttribute;
 
 out Vertex vertex;
 
-uniform Transform transform;
+uniform Model model;
+
+uniform Camera camera;
 
 void main()
 {
-    gl_Position = transform.camera * transform.model * vec4(aPosition, 1.0);
+    gl_Position = camera.transform * model.transform * vec4(positionAttribute, 1.0);
 
-    vertex.position = vec3(transform.model * vec4(aPosition, 1.0));
+    vertex.position = vec3(model.transform * vec4(positionAttribute, 1.0));
 
-    vertex.normal = normalize(transform.normal * aNormal);
+    vertex.normal = normalize(model.normal * normalAttribute);
 
-    vertex.textureCoords = vec2(1.0 - aTextureCoords.x, aTextureCoords.y);
+    vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
 }

@@ -25,7 +25,7 @@ private:
     auto createBodies() const
         -> std::vector<Mesh>;
 
-    auto createGroundTileBodies(std::vector<Mesh> & bodies) const
+    auto createGroundTileBodies(std::vector<Mesh> & meshes) const
         -> void;
 
     auto createGroundTileMesh(
@@ -33,13 +33,13 @@ private:
         int const col,
         std::shared_ptr<Shape> shape,
         Material const & material,
-        std::vector<Mesh> & bodies) const
+        std::vector<Mesh> & meshes) const
         -> void;
 
     auto getGroundMaterial() const
         -> Material;
 
-    auto createCubeBodies(std::vector<Mesh> & bodies) const
+    auto createCubeBodies(std::vector<Mesh> & meshes) const
         -> void;
 
     auto getCubeMeshPositions() const
@@ -51,7 +51,7 @@ private:
     auto getContainerMaterial() const
         -> Material;
 
-    auto createLampBodies(std::vector<Mesh> & bodies) const
+    auto createLampBodies(std::vector<Mesh> & meshes) const
         -> void;
 
     auto getLampMeshPositions() const
@@ -60,7 +60,7 @@ private:
     auto getLampMaterial() const
         -> Material;
 
-    auto createFlashLightBodies(std::vector<Mesh> & bodies) const
+    auto createFlashLightBodies(std::vector<Mesh> & meshes) const
         -> void;
 
     auto getFlashLightMeshPositions() const

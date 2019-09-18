@@ -95,7 +95,7 @@ auto Mesh::setMaterialInShader() const
 {
     uniforms.materialAmbient = material.ambient;
 
-    uniforms.materialShininess= material.shininess;
+    uniforms.materialShininess = material.shininess;
 
     material.diffuseMap.bind(0);
 

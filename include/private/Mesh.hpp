@@ -52,8 +52,8 @@ private:
     public:
 
         UniformSet(ShaderProgram const & program)
-            : modelTransformation{program, "transform.model"}
-            , normalMatrix{program, "transform.normal"}
+            : modelTransformation{program, "model.transform"}
+            , normalMatrix{program, "model.normal"}
             , materialAmbient{program, "material.ambient"}
             , materialShininess{program, "material.shininess"}
         {

@@ -11,8 +11,8 @@ class Scene
 
 public:
 
-    Scene(std::vector<Mesh> bodies, Lighting lighting, Camera const & camera)
-        : bodies{std::move(bodies)}
+    Scene(std::vector<Mesh> meshes, Lighting lighting, Camera const & camera)
+        : meshes{std::move(meshes)}
         , lighting{std::move(lighting)}
         , camera{camera}
     {
@@ -20,7 +20,7 @@ public:
 
 public:
 
-    std::vector<Mesh> bodies;
+    std::vector<Mesh> meshes;
 
     Lighting lighting;
 
