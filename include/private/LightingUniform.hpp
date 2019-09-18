@@ -286,7 +286,8 @@ public:
 
 };
 
-class LightingUniform
+template<>
+class Uniform<Lighting>
 {
 
 public:
@@ -295,7 +296,7 @@ public:
 
 public:
 
-    LightingUniform(ShaderProgram const & program, std::string prefix)
+    Uniform(ShaderProgram const & program, std::string prefix)
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, prefix + ".directional"}
@@ -319,7 +320,7 @@ public:
     }
 
     auto operator = (ValueType const & light)
-        -> LightingUniform &
+        -> Uniform &
     {
         set(light);
 

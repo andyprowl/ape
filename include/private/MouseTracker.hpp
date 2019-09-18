@@ -3,14 +3,14 @@
 #include "Movement.hpp"
 #include "Position.hpp"
 
-#include "GLFW.hpp"
+class Window;
 
 class MouseTracker
 {
 
 public:
 
-    explicit MouseTracker(GLFWwindow & window);
+    explicit MouseTracker(Window & window);
 
     auto update()
         -> void;
@@ -20,13 +20,10 @@ public:
 
 private:
 
-    GLFWwindow * window;
+    Window * window;
 
-    Position lastPosition;
+    Position<double> lastPosition;
 
     Movement lastMovement;
 
 };
-
-auto getCurrentMousePosition(GLFWwindow & window)
-    -> Position;

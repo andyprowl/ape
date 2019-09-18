@@ -7,15 +7,14 @@
 #include <vector>
 
 class ShaderProgram;
-
-struct GLFWwindow;
+class Window;
 
 class SceneBuilder
 {
 
 public:
 
-    SceneBuilder(GLFWwindow & window, ShaderProgram const & shader);
+    SceneBuilder(Window const & window, ShaderProgram const & shader);
 
     auto build() const
         -> Scene;
@@ -116,7 +115,7 @@ private:
 
 private:
 
-    GLFWwindow * window;
+    Window const * window;
 
     ShaderProgram const * shader;
 

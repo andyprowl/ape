@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
-SceneBuilder::SceneBuilder(GLFWwindow & window, ShaderProgram const & shader)
+SceneBuilder::SceneBuilder(Window const & window, ShaderProgram const & shader)
     : window{&window}
     , shader{&shader}
 {
@@ -383,7 +383,7 @@ auto SceneBuilder::createCamera() const
 
     auto const fieldOfView = glm::radians(45.0f);
 
-    auto const aspectRatio = getWindowRatio(*window);
+    auto const aspectRatio = window->getAspectRatio();
 
     return {position, direction, up, fieldOfView, aspectRatio};
 }

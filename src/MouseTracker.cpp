@@ -2,9 +2,9 @@
 
 #include "Window.hpp"
 
-MouseTracker::MouseTracker(GLFWwindow & window)
+MouseTracker::MouseTracker(Window & window)
     : window{&window}
-    , lastPosition{getCurrentMousePosition(window)}
+    , lastPosition{window.getMousePosition()}
     , lastMovement{0.0, 0.0}
 {
 }
@@ -12,7 +12,7 @@ MouseTracker::MouseTracker(GLFWwindow & window)
 auto MouseTracker::update()
     -> void
 {
-    auto const currentPosition = getCurrentMousePosition(*window);
+    auto const currentPosition = window->getMousePosition();
 
     lastMovement = Movement{currentPosition.x - lastPosition.x, currentPosition.y - lastPosition.y};
 
@@ -23,16 +23,4 @@ auto MouseTracker::getLastMovement() const
     -> Movement
 {
     return lastMovement;
-}
-
-auto getCurrentMousePosition(GLFWwindow & window)
-    -> Position
-{
-    auto x = double{};
-
-    auto y = double{};
-
-    glfwGetCursorPos(&window, &x, &y);
-
-    return {x, y};
 }

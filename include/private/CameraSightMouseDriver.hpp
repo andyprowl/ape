@@ -1,12 +1,11 @@
 #pragma once
 
 #include "MouseTracker.hpp"
-#include "MouseWheelPublisher.hpp"
-
-#include "GLFW.hpp"
+#include "ScopedSignalConnection.hpp"
 
 class Camera;
 class MouseWheelPublisher;
+class Window;
 
 class CameraSightMouseDriver
 {
@@ -14,9 +13,8 @@ class CameraSightMouseDriver
 public:
 
     CameraSightMouseDriver(
-        GLFWwindow & window,
+        Window & window,
         Camera & camera,
-        MouseWheelPublisher & wheelPublisher,
         float sensitivity);
 
     auto update(double lastFrameDuration)
@@ -29,11 +27,11 @@ private:
 
 private:
 
+    Window * window;
+
     MouseTracker mouseTracker;
 
     Camera * camera;
-
-    MouseWheelPublisher * wheelPublisher;
 
     float pitch;
 

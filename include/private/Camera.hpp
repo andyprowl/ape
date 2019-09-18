@@ -2,8 +2,6 @@
 
 #include "Signal.hpp"
 
-#include "GLFW.hpp"
-
 #include <glm/mat4x4.hpp>
 
 #include <vector>

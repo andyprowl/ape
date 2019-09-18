@@ -2,20 +2,15 @@
 
 #include "CameraSightMouseDriver.hpp"
 
-#include "GLFW.hpp"
-
 class Scene;
+class Window;
 
 class CameraManipulator
 {
 
 public:
 
-    CameraManipulator(
-        Scene & scene,
-        GLFWwindow & window,
-        MouseWheelPublisher & wheelPublisher,
-        float sensitivity);
+    CameraManipulator(Scene & scene, Window & window, float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;
@@ -38,7 +33,7 @@ private:
 
     Scene * scene;
 
-    GLFWwindow * window;
+    Window * window;
 
     CameraSightMouseDriver sightDriver;
 

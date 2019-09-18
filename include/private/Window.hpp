@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Position.hpp"
+#include "Signal.hpp"
 #include "Size.hpp"
-
-#include "GLFW.hpp"
 
 #include <stdexcept>
 #include <string>
+
+struct GLFWwindow;
 
 class CouldNotCreateWindow : public std::logic_error
 {
@@ -32,14 +33,71 @@ public:
 
 };
 
-auto createWindow(std::string const & title, bool fullScreen)
-    -> GLFWwindow &;
+class Window
+{
 
-auto getWindowRatio(GLFWwindow & window)
-    -> float;
+public:
 
-auto getWindowCenter(GLFWwindow & window)
-    -> Position;
+    Window(std::string const & title, bool createAsFullScreen);
 
-auto getWindowSize(GLFWwindow & window)
-    -> Size<int>;
+    auto getAspectRatio() const
+        -> float;
+
+    auto getCenter() const
+        -> Position<double>;
+
+    auto getSize() const
+        -> Size<int>;
+
+    auto getPosition() const
+        -> Position<int>;
+
+    auto getMousePosition() const
+        -> Position<double>;
+
+    auto getKeyStatus(int key) const
+        -> int;
+
+    auto shouldClose() const
+        -> bool;
+
+    auto requestClosure()
+        -> void;
+
+    auto swapBuffers()
+        -> void;
+
+    auto captureMouse()
+        -> void;
+
+    auto releaseMouse()
+        -> void;
+
+    auto isFullScreen() const
+        -> bool;
+
+    auto setFullScreen()
+        -> void;
+
+    auto exitFullScreen()
+        -> void;
+
+public:
+
+    Signal<auto (Size<int> const & newSize) -> void> onResize;
+
+    Signal<auto (double offset) -> void> onMouseWheel;
+
+    Signal<auto (int key, int scancode, int action, int mods) -> void> onKeyboard;
+
+private:
+
+    GLFWwindow * handle;
+
+    bool isFullScreenModeOn;
+
+    Position<int> lastWindowedPosition;
+
+    Size<int> lastWindowedSize;
+
+};

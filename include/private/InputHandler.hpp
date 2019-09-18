@@ -6,30 +6,24 @@
 #include <vector>
 
 class Camera;
-class KeyboardPublisher;
 class Mesh;
-class MouseWheelPublisher;
-class ShaderProgram;
 class Scene;
+class ShaderProgram;
+class Window;
 
 class InputHandler
 {
 
 public:
 
-    InputHandler(
-        Scene & scene,
-        GLFWwindow & window,
-        MouseWheelPublisher & wheelPublisher,
-        KeyboardPublisher & keyboardPublisher,
-        ShaderProgram const & program);
+    InputHandler(Scene & scene, Window & window, ShaderProgram const & program);
 
     auto processInput(double lastFrameDuration)
         -> void;
 
 private:
 
-    auto registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
+    auto registerKeyboardEventHandler() const
         -> ScopedSignalConnection;
 
     auto processTerminationRequest() const
@@ -69,7 +63,7 @@ private:
 
     Scene * scene;
 
-    GLFWwindow * window;
+    Window * window;
 
     ShaderProgram const * program;
 

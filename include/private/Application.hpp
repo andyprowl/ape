@@ -3,11 +3,11 @@
 #include "CameraUniform.hpp"
 #include "FrameTimeTracker.hpp"
 #include "InputHandler.hpp"
-#include "KeyboardPublisher.hpp"
 #include "LightingUniform.hpp"
-#include "MouseWheelPublisher.hpp"
 #include "Scene.hpp"
+#include "SceneRenderer.hpp"
 #include "ShaderProgram.hpp"
+#include "Window.hpp"
 
 class Application
 {
@@ -28,34 +28,13 @@ public:
 
 private:
 
-    class UniformSet
-    {
-
-    public:
-
-        UniformSet(ShaderProgram const & program)
-            : camera{program, "camera"}
-            , lighting{program, "lighting"}
-        {
-        }
-
-    public:
-
-        Uniform<Camera> camera;
-
-        LightingUniform lighting;
+    static auto createShader()
+        -> ShaderProgram;
     
-    };
-
-private:
-    
-    static auto createScene(GLFWwindow & window, ShaderProgram & shader)
+    static auto createScene(Window const & window, ShaderProgram & shader)
         -> Scene;
 
-    auto captureMouse() const
-        -> void;
-
-    auto bindMaterialSamplers() const
+    auto setViewport()
         -> void;
 
     auto wasTerminationRequested() const
@@ -70,43 +49,21 @@ private:
     auto isWindowReady() const
         -> bool;
 
-    auto clear()
-        -> void;
-
-    auto setupCamera()
-        -> void;
-
-    auto setupLights()
-        -> void;
-
-    auto drawScene()
-        -> void;
-
-    auto swapBuffers()
-        -> void;
-
-    auto pollEvents()
-        -> void;
-
-    auto updateFrameTime()
+    auto recordFrameDuration()
         -> void;
 
 private:
 
-    GLFWwindow * window;
-
-    MouseWheelPublisher wheelPublisher;
-
-    KeyboardPublisher keyboardPublisher;
+    Window window;
 
     ShaderProgram shader;
 
     Scene scene;
 
+    SceneRenderer renderer;
+
     InputHandler inputHandler;
 
     FrameTimeTracker timeTracker;
-
-    UniformSet uniforms;
 
 };

@@ -1,6 +1,9 @@
 #include "CameraManipulator.hpp"
 
 #include "Scene.hpp"
+#include "Window.hpp"
+
+#include "GLFW.hpp"
 
 #include <glm/trigonometric.hpp>
 
@@ -51,14 +54,10 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
 
 } // unnamed namespace
 
-CameraManipulator::CameraManipulator(
-    Scene & scene, 
-    GLFWwindow & window, 
-    MouseWheelPublisher & wheelPublisher,
-    float const sensitivity)
+CameraManipulator::CameraManipulator(Scene & scene, Window & window, float const sensitivity)
     : scene{&scene}
     , window{&window}
-    , sightDriver{window, scene.camera, wheelPublisher, sensitivity}
+    , sightDriver{window, scene.camera, sensitivity}
 {
 }
 
@@ -85,11 +84,11 @@ auto CameraManipulator::processKeyboardBasedRotation(double const lastFrameDurat
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_J) == GLFW_PRESS)
     {
         rotateCameraAroundUpVector(scene->camera, +rotationDelta);
     }
-    else if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_L) == GLFW_PRESS)
     {
         rotateCameraAroundUpVector(scene->camera, -rotationDelta);
     }
@@ -100,13 +99,13 @@ auto CameraManipulator::processStraightMovement(double lastFrameDuration) const
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
-    if ((glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) ||
-        (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS))
+    if ((window->getKeyStatus(GLFW_KEY_I) == GLFW_PRESS) ||
+        (window->getKeyStatus(GLFW_KEY_UP) == GLFW_PRESS))
     {
         moveCameraAlongDirection(scene->camera, +translationDelta);
     }
-    else if ((glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS) ||
-             (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS))
+    else if ((window->getKeyStatus(GLFW_KEY_K) == GLFW_PRESS) ||
+             (window->getKeyStatus(GLFW_KEY_DOWN) == GLFW_PRESS))
     {
         moveCameraAlongDirection(scene->camera, -translationDelta);
     }
@@ -117,11 +116,11 @@ auto CameraManipulator::processStrafeMovement(double const lastFrameDuration) co
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_LEFT) == GLFW_PRESS)
     {
         moveCameraSideways(scene->camera, -translationDelta);
     }
-    else if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
         moveCameraSideways(scene->camera, +translationDelta);
     }

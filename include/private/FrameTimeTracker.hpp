@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GLFW.hpp"
-
 class FrameTimeTracker
 {
 

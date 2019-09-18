@@ -1,9 +1,36 @@
 #include "Window.hpp"
 
+#include "GLFW.hpp"
+
 #include <iostream>
 
 namespace
 {
+
+auto theWindow = static_cast<Window *>(nullptr);
+
+auto onResize(GLFWwindow * const /*window*/, int const width, int const height)
+    -> void
+{
+    theWindow->onResize.fire(Size<int>{width, height});
+}
+
+auto onMouseWheel(GLFWwindow * const /*window*/, double const /*xOffset*/, double const yOffset)
+    -> void
+{
+    theWindow->onMouseWheel.fire(yOffset);
+}
+
+auto onKeyboard(
+    GLFWwindow * const /*window*/,
+    int const key,
+    int const scancode,
+    int const action,
+    int const mods)
+    -> void
+{
+    theWindow->onKeyboard.fire(key, scancode, action, mods);
+}
 
 auto initGLFW()
     -> void
@@ -56,7 +83,9 @@ auto makeFullScreenGlfwWindow(std::string const & title)
 auto makeGlfwWindow(std::string const & title, bool const fullscreen)
     -> GLFWwindow &
 {
-    auto const window = fullscreen ? makeFullScreenGlfwWindow(title) : makeRegularGlfwWindow(title);
+    auto const window = fullscreen 
+        ? makeFullScreenGlfwWindow(title)
+        : makeRegularGlfwWindow(title);
 
     if (window == nullptr)
     {
@@ -65,22 +94,6 @@ auto makeGlfwWindow(std::string const & title, bool const fullscreen)
 
     return *window;
 }
-
-auto onResize(GLFWwindow * const /*window*/, int const width, int const height)
-    -> void
-{
-    glViewport(0, 0, width, height);
-}
-
-auto fitViewport(GLFWwindow & window)
-    -> void
-{
-    auto const size = getWindowSize(window);
-
-    glViewport(0, 0, size.width, size.height);
-}
-
-} // unnamed namespace
 
 auto createWindow(std::string const & title, bool const fullScreen)
     -> GLFWwindow &
@@ -98,47 +111,164 @@ auto createWindow(std::string const & title, bool const fullScreen)
 
     printCapabilities();
 
-    fitViewport(window);
-
-    glEnable(GL_DEPTH_TEST);
-
-    glfwSetFramebufferSizeCallback(&window, onResize);
-
     return window;
 }
 
-auto getWindowRatio(GLFWwindow & window)
+} // unnamed namespace
+
+Window::Window(std::string const & title, bool const createAsFullScreen)
+    : handle{&createWindow(title, createAsFullScreen)}
+    , isFullScreenModeOn{createAsFullScreen}
+    , lastWindowedPosition{getPosition()}
+    , lastWindowedSize{getSize()}
+{
+    theWindow = this;
+
+    glfwSetScrollCallback(handle, ::onMouseWheel);
+
+    glfwSetFramebufferSizeCallback(handle, ::onResize);
+
+    glfwSetKeyCallback(handle, ::onKeyboard);
+}
+
+auto Window::getAspectRatio() const
     -> float
 {
     auto width = int{};
 
     auto height = int{};
 
-    glfwGetWindowSize(&window, &width, &height);
+    glfwGetWindowSize(handle, &width, &height);
 
     return (static_cast<float>(width) / height);
 }
 
-auto getWindowCenter(GLFWwindow & window)
-    -> Position
+auto Window::getCenter() const
+    -> Position<double>
 {
     auto width = int{};
 
     auto height = int{};
 
-    glfwGetWindowSize(&window, &width, &height);
+    glfwGetWindowSize(handle, &width, &height);
 
     return {width / 2.0, height / 2.0};
 }
 
-auto getWindowSize(GLFWwindow & window)
+auto Window::getSize() const
     -> Size<int>
 {
     auto width = int{};
 
     auto height = int{};
 
-    glfwGetWindowSize(&window, &width, &height);
+    glfwGetWindowSize(handle, &width, &height);
 
     return {width, height};
+}
+
+auto Window::getPosition() const
+    -> Position<int>
+{
+    auto x = int{};
+
+    auto y = int{};
+
+    glfwGetWindowPos(handle, &x, &y);
+
+    return {x, y};
+}
+
+auto Window::getMousePosition() const
+    -> Position<double>
+{
+    auto x = double{};
+
+    auto y = double{};
+
+    glfwGetCursorPos(handle, &x, &y);
+
+    return {x, y};
+}
+
+auto Window::getKeyStatus(int const key) const
+    -> int
+{
+    return glfwGetKey(handle, key);
+}
+
+auto Window::shouldClose() const
+    -> bool
+{
+    return glfwWindowShouldClose(handle);
+}
+
+auto Window::requestClosure()
+    -> void
+{
+    glfwSetWindowShouldClose(handle, true);
+}
+
+auto Window::swapBuffers()
+    -> void
+{
+    glfwSwapBuffers(handle);
+}
+
+auto Window::captureMouse()
+    -> void
+{
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+auto Window::releaseMouse()
+    -> void
+{
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
+auto Window::isFullScreen() const
+    -> bool
+{
+    return isFullScreenModeOn;
+}
+
+auto Window::setFullScreen()
+    -> void
+{
+    if (isFullScreen())
+    {
+        return;
+    }
+
+    lastWindowedSize = getSize();
+
+    lastWindowedPosition = getPosition();
+
+    auto const monitor = glfwGetPrimaryMonitor();
+
+    const auto mode = glfwGetVideoMode(monitor);
+
+    glfwSetWindowMonitor(handle, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+
+    isFullScreenModeOn = true;
+}
+
+auto Window::exitFullScreen()
+    -> void
+{
+    if (!isFullScreen())
+    {
+        return;
+    }
+
+    glfwSetWindowMonitor(
+        handle,
+        nullptr,
+        lastWindowedPosition.x,
+        lastWindowedPosition.y,
+        lastWindowedSize.width,
+        lastWindowedSize.height, GLFW_DONT_CARE);
+
+    isFullScreenModeOn = false;
 }

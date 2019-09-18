@@ -1,5 +1,7 @@
 #include "FrameTimeTracker.hpp"
 
+#include "GLFW.hpp"
+
 FrameTimeTracker::FrameTimeTracker()
     : lastTime{glfwGetTime()}
     , lastFrameDuration{0.0}

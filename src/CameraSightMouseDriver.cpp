@@ -2,6 +2,7 @@
 
 #include "Camera.hpp"
 #include "Math.hpp"
+#include "Window.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -28,12 +29,11 @@ auto getInitialYaw(Camera const & camera)
 } // unnamed namespace
 
 CameraSightMouseDriver::CameraSightMouseDriver(
-    GLFWwindow & window,
+    Window & window,
     Camera & camera,
-    MouseWheelPublisher & wheelPublisher,
     float const sensitivity)
-    : mouseTracker{window}
-    , wheelPublisher{&wheelPublisher}
+    : window{&window}
+    , mouseTracker{window}
     , camera{&camera}
     , pitch{0.0}
     , yaw{getInitialYaw(camera)}
@@ -66,7 +66,7 @@ auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
 auto CameraSightMouseDriver::registerForWheelNotifications()
     -> ScopedSignalConnection
 {
-    return wheelPublisher->onWheelEvent.registerHandler([this] (double const offset)
+    return window->onMouseWheel.registerHandler([this] (double const offset)
     {
         auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
 

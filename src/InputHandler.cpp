@@ -1,9 +1,11 @@
 #include "InputHandler.hpp"
 
 #include "Camera.hpp"
-#include "KeyboardPublisher.hpp"
 #include "Scene.hpp"
 #include "ShaderProgram.hpp"
+#include "Window.hpp"
+
+#include "GLFW.hpp"
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,22 +57,20 @@ auto rotateLightAroundSceneY(Scene & scene, float const radians)
 
 InputHandler::InputHandler(
     Scene & scene,
-    GLFWwindow & window,
-    MouseWheelPublisher & wheelPublisher,
-    KeyboardPublisher & keyboardPublisher,
+    Window & window,
     ShaderProgram const & program)
     : scene{&scene}
     , window{&window}
     , program{&program}
-    , cameraManipulator{scene, window, wheelPublisher, 0.1f}
-    , keyboardHandlerConnection{registerKeyboardEventHandler(keyboardPublisher)}
+    , cameraManipulator{scene, window, 0.1f}
+    , keyboardHandlerConnection{registerKeyboardEventHandler()}
 {
 }
 
-auto InputHandler::registerKeyboardEventHandler(KeyboardPublisher & keyboardPublisher) const
+auto InputHandler::registerKeyboardEventHandler() const
     -> ScopedSignalConnection
 {
-    return keyboardPublisher.onKeyboardEvent.registerHandler([this] (auto const ... args)
+    return window->onKeyboard.registerHandler([this] (auto const ... args)
     {
         onKeyboardEvent(std::forward<decltype(args)>(args)...);
     });
@@ -95,41 +95,40 @@ auto InputHandler::processInput(double const lastFrameDuration)
 auto InputHandler::processTerminationRequest() const
     -> void
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window, true);
+        window->requestClosure();
     }
 }
 
 auto InputHandler::processMouseCapture() const
     -> void
 {
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_M) == GLFW_PRESS)
     {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        window->releaseMouse();
     }
-    else if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_N) == GLFW_PRESS)
     {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        window->captureMouse();
     }
 }
 
 auto InputHandler::processFullScreenToggle() const
     -> void
 {
-    if (glfwGetKey(window, GLFW_KEY_F11) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_F11) != GLFW_PRESS)
     {
-        auto const monitor = glfwGetPrimaryMonitor();
-
-        // get reolution of monitor
-        const auto mode = glfwGetVideoMode(monitor);
-
-        // switch to full screen
-        glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+        return;
     }
-    else if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS)
+
+    if (!window->isFullScreen())
     {
-        glfwSetWindowMonitor(window, nullptr, 100, 100, 1024, 768, GLFW_DONT_CARE);
+        window->setFullScreen();
+    }
+    else
+    {
+        window->exitFullScreen();
     }
 }
 
@@ -152,11 +151,11 @@ auto InputHandler::processShapeRotation(double const lastFrameDuration) const
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_A) == GLFW_PRESS)
     {
         rotateMeshAroundOwnX(scene->meshes.front(), +rotationDelta);
     }
-    else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_D) == GLFW_PRESS)
     {
         rotateMeshAroundOwnX(scene->meshes.front(), -rotationDelta);
     }
@@ -167,11 +166,11 @@ auto InputHandler::processShapeScaling(double const lastFrameDuration) const
 {
     auto const scalingDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_S) == GLFW_PRESS)
     {
         scene->meshes[1].scaleUniformly(1 + scalingDelta);
     }
-    else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_W) == GLFW_PRESS)
     {
         scene->meshes[1].scaleUniformly(1 - scalingDelta);
     }
@@ -182,11 +181,11 @@ auto InputHandler::processLightRevolution(double const lastFrameDuration) const
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+    if (window->getKeyStatus(GLFW_KEY_O) == GLFW_PRESS)
     {
         rotateLightAroundSceneY(*scene, +rotationDelta);
     }
-    else if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    else if (window->getKeyStatus(GLFW_KEY_P) == GLFW_PRESS)
     {
         rotateLightAroundSceneY(*scene, -rotationDelta);
     }

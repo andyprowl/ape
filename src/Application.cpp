@@ -5,20 +5,25 @@
 #include "SceneBuilder.hpp"
 #include "Window.hpp"
 
+#include "GLFW.hpp"
+
 #include <glm/trigonometric.hpp>
 
 #include <vector>
 
 Application::Application()
-    : window{&createWindow("3D Engine", false)}
-    , wheelPublisher{*window}
-    , keyboardPublisher{*window}
-    , shader{"Object.Vertex.glsl", "Object.Fragment.glsl"}
-    , scene{createScene(*window, shader)}
-    , inputHandler{scene, *window, wheelPublisher, keyboardPublisher, shader}
-    , uniforms{shader}
+    : window{"APE 3D Engine", false}
+    , shader{createShader()}
+    , scene{createScene(window, shader)}
+    , renderer{shader, {0.0f, 0.0f, 0.0f}}
+    , inputHandler{scene, window, shader}
 {
-    captureMouse();
+    window.captureMouse();
+
+    window.onResize.registerHandler([this] (Size<int> const & /*newSize*/)
+    {
+        setViewport();
+    });
 }
 
 Application::~Application()
@@ -26,18 +31,12 @@ Application::~Application()
     glfwTerminate();
 }
 
-auto Application::captureMouse() const
-    -> void
-{
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-}
-
 auto Application::run()
     -> void
 {
     auto const synchronizer = CameraSpotlightSynchronizer{scene.camera, scene.lighting.spot.back()};
 
-    bindMaterialSamplers();
+    setViewport();
 
     while (!wasTerminationRequested())
     {
@@ -45,16 +44,27 @@ auto Application::run()
 
         render();
 
-        swapBuffers();
-
-        pollEvents();
-
-        updateFrameTime();
+        recordFrameDuration();
     }
 }
 
-/*static*/
-auto Application::createScene(GLFWwindow & window, ShaderProgram & shader)
+/* static */
+auto Application::createShader()
+    -> ShaderProgram
+{
+    auto shader = ShaderProgram{"Object.Vertex.glsl", "Object.Fragment.glsl"};
+
+    shader.use();
+
+    shader.getUniform<int>("material.diffuse") = 0;
+
+    shader.getUniform<int>("material.specular") = 1;
+
+    return shader;
+}
+
+/* static */
+auto Application::createScene(Window const & window, ShaderProgram & shader)
     -> Scene
 {
     auto builder = SceneBuilder{window, shader};
@@ -62,25 +72,29 @@ auto Application::createScene(GLFWwindow & window, ShaderProgram & shader)
     return builder.build();
 }
 
-auto Application::bindMaterialSamplers() const
+auto Application::setViewport()
     -> void
 {
-    shader.use();
+    auto const size = window.getSize();
 
-    shader.getUniform<int>("material.diffuse") = 0;
+    glViewport(0, 0, size.width, size.height);
 
-    shader.getUniform<int>("material.specular") = 1;
+    auto const aspectRatio = window.getAspectRatio();
+
+    scene.camera.setAspectRatio(aspectRatio);
 }
 
 auto Application::wasTerminationRequested() const
     -> bool
 {
-    return glfwWindowShouldClose(window);
+    return window.shouldClose();
 }
 
 auto Application::processInput()
     -> void
 {
+    glfwPollEvents();
+
     const auto lastFrameDuration = timeTracker.getLastFrameDuration();
 
     inputHandler.processInput(lastFrameDuration);
@@ -94,77 +108,20 @@ auto Application::render()
         return;
     }
 
-    clear();
+    renderer.render(scene);
 
-    setupCamera();
-
-    setupLights();
-
-    drawScene();
+    window.swapBuffers();
 }
 
 auto Application::isWindowReady() const
     -> bool
 {
-    auto const size = getWindowSize(*window);
+    auto const size = window.getSize();
 
     return (size.height > 0);
 }
 
-auto Application::clear()
-    -> void
-{
-    auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
-
-    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
-
-auto Application::setupCamera()
-    -> void
-{
-    auto const aspectRatio = getWindowRatio(*window);
-
-    scene.camera.setAspectRatio(aspectRatio);
-
-    shader.use();
-
-    uniforms.camera.set(scene.camera);
-}
-
-auto Application::setupLights()
-    -> void
-{
-    shader.use();
-
-    uniforms.lighting.set(scene.lighting);
-}
-
-auto Application::drawScene()
-    -> void
-{
-    for (auto & mesh : scene.meshes)
-    {
-        mesh.draw();
-    }
-}
-
-auto Application::swapBuffers()
-    -> void
-{
-    glfwSwapBuffers(window);
-}
-
-auto Application::pollEvents()
-    -> void
-{
-    glfwPollEvents();
-}
-
-auto Application::updateFrameTime()
+auto Application::recordFrameDuration()
     -> void
 {
     timeTracker.update();

@@ -1,11 +1,12 @@
 #pragma once
 
+template<typename T>
 class Position
 {
 
 public:
 
-    Position(double const x, double const y)
+    Position(T const x, T const y)
         : x{x}
         , y{y}
     {
@@ -13,8 +14,8 @@ public:
 
 public:
 
-    double x;
+    T x;
 
-    double y;
+    T y;
 
 };
