@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ModelPartInstance.hpp"
+#include "BodyPart.hpp"
 
 #include "ModelPart.hpp"
 
@@ -17,35 +17,35 @@ auto computeNormalTransformation(glm::mat4 const & transformation)
 
 } // unnamed namespace
 
-ModelPartInstance::ModelPartInstance(ModelPart const & part)
-    : ModelPartInstance{part, nullptr}
+BodyPart::BodyPart(ModelPart const & part)
+    : BodyPart{part, nullptr}
 {
 }
 
-ModelPartInstance::ModelPartInstance(ModelPart const & part, ModelPartInstance const & parent)
-    : ModelPartInstance{part, &parent}
+BodyPart::BodyPart(ModelPart const & part, BodyPart const & parent)
+    : BodyPart{part, &parent}
 {
 }
 
-auto ModelPartInstance::getComponents() const
-    -> std::vector<ModelPartInstance *> const &
+auto BodyPart::getComponents() const
+    -> std::vector<BodyPart *> const &
 {
     return components;
 }
 
-auto ModelPartInstance::getModel() const
+auto BodyPart::getModel() const
     -> const ModelPart &
 {
     return *part;
 }
 
-auto ModelPartInstance::getLocalTransformation() const
+auto BodyPart::getLocalTransformation() const
     -> glm::mat4 const &
 {
     return localTransformation;
 }
 
-auto ModelPartInstance::setLocalTransformation(glm::mat4 const & newTransformation)
+auto BodyPart::setLocalTransformation(glm::mat4 const & newTransformation)
     -> void
 {
     localTransformation = newTransformation;
@@ -57,20 +57,20 @@ auto ModelPartInstance::setLocalTransformation(glm::mat4 const & newTransformati
     updateDescendentGlobalTransformations();
 }
 
-auto ModelPartInstance::getGlobalTransformation() const
+auto BodyPart::getGlobalTransformation() const
     -> glm::mat4 const &
 {
     return globalTransformation;
 }
 
-auto ModelPartInstance::getGlobalNormalTransformation() const
+auto BodyPart::getGlobalNormalTransformation() const
     -> glm::mat3 const &
 {
     return globalNormalTransformation;
 }
 
 // Implemented as a member because it does not require updating the normal matrix
-auto ModelPartInstance::scaleUniformly(float const factor)
+auto BodyPart::scaleUniformly(float const factor)
     -> void
 {
     localTransformation = glm::scale(localTransformation, {factor, factor, factor});
@@ -79,7 +79,7 @@ auto ModelPartInstance::scaleUniformly(float const factor)
 }
 
 // Implemented as a member because it does not require updating the normal matrix
-auto ModelPartInstance::translate(glm::vec3 const & offset)
+auto BodyPart::translate(glm::vec3 const & offset)
     -> void
 {
     localTransformation = glm::translate(localTransformation, offset);
@@ -87,7 +87,7 @@ auto ModelPartInstance::translate(glm::vec3 const & offset)
     updateGlobalTransformation();
 }
 
-ModelPartInstance::ModelPartInstance(ModelPart const & part, ModelPartInstance const * const parent)
+BodyPart::BodyPart(ModelPart const & part, BodyPart const * const parent)
     : part{&part}
     , parent{parent}
     , localTransformation{part.getTransformation()}
@@ -97,7 +97,7 @@ ModelPartInstance::ModelPartInstance(ModelPart const & part, ModelPartInstance c
     components.reserve(part.getComponents().size());
 }
 
-auto ModelPartInstance::getParentGlobalTransformation() const
+auto BodyPart::getParentGlobalTransformation() const
     -> glm::mat4
 {
     if (parent != nullptr)
@@ -110,13 +110,13 @@ auto ModelPartInstance::getParentGlobalTransformation() const
     }
 }
 
-auto ModelPartInstance::registerComponent(ModelPartInstance & component)
+auto BodyPart::registerComponent(BodyPart & component)
     -> void
 {
     components.push_back(&component);
 }
 
-auto ModelPartInstance::onParentTransformationChanged(glm::mat4 const & newTransformation)
+auto BodyPart::onParentTransformationChanged(glm::mat4 const & newTransformation)
     -> void
 {
     globalTransformation = newTransformation * localTransformation;
@@ -126,19 +126,19 @@ auto ModelPartInstance::onParentTransformationChanged(glm::mat4 const & newTrans
     updateDescendentGlobalTransformations();
 }
 
-auto ModelPartInstance::updateGlobalTransformation()
+auto BodyPart::updateGlobalTransformation()
     -> void
 {
     globalTransformation = getParentGlobalTransformation() * localTransformation;
 }
 
-auto ModelPartInstance::updateGlobalNormalTransformation()
+auto BodyPart::updateGlobalNormalTransformation()
     -> void
 {
     globalNormalTransformation = computeNormalTransformation(globalTransformation);
 }
 
-auto ModelPartInstance::updateDescendentGlobalTransformations() const
+auto BodyPart::updateDescendentGlobalTransformations() const
     -> void
 {
     for (auto component : components)
@@ -147,7 +147,7 @@ auto ModelPartInstance::updateDescendentGlobalTransformations() const
     }
 }
 
-auto getLocalPosition(ModelPartInstance const & part)
+auto getLocalPosition(BodyPart const & part)
     -> glm::vec3
 {
     auto const & transformation = part.getLocalTransformation();
@@ -155,7 +155,7 @@ auto getLocalPosition(ModelPartInstance const & part)
     return transformation[3];
 }
 
-auto setLocalPosition(ModelPartInstance & part, glm::vec3 const & newPosition)
+auto setLocalPosition(BodyPart & part, glm::vec3 const & newPosition)
     -> void
 {
     auto const offset = newPosition - getLocalPosition(part);
@@ -163,7 +163,7 @@ auto setLocalPosition(ModelPartInstance & part, glm::vec3 const & newPosition)
     part.translate(offset);
 }
 
-auto getGlobalPosition(ModelPartInstance const & part)
+auto getGlobalPosition(BodyPart const & part)
     -> glm::vec3
 {
     auto const & transformation = part.getGlobalTransformation();

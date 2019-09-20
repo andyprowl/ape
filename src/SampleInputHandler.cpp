@@ -21,7 +21,7 @@ auto toggle(bool & b)
     b = !b;
 }
 
-auto rotateBodyAroundOwnX(ModelInstance & body, float const radians)
+auto rotateBodyAroundOwnX(Body & body, float const radians)
     -> void
 {
     auto const & transformation = getTransformation(body);

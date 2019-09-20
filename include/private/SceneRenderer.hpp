@@ -3,8 +3,8 @@
 #include "CameraUniform.hpp"
 #include "LightingUniform.hpp"
 
-class ModelInstance;
-class ModelPartInstance;
+class Body;
+class BodyPart;
 class Scene;
 class ShaderProgram;
 
@@ -59,10 +59,10 @@ private:
     auto drawScene(Scene const & scene) const
         -> void;
 
-    auto drawBody(ModelInstance const & body) const
+    auto drawBody(Body const & body) const
         -> void;
 
-    auto drawBodyPart(ModelPartInstance const & part) const
+    auto drawBodyPart(BodyPart const & part) const
         -> void;
 
     auto drawMesh(Mesh const & mesh) const

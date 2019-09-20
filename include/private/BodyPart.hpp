@@ -6,20 +6,20 @@
 
 class ModelPart;
 
-class ModelPartInstance
+class BodyPart
 {
 
 public:
 
-    explicit ModelPartInstance(ModelPart const & part);
+    explicit BodyPart(ModelPart const & part);
 
-    ModelPartInstance(ModelPart const & part, ModelPartInstance const & parent);
+    BodyPart(ModelPart const & part, BodyPart const & parent);
 
     auto getModel() const
         -> const ModelPart &;
 
     auto getComponents() const
-        -> std::vector<ModelPartInstance *> const &;
+        -> std::vector<BodyPart *> const &;
 
     auto getLocalTransformation() const
         -> glm::mat4 const &;
@@ -43,12 +43,12 @@ public:
 
 private:
 
-    ModelPartInstance(ModelPart const & part, ModelPartInstance const * parent);
+    BodyPart(ModelPart const & part, BodyPart const * parent);
 
     auto getParentGlobalTransformation() const
         -> glm::mat4;
 
-    auto registerComponent(ModelPartInstance & component)
+    auto registerComponent(BodyPart & component)
         -> void;
 
     auto onParentTransformationChanged(glm::mat4 const & newTransformation)
@@ -67,9 +67,9 @@ private:
 
     ModelPart const * part;
     
-    ModelPartInstance const * parent;
+    BodyPart const * parent;
 
-    std::vector<ModelPartInstance *> components;
+    std::vector<BodyPart *> components;
 
     glm::mat4 localTransformation;
 
@@ -79,11 +79,11 @@ private:
 
 };
 
-auto getLocalPosition(ModelPartInstance const & part)
+auto getLocalPosition(BodyPart const & part)
     -> glm::vec3;
 
-auto setLocalPosition(ModelPartInstance & part, glm::vec3 const & newPosition)
+auto setLocalPosition(BodyPart & part, glm::vec3 const & newPosition)
     -> void;
 
-auto getGlobalPosition(ModelPartInstance const & part)
+auto getGlobalPosition(BodyPart const & part)
     -> glm::vec3;

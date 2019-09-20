@@ -2,7 +2,7 @@
 
 #include "CameraSystem.hpp"
 #include "Lighting.hpp"
-#include "ModelInstance.hpp"
+#include "Body.hpp"
 
 #include <vector>
 
@@ -13,7 +13,7 @@ public:
 
     Scene() = default;
 
-    Scene(std::vector<ModelInstance> bodies, CameraSystem cameraSystem, Lighting lighting)
+    Scene(std::vector<Body> bodies, CameraSystem cameraSystem, Lighting lighting)
         : bodies{std::move(bodies)}
         , cameraSystem{std::move(cameraSystem)}
         , lighting{std::move(lighting)}
@@ -22,7 +22,7 @@ public:
 
 public:
 
-    std::vector<ModelInstance> bodies;
+    std::vector<Body> bodies;
 
     CameraSystem cameraSystem;
 

@@ -49,7 +49,7 @@ auto SceneRenderer::drawScene(Scene const & scene) const
     }
 }
 
-auto SceneRenderer::drawBody(ModelInstance const & body) const
+auto SceneRenderer::drawBody(Body const & body) const
     -> void
 {
     for (auto i = 0; i < body.getNumOfParts(); ++i)
@@ -60,7 +60,7 @@ auto SceneRenderer::drawBody(ModelInstance const & body) const
     }
 }
 
-auto SceneRenderer::drawBodyPart(ModelPartInstance const & part) const
+auto SceneRenderer::drawBodyPart(BodyPart const & part) const
     -> void
 {
     uniforms.modelTransformation = part.getGlobalTransformation();

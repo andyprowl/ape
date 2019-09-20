@@ -28,13 +28,13 @@ private:
         -> void;
 
     auto createGroundTile(int row, int col, Model const & model)
-        -> ModelInstance &;
+        -> Body &;
 
     auto createContainers()
         -> void;
 
     auto createContainer(glm::mat4 const & transformation, Model const & model)
-        -> ModelInstance &;
+        -> Body &;
 
     auto getContainerPositions() const
         -> std::vector<glm::vec3>;
@@ -43,7 +43,7 @@ private:
         -> void;
 
     auto createLamp(glm::vec3 const & position, Model const & model)
-        -> ModelInstance &;
+        -> Body &;
 
     auto getLampPositions()
         -> std::vector<glm::vec3>;
@@ -52,7 +52,7 @@ private:
         -> void;
 
     auto createFlashlight(glm::mat4 const & transformation, Model const & model)
-        -> ModelInstance &;
+        -> Body &;
 
     auto getFlashlightPositions()
         -> std::vector<glm::vec3>;
@@ -145,11 +145,11 @@ auto StatefulBuilder::createGroundTiles()
 }
 
 auto StatefulBuilder::createGroundTile(int const row, int const col, Model const & model)
-    -> ModelInstance &
+    -> Body &
 {
     auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
 
-    auto instance = ModelInstance{model};
+    auto instance = Body{model};
 
     setPosition(instance, position);
 
@@ -183,9 +183,9 @@ auto StatefulBuilder::createContainers()
 }
 
 auto StatefulBuilder::createContainer(glm::mat4 const & transformation, Model const & model)
-    -> ModelInstance &
+    -> Body &
 {
-    auto instance = ModelInstance{model};
+    auto instance = Body{model};
 
     setTransformation(instance, transformation);
 
@@ -227,9 +227,9 @@ auto StatefulBuilder::createLamps()
 }
 
 auto StatefulBuilder::createLamp(glm::vec3 const & position, Model const & model)
-    -> ModelInstance &
+    -> Body &
 {
-    auto instance = ModelInstance{model};
+    auto instance = Body{model};
 
     setPosition(instance, position);
 
@@ -262,9 +262,9 @@ auto StatefulBuilder::createFlashlights()
 }
 
 auto StatefulBuilder::createFlashlight(glm::mat4 const & transformation, Model const & model)
-    -> ModelInstance &
+    -> Body &
 {
-    auto instance = ModelInstance{model};
+    auto instance = Body{model};
 
     setTransformation(instance, transformation);
 

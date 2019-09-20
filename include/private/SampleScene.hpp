@@ -9,12 +9,12 @@ public:
     
     SampleScene() = default;
 
-    std::vector<ModelInstance *> lamps;
+    std::vector<Body *> lamps;
 
     SpotLight * playerFlashlight = nullptr;
 
-    ModelInstance * rotatingContainer = nullptr;
+    Body * rotatingContainer = nullptr;
 
-    ModelInstance * scalingContainer = nullptr;
+    Body * scalingContainer = nullptr;
 
 };
