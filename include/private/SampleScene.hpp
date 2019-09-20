@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CameraSpotlightSynchronizer.hpp"
 #include "Scene.hpp"
 
 class SampleScene : public Scene
@@ -16,5 +17,7 @@ public:
     Body * rotatingContainer = nullptr;
 
     Body * scalingContainer = nullptr;
+
+    std::vector<CameraSpotlightSynchronizer> spotLightSynchronizers;
 
 };

@@ -187,6 +187,8 @@ auto SampleInputHandler::onKeyboardEvent(
 
     processLightToggling(key, mods);
 
+    processCameraSwitching(key, mods);
+
     processFullScreenToggling(key);
 }
 
@@ -204,9 +206,25 @@ auto SampleInputHandler::processLightToggling(int const key, int const mods) con
     {
         togglePointLight(index);
     }
-    else
+    else if (mods == 0)
     {
         toggleSpotLight(index);
+    }
+}
+
+auto SampleInputHandler::processCameraSwitching(int const key, int const mods) const
+    -> void
+{
+    if ((key < GLFW_KEY_1) || (key > GLFW_KEY_9))
+    {
+        return;
+    }
+
+    auto const index = key - GLFW_KEY_1;
+
+    if (mods & GLFW_MOD_CONTROL)
+    {
+        switchToCamera(index);
     }
 }
 
@@ -248,4 +266,19 @@ auto SampleInputHandler::toggleSpotLight(int const index) const
     }
 
     toggle(scene->lighting.spot[index].isTurnedOn);
+}
+
+auto SampleInputHandler::switchToCamera(int const index) const
+    -> void
+{
+    auto & cameras = scene->cameraSystem.cameras;
+
+    if (index >= static_cast<int>(cameras.size()))
+    {
+        return;
+    }
+
+    scene->cameraSystem.activeCamera = &cameras[index];
+
+    scene->cameraSystem.activeCamera->setAspectRatio(window->getAspectRatio());
 }

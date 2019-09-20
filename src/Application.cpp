@@ -28,10 +28,6 @@ Application::~Application()
 auto Application::run()
     -> void
 {
-    auto const synchronizer = CameraSpotlightSynchronizer{
-        *scene.cameraSystem.activeCamera,
-        *scene.playerFlashlight};
-
     setViewport();
 
     while (!wasTerminationRequested())

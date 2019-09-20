@@ -51,6 +51,9 @@ private:
     auto processLightToggling(int key, int mods) const
         -> void;
 
+    auto processCameraSwitching(int key, int mods) const
+        -> void;
+
     auto processFullScreenToggling(int key) const
         -> void;
 
@@ -58,6 +61,9 @@ private:
         -> void;
 
     auto toggleSpotLight(int index) const
+        -> void;
+
+    auto switchToCamera(int index) const
         -> void;
 
 private:
