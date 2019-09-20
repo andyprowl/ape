@@ -38,7 +38,7 @@ auto Camera::getProjection() const
 auto Camera::getTransformation() const
     -> glm::mat4
 {
-    return projection * view;
+    return transformation;
 }
 
 auto Camera::getPosition() const

@@ -1,10 +1,11 @@
 #pragma once
 
+#include "AssetRepository.hpp"
 #include "CameraUniform.hpp"
 #include "FrameTimeTracker.hpp"
-#include "InputHandler.hpp"
 #include "LightingUniform.hpp"
-#include "Scene.hpp"
+#include "SampleInputHandler.hpp"
+#include "SampleScene.hpp"
 #include "SceneRenderer.hpp"
 #include "ScopedSignalConnection.hpp"
 #include "ShaderProgram.hpp"
@@ -31,9 +32,12 @@ private:
 
     static auto createShader()
         -> ShaderProgram;
+
+    static auto createAssets()
+        -> AssetRepository;
     
-    static auto createScene(Window const & window)
-        -> Scene;
+    static auto createScene(AssetRepository & repository)
+        -> SampleScene;
 
     auto registerWindowResizeHandler()
         -> ScopedSignalConnection;
@@ -62,11 +66,13 @@ private:
 
     ShaderProgram shader;
 
-    Scene scene;
+    AssetRepository assets;
+
+    SampleScene scene;
 
     SceneRenderer renderer;
 
-    InputHandler inputHandler;
+    SampleInputHandler inputHandler;
 
     FrameTimeTracker timeTracker;
 

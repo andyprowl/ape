@@ -1,5 +1,7 @@
 #include "TextureRepository.hpp"
 
+#include <algorithm>
+
 auto TextureRepository::addTexture(Texture texture)
     -> Texture &
 {
@@ -10,22 +12,26 @@ auto TextureRepository::addTexture(Texture texture)
         throw TextureFilenameNotUnique{std::move(filename)};
     }
 
-    auto const insertionResult = textures.emplace(std::move(filename), std::move(texture));
+    textures.push_back(std::move(texture));
 
-    auto const it = insertionResult.first;
-
-    return it->second;
+    return textures.back();
 }
 
 auto TextureRepository::findTexture(std::string const & filename) const
     -> Texture const *
 {
-    auto it = textures.find(filename);
+    auto it = std::find_if(
+        std::cbegin(textures),
+        std::cend(textures),
+        [&filename] (const Texture & t)
+    {
+        return (t.getFilename() == filename);
+    });
 
     if (it == std::cend(textures))
     {
         return nullptr;
     }
 
-    return &it->second;
+    return &(*it);
 }

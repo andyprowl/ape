@@ -1,4 +1,4 @@
-#include "CameraSpotlightSynchronizer.h"
+#include "CameraSpotlightSynchronizer.hpp"
 
 #include "Camera.hpp"
 #include "SpotLight.hpp"

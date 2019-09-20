@@ -1,15 +1,8 @@
 #pragma once
 
-#include "Material.hpp"
-#include "Shape.hpp"
-#include "Uniform.hpp"
+#include <string>
 
-#include <glm/mat4x4.hpp>
-
-#include <memory>
-#include <vector>
-
-class ShaderProgram;
+class Material;
 class Shape;
 
 class Mesh
@@ -17,43 +10,23 @@ class Mesh
 
 public:
 
-    Mesh(
-        std::shared_ptr<Shape const> shape,
-        Material const & material,
-        glm::mat4 const & modelTransformation = glm::mat4{1.0f});
+    Mesh(std::string name, Shape const & shape, Material const & material);
+
+    auto getName() const
+        -> std::string;
 
     auto getShape() const
         -> Shape const &;
 
-    auto getPosition() const
-        -> glm::vec3;
-
-    auto getModelTransformation() const
-        -> glm::mat4;
-    
-    auto setModelTransformation(glm::mat4 const & newTransformation)
-        -> void;
-
-    auto getNormalMatrix() const
-        -> glm::mat3;
-
-    auto scaleUniformly(float factor)
-        -> void;
-
-    auto translate(glm::vec3 const & offset)
-        -> void;
-
     auto getMaterial() const
-        -> Material;
+        -> Material const &;
 
 private:
 
-    std::shared_ptr<Shape const> shape;
+    std::string name;
 
-    Material material;
+    Shape const * shape;
 
-    glm::mat4 modelTransformation;
-
-    glm::mat3 normalMatrix;
+    Material const * material;
 
 };

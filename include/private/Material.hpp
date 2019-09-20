@@ -11,12 +11,12 @@ public:
 
     Material(
         glm::vec3 const & ambient,
-        Texture diffuseMap,
-        Texture specularMap,
+        Texture const & diffuseMap,
+        Texture const & specularMap,
         float const shininess)
         : ambient{ambient}
-        , diffuseMap{std::move(diffuseMap)}
-        , specularMap{std::move(specularMap)}
+        , diffuseMap{&diffuseMap}
+        , specularMap{&specularMap}
         , shininess{shininess}
     {
     }
@@ -25,9 +25,9 @@ public:
 
     glm::vec3 ambient;
 
-    Texture diffuseMap;
+    Texture const * diffuseMap;
 
-    Texture specularMap;
+    Texture const * specularMap;
 
     float shininess;
 

@@ -1,20 +1,18 @@
 #include "Application.hpp"
 
-#include "CameraDrivenPipeline.h"
-#include "CameraSpotlightSynchronizer.h"
-#include "SceneBuilder.hpp"
+#include "AssetBuilder.hpp"
+#include "CameraDrivenPipeline.hpp"
+#include "CameraSpotlightSynchronizer.hpp"
+#include "SampleSceneBuilder.hpp"
 #include "Window.hpp"
 
 #include "GLFW.hpp"
 
-#include <glm/trigonometric.hpp>
-
-#include <vector>
-
 Application::Application()
     : window{"APE 3D Engine", false}
     , shader{createShader()}
-    , scene{createScene(window)}
+    , assets{createAssets()}
+    , scene{createScene(assets)}
     , renderer{shader, {0.0f, 0.0f, 0.0f}}
     , inputHandler{scene, window, shader}
     , resizeHandlerConnection{registerWindowResizeHandler()}
@@ -30,7 +28,9 @@ Application::~Application()
 auto Application::run()
     -> void
 {
-    auto const synchronizer = CameraSpotlightSynchronizer{scene.camera, scene.lighting.spot.back()};
+    auto const synchronizer = CameraSpotlightSynchronizer{
+        *scene.cameraSystem.activeCamera,
+        *scene.playerFlashlight};
 
     setViewport();
 
@@ -60,10 +60,19 @@ auto Application::createShader()
 }
 
 /* static */
-auto Application::createScene(Window const & window)
-    -> Scene
+auto Application::createAssets()
+    -> AssetRepository
 {
-    auto builder = SceneBuilder{window};
+    auto const builder = AssetBuilder{};
+
+    return builder.build();
+}
+
+/* static */
+auto Application::createScene(AssetRepository & repository)
+    -> SampleScene
+{
+    auto const builder = SampleSceneBuilder{repository};
 
     return builder.build();
 }
@@ -86,7 +95,7 @@ auto Application::setViewport()
 
     auto const aspectRatio = window.getAspectRatio();
 
-    scene.camera.setAspectRatio(aspectRatio);
+    scene.cameraSystem.activeCamera->setAspectRatio(aspectRatio);
 }
 
 auto Application::wasTerminationRequested() const

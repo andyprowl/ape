@@ -5,18 +5,16 @@
 
 #include <vector>
 
-class Camera;
-class Mesh;
-class Scene;
+class SampleScene;
 class ShaderProgram;
 class Window;
 
-class InputHandler
+class SampleInputHandler
 {
 
 public:
 
-    InputHandler(Scene & scene, Window & window, ShaderProgram const & program);
+    SampleInputHandler(SampleScene & scene, Window & window, ShaderProgram const & program);
 
     auto processInput(double lastFrameDuration)
         -> void;
@@ -64,7 +62,7 @@ private:
 
 private:
 
-    Scene * scene;
+    SampleScene * scene;
 
     Window * window;
 

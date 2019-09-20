@@ -57,7 +57,7 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
 CameraManipulator::CameraManipulator(Scene & scene, Window & window, float const sensitivity)
     : scene{&scene}
     , window{&window}
-    , sightDriver{window, scene.camera, sensitivity}
+    , sightDriver{window, *scene.cameraSystem.activeCamera, sensitivity}
 {
 }
 
@@ -86,11 +86,11 @@ auto CameraManipulator::processKeyboardBasedRotation(double const lastFrameDurat
 
     if (window->getKeyStatus(GLFW_KEY_J) == GLFW_PRESS)
     {
-        rotateCameraAroundUpVector(scene->camera, +rotationDelta);
+        rotateCameraAroundUpVector(*scene->cameraSystem.activeCamera, +rotationDelta);
     }
     else if (window->getKeyStatus(GLFW_KEY_L) == GLFW_PRESS)
     {
-        rotateCameraAroundUpVector(scene->camera, -rotationDelta);
+        rotateCameraAroundUpVector(*scene->cameraSystem.activeCamera, -rotationDelta);
     }
 }
 
@@ -102,12 +102,12 @@ auto CameraManipulator::processStraightMovement(double lastFrameDuration) const
     if ((window->getKeyStatus(GLFW_KEY_I) == GLFW_PRESS) ||
         (window->getKeyStatus(GLFW_KEY_UP) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(scene->camera, +translationDelta);
+        moveCameraAlongDirection(*scene->cameraSystem.activeCamera, +translationDelta);
     }
     else if ((window->getKeyStatus(GLFW_KEY_K) == GLFW_PRESS) ||
              (window->getKeyStatus(GLFW_KEY_DOWN) == GLFW_PRESS))
     {
-        moveCameraAlongDirection(scene->camera, -translationDelta);
+        moveCameraAlongDirection(*scene->cameraSystem.activeCamera, -translationDelta);
     }
 }
 
@@ -118,10 +118,10 @@ auto CameraManipulator::processStrafeMovement(double const lastFrameDuration) co
 
     if (window->getKeyStatus(GLFW_KEY_LEFT) == GLFW_PRESS)
     {
-        moveCameraSideways(scene->camera, -translationDelta);
+        moveCameraSideways(*scene->cameraSystem.activeCamera, -translationDelta);
     }
     else if (window->getKeyStatus(GLFW_KEY_RIGHT) == GLFW_PRESS)
     {
-        moveCameraSideways(scene->camera, +translationDelta);
+        moveCameraSideways(*scene->cameraSystem.activeCamera, +translationDelta);
     }
 }

@@ -2,6 +2,7 @@
 
 #include <functional>
 
+// [[nodiscard]]
 class ScopedSignalConnection
 {
     

@@ -1,7 +1,12 @@
 #include "SceneRenderer.hpp"
 
+#include "Material.hpp"
+#include "ModelPart.hpp"
 #include "Scene.hpp"
 #include "ShaderProgram.hpp"
+#include "Shape.hpp"
+
+#include "GLFW.hpp"
 
 SceneRenderer::SceneRenderer(ShaderProgram const & shader, glm::vec3 const & backgroundColor)
     : shader{&shader}
@@ -18,7 +23,7 @@ auto SceneRenderer::render(Scene const & s) const
 
     shader->use();
 
-    uniforms.camera.set(s.camera);
+    uniforms.camera.set(*s.cameraSystem.activeCamera);
 
     uniforms.lighting.set(s.lighting);
 
@@ -35,31 +40,56 @@ auto SceneRenderer::clear() const
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-auto SceneRenderer::drawScene(Scene const & s) const
+auto SceneRenderer::drawScene(Scene const & scene) const
     -> void
 {
-    for (auto const & mesh : s.meshes)
+    for (auto const & body : scene.bodies)
     {
-        drawMesh(mesh);
+        drawBody(body);
     }
 }
 
-auto SceneRenderer::drawMesh(Mesh const & m) const
+auto SceneRenderer::drawBody(ModelInstance const & body) const
     -> void
 {
-    auto const material = m.getMaterial();
+    for (auto i = 0; i < body.getNumOfParts(); ++i)
+    {
+        auto const & part = body.getPart(i);
 
-    uniforms.modelTransformation = m.getModelTransformation();
+        drawBodyPart(part);
+    }
+}
 
-    uniforms.normalMatrix = m.getNormalMatrix();
+auto SceneRenderer::drawBodyPart(ModelPartInstance const & part) const
+    -> void
+{
+    uniforms.modelTransformation = part.getGlobalTransformation();
+
+    uniforms.normalMatrix = part.getGlobalNormalTransformation();
+
+    for (auto const mesh : part.getModel().getMeshes())
+    {
+        drawMesh(*mesh);
+    }
+
+    for (auto const component : part.getComponents())
+    {
+        drawBodyPart(*component);
+    }
+}
+
+auto SceneRenderer::drawMesh(Mesh const & mesh) const
+    -> void
+{
+    auto const & material = mesh.getMaterial();
 
     uniforms.materialAmbient = material.ambient;
 
     uniforms.materialShininess = material.shininess;
 
-    material.diffuseMap.bind(0);
+    material.diffuseMap->bind(0);
 
-    material.specularMap.bind(1);
+    material.specularMap->bind(1);
 
-    m.getShape().draw();
+    mesh.getShape().draw();
 }

@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 class TextureFilenameNotUnique : public std::logic_error
 {
@@ -31,6 +31,6 @@ public:
 
 private:
 
-    std::unordered_map<std::string, Texture> textures;
+    std::vector<Texture> textures;
 
 };

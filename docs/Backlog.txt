@@ -1,4 +1,5 @@
  - Implement hierarchical scene/mesh model supporting attachments and transforms
+ - Introduce "ape" namespace at least for generic/reusable units
  - Allow importing models using Assimp
  - Allow multiple diffuse maps and specular maps for every material
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)

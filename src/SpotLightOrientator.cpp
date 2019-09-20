@@ -1,4 +1,4 @@
-#include "SpotLightOrientator.h"
+#include "SpotLightOrientator.hpp"
 
 #include "SpotLight.hpp"
 

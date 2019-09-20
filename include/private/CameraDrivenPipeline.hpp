@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CameraViewSensor.hpp"
-#include "SpotLightOrientator.h"
+#include "SpotLightOrientator.hpp"
 
 class CameraDrivenPipeline
 {

@@ -1,7 +1,7 @@
-#include "InputHandler.hpp"
+#include "SampleInputHandler.hpp"
 
 #include "Camera.hpp"
-#include "Scene.hpp"
+#include "SampleScene.hpp"
 #include "ShaderProgram.hpp"
 #include "Window.hpp"
 
@@ -21,15 +21,17 @@ auto toggle(bool & b)
     b = !b;
 }
 
-auto rotateMeshAroundOwnX(Mesh & mesh, float const radians)
+auto rotateBodyAroundOwnX(ModelInstance & body, float const radians)
     -> void
 {
-    auto const rotation = glm::rotate(mesh.getModelTransformation(), radians, {1.0f, 0.0f, 0.0f});
+    auto const & transformation = getTransformation(body);
+
+    auto const newTransformation = glm::rotate(transformation, radians, {1.0f, 0.0f, 0.0f});
     
-    mesh.setModelTransformation(rotation);
+    setTransformation(body, newTransformation);
 }
 
-auto rotateLightAroundSceneY(Scene & scene, float const radians)
+auto rotateLightAroundWorldY(SampleScene & scene, float const radians)
     -> void
 {
     auto & light = scene.lighting.point[0];
@@ -42,21 +44,21 @@ auto rotateLightAroundSceneY(Scene & scene, float const radians)
 
     light.position = newPosition;
 
-    auto & mesh = *(scene.meshes.end() - 2);
+    auto & body = *scene.lamps.front();
 
-    auto const transformation  = 
+    auto const newTransformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *
         glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f}) *
         glm::translate(glm::mat4{1.0f}, -position) *
-        mesh.getModelTransformation();
+        getTransformation(body);
 
-    mesh.setModelTransformation(transformation);
+    setTransformation(body, newTransformation);
 }
 
 } // unnamed namespace
 
-InputHandler::InputHandler(
-    Scene & scene,
+SampleInputHandler::SampleInputHandler(
+    SampleScene & scene,
     Window & window,
     ShaderProgram const & program)
     : scene{&scene}
@@ -67,7 +69,7 @@ InputHandler::InputHandler(
 {
 }
 
-auto InputHandler::registerKeyboardEventHandler() const
+auto SampleInputHandler::registerKeyboardEventHandler() const
     -> ScopedSignalConnection
 {
     return window->onKeyboard.registerHandler([this] (auto const ... args)
@@ -76,7 +78,7 @@ auto InputHandler::registerKeyboardEventHandler() const
     });
 }
 
-auto InputHandler::processInput(double const lastFrameDuration)
+auto SampleInputHandler::processInput(double const lastFrameDuration)
     -> void
 {
     processTerminationRequest();
@@ -90,7 +92,7 @@ auto InputHandler::processInput(double const lastFrameDuration)
     processLightRevolution(lastFrameDuration);
 }
 
-auto InputHandler::processTerminationRequest() const
+auto SampleInputHandler::processTerminationRequest() const
     -> void
 {
     if (window->getKeyStatus(GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -99,7 +101,7 @@ auto InputHandler::processTerminationRequest() const
     }
 }
 
-auto InputHandler::processMouseCapture() const
+auto SampleInputHandler::processMouseCapture() const
     -> void
 {
     if (window->getKeyStatus(GLFW_KEY_M) == GLFW_PRESS)
@@ -112,13 +114,13 @@ auto InputHandler::processMouseCapture() const
     }
 }
 
-auto InputHandler::processCameraManipulation(double const lastFrameDuration)
+auto SampleInputHandler::processCameraManipulation(double const lastFrameDuration)
     -> void
 {
     cameraManipulator.update(lastFrameDuration);
 }
 
-auto InputHandler::processShapeModification(double const lastFrameDuration) const
+auto SampleInputHandler::processShapeModification(double const lastFrameDuration) const
     -> void
 {
     processShapeRotation(lastFrameDuration);
@@ -126,52 +128,52 @@ auto InputHandler::processShapeModification(double const lastFrameDuration) cons
     processShapeScaling(lastFrameDuration);
 }
 
-auto InputHandler::processShapeRotation(double const lastFrameDuration) const
+auto SampleInputHandler::processShapeRotation(double const lastFrameDuration) const
     -> void
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
     if (window->getKeyStatus(GLFW_KEY_A) == GLFW_PRESS)
     {
-        rotateMeshAroundOwnX(scene->meshes.front(), +rotationDelta);
+        rotateBodyAroundOwnX(*scene->rotatingContainer, +rotationDelta);
     }
     else if (window->getKeyStatus(GLFW_KEY_D) == GLFW_PRESS)
     {
-        rotateMeshAroundOwnX(scene->meshes.front(), -rotationDelta);
+        rotateBodyAroundOwnX(*scene->rotatingContainer, -rotationDelta);
     }
 }
 
-auto InputHandler::processShapeScaling(double const lastFrameDuration) const
+auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) const
     -> void
 {
     auto const scalingDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
     if (window->getKeyStatus(GLFW_KEY_S) == GLFW_PRESS)
     {
-        scene->meshes[1].scaleUniformly(1 + scalingDelta);
+        scaleUniformly(*scene->scalingContainer, 1 + scalingDelta);
     }
     else if (window->getKeyStatus(GLFW_KEY_W) == GLFW_PRESS)
     {
-        scene->meshes[1].scaleUniformly(1 - scalingDelta);
+        scaleUniformly(*scene->scalingContainer, 1 - scalingDelta);
     }
 }
 
-auto InputHandler::processLightRevolution(double const lastFrameDuration) const
+auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) const
     -> void
 {
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
     if (window->getKeyStatus(GLFW_KEY_O) == GLFW_PRESS)
     {
-        rotateLightAroundSceneY(*scene, +rotationDelta);
+        rotateLightAroundWorldY(*scene, +rotationDelta);
     }
     else if (window->getKeyStatus(GLFW_KEY_P) == GLFW_PRESS)
     {
-        rotateLightAroundSceneY(*scene, -rotationDelta);
+        rotateLightAroundWorldY(*scene, -rotationDelta);
     }
 }
 
-auto InputHandler::onKeyboardEvent(
+auto SampleInputHandler::onKeyboardEvent(
     int const key,
     int const /*scancode*/,
     int const action,
@@ -188,7 +190,7 @@ auto InputHandler::onKeyboardEvent(
     processFullScreenToggling(key);
 }
 
-auto InputHandler::processLightToggling(int const key, int const mods) const
+auto SampleInputHandler::processLightToggling(int const key, int const mods) const
     -> void
 {
     if ((key < GLFW_KEY_1) || (key > GLFW_KEY_9))
@@ -208,7 +210,7 @@ auto InputHandler::processLightToggling(int const key, int const mods) const
     }
 }
 
-auto InputHandler::processFullScreenToggling(int const key) const
+auto SampleInputHandler::processFullScreenToggling(int const key) const
     -> void
 {
     if (key != GLFW_KEY_F11)
@@ -226,7 +228,7 @@ auto InputHandler::processFullScreenToggling(int const key) const
     }
 }
 
-auto InputHandler::togglePointLight(int const index) const
+auto SampleInputHandler::togglePointLight(int const index) const
     -> void
 {
     if (index >= static_cast<int>(scene->lighting.point.size()))
@@ -237,7 +239,7 @@ auto InputHandler::togglePointLight(int const index) const
     toggle(scene->lighting.point[index].isTurnedOn);
 }
 
-auto InputHandler::toggleSpotLight(int const index) const
+auto SampleInputHandler::toggleSpotLight(int const index) const
     -> void
 {
     if (index >= static_cast<int>(scene->lighting.spot.size()))

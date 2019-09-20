@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Mesh.hpp"
-#include "Camera.hpp"
+#include "CameraSystem.hpp"
 #include "Lighting.hpp"
+#include "ModelInstance.hpp"
 
 #include <vector>
 
@@ -11,19 +11,21 @@ class Scene
 
 public:
 
-    Scene(std::vector<Mesh> meshes, Lighting lighting, Camera const & camera)
-        : meshes{std::move(meshes)}
+    Scene() = default;
+
+    Scene(std::vector<ModelInstance> bodies, CameraSystem cameraSystem, Lighting lighting)
+        : bodies{std::move(bodies)}
+        , cameraSystem{std::move(cameraSystem)}
         , lighting{std::move(lighting)}
-        , camera{camera}
     {
     }
 
 public:
 
-    std::vector<Mesh> meshes;
+    std::vector<ModelInstance> bodies;
+
+    CameraSystem cameraSystem;
 
     Lighting lighting;
-
-    Camera camera;
 
 };
