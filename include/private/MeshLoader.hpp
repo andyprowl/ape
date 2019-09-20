@@ -10,7 +10,7 @@ class MeshLoader
 
 public:
 
-    explicit MeshLoader(AssetRepository::Assets & assets);
+    explicit MeshLoader(AssetRepository & assets);
 
     auto load(aiScene const & scene)
         -> void;
@@ -31,6 +31,6 @@ private:
 
 private:
 
-    AssetRepository::Assets * assets;
+    AssetRepository * assets;
 
 };

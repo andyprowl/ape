@@ -2,7 +2,7 @@
 
 #include <assimp/scene.h>
 
-MaterialLoader::MaterialLoader(AssetRepository::Assets & assets)
+MaterialLoader::MaterialLoader(AssetRepository & assets)
     : assets{&assets}
 {
 }

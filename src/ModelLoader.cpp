@@ -34,9 +34,7 @@ auto ModelLoader::load(aiScene const & scene) const
 
     auto rootPart = loadModelPart(*(scene.mRootNode), scene);
 
-    auto & models = target->getAssets().models;
-
-    models.emplace_back("", "", std::move(rootPart));
+    target->models.emplace_back("", "", std::move(rootPart));
 }
 
 auto ModelLoader::loadModelPart(aiNode const & node, aiScene const & scene) const
@@ -65,7 +63,7 @@ auto ModelLoader::loadModelPart(aiNode const & node, aiScene const & scene) cons
 auto ModelLoader::importMeshes(aiNode const & node) const
     -> std::vector<Mesh const *>
 {
-    auto const & meshes = target->getAssets().meshes;
+    auto const & meshes = target->meshes;
 
     auto bodyMeshes = std::vector<Mesh const *>{};
 

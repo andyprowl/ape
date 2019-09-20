@@ -2,7 +2,7 @@
 
 #include "AssetRepository.hpp"
 
-class AssetBuilder
+class SampleAssetBuilder
 {
 
 public:

@@ -1,6 +1,6 @@
 #include "SampleSceneBuilder.hpp"
 
-#include "AssetBuilder.hpp"
+#include "SampleAssetBuilder.hpp"
 #include "BoxBuilder.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -133,7 +133,7 @@ auto StatefulBuilder::createBodies()
 auto StatefulBuilder::createGroundTiles()
     -> void
 {
-    auto const & model = repository->getAssets().models[0];
+    auto const & model = repository->models[0];
 
     for (auto row = -5; row < +5; ++row)
     {
@@ -159,7 +159,7 @@ auto StatefulBuilder::createGroundTile(int const row, int const col, Model const
 auto StatefulBuilder::createContainers()
     -> void
 {
-    auto const & model = repository->getAssets().models[1];
+    auto const & model = repository->models[1];
 
     auto const positions = getContainerPositions();
 
@@ -212,7 +212,7 @@ auto StatefulBuilder::getContainerPositions() const
 auto StatefulBuilder::createLamps()
     -> void
 {
-    auto const & model = repository->getAssets().models[2];
+    auto const & model = repository->models[2];
 
     auto const positions = getLampPositions();
 
@@ -247,7 +247,7 @@ auto StatefulBuilder::getLampPositions()
 auto StatefulBuilder::createFlashlights()
     -> void
 {
-    auto const & model = repository->getAssets().models[3];
+    auto const & model = repository->models[3];
 
     auto const positions = getFlashlightPositions();
 

@@ -38,9 +38,7 @@ auto AssetLoader::importMaterials(
     AssetRepository & target) const
     -> void
 {
-    auto & assets = target.getAssets();
-
-    auto loader = MaterialLoader{assets};
+    auto loader = MaterialLoader{target};
 
     loader.load(scene, directory);
 }
@@ -48,9 +46,7 @@ auto AssetLoader::importMaterials(
 auto AssetLoader::importMeshes(aiScene const & scene, AssetRepository & target) const
     -> void
 {
-    auto & assets = target.getAssets();
-
-    auto loader = MeshLoader{assets};
+    auto loader = MeshLoader{target};
 
     loader.load(scene);
 }

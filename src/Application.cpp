@@ -1,6 +1,6 @@
 #include "Application.hpp"
 
-#include "AssetBuilder.hpp"
+#include "SampleAssetBuilder.hpp"
 #include "CameraDrivenPipeline.hpp"
 #include "CameraSpotlightSynchronizer.hpp"
 #include "SampleSceneBuilder.hpp"
@@ -63,7 +63,7 @@ auto Application::createShader()
 auto Application::createAssets()
     -> AssetRepository
 {
-    auto const builder = AssetBuilder{};
+    auto const builder = SampleAssetBuilder{};
 
     return builder.build();
 }

@@ -13,7 +13,7 @@ auto makeVector(aiVector3D const & v)
 
 } // unnamed namespace
 
-MeshLoader::MeshLoader(AssetRepository::Assets & assets)
+MeshLoader::MeshLoader(AssetRepository & assets)
     : assets{&assets}
 {
 }

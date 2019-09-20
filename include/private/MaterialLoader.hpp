@@ -16,7 +16,7 @@ class MaterialLoader
 
 public:
 
-    explicit MaterialLoader(AssetRepository::Assets & assets);
+    explicit MaterialLoader(AssetRepository & assets);
 
     auto load(aiScene const & scene, std::string const & directory) const
         -> void;
@@ -46,6 +46,6 @@ private:
 
 private:
 
-    AssetRepository::Assets * assets;
+    AssetRepository * assets;
 
 };
