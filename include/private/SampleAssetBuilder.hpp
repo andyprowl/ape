@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AssetRepository.hpp"
+#include "SampleAssetCollection.hpp"
 
 class SampleAssetBuilder
 {
@@ -8,6 +8,6 @@ class SampleAssetBuilder
 public:
 
     auto build() const
-        -> AssetRepository;
+        -> SampleAssetCollection;
 
 };

@@ -1,5 +1,6 @@
 #include "SampleAssetBuilder.hpp"
 
+#include "AssetLoader.hpp"
 #include "BoxBuilder.hpp"
 #include "Material.hpp"
 #include "Mesh.hpp"
@@ -17,7 +18,7 @@ auto makeBox(NormalDirection const normalDirection, glm::vec3 const & size)
     return builder.build(normalDirection, size);
 }
 
-class StatefulSampleAssetBuilder
+class StatefulAssetBuilder
 {
 
 public:
@@ -57,13 +58,16 @@ private:
     auto createTrivialModel(std::string name, Mesh const & mesh)
         -> Model &;
 
+    auto createTextureFromLocalFile(std::string filename)
+        -> Texture &;
+
 private:
 
     AssetRepository assets;
 
 };
 
-auto StatefulSampleAssetBuilder::build()
+auto StatefulAssetBuilder::build()
     -> AssetRepository
 {
     preventReallocation();
@@ -79,7 +83,7 @@ auto StatefulSampleAssetBuilder::build()
     return std::move(assets);
 }
 
-auto StatefulSampleAssetBuilder::preventReallocation()
+auto StatefulAssetBuilder::preventReallocation()
     -> void
 {
     assets.shapes.reserve(4u);
@@ -93,7 +97,7 @@ auto StatefulSampleAssetBuilder::preventReallocation()
     assets.models.reserve(4u);
 }
 
-auto StatefulSampleAssetBuilder::createGroundTileModel()
+auto StatefulAssetBuilder::createGroundTileModel()
     -> Model &
 {
     auto box = makeBox(NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
@@ -107,23 +111,23 @@ auto StatefulSampleAssetBuilder::createGroundTileModel()
     return createTrivialModel("Ground Tile", mesh);
 }
 
-auto StatefulSampleAssetBuilder::createGroundMaterial()
+auto StatefulAssetBuilder::createGroundMaterial()
     -> Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
-    auto const & texture = assets.textures.emplace_back("ConcreteGround.jpg");
+    auto const & texture = createTextureFromLocalFile("ConcreteGround.jpg");
 
-    auto const & diffuseMap = texture;
+    auto const & diffuseMap = &texture;
 
-    auto const & specularMap = texture;
+    auto const & specularMap = &texture;
 
     auto const shininess = 16.0f;
 
     return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
 }
 
-auto StatefulSampleAssetBuilder::createContainerModel()
+auto StatefulAssetBuilder::createContainerModel()
     -> Model &
 {
     auto box = makeBox(NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
@@ -137,21 +141,21 @@ auto StatefulSampleAssetBuilder::createContainerModel()
     return createTrivialModel("Container", mesh);
 }
 
-auto StatefulSampleAssetBuilder::createContainerMaterial()
+auto StatefulAssetBuilder::createContainerMaterial()
     -> Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
-    auto const & diffuseMap = assets.textures.emplace_back("Container.Diffuse.png");
+    auto const & diffuseMap = createTextureFromLocalFile("Container.Diffuse.png");
 
-    auto const & specularMap = assets.textures.emplace_back("Container.Specular.png");
+    auto const & specularMap = createTextureFromLocalFile("Container.Specular.png");
 
     auto const shininess = 32.0f;
 
-    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    return assets.materials.emplace_back(ambientColor, &diffuseMap, &specularMap, shininess);
 }
 
-auto StatefulSampleAssetBuilder::createLampModel()
+auto StatefulAssetBuilder::createLampModel()
     -> Model &
 {
     auto box = makeBox(NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
@@ -165,23 +169,23 @@ auto StatefulSampleAssetBuilder::createLampModel()
     return createTrivialModel("Lamp", mesh);
 }
 
-auto StatefulSampleAssetBuilder::createLampMaterial()
+auto StatefulAssetBuilder::createLampMaterial()
     -> Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-    auto const & texture = assets.textures.emplace_back("Lamp.png");
+    auto const & texture = createTextureFromLocalFile("Lamp.png");
 
-    auto const & diffuseMap = texture;
+    auto diffuseMap = &texture;
 
-    auto const & specularMap = texture;
+    auto specularMap = &texture;
 
     auto const shininess = 32.0f;
 
     return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
 }
 
-auto StatefulSampleAssetBuilder::createFlashlightModel()
+auto StatefulAssetBuilder::createFlashlightModel()
     -> Model &
 {
     auto box = makeBox(NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
@@ -195,23 +199,23 @@ auto StatefulSampleAssetBuilder::createFlashlightModel()
     return createTrivialModel("Flashlight", mesh);
 }
 
-auto StatefulSampleAssetBuilder::createFlashlightMaterial()
+auto StatefulAssetBuilder::createFlashlightMaterial()
     -> Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-    auto const & texture = assets.textures.emplace_back("Flashlight.png");
+    auto const & texture = createTextureFromLocalFile("Flashlight.png");
 
-    auto const & diffuseMap = texture;
+    auto const diffuseMap = &texture;
 
-    auto const & specularMap = texture;
+    auto const specularMap = &texture;
 
     auto const shininess = 32.0f;
 
     return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
 }
 
-auto StatefulSampleAssetBuilder::createTrivialModel(std::string name, Mesh const & mesh)
+auto StatefulAssetBuilder::createTrivialModel(std::string name, Mesh const & mesh)
     -> Model &
 {
     auto rootPart = ModelPart{"", {&mesh}, {}, glm::mat4{1.0f}};
@@ -221,12 +225,28 @@ auto StatefulSampleAssetBuilder::createTrivialModel(std::string name, Mesh const
     return assets.models.emplace_back(std::move(model));
 }
 
+auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
+    -> Texture &
+{
+    auto filepath = std::string{textureFolder} + "/" + filename;
+
+    return assets.textures.emplace_back(std::move(filepath));
+}
+
 } // unnamed namespace
 
 auto SampleAssetBuilder::build() const
-    -> AssetRepository
+    -> SampleAssetCollection
 {
-    auto builder = StatefulSampleAssetBuilder{};
+    auto collection = SampleAssetCollection{};
 
-    return builder.build();
+    auto builder = StatefulAssetBuilder{};
+
+    collection.generalAssets = builder.build();
+
+    auto const loader = AssetLoader{};
+
+    collection.nanosuitAssets = loader.load(std::string{modelFolder} + "/nanosuit.obj");
+
+    return collection;
 }

@@ -87,9 +87,15 @@ auto SceneRenderer::drawMesh(Mesh const & mesh) const
 
     uniforms.materialShininess = material.shininess;
 
-    material.diffuseMap->bind(0);
-
-    material.specularMap->bind(1);
+    if (material.diffuseMap)
+    {
+        material.diffuseMap->bind(0);
+    }
+    
+    if (material.specularMap)
+    {
+        material.specularMap->bind(1);
+    }
 
     mesh.getShape().draw();
 }

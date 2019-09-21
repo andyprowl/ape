@@ -22,7 +22,7 @@ BodyPart::BodyPart(ModelPart const & part)
 {
 }
 
-BodyPart::BodyPart(ModelPart const & part, BodyPart const & parent)
+BodyPart::BodyPart(ModelPart const & part, BodyPart & parent)
     : BodyPart{part, &parent}
 {
 }
@@ -87,7 +87,7 @@ auto BodyPart::translate(glm::vec3 const & offset)
     updateGlobalTransformation();
 }
 
-BodyPart::BodyPart(ModelPart const & part, BodyPart const * const parent)
+BodyPart::BodyPart(ModelPart const & part, BodyPart * const parent)
     : part{&part}
     , parent{parent}
     , localTransformation{part.getTransformation()}
@@ -95,6 +95,11 @@ BodyPart::BodyPart(ModelPart const & part, BodyPart const * const parent)
     , globalNormalTransformation{computeNormalTransformation(globalTransformation)}
 {
     components.reserve(part.getComponents().size());
+
+    if (parent != nullptr)
+    {
+        parent->registerComponent(*this);
+    }
 }
 
 auto BodyPart::getParentGlobalTransformation() const
@@ -143,7 +148,7 @@ auto BodyPart::updateDescendentGlobalTransformations() const
 {
     for (auto component : components)
     {
-        component->onParentTransformationChanged(globalNormalTransformation);
+        component->onParentTransformationChanged(globalTransformation);
     }
 }
 

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "AssetRepository.hpp"
 #include "CameraUniform.hpp"
 #include "FrameTimeTracker.hpp"
 #include "LightingUniform.hpp"
+#include "SampleAssetCollection.hpp"
 #include "SampleInputHandler.hpp"
 #include "SampleScene.hpp"
 #include "SceneRenderer.hpp"
@@ -34,9 +34,9 @@ private:
         -> ShaderProgram;
 
     static auto createAssets()
-        -> AssetRepository;
+        -> SampleAssetCollection;
     
-    static auto createScene(AssetRepository & repository)
+    static auto createScene(SampleAssetCollection & assets)
         -> SampleScene;
 
     auto registerWindowResizeHandler()
@@ -66,7 +66,7 @@ private:
 
     ShaderProgram shader;
 
-    AssetRepository assets;
+    SampleAssetCollection assets;
 
     SampleScene scene;
 

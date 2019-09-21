@@ -13,7 +13,7 @@ public:
 
     explicit BodyPart(ModelPart const & part);
 
-    BodyPart(ModelPart const & part, BodyPart const & parent);
+    BodyPart(ModelPart const & part, BodyPart & parent);
 
     auto getModel() const
         -> const ModelPart &;
@@ -43,7 +43,7 @@ public:
 
 private:
 
-    BodyPart(ModelPart const & part, BodyPart const * parent);
+    BodyPart(ModelPart const & part, BodyPart * parent);
 
     auto getParentGlobalTransformation() const
         -> glm::mat4;

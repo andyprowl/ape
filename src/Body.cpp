@@ -25,34 +25,32 @@ auto computeNumOfParts(Model const & model)
 }
 
 auto makeSubPartsInstances(
-    BodyPart const & instance,
+    BodyPart & instance,
     std::vector<BodyPart> & destination)
     -> void
 {
-    for (auto const & component : instance.getModel().getComponents())
+    for (auto const & modelSubPart : instance.getModel().getComponents())
     {
-        destination.emplace_back(component, instance);
+        auto & bodySubPart = destination.emplace_back(modelSubPart, instance);
 
-        auto & componentInstance = destination.back();
-
-        makeSubPartsInstances(componentInstance, destination);
+        makeSubPartsInstances(bodySubPart, destination);
     }
 }
 
 auto makePartInstances(Model const & model)
     -> std::vector<BodyPart>
 {
-    auto instances = std::vector<BodyPart>{};
+    auto parts = std::vector<BodyPart>{};
 
-    instances.reserve(computeNumOfParts(model));
+    parts.reserve(computeNumOfParts(model));
 
-    instances.emplace_back(model.getRootPart());
+    parts.emplace_back(model.getRootPart());
 
-    auto const & root = instances.back();
+    auto & root = parts.back();
 
-    makeSubPartsInstances(root, instances);
+    makeSubPartsInstances(root, parts);
 
-    return instances;
+    return parts;
 }
 
 } // unnamed namespace

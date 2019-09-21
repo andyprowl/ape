@@ -7,14 +7,14 @@ class Texture
 
 public:
 
-    explicit Texture(std::string filename);
+    explicit Texture(std::string fliepath);
     
-    Texture(TextureDescriptor descriptor, std::string filename);
+    Texture(TextureDescriptor descriptor, std::string filepath);
 
     auto bind(int unit) const
         -> void;
 
-    auto getFilename() const
+    auto getFilepath() const
         -> std::string;
 
     auto getFormat() const
@@ -27,7 +27,7 @@ private:
 
     int id;
 
-    std::string filename;
+    std::string filepath;
 
     GLenum format;
 

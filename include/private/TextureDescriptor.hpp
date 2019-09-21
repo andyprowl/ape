@@ -65,7 +65,7 @@ public:
 
 };
 
-auto readTextureDescriptor(std::string const & filename)
+auto readTextureDescriptor(std::string const & filepath)
     -> TextureDescriptor;
 
 auto determineFormat(int const numOfChannels)

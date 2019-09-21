@@ -42,14 +42,14 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
 } // unnamed namespace
 
-Texture::Texture(std::string filename)
-    : Texture{readTextureDescriptor(filename), filename}
+Texture::Texture(std::string filepath)
+    : Texture{readTextureDescriptor(filepath), filepath}
 {
 }
     
-Texture::Texture(TextureDescriptor descriptor, std::string filename)
+Texture::Texture(TextureDescriptor descriptor, std::string filepath)
     : id{makeOpenGLTextureObject(descriptor)}
-    , filename{std::move(filename)}
+    , filepath{std::move(filepath)}
     , format{determineFormat(descriptor.numOfChannels)}
     , size{descriptor.size}
 {
@@ -63,10 +63,10 @@ auto Texture::bind(int const unit) const
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-auto Texture::getFilename() const
+auto Texture::getFilepath() const
     -> std::string
 {
-    return filename;
+    return filepath;
 }
 
 auto Texture::getFormat() const

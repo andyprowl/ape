@@ -2,6 +2,27 @@
 
 #include <assimp/scene.h>
 
+namespace
+{
+
+auto toString(aiString const & s)
+    -> std::string
+{
+    return s.C_Str();
+}
+
+auto getTextureFilename(aiMaterial const & m, aiTextureType const type, int const index)
+    -> std::string
+{
+    auto filename = aiString{};
+
+    m.GetTexture(type, index, &filename);
+
+    return toString(filename);
+}
+
+} // unnamed
+
 MaterialLoader::MaterialLoader(AssetRepository & assets)
     : assets{&assets}
 {
@@ -14,6 +35,8 @@ auto MaterialLoader::load(aiScene const & scene, std::string const & directory) 
 
     materials.reserve(scene.mNumMaterials);
 
+    preventTextureRealloaction(scene);
+
     for (auto i = 0u; i < scene.mNumMaterials; ++i)
     {
         auto const descriptor = scene.mMaterials[i];
@@ -22,18 +45,43 @@ auto MaterialLoader::load(aiScene const & scene, std::string const & directory) 
     }
 }
 
+auto MaterialLoader::preventTextureRealloaction(aiScene const & scene) const
+    -> void
+{
+    auto numOfTextures = computeNumOfTextures(scene);
+
+    assets->textures.reserve(static_cast<int>(numOfTextures));
+}
+
+auto MaterialLoader::computeNumOfTextures(aiScene const & scene) const
+    -> int
+{
+    auto numOfTextures = 0;
+
+    for (auto i = 0u; i < scene.mNumMaterials; ++i)
+    {
+        numOfTextures += scene.mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
+
+        numOfTextures += scene.mMaterials[i]->GetTextureCount(aiTextureType_SPECULAR);
+    }
+
+    return numOfTextures;
+}
+
 auto MaterialLoader::importMaterial(
     aiMaterial const & material,
     std::string const & directory) const
     -> void
 {
-    auto filename = aiString{};
+    auto const diffuseMaps = importTextures(material, aiTextureType_DIFFUSE, directory);
+
+    auto const specularMaps = importTextures(material, aiTextureType_SPECULAR, directory);
+
+    auto const diffuseMap = diffuseMaps.empty() ? nullptr : diffuseMaps[0];
+
+    auto const specularMap = specularMaps.empty() ? nullptr : specularMaps[0];
 
     auto const ambientColor = getAmbientColor(material);
-
-    auto const & diffuseMap = importTexture(material, aiTextureType_DIFFUSE, directory);
-
-    auto const & specularMap = importTexture(material, aiTextureType_SPECULAR, directory);
 
     auto const shininess = getShininess(material);
 
@@ -66,24 +114,35 @@ auto MaterialLoader::getShininess(aiMaterial const & material) const
     return shininess;
 }
 
-auto MaterialLoader::importTexture(
+auto MaterialLoader::importTextures(
     aiMaterial const & material,
     aiTextureType const type,
     std::string const & directory) const
-    -> Texture const &
+    -> std::vector<Texture const *>
 {
     auto numOfTextures = material.GetTextureCount(aiTextureType_DIFFUSE);
 
-    // TODO: Will need to add support for multiple textures
-    (void)numOfTextures;
+    auto textures = std::vector<Texture const *>{};
 
-    auto filename = aiString{};
+    textures.reserve(numOfTextures);
 
-    material.GetTexture(type, 0, &filename);
+    for (auto i = 0u; i < numOfTextures; ++i)
+    {
+        auto filename = getTextureFilename(material, type, i);
 
-    auto const filePath = directory + '/' + filename.C_Str();
+        if (filename.empty())
+        {
+            continue;
+        }
 
-    return importTexture(filename.C_Str());
+        auto const path = directory + '/' + std::move(filename);
+
+        auto const & texture = importTexture(path);
+
+        textures.push_back(&texture);
+    }
+
+    return textures;
 }
 
 auto MaterialLoader::importTexture(std::string const & path) const
@@ -96,22 +155,18 @@ auto MaterialLoader::importTexture(std::string const & path) const
         return *existingTexture;
     }
 
-    auto newTexture = Texture{path};
-
-    assets->textures.push_back(std::move(newTexture));
-
-    return assets->textures.back();
+    return assets->textures.emplace_back(std::move(path));
 }
 
-auto MaterialLoader::findTexture(std::string const & filename) const
+auto MaterialLoader::findTexture(std::string const & filepath) const
     -> Texture const *
 {
     auto const it = std::find_if(
         std::cbegin(assets->textures),
         std::cend(assets->textures),
-        [&filename] (Texture const & t)
+        [&filepath] (Texture const & t)
     {
-        return (t.getFilename() == filename);
+        return (t.getFilepath() == filepath);
     });
 
     if (it == std::cend(assets->textures))

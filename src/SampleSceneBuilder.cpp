@@ -14,7 +14,7 @@ class StatefulSceneBuilder
 
 public:
 
-    explicit StatefulSceneBuilder(AssetRepository & repository);
+    explicit StatefulSceneBuilder(SampleAssetCollection & assets);
 
     auto build()
         -> SampleScene;
@@ -45,7 +45,7 @@ private:
     auto createLamp(glm::vec3 const & position, Model const & model)
         -> Body &;
 
-    auto getLampPositions()
+    auto getLampPositions() const
         -> std::vector<glm::vec3>;
 
     auto createFlashlights()
@@ -54,11 +54,20 @@ private:
     auto createFlashlight(glm::mat4 const & transformation, Model const & model)
         -> Body &;
 
-    auto getFlashlightPositions()
+    auto getFlashlightPositions() const
         -> std::vector<glm::vec3>;
 
     auto computeFlashlightRotation(glm::vec3 const & position)
         -> glm::mat4;
+
+    auto createNanosuits()
+        -> void;
+
+    auto createNanosuit(glm::mat4 const & transformation, Model const & model)
+        -> Body &;
+
+    auto getNanosuitPositions() const
+        -> std::vector<glm::vec3>;
 
     auto createCameras()
         -> void;
@@ -104,14 +113,14 @@ private:
     
 private:
 
-    AssetRepository * repository;
+    SampleAssetCollection * assets;
 
     SampleScene scene;
 
 };
 
-StatefulSceneBuilder::StatefulSceneBuilder(AssetRepository & repository)
-    : repository{&repository}
+StatefulSceneBuilder::StatefulSceneBuilder(SampleAssetCollection & assets)
+    : assets{&assets}
 {
 }
 
@@ -139,12 +148,14 @@ auto StatefulSceneBuilder::createBodies()
     createLamps();
 
     createFlashlights();
+
+    createNanosuits();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
     -> void
 {
-    auto const & model = repository->models[0];
+    auto const & model = assets->generalAssets.models[0];
 
     for (auto row = -5; row < +5; ++row)
     {
@@ -160,17 +171,17 @@ auto StatefulSceneBuilder::createGroundTile(int const row, int const col, Model 
 {
     auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
 
-    auto instance = Body{model};
+    auto body = Body{model};
 
-    setPosition(instance, position);
+    setPosition(body, position);
 
-    return scene.bodies.emplace_back(std::move(instance));
+    return scene.bodies.emplace_back(std::move(body));
 }
 
 auto StatefulSceneBuilder::createContainers()
     -> void
 {
-    auto const & model = repository->models[1];
+    auto const & model = assets->generalAssets.models[1];
 
     auto const positions = getContainerPositions();
 
@@ -196,11 +207,11 @@ auto StatefulSceneBuilder::createContainers()
 auto StatefulSceneBuilder::createContainer(glm::mat4 const & transformation, Model const & model)
     -> Body &
 {
-    auto instance = Body{model};
+    auto body = Body{model};
 
-    setTransformation(instance, transformation);
+    setTransformation(body, transformation);
 
-    return scene.bodies.emplace_back(std::move(instance));
+    return scene.bodies.emplace_back(std::move(body));
 }
 
 auto StatefulSceneBuilder::getContainerPositions() const
@@ -223,7 +234,7 @@ auto StatefulSceneBuilder::getContainerPositions() const
 auto StatefulSceneBuilder::createLamps()
     -> void
 {
-    auto const & model = repository->models[2];
+    auto const & model = assets->generalAssets.models[2];
 
     auto const positions = getLampPositions();
 
@@ -240,25 +251,27 @@ auto StatefulSceneBuilder::createLamps()
 auto StatefulSceneBuilder::createLamp(glm::vec3 const & position, Model const & model)
     -> Body &
 {
-    auto instance = Body{model};
+    auto body = Body{model};
 
-    setPosition(instance, position);
+    setPosition(body, position);
 
-    return scene.bodies.emplace_back(std::move(instance));
+    return scene.bodies.emplace_back(std::move(body));
 }
 
-auto StatefulSceneBuilder::getLampPositions()
+auto StatefulSceneBuilder::getLampPositions() const
     -> std::vector<glm::vec3>
 {
     return {
         {0.0f, 0.0f, 5.0f},
-        {0.0f, 1.0f, -5.0f}};
+        {0.0f, 1.0f, -5.0f},
+        {0.0f, 10.0f, 5.0f},
+        {0.0f, 10.0f, -5.0f}};
 }
 
 auto StatefulSceneBuilder::createFlashlights()
     -> void
 {
-    auto const & model = repository->models[3];
+    auto const & model = assets->generalAssets.models[3];
 
     auto const positions = getFlashlightPositions();
 
@@ -275,14 +288,14 @@ auto StatefulSceneBuilder::createFlashlights()
 auto StatefulSceneBuilder::createFlashlight(glm::mat4 const & transformation, Model const & model)
     -> Body &
 {
-    auto instance = Body{model};
+    auto body = Body{model};
 
-    setTransformation(instance, transformation);
+    setTransformation(body, transformation);
 
-    return scene.bodies.emplace_back(std::move(instance));
+    return scene.bodies.emplace_back(std::move(body));
 }
 
-auto StatefulSceneBuilder::getFlashlightPositions()
+auto StatefulSceneBuilder::getFlashlightPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -300,6 +313,86 @@ auto StatefulSceneBuilder::computeFlashlightRotation(glm::vec3 const & position)
     auto const direction = glm::normalize(position);
 
     return glm::orientation(direction, base);
+}
+
+auto StatefulSceneBuilder::createNanosuits()
+    -> void
+{
+    auto const & model = assets->nanosuitAssets.models[0];
+
+    auto const positions = getNanosuitPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.2f, 0.2f, 0.2f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        createNanosuit(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::createNanosuit(glm::mat4 const & transformation, Model const & model)
+    -> Body &
+{
+    auto body = Body{model};
+
+    setTransformation(body, transformation);
+
+    return scene.bodies.emplace_back(std::move(body));
+}
+
+auto StatefulSceneBuilder::getNanosuitPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {1.0f, -2.0f, 1.0f}};
+}
+
+auto StatefulSceneBuilder::createCameras()
+    -> void
+{
+    createFrontCamera();
+
+    createBackCamera();
+
+    scene.cameraSystem.activeCamera = &scene.cameraSystem.cameras.front();
+}
+
+auto StatefulSceneBuilder::createFrontCamera()
+     -> Camera &
+{
+    auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
+
+    auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
+
+    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+    auto const fieldOfView = glm::radians(45.0f);
+
+    auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
+
+    auto & cameras = scene.cameraSystem.cameras;
+
+    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+}
+
+auto StatefulSceneBuilder::createBackCamera()
+     -> Camera &
+{
+    auto const position = glm::vec3{0.0f, 0.0f, -3.0f};
+
+    auto const direction = glm::vec3{0.0f, 0.0f, 1.0f};
+
+    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+    auto const fieldOfView = glm::radians(45.0f);
+
+    auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
+
+    auto & cameras = scene.cameraSystem.cameras;
+
+    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
 }
 
 auto StatefulSceneBuilder::createLighting()
@@ -423,52 +516,6 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
     return scene.lighting.directional.emplace_back(direction, color, true);
 }
  
-auto StatefulSceneBuilder::createCameras()
-    -> void
-{
-    createFrontCamera();
-
-    createBackCamera();
-
-    scene.cameraSystem.activeCamera = &scene.cameraSystem.cameras.front();
-}
-
-auto StatefulSceneBuilder::createFrontCamera()
-     -> Camera &
-{
-    auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
-
-    auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
-
-    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
-
-    auto const fieldOfView = glm::radians(45.0f);
-
-    auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
-
-    auto & cameras = scene.cameraSystem.cameras;
-
-    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
-}
-
-auto StatefulSceneBuilder::createBackCamera()
-     -> Camera &
-{
-    auto const position = glm::vec3{0.0f, 0.0f, -3.0f};
-
-    auto const direction = glm::vec3{0.0f, 0.0f, 1.0f};
-
-    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
-
-    auto const fieldOfView = glm::radians(45.0f);
-
-    auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
-
-    auto & cameras = scene.cameraSystem.cameras;
-
-    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
-}
-
 auto StatefulSceneBuilder::createSynchronizers()
     -> void
 {
@@ -479,15 +526,15 @@ auto StatefulSceneBuilder::createSynchronizers()
 
 } // unnamed namespace
 
-SampleSceneBuilder::SampleSceneBuilder(AssetRepository & repository)
-    : repository{&repository}
+SampleSceneBuilder::SampleSceneBuilder(SampleAssetCollection & assets)
+    : assets{&assets}
 {
 }
 
 auto SampleSceneBuilder::build() const
     -> SampleScene
 {
-    auto builder = StatefulSceneBuilder{*repository};
+    auto builder = StatefulSceneBuilder{*assets};
 
     return builder.build();
 }

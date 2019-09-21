@@ -2,20 +2,20 @@
 
 #include "SampleScene.hpp"
 
-class AssetRepository;
+class SampleAssetCollection;
 
 class SampleSceneBuilder
 {
 
 public:
 
-    explicit SampleSceneBuilder(AssetRepository & repository);
+    explicit SampleSceneBuilder(SampleAssetCollection & assets);
 
     auto build() const
         -> SampleScene;
 
 private:
 
-    AssetRepository * repository;
+    SampleAssetCollection * assets;
 
 };

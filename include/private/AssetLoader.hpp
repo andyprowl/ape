@@ -1,36 +1,57 @@
 #pragma once
 
-#include "TextureRepository.hpp"
-
+#include <stdexcept>
 #include <string>
 
 class AssetRepository;
 
 struct aiScene;
 
+class CouldNotLoadAssets : public std::logic_error
+{
+
+public:
+
+    CouldNotLoadAssets(std::string path, std::string error)
+        : logic_error{
+            "Could not load assets from file '" +
+            std::move(path) +
+            "': " +
+            std::move(error)}
+    {
+    }
+
+};
+
 class AssetLoader
 {
 
 public:
 
-    auto load(aiScene const & scene, std::string const & directory) const
+    auto load(std::string const & path) const
         -> AssetRepository;
-
-    auto load(aiScene const & scene, std::string const & directory, AssetRepository & target) const
-        -> void;
 
 private:
 
+    auto load(std::string const & source, aiScene const & scene) const
+        -> AssetRepository;
+
+    auto load(std::string const & source, aiScene const & scene, AssetRepository & target) const
+        -> void;
+
     auto importMaterials(
+        std::string const & source,
         aiScene const & scene,
-        std::string const & directory,
         AssetRepository & target) const
         -> void;
 
     auto importMeshes(aiScene const & scene, AssetRepository & target) const
         -> void;
 
-    auto importModel(aiScene const & scene, AssetRepository & target) const
+    auto importModel(
+        std::string const & source,
+        aiScene const & scene,
+        AssetRepository & target) const
         -> void;
 
 };

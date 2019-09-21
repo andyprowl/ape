@@ -57,7 +57,7 @@ auto Application::createShader()
 
 /* static */
 auto Application::createAssets()
-    -> AssetRepository
+    -> SampleAssetCollection
 {
     auto const builder = SampleAssetBuilder{};
 
@@ -65,10 +65,10 @@ auto Application::createAssets()
 }
 
 /* static */
-auto Application::createScene(AssetRepository & repository)
+auto Application::createScene(SampleAssetCollection & assets)
     -> SampleScene
 {
-    auto const builder = SampleSceneBuilder{repository};
+    auto const builder = SampleSceneBuilder{assets};
 
     return builder.build();
 }

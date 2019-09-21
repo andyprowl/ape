@@ -21,6 +21,8 @@ MeshLoader::MeshLoader(AssetRepository & assets)
 auto MeshLoader::load(aiScene const & scene)
     -> void
 {
+    assets->shapes.reserve(scene.mNumMeshes);
+
     for (auto i = 0u; i < scene.mNumMeshes; ++i)
     {
         auto const mesh = scene.mMeshes[i];
@@ -48,11 +50,7 @@ auto MeshLoader::importShape(aiMesh const & mesh)
 
     auto indices = importIndices(mesh);
 
-    auto shape = Shape{std::move(vertices), std::move(indices)};
-
-    assets->shapes.push_back(std::move(shape));
-
-    return assets->shapes.back();
+    return assets->shapes.emplace_back(std::move(vertices), std::move(indices));
 }
 
 auto MeshLoader::importVertices(aiMesh const & mesh)

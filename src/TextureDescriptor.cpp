@@ -2,11 +2,9 @@
 
 #include <cassert>
 
-auto readTextureDescriptor(std::string const & filename)
+auto readTextureDescriptor(std::string const & filepath)
     -> TextureDescriptor
 {
-    auto const filepath = std::string{textureFolder} + "/" + filename;
-
     stbi_set_flip_vertically_on_load(true);
 
     auto size = Size<int>{0, 0};
@@ -17,7 +15,7 @@ auto readTextureDescriptor(std::string const & filename)
 
     if (bytes == nullptr)
     {
-        throw CouldNotLoadTexture{filename};
+        throw CouldNotLoadTexture{filepath};
     }
 
     auto format = determineFormat(numOfChannels);

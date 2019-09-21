@@ -96,6 +96,8 @@ target_compile_definitions(OpenGLTest PRIVATE shaderFolder="${CMAKE_CURRENT_SOUR
 
 target_compile_definitions(OpenGLTest PRIVATE textureFolder="${CMAKE_CURRENT_SOURCE_DIR}/textures")
 
+target_compile_definitions(OpenGLTest PRIVATE modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/models")
+
 target_include_directories(OpenGLTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
 target_include_directories(OpenGLTest PRIVATE ${GLM_DIR})
