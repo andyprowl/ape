@@ -5,7 +5,6 @@
 
 #include <glm/mat4x4.hpp>
 
-/*
 BodyPointLightSynchronizer::BodyPointLightSynchronizer(Body const & source, PointLight & target)
     : handlerConnection{registerPositionChangeEventHandler(source, target)}
 {
@@ -16,9 +15,12 @@ auto BodyPointLightSynchronizer::registerPositionChangeEventHandler(
     PointLight & target)
     -> ScopedSignalConnection
 {
-    return source.onPositionChanged.registerHandler([&source, &target] (glm::vec3 const &)
+    return source.onLocalTransformationChanged.registerHandler(
+        [&source, &target] (auto const & part)
     {
-        target.position = getPosition(source);
+        if (isRoot(part))
+        {
+            target.position = getPosition(source);
+        }        
     });
 }
-*/

@@ -8,21 +8,22 @@ struct aiScene;
 
 class AssetRepository;
 class Mesh;
+class Model;
 class ModelPart;
 
-class ModelLoader
+class ModelPartImporter
 {
 
 public:
 
-    explicit ModelLoader(AssetRepository & target);
+    explicit ModelPartImporter(AssetRepository & target);
 
-    auto load(aiScene const & scene) const
-        -> void;
+    auto importRootPart(aiScene const & scene) const
+        -> ModelPart;
 
 private:
 
-    auto loadModelPart(aiNode const & node, aiScene const & scene) const
+    auto importPart(aiNode const & node, aiScene const & scene) const
         -> ModelPart;
 
     auto importMeshes(aiNode const & node) const

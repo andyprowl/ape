@@ -25,30 +25,31 @@ auto computeNumOfParts(Model const & model)
 }
 
 auto makeSubPartsInstances(
-    BodyPart & instance,
+    BodyPart & bodyPart,
+    Body & body,
     std::vector<BodyPart> & destination)
     -> void
 {
-    for (auto const & modelSubPart : instance.getModel().getComponents())
+    for (auto const & modelSubPart : bodyPart.getModel().getComponents())
     {
-        auto & bodySubPart = destination.emplace_back(modelSubPart, instance);
+        auto & bodySubPart = destination.emplace_back(body, modelSubPart);
 
-        makeSubPartsInstances(bodySubPart, destination);
+        makeSubPartsInstances(bodySubPart, body, destination);
     }
 }
 
-auto makePartInstances(Model const & model)
+auto makePartInstances(Body & body, Model const & model)
     -> std::vector<BodyPart>
 {
     auto parts = std::vector<BodyPart>{};
 
     parts.reserve(computeNumOfParts(model));
 
-    parts.emplace_back(model.getRootPart());
+    parts.emplace_back(body, model.getRootPart());
 
     auto & root = parts.back();
 
-    makeSubPartsInstances(root, parts);
+    makeSubPartsInstances(root, body, parts);
 
     return parts;
 }
@@ -56,9 +57,43 @@ auto makePartInstances(Model const & model)
 } // unnamed namespace
 
 Body::Body(Model const & model)
-    : model{&model}
-    , parts{makePartInstances(model)}
+    : Body{model, ""}
 {
+}
+
+Body::Body(Model const & model, std::string name)
+    : model{&model}
+    , name{std::move(name)}
+    , parts{makePartInstances(*this, model)}
+{
+}
+
+Body::Body(Body && rhs) noexcept
+    : model{rhs.model}
+    , name{std::move(rhs.name)}
+    , parts{std::move(rhs.parts)}
+{
+    connectPartsToSelf();
+}
+
+auto Body::operator = (Body && rhs) noexcept
+    -> Body &
+{
+    model = rhs.model;
+
+    name = std::move(rhs.name);
+    
+    parts = std::move(rhs.parts);
+
+    connectPartsToSelf();
+
+    return *this;
+}
+
+auto Body::getName() const
+    -> std::string const &
+{
+    return name;
 }
 
 auto Body::getModel() const
@@ -67,22 +102,43 @@ auto Body::getModel() const
     return *model;
 }
 
+auto Body::getNumOfParts() const
+    -> int
+{
+    return static_cast<int>(parts.size());
+}
+
 auto Body::getPart(int const index)
     -> BodyPart &
 {
     return parts[index];
 }
 
-auto Body::getPart(int const index) const
+auto Body::getPart(int index) const
     -> BodyPart const &
 {
     return parts[index];
 }
 
-auto Body::getNumOfParts() const
-    -> int
+auto Body::getParts()
+    -> ContainerView<PartContainer>
 {
-    return static_cast<int>(parts.size());
+    return makeView(parts);
+}
+
+auto Body::getParts() const
+    -> ContainerView<PartContainer const>
+{
+    return makeView(parts);
+}
+
+auto Body::connectPartsToSelf()
+    -> void
+{
+    for (auto & part : parts)
+    {
+        part.setBody(*this);
+    }
 }
 
 auto getRootPart(Body & model)

@@ -11,7 +11,7 @@ include("cmake/Dependencies.cmake")
 
 SetStrictWarningPolicy()
 
-SetCpp14StandardCompliance()
+SetCpp17StandardCompliance()
 
 ImportDependencies()
 

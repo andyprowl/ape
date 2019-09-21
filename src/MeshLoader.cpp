@@ -18,7 +18,7 @@ MeshLoader::MeshLoader(AssetRepository & assets)
 {
 }
 
-auto MeshLoader::load(aiScene const & scene)
+auto MeshLoader::load(aiScene const & scene) const
     -> void
 {
     assets->shapes.reserve(scene.mNumMeshes);
@@ -31,7 +31,7 @@ auto MeshLoader::load(aiScene const & scene)
     }
 }
 
-auto MeshLoader::importMesh(aiMesh const & mesh)
+auto MeshLoader::importMesh(aiMesh const & mesh) const
     -> void
 {
     auto const & shape = importShape(mesh);
@@ -43,7 +43,7 @@ auto MeshLoader::importMesh(aiMesh const & mesh)
     assets->meshes.emplace_back(std::move(name), shape, material);
 }
 
-auto MeshLoader::importShape(aiMesh const & mesh)
+auto MeshLoader::importShape(aiMesh const & mesh) const
     -> Shape const &
 {
     auto vertices = importVertices(mesh);
@@ -53,7 +53,7 @@ auto MeshLoader::importShape(aiMesh const & mesh)
     return assets->shapes.emplace_back(std::move(vertices), std::move(indices));
 }
 
-auto MeshLoader::importVertices(aiMesh const & mesh)
+auto MeshLoader::importVertices(aiMesh const & mesh) const
     -> std::vector<Vertex>
 {
     auto vertices = std::vector<Vertex>{};
@@ -72,7 +72,7 @@ auto MeshLoader::importVertices(aiMesh const & mesh)
     return vertices;
 }
 
-auto MeshLoader::importIndices(aiMesh const & mesh)
+auto MeshLoader::importIndices(aiMesh const & mesh) const
     -> std::vector<unsigned int>
 {
     auto indices = std::vector<unsigned int>{};

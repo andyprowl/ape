@@ -1,10 +1,16 @@
 #include "Model.hpp"
 
-Model::Model(std::string source, std::string name, ModelPart rootPart)
-    : source{std::move(source)}
+Model::Model(ModelPart rootPart, std::string source, std::string name)
+    : rootPart{std::move(rootPart)}
     , name{std::move(name)}
-    , rootPart{std::move(rootPart)}
+    , source{std::move(source)}
 {
+}
+
+auto Model::getRootPart() const
+    -> const ModelPart &
+{
+    return rootPart;
 }
 
 auto Model::getName() const
@@ -17,10 +23,4 @@ auto Model::getSource() const
     -> std::string
 {
     return source;
-}
-
-auto Model::getRootPart() const
-    -> const ModelPart &
-{
-    return rootPart;
 }

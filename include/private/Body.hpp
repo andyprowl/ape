@@ -1,7 +1,10 @@
 #pragma once
 
 #include "BodyPart.hpp"
+#include "ContainerView.hpp"
+#include "Signal.hpp"
 
+#include <string>
 #include <vector>
 
 class Model;
@@ -11,10 +14,29 @@ class Body
 
 public:
 
+    using PartContainer = std::vector<BodyPart>;
+
+public:
+    
     explicit Body(Model const & model);
+
+    Body(Model const & model, std::string name);
+
+    Body(Body && rhs) noexcept;
+
+    auto operator = (Body && rhs) noexcept
+        -> Body &;
+
+    ~Body() = default;
+
+    auto getName() const
+        -> std::string const &;
 
     auto getModel() const
         -> Model const &;
+
+    auto getNumOfParts() const
+        -> int;
 
     auto getPart(int index)
         -> BodyPart &;
@@ -22,14 +44,28 @@ public:
     auto getPart(int index) const
         -> BodyPart const &;
 
-    auto getNumOfParts() const
-        -> int;
+    auto getParts()
+        -> ContainerView<PartContainer>;
+
+    auto getParts() const
+        -> ContainerView<PartContainer const>;
+
+public:
+
+    mutable Signal<auto (BodyPart const & source) -> void> onLocalTransformationChanged;
+
+private:
+
+    auto connectPartsToSelf()
+        -> void;
 
 private:
 
     Model const * model;
 
-    std::vector<BodyPart> parts;
+    std::string name;
+
+    PartContainer parts;
 
 };
 

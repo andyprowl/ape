@@ -9,7 +9,10 @@ class Model
 
 public:
 
-    Model(std::string name, std::string source, ModelPart rootPart);
+    Model(ModelPart rootPart, std::string name, std::string source);
+
+    auto getRootPart() const
+        -> const ModelPart &;
 
     auto getName() const
         -> std::string;
@@ -17,15 +20,12 @@ public:
     auto getSource() const
         -> std::string;
 
-    auto getRootPart() const
-        -> const ModelPart &;
-
 private:
+
+    ModelPart rootPart;
 
     std::string name;
 
     std::string source;
-
-    ModelPart rootPart;
 
 };

@@ -28,20 +28,24 @@ class AssetLoader
 
 public:
 
-    auto load(std::string const & path) const
+    auto load(std::string path, std::string modelName) const
         -> AssetRepository;
 
 private:
 
-    auto load(std::string const & source, aiScene const & scene) const
+    auto load(aiScene const & scene, std::string modelName, std::string source) const
         -> AssetRepository;
 
-    auto load(std::string const & source, aiScene const & scene, AssetRepository & target) const
+    auto load(
+        aiScene const & scene,
+        std::string modelName,
+        std::string source,
+        AssetRepository & target) const
         -> void;
 
     auto importMaterials(
-        std::string const & source,
         aiScene const & scene,
+        std::string const & source,
         AssetRepository & target) const
         -> void;
 
@@ -49,8 +53,9 @@ private:
         -> void;
 
     auto importModel(
-        std::string const & source,
         aiScene const & scene,
+        std::string name,
+        std::string source,
         AssetRepository & target) const
         -> void;
 

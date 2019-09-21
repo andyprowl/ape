@@ -64,7 +64,10 @@ private:
     auto createFlashlightMaterial()
         -> Material &;
 
-    auto createTrivialModel(std::string name, Mesh const & mesh)
+    auto createSingleMeshModel(Shape const & shape, Material const & material, std::string name)
+        -> Model &;
+
+    auto createTrivialModelFromMesh(Mesh const & mesh)
         -> Model &;
 
     auto createTextureFromLocalFile(std::string filename)
@@ -123,9 +126,7 @@ auto StatefulAssetBuilder::createConcreteGroundTileModel(Shape const & shape)
 {
     auto const & material = createConcreteGroundMaterial();
 
-    auto const & mesh = assets.meshes.emplace_back("Concrete Ground Tile", shape, material);
-
-    return createTrivialModel("Concrete Ground Tile", mesh);
+    return createSingleMeshModel(shape, material, "Concrete Floor Tile");
 }
 
 auto StatefulAssetBuilder::createWoodenFloorTileModel(Shape const & shape)
@@ -133,9 +134,7 @@ auto StatefulAssetBuilder::createWoodenFloorTileModel(Shape const & shape)
 {
     auto const & material = createWoodenFloorMaterial();
 
-    auto const & mesh = assets.meshes.emplace_back("Wooden Floor Tile", shape, material);
-
-    return createTrivialModel("Wooden Floor Tile", mesh);
+    return createSingleMeshModel(shape, material, "Wooden Floor Tile");
 }
 
 auto StatefulAssetBuilder::createConcreteGroundMaterial()
@@ -179,9 +178,7 @@ auto StatefulAssetBuilder::createContainerModel()
 
     auto const & material = createContainerMaterial();
 
-    auto const & mesh = assets.meshes.emplace_back("Container", shape, material);
-
-    return createTrivialModel("Container", mesh);
+    return createSingleMeshModel(shape, material, "Container");
 }
 
 auto StatefulAssetBuilder::createContainerMaterial()
@@ -207,9 +204,7 @@ auto StatefulAssetBuilder::createLampModel()
 
     auto const & material = createLampMaterial();
 
-    auto const & mesh = assets.meshes.emplace_back("Lamp", shape, material);
-
-    return createTrivialModel("Lamp", mesh);
+    return createSingleMeshModel(shape, material, "Lamp");
 }
 
 auto StatefulAssetBuilder::createLampMaterial()
@@ -237,9 +232,7 @@ auto StatefulAssetBuilder::createFlashlightModel()
 
     auto const & material = createFlashlightMaterial();
 
-    auto const & mesh = assets.meshes.emplace_back("Flashlight", shape, material);
-
-    return createTrivialModel("Flashlight", mesh);
+    return createSingleMeshModel(shape, material, "Flashlight");
 }
 
 auto StatefulAssetBuilder::createFlashlightMaterial()
@@ -258,12 +251,25 @@ auto StatefulAssetBuilder::createFlashlightMaterial()
     return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
 }
 
-auto StatefulAssetBuilder::createTrivialModel(std::string name, Mesh const & mesh)
+auto StatefulAssetBuilder::createSingleMeshModel(
+    Shape const & shape,
+    Material const & material,
+    std::string name)
     -> Model &
 {
-    auto rootPart = ModelPart{"", {&mesh}, {}, glm::mat4{1.0f}};
+    auto const & mesh = assets.meshes.emplace_back(std::move(name), shape, material);
 
-    auto model = Model{std::move(name), "", std::move(rootPart)};
+    return createTrivialModelFromMesh(mesh);
+}
+
+auto StatefulAssetBuilder::createTrivialModelFromMesh(Mesh const & mesh)
+    -> Model &
+{
+    auto const meshName = mesh.getName();;
+
+    auto rootPart = ModelPart{meshName, {&mesh}, {}, glm::mat4{1.0f}};
+
+    auto model = Model{std::move(rootPart), meshName, ""};
 
     return assets.models.emplace_back(std::move(model));
 }
@@ -289,7 +295,9 @@ auto SampleAssetBuilder::build() const
 
     auto const loader = AssetLoader{};
 
-    collection.nanosuitAssets = loader.load(std::string{modelFolder} + "/nanosuit.obj");
+    auto const source = std::string{modelFolder} + "/nanosuit.obj";
+
+    collection.nanosuitAssets = loader.load(source, "Nanosuit");
 
     return collection;
 }

@@ -29,6 +29,20 @@ public:
     auto getTransformation() const
         -> glm::mat4 const &;
 
+    auto getParent() const
+        -> ModelPart const *;
+
+    auto getInDepthIndex() const
+        -> int;
+
+private:
+
+    auto setSelfAsComponentParent()
+        -> void;
+
+    auto updateDescendantsInDepthIndex()
+        -> void;
+
 private:
 
     std::string name;
@@ -39,4 +53,11 @@ private:
 
     glm::mat4 transformation;
 
+    ModelPart const * parent;
+
+    int inDepthIndex;
+
 };
+
+auto isRoot(ModelPart const & part)
+    -> bool;
