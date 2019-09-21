@@ -1,4 +1,0 @@
-assimp
-glfw3
-stbimage
-glm

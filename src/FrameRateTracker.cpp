@@ -28,11 +28,20 @@ auto FrameRateTracker::stop()
     -> void
 {
     isStopped = true;
+
+    numOfSamplesInBurst = 0;
+
+    burstDuration = 0.0;
 }
 
 auto FrameRateTracker::update()
     -> void
 {
+    if (isStopped)
+    {
+        return;
+    }
+
     burstDuration += timeTracker->getLastFrameDuration();
 
     ++numOfSamplesInBurst;

@@ -1,4 +1,3 @@
-
 cmake_minimum_required(VERSION 3.10)
 
 project(OpenGLTest)
@@ -46,13 +45,8 @@ file(
 
 file(
     GLOB_RECURSE
-    GLAD_HEADER_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/private/glad/*.h")
-
-file(
-    GLOB_RECURSE
     GLAD_SOURCE_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
+    "${glad_DIR}/src/*.c")
 
 file(
     GLOB
@@ -71,18 +65,13 @@ source_group("Header Files" FILES ${PRIVATE_INCLUDE_FILES})
 
 source_group("Documentation" FILES ${DOC_FILES})
 
-source_group("GLAD\\Header Files" FILES ${GLAD_HEADER_FILES})
-
-source_group("GLAD\\Source Files" FILES ${GLAD_SOURCE_FILES})
-
 add_executable(
-    ${PROJECT_NAME}
+${PROJECT_NAME}
     ${CMAKE_FILES}
     ${PRIVATE_INCLUDE_FILES}
     ${SOURCE_FILES}
     ${SHADER_FILES}
     ${TEXTURE_FILES}
-    ${GLAD_HEADER_FILES}
     ${GLAD_SOURCE_FILES}
     ${DOC_FILES})
 
@@ -92,10 +81,12 @@ AddPrivateDefinitions(textureFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/textu
 
 AddPrivateDefinitions(modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/models")
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-target_include_directories(${PROJECT_NAME} PRIVATE ${stb_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE "${stb_DIR}/include")
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${glm_DIR})
+
+target_include_directories(${PROJECT_NAME} PRIVATE "${glad_DIR}/include")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE assimp glfw)
