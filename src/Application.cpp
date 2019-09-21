@@ -15,6 +15,7 @@ Application::Application()
     , scene{createScene(assets)}
     , renderer{shader, {0.0f, 0.0f, 0.0f}}
     , inputHandler{scene, window, shader}
+    , rateTracker{timeTracker, 500}
     , resizeHandlerConnection{registerWindowResizeHandler()}
 {
     window.captureMouse();
@@ -37,6 +38,8 @@ auto Application::run()
         render();
 
         recordFrameDuration();
+
+        reportFramesPerSecond();
     }
 }
 
@@ -135,4 +138,10 @@ auto Application::recordFrameDuration()
     -> void
 {
     timeTracker.update();
+}
+
+auto Application::reportFramesPerSecond()
+    -> void
+{
+    rateTracker.update();
 }
