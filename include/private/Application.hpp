@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CameraUniform.hpp"
+#include "FrameRateTracker.hpp"
 #include "FrameTimeTracker.hpp"
 #include "LightingUniform.hpp"
 #include "SampleAssetCollection.hpp"
@@ -60,6 +61,9 @@ private:
     auto recordFrameDuration()
         -> void;
 
+    auto reportFramesPerSecond()
+        -> void;
+
 private:
 
     Window window;
@@ -75,6 +79,8 @@ private:
     SampleInputHandler inputHandler;
 
     FrameTimeTracker timeTracker;
+
+    FrameRateTracker rateTracker;
 
     ScopedSignalConnection resizeHandlerConnection;
 
