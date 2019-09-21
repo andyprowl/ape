@@ -1,7 +1,10 @@
 #pragma once
 
+#include "BodyPointLightSynchronizer.hpp"
 #include "CameraSpotlightSynchronizer.hpp"
 #include "Scene.hpp"
+
+#include <vector>
 
 class SampleScene : public Scene
 {
@@ -19,5 +22,7 @@ public:
     Body * scalingContainer = nullptr;
 
     std::vector<CameraSpotlightSynchronizer> spotLightSynchronizers;
+
+    std::vector<BodyPointLightSynchronizer> bodyLightSynchronizers;
 
 };

@@ -7,7 +7,7 @@
 # Copyright 2011 Honeywell International Inc. All rights reserved.
 # --------------------------------------------------------------------------------------------------
 
-macro(SetCpp14StandardCompliance)
+macro(SetCpp17StandardCompliance)
 
     set(CMAKE_CXX_STANDARD 17)
 
@@ -19,7 +19,7 @@ endmacro()
 
 macro(SetStrictWarningPolicy)
 
-    SetCpp14StandardCompliance()
+    SetCpp17StandardCompliance()
 
     # Set sufficiently high warning level 
     if(MSVC)

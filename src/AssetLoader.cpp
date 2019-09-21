@@ -5,7 +5,7 @@
 #include "AssetRepository.hpp"
 #include "MaterialLoader.hpp"
 #include "MeshLoader.hpp"
-#include "ModelLoader.hpp"
+#include "ModelPartImporter.hpp"
 
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
@@ -30,51 +30,55 @@ auto extractDirectory(std::string const & path)
 
 } // unnamed namespace
 
-auto AssetLoader::load(std::string const & path) const
+auto AssetLoader::load(std::string path, std::string modelName) const
     -> AssetRepository
 {
     auto importer = Assimp::Importer{};
 
-    const auto scene = importer.ReadFile(path, aiProcess_Triangulate /*| aiProcess_FlipUVs*/); 
+    const auto scene = importer.ReadFile(path, aiProcess_Triangulate); 
 
     if (scene == nullptr)
     {
         throw CouldNotLoadAssets(path, importer.GetErrorString());
     }
 
-    return load(path, *scene);
+    return load(*scene, std::move(modelName), std::move(path));
 }
 
-auto AssetLoader::load(std::string const & source, aiScene const & scene) const
+auto AssetLoader::load(
+    aiScene const & scene,
+    std::string modelName,
+    std::string source) const
     -> AssetRepository
 {
     auto repository = AssetRepository{};
 
-    load(source, scene, repository);
+    load(scene, std::move(modelName), std::move(source), repository);
 
     return repository;
 }
 
 auto AssetLoader::load(
-    std::string const & source,
     aiScene const & scene,
+    std::string modelName,
+    std::string source,
     AssetRepository & target) const
     -> void
 {
-    importMaterials(source, scene, target);
+    importMaterials(scene, source, target);
 
     importMeshes(scene, target);
 
-    importModel(source, scene, target);
+    importModel(scene, std::move(modelName), std::move(source), target);
 }
 
 auto AssetLoader::importMaterials(
-    std::string const & source,
     aiScene const & scene,
+    std::string const & source,
     AssetRepository & target) const
     -> void
 {
-    auto loader = MaterialLoader{target};
+    auto const loader = MaterialLoader{target};
 
     auto const directory = extractDirectory(source);
 
@@ -84,18 +88,21 @@ auto AssetLoader::importMaterials(
 auto AssetLoader::importMeshes(aiScene const & scene, AssetRepository & target) const
     -> void
 {
-    auto loader = MeshLoader{target};
+    auto const loader = MeshLoader{target};
 
     loader.load(scene);
 }
 
 auto AssetLoader::importModel(
-    std::string const & /*source*/,
     aiScene const & scene,
+    std::string name,
+    std::string source,
     AssetRepository & target) const
     -> void
 {
-    auto loader = ModelLoader{target};
+    auto const loader = ModelPartImporter{target};
 
-    loader.load(scene);
+    auto rootPart = loader.importRootPart(scene);
+
+    target.models.emplace_back(std::move(rootPart), std::move(name), std::move(source));
 }

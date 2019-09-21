@@ -528,6 +528,10 @@ auto StatefulSceneBuilder::createSynchronizers()
     scene.spotLightSynchronizers.emplace_back(
         *scene.cameraSystem.activeCamera,
         *scene.playerFlashlight);
+
+    scene.bodyLightSynchronizers.emplace_back(
+        *scene.lamps.front(),
+        scene.lighting.point.front());
 }
 
 } // unnamed namespace

@@ -1,4 +1,4 @@
-#include "ModelLoader.hpp"
+#include "ModelPartImporter.hpp"
 
 #include "AssetLoader.hpp"
 #include "AssetRepository.hpp"
@@ -22,22 +22,20 @@ auto makeMatrix(aiMatrix4x4 const & m)
 
 } // unnamed namespace
 
-ModelLoader::ModelLoader(AssetRepository & target)
+ModelPartImporter::ModelPartImporter(AssetRepository & target)
     : target{&target}
 {
 }
 
-auto ModelLoader::load(aiScene const & scene) const
-    -> void
+auto ModelPartImporter::importRootPart(aiScene const & scene) const
+    -> ModelPart
 {
     auto importer = Assimp::Importer{};
 
-    auto rootPart = loadModelPart(*(scene.mRootNode), scene);
-
-    target->models.emplace_back("", "", std::move(rootPart));
+    return importPart(*(scene.mRootNode), scene);
 }
 
-auto ModelLoader::loadModelPart(aiNode const & node, aiScene const & scene) const
+auto ModelPartImporter::importPart(aiNode const & node, aiScene const & scene) const
     -> ModelPart
 {
     auto components = std::vector<ModelPart>{};
@@ -48,7 +46,7 @@ auto ModelLoader::loadModelPart(aiNode const & node, aiScene const & scene) cons
     {
         auto const childNode = node.mChildren[i];
 
-        auto childPart = loadModelPart(*childNode, scene);
+        auto childPart = importPart(*childNode, scene);
 
         components.push_back(std::move(childPart));
     }
@@ -60,7 +58,7 @@ auto ModelLoader::loadModelPart(aiNode const & node, aiScene const & scene) cons
     return {node.mName.C_Str(), std::move(meshes), std::move(components), transformation};
 }
 
-auto ModelLoader::importMeshes(aiNode const & node) const
+auto ModelPartImporter::importMeshes(aiNode const & node) const
     -> std::vector<Mesh const *>
 {
     auto const & meshes = target->meshes;

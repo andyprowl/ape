@@ -7,7 +7,7 @@ class Texture
 
 public:
 
-    explicit Texture(std::string fliepath);
+    explicit Texture(std::string filepath);
     
     Texture(TextureDescriptor descriptor, std::string filepath);
 

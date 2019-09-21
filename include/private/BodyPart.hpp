@@ -4,6 +4,7 @@
 
 #include <vector>
 
+class Body;
 class ModelPart;
 
 class BodyPart
@@ -11,15 +12,22 @@ class BodyPart
 
 public:
 
-    explicit BodyPart(ModelPart const & part);
+    BodyPart(Body & body, ModelPart const & part);
 
-    BodyPart(ModelPart const & part, BodyPart & parent);
+    auto getBody() const
+        -> Body const &;
 
     auto getModel() const
         -> const ModelPart &;
 
-    auto getComponents() const
-        -> std::vector<BodyPart *> const &;
+    auto getParent() const
+        -> const BodyPart *;
+
+    auto getNumOfComponents() const
+        -> int;
+
+    auto getComponent(int index)
+        -> BodyPart &;
 
     auto getLocalTransformation() const
         -> glm::mat4 const &;
@@ -43,13 +51,15 @@ public:
 
 private:
 
-    BodyPart(ModelPart const & part, BodyPart * parent);
+    friend class Body;
+
+private:
+
+    auto setBody(Body & newBody)
+        -> void;
 
     auto getParentGlobalTransformation() const
         -> glm::mat4;
-
-    auto registerComponent(BodyPart & component)
-        -> void;
 
     auto onParentTransformationChanged(glm::mat4 const & newTransformation)
         -> void;
@@ -60,16 +70,14 @@ private:
     auto updateGlobalNormalTransformation()
         -> void;
 
-    auto updateDescendentGlobalTransformations() const
+    auto updateDescendentGlobalTransformations()
         -> void;
 
 private:
 
-    ModelPart const * part;
-    
-    BodyPart const * parent;
+    Body * body;
 
-    std::vector<BodyPart *> components;
+    ModelPart const * part;
 
     glm::mat4 localTransformation;
 
@@ -78,6 +86,9 @@ private:
     glm::mat3 globalNormalTransformation;
 
 };
+
+auto isRoot(BodyPart const & part)
+    -> bool;
 
 auto getLocalPosition(BodyPart const & part)
     -> glm::vec3;

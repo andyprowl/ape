@@ -34,17 +34,13 @@ auto rotateBodyAroundOwnX(Body & body, float const radians)
 auto rotateLightAroundWorldY(SampleScene & scene, float const radians)
     -> void
 {
-    auto & light = scene.lighting.point[0];
+    auto & body = *scene.lamps.front();
 
-    auto const position = light.position;
+    auto const position = getPosition(body);
     
     auto const revolution = glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f});
 
     auto const newPosition = glm::vec3{revolution * glm::vec4{position, 1.0f}};
-
-    light.position = newPosition;
-
-    auto & body = *scene.lamps.front();
 
     auto const newTransformation  = 
         glm::translate(glm::mat4{1.0f}, newPosition) *

@@ -2,6 +2,7 @@
 
 #include "BodyPart.hpp"
 
+#include "Body.hpp"
 #include "ModelPart.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,26 +18,60 @@ auto computeNormalTransformation(glm::mat4 const & transformation)
 
 } // unnamed namespace
 
-BodyPart::BodyPart(ModelPart const & part)
-    : BodyPart{part, nullptr}
+BodyPart::BodyPart(Body & body, ModelPart const & part)
+    : body{&body}
+    , part{&part}
+    , localTransformation{part.getTransformation()}
+    , globalTransformation{getParentGlobalTransformation() * localTransformation}
+    , globalNormalTransformation{computeNormalTransformation(globalTransformation)}
 {
 }
 
-BodyPart::BodyPart(ModelPart const & part, BodyPart & parent)
-    : BodyPart{part, &parent}
+auto BodyPart::getNumOfComponents() const
+    -> int
 {
+    return static_cast<int>(part->getComponents().size());
 }
 
-auto BodyPart::getComponents() const
-    -> std::vector<BodyPart *> const &
+auto BodyPart::getComponent(int const index)
+    -> BodyPart &
 {
-    return components;
+    auto & modelComponents = part->getComponents();
+
+    auto & modelComponent = modelComponents[index];
+
+    auto inDepthIndex = modelComponent.getInDepthIndex();
+
+    return body->getPart(inDepthIndex);
+}
+
+auto BodyPart::getBody() const
+    -> Body const &
+{
+    return *body;
 }
 
 auto BodyPart::getModel() const
     -> const ModelPart &
 {
     return *part;
+}
+
+auto BodyPart::getParent() const
+    -> const BodyPart *
+{
+    auto const modelParent = part->getParent();
+
+    if (modelParent == nullptr)
+    {
+        return nullptr;
+    }
+
+    auto const parentIndex = modelParent->getInDepthIndex();
+
+    auto const & parentPart = body->getPart(parentIndex);
+
+    return &parentPart;
 }
 
 auto BodyPart::getLocalTransformation() const
@@ -55,6 +90,8 @@ auto BodyPart::setLocalTransformation(glm::mat4 const & newTransformation)
     updateGlobalNormalTransformation();
 
     updateDescendentGlobalTransformations();
+
+    body->onLocalTransformationChanged.fire(*this);
 }
 
 auto BodyPart::getGlobalTransformation() const
@@ -76,6 +113,8 @@ auto BodyPart::scaleUniformly(float const factor)
     localTransformation = glm::scale(localTransformation, {factor, factor, factor});
 
     updateGlobalTransformation();
+
+    body->onLocalTransformationChanged.fire(*this);
 }
 
 // Implemented as a member because it does not require updating the normal matrix
@@ -85,26 +124,21 @@ auto BodyPart::translate(glm::vec3 const & offset)
     localTransformation = glm::translate(localTransformation, offset);
 
     updateGlobalTransformation();
+
+    body->onLocalTransformationChanged.fire(*this);
 }
 
-BodyPart::BodyPart(ModelPart const & part, BodyPart * const parent)
-    : part{&part}
-    , parent{parent}
-    , localTransformation{part.getTransformation()}
-    , globalTransformation{getParentGlobalTransformation() * localTransformation}
-    , globalNormalTransformation{computeNormalTransformation(globalTransformation)}
+auto BodyPart::setBody(Body & newBody)
+    -> void
 {
-    components.reserve(part.getComponents().size());
-
-    if (parent != nullptr)
-    {
-        parent->registerComponent(*this);
-    }
+    body = &newBody;
 }
 
 auto BodyPart::getParentGlobalTransformation() const
     -> glm::mat4
 {
+    auto const parent = getParent();
+
     if (parent != nullptr)
     {
         return parent->globalTransformation;
@@ -113,12 +147,6 @@ auto BodyPart::getParentGlobalTransformation() const
     {
         return glm::mat4{1.0f};
     }
-}
-
-auto BodyPart::registerComponent(BodyPart & component)
-    -> void
-{
-    components.push_back(&component);
 }
 
 auto BodyPart::onParentTransformationChanged(glm::mat4 const & newTransformation)
@@ -143,13 +171,21 @@ auto BodyPart::updateGlobalNormalTransformation()
     globalNormalTransformation = computeNormalTransformation(globalTransformation);
 }
 
-auto BodyPart::updateDescendentGlobalTransformations() const
+auto BodyPart::updateDescendentGlobalTransformations()
     -> void
 {
-    for (auto component : components)
+    for (auto i = 0; i < getNumOfComponents(); ++i)
     {
-        component->onParentTransformationChanged(globalTransformation);
+        auto & component = getComponent(i);
+
+        component.onParentTransformationChanged(globalTransformation);
     }
+}
+
+auto isRoot(BodyPart const & part)
+    -> bool
+{
+    return isRoot(part.getModel());
 }
 
 auto getLocalPosition(BodyPart const & part)

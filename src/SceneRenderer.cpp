@@ -52,10 +52,8 @@ auto SceneRenderer::drawScene(Scene const & scene) const
 auto SceneRenderer::drawBody(Body const & body) const
     -> void
 {
-    for (auto i = 0; i < body.getNumOfParts(); ++i)
+    for (auto const & part : body.getParts())
     {
-        auto const & part = body.getPart(i);
-
         drawBodyPart(part);
     }
 }
@@ -70,11 +68,6 @@ auto SceneRenderer::drawBodyPart(BodyPart const & part) const
     for (auto const mesh : part.getModel().getMeshes())
     {
         drawMesh(*mesh);
-    }
-
-    for (auto const component : part.getComponents())
-    {
-        drawBodyPart(*component);
     }
 }
 
