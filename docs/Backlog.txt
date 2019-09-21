@@ -1,4 +1,3 @@
- - Implement hierarchical scene/mesh model supporting attachments and transforms
  - Introduce "ape" namespace at least for generic/reusable units
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
   - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level

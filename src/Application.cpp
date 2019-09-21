@@ -90,6 +90,11 @@ auto Application::setViewport()
 {
     auto const size = window.getSize();
 
+    if (size.height == 0)
+    {
+        return;
+    }
+
     glViewport(0, 0, size.width, size.height);
 
     auto const aspectRatio = window.getAspectRatio();

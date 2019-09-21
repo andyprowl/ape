@@ -295,7 +295,7 @@ auto SampleAssetBuilder::build() const
 
     auto const loader = AssetLoader{};
 
-    auto const source = std::string{modelFolder} + "/nanosuit.obj";
+    auto const source = std::string{modelFolder} + "/nanosuit/nanosuit.obj";
 
     collection.nanosuitAssets = loader.load(source, "Nanosuit");
 

@@ -5,6 +5,8 @@ project(OpenGLTest)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+include("cmake/CompilerDefinitions.cmake")
+
 include("cmake/CompilerSettings.cmake")
 
 include("cmake/Dependencies.cmake")
@@ -17,30 +19,30 @@ ImportDependencies()
 
 file(
     GLOB
-    APP_CMAKE_FILES
+    CMAKE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.*"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 
 file(
     GLOB_RECURSE
-    APP_PRIVATE_INCLUDE_FILES
+    PRIVATE_INCLUDE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/include/private/*.hpp")
 
 file(
     GLOB
-    APP_SOURCE_FILES
+    SOURCE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
 
 file(
     GLOB
-    APP_SHADER_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.glsl"
-    "${CMAKE_CURRENT_SOURCE_DIR}/shaders/*.glsi")
+    SHADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/*.glsl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/*.glsi")
 
 file(
     GLOB
-    APP_TEXTURE_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/textures/*.*")
+    TEXTURE_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/textures/*.*")
 
 file(
     GLOB_RECURSE
@@ -53,53 +55,47 @@ file(
     "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
 file(
-    GLOB_RECURSE
-    STB_HEADER_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/private/stb/*.h")
+    GLOB
+    DOC_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
 
-file(
-    GLOB_RECURSE
-    STB_SOURCE_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/stbimage.cpp")
+source_group("CMake Files" FILES ${CMAKE_FILES})
 
-source_group("App\\CMake Files" FILES ${APP_CMAKE_FILES})
+source_group("Source Files" FILES ${SOURCE_FILES})
 
-source_group("App\\Source Files" FILES ${APP_SOURCE_FILES})
+source_group("Resources\\Shader Files" FILES ${SHADER_FILES})
 
-source_group("App\\Shader Files" FILES ${APP_SHADER_FILES})
+source_group("Resources\\Texture Files" FILES ${TEXTURE_FILES})
 
-source_group("App\\Texture Files" FILES ${APP_TEXTURE_FILES})
+source_group("Header Files" FILES ${PRIVATE_INCLUDE_FILES})
 
-source_group("App\\Private Header Files" FILES ${APP_PRIVATE_INCLUDE_FILES})
+source_group("Documentation" FILES ${DOC_FILES})
 
 source_group("GLAD\\Header Files" FILES ${GLAD_HEADER_FILES})
 
 source_group("GLAD\\Source Files" FILES ${GLAD_SOURCE_FILES})
 
-source_group("STB\\Header Files" FILES ${STB_HEADER_FILES})
-
-source_group("STB\\Source Files" FILES ${STB_SOURCE_FILES})
-
 add_executable(
-    OpenGLTest
-    ${APP_CMAKE_FILES}
-    ${APP_PRIVATE_INCLUDE_FILES}
-    ${APP_SOURCE_FILES}
-    ${APP_SHADER_FILES}
-    ${APP_TEXTURE_FILES}
+    ${PROJECT_NAME}
+    ${CMAKE_FILES}
+    ${PRIVATE_INCLUDE_FILES}
+    ${SOURCE_FILES}
+    ${SHADER_FILES}
+    ${TEXTURE_FILES}
     ${GLAD_HEADER_FILES}
     ${GLAD_SOURCE_FILES}
-    ${STB_HEADER_FILES}
-    ${STB_SOURCE_FILES})
+    ${DOC_FILES})
 
-target_compile_definitions(OpenGLTest PRIVATE shaderFolder="${CMAKE_CURRENT_SOURCE_DIR}/shaders")
+AddPrivateDefinitions(shaderFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders")
 
-target_compile_definitions(OpenGLTest PRIVATE textureFolder="${CMAKE_CURRENT_SOURCE_DIR}/textures")
+AddPrivateDefinitions(textureFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/textures")
 
-target_compile_definitions(OpenGLTest PRIVATE modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/models")
+AddPrivateDefinitions(modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/models")
 
-target_include_directories(OpenGLTest PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
-target_include_directories(OpenGLTest PRIVATE ${GLM_DIR})
+target_include_directories(${PROJECT_NAME} PRIVATE ${stb_DIR})
 
-target_link_libraries(OpenGLTest PRIVATE assimp glfw)
+target_include_directories(${PROJECT_NAME} PRIVATE ${glm_DIR})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE assimp glfw)

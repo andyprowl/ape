@@ -8,6 +8,18 @@
 #include <string>
 #include <vector>
 
+class CouldNotOpenShaderFile : public std::logic_error
+{
+
+public:
+
+    CouldNotOpenShaderFile(std::string filename)
+        : logic_error{"Failed to open shader file '" + std::move(filename) + "': "}
+    {
+    }
+
+};
+
 class CouldNotCompileShader : public std::logic_error
 {
 

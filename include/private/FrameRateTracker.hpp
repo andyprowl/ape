@@ -7,9 +7,23 @@ class FrameRateTracker
 
 public:
 
-    explicit FrameRateTracker(FrameTimeTracker & timeTracker, int reportFrequencyInMs);
+    FrameRateTracker(FrameTimeTracker & timeTracker, int reportFrequencyInMs);
+
+    auto start()
+        -> void;
+
+    auto stop()
+        -> void;
 
     auto update()
+        -> void;
+
+private:
+
+    auto isTimeToReport() const
+        -> bool;
+
+    auto report() const
         -> void;
 
 private:
@@ -20,8 +34,10 @@ private:
 
     int numOfReports;
 
-    int numOfSamples;
+    int numOfSamplesInBurst;
 
     double burstDuration;
+
+    bool isStopped;
 
 };

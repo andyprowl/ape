@@ -93,6 +93,11 @@ auto readShader(std::string const & filename)
         std::string{shaderFolder} + "\\" + filename,
         std::ifstream::ate | std::ifstream::binary};
 
+    if (!shaderFile)
+    {
+        throw CouldNotOpenShaderFile{filename};
+    }
+
     auto const fileSize = static_cast<std::size_t>(shaderFile.tellg());
 
     shaderFile.seekg(0, std::ifstream::beg);
