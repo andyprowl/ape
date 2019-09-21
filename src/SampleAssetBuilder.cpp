@@ -31,10 +31,19 @@ private:
     auto preventReallocation()
         -> void;
 
-    auto createGroundTileModel()
+    auto createGroundTileModels()
+        -> void;
+
+    auto createConcreteGroundTileModel(Shape const & shape)
         -> Model &;
 
-    auto createGroundMaterial()
+    auto createWoodenFloorTileModel(Shape const & shape)
+        -> Model &;
+
+    auto createConcreteGroundMaterial()
+        -> Material &;
+
+    auto createWoodenFloorMaterial()
         -> Material &;
 
     auto createContainerModel()
@@ -72,7 +81,7 @@ auto StatefulAssetBuilder::build()
 {
     preventReallocation();
 
-    createGroundTileModel();
+    createGroundTileModels();
 
     createContainerModel();
 
@@ -86,37 +95,71 @@ auto StatefulAssetBuilder::build()
 auto StatefulAssetBuilder::preventReallocation()
     -> void
 {
-    assets.shapes.reserve(4u);
+    assets.shapes.reserve(10u);
 
-    assets.textures.reserve(5u);
+    assets.textures.reserve(10u);
 
-    assets.materials.reserve(4u);
+    assets.materials.reserve(10u);
 
-    assets.meshes.reserve(4u);
+    assets.meshes.reserve(10u);
 
-    assets.models.reserve(4u);
+    assets.models.reserve(10u);
 }
 
-auto StatefulAssetBuilder::createGroundTileModel()
-    -> Model &
+auto StatefulAssetBuilder::createGroundTileModels()
+    -> void
 {
     auto box = makeBox(NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
-    auto const & material = createGroundMaterial();
+    createConcreteGroundTileModel(shape);
 
-    auto const & mesh = assets.meshes.emplace_back("Ground Tile", shape, material);
-
-    return createTrivialModel("Ground Tile", mesh);
+    createWoodenFloorTileModel(shape);
 }
 
-auto StatefulAssetBuilder::createGroundMaterial()
+auto StatefulAssetBuilder::createConcreteGroundTileModel(Shape const & shape)
+    -> Model &
+{
+    auto const & material = createConcreteGroundMaterial();
+
+    auto const & mesh = assets.meshes.emplace_back("Concrete Ground Tile", shape, material);
+
+    return createTrivialModel("Concrete Ground Tile", mesh);
+}
+
+auto StatefulAssetBuilder::createWoodenFloorTileModel(Shape const & shape)
+    -> Model &
+{
+    auto const & material = createWoodenFloorMaterial();
+
+    auto const & mesh = assets.meshes.emplace_back("Wooden Floor Tile", shape, material);
+
+    return createTrivialModel("Wooden Floor Tile", mesh);
+}
+
+auto StatefulAssetBuilder::createConcreteGroundMaterial()
     -> Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
     auto const & texture = createTextureFromLocalFile("ConcreteGround.jpg");
+
+    auto const & diffuseMap = &texture;
+
+    auto const & specularMap = &texture;
+
+    auto const shininess = 32.0f;
+
+    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+}
+
+auto StatefulAssetBuilder::createWoodenFloorMaterial()
+    -> Material &
+{
+    auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
+    
+    auto const & texture = createTextureFromLocalFile("WoodenFloor.jpg");
 
     auto const & diffuseMap = &texture;
 

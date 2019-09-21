@@ -155,12 +155,18 @@ auto StatefulSceneBuilder::createBodies()
 auto StatefulSceneBuilder::createGroundTiles()
     -> void
 {
-    auto const & model = assets->generalAssets.models[0];
+    auto & concrete = assets->generalAssets.models[0];
+
+    auto & wood = assets->generalAssets.models[1];
 
     for (auto row = -5; row < +5; ++row)
     {
         for (auto col = -5; col < +5; ++col)
         {
+            auto const isInnerSquare = (std::abs(row) < 1) && (std::abs(col) < 1);
+
+            auto const & model = isInnerSquare ? wood : concrete;
+
             createGroundTile(row, col, model);
         }
     }
@@ -181,7 +187,7 @@ auto StatefulSceneBuilder::createGroundTile(int const row, int const col, Model 
 auto StatefulSceneBuilder::createContainers()
     -> void
 {
-    auto const & model = assets->generalAssets.models[1];
+    auto const & model = assets->generalAssets.models[2];
 
     auto const positions = getContainerPositions();
 
@@ -234,7 +240,7 @@ auto StatefulSceneBuilder::getContainerPositions() const
 auto StatefulSceneBuilder::createLamps()
     -> void
 {
-    auto const & model = assets->generalAssets.models[2];
+    auto const & model = assets->generalAssets.models[3];
 
     auto const positions = getLampPositions();
 
@@ -271,7 +277,7 @@ auto StatefulSceneBuilder::getLampPositions() const
 auto StatefulSceneBuilder::createFlashlights()
     -> void
 {
-    auto const & model = assets->generalAssets.models[3];
+    auto const & model = assets->generalAssets.models[4];
 
     auto const positions = getFlashlightPositions();
 
