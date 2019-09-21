@@ -25,7 +25,7 @@ file(
 file(
     GLOB_RECURSE
     PRIVATE_INCLUDE_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/private/*.hpp")
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
 
 file(
     GLOB
