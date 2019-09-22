@@ -11,4 +11,6 @@ public:
 
     AssetRepository nanosuitAssets;
 
+    AssetRepository dragonAssets;
+
 };

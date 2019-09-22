@@ -282,6 +282,12 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
     return assets.textures.emplace_back(std::move(filepath));
 }
 
+auto resolveModelFilepath(std::string filename)
+    -> std::string
+{
+    return std::string{modelFolder} + '/' + std::move(filename);
+}
+
 } // unnamed namespace
 
 auto SampleAssetBuilder::build() const
@@ -295,9 +301,13 @@ auto SampleAssetBuilder::build() const
 
     auto const loader = AssetLoader{};
 
-    auto const source = std::string{modelFolder} + "/nanosuit/nanosuit.obj";
+    auto nanosuiteFilepath = resolveModelFilepath("/nanosuit/nanosuit.obj");
 
-    collection.nanosuitAssets = loader.load(source, "Nanosuit");
+    collection.nanosuitAssets = loader.load(nanosuiteFilepath, "Nanosuit");
+
+    auto dragonFilepath = resolveModelFilepath("/dragon/Dragon_Baked_Actions.obj");
+
+    collection.dragonAssets = loader.load(dragonFilepath, "Dragon");
 
     return collection;
 }

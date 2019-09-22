@@ -34,17 +34,11 @@ private:
     auto createContainers()
         -> void;
 
-    auto createContainer(glm::mat4 const & transformation, Model const & model)
-        -> Body &;
-
     auto getContainerPositions() const
         -> std::vector<glm::vec3>;
 
     auto createLamps()
         -> void;
-
-    auto createLamp(glm::vec3 const & position, Model const & model)
-        -> Body &;
 
     auto getLampPositions() const
         -> std::vector<glm::vec3>;
@@ -64,10 +58,13 @@ private:
     auto createNanosuits()
         -> void;
 
-    auto createNanosuit(glm::mat4 const & transformation, Model const & model)
-        -> Body &;
-
     auto getNanosuitPositions() const
+        -> std::vector<glm::vec3>;
+
+    auto createDragons()
+        -> void;
+
+    auto getDragonPositions() const
         -> std::vector<glm::vec3>;
 
     auto createCameras()
@@ -108,6 +105,9 @@ private:
 
     auto createDirectionalLight(glm::vec3 const & direction)
         -> DirectionalLight &;
+    
+    auto addBody(glm::mat4 const & transformation, Model const & model)
+        -> Body &;
 
     auto createSynchronizers()
         -> void;
@@ -151,6 +151,8 @@ auto StatefulSceneBuilder::createBodies()
     createFlashlights();
 
     createNanosuits();
+
+    createDragons();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
@@ -203,22 +205,12 @@ auto StatefulSceneBuilder::createContainers()
             glm::radians(20.0f * i),
             glm::vec3{1.0f, 0.3f, 0.5f});
 
-        createContainer(translation * rotation, model);
+        addBody(translation * rotation, model);
     }
 
     scene.rotatingContainer = &scene.bodies[numOfBodies];
 
     scene.scalingContainer = &scene.bodies[numOfBodies + 1];
-}
-
-auto StatefulSceneBuilder::createContainer(glm::mat4 const & transformation, Model const & model)
-    -> Body &
-{
-    auto body = Body{model};
-
-    setTransformation(body, transformation);
-
-    return scene.bodies.emplace_back(std::move(body));
 }
 
 auto StatefulSceneBuilder::getContainerPositions() const
@@ -249,20 +241,12 @@ auto StatefulSceneBuilder::createLamps()
 
     for (auto const & position : positions)
     {
-        auto & lamp = createLamp(position, model);
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        auto & lamp = addBody(translation, model);
 
         scene.lamps.push_back(&lamp);
     }
-}
-
-auto StatefulSceneBuilder::createLamp(glm::vec3 const & position, Model const & model)
-    -> Body &
-{
-    auto body = Body{model};
-
-    setPosition(body, position);
-
-    return scene.bodies.emplace_back(std::move(body));
 }
 
 auto StatefulSceneBuilder::getLampPositions() const
@@ -335,18 +319,8 @@ auto StatefulSceneBuilder::createNanosuits()
     {
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        createNanosuit(translation * scaling, model);
+        addBody(translation * scaling, model);
     }
-}
-
-auto StatefulSceneBuilder::createNanosuit(glm::mat4 const & transformation, Model const & model)
-    -> Body &
-{
-    auto body = Body{model};
-
-    setTransformation(body, transformation);
-
-    return scene.bodies.emplace_back(std::move(body));
 }
 
 auto StatefulSceneBuilder::getNanosuitPositions() const
@@ -354,6 +328,30 @@ auto StatefulSceneBuilder::getNanosuitPositions() const
 {
     return {
         {1.0f, -2.0f, 1.0f}};
+}
+
+auto StatefulSceneBuilder::createDragons()
+    -> void
+{
+    auto const & model = assets->dragonAssets.models[0];
+
+    auto const positions = getDragonPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.1f, 0.1f, 0.1f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getDragonPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-7.0f, -2.0f, -2.0f}};
 }
 
 auto StatefulSceneBuilder::createCameras()
@@ -522,7 +520,17 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
 
     return scene.lighting.directional.emplace_back(direction, color, true);
 }
- 
+
+auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, Model const & model)
+    -> Body &
+{
+    auto body = Body{model};
+
+    setTransformation(body, transformation);
+
+    return scene.bodies.emplace_back(std::move(body));
+}
+
 auto StatefulSceneBuilder::createSynchronizers()
     -> void
 {
