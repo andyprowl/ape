@@ -73,6 +73,10 @@ AddPrivateDefinitions(textureFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/textu
 
 AddPrivateDefinitions(modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/models")
 
+# The following prevents .obj model files to be interpreted as object files to be linked.
+set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Ape)
+
