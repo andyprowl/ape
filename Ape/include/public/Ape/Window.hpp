@@ -72,6 +72,9 @@ public:
     auto swapBuffers()
         -> void;
 
+    auto isMouseCaptured() const
+        -> bool;
+
     auto captureMouse()
         -> void;
 

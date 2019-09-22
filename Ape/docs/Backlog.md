@@ -1,11 +1,11 @@
  - Figure out why Blender models get loaded without textures
  - Create separate library for model import units using Assimp
  - Provide a camera-driving input handler as part of the engine
- - For efficiency, compute camera.transform * model.transform on CPU rather than in vertex shader
- - Extract utility functions to separate (general-purpose) library projects
+  - Currently there is no ready-to-use input handler in the engine library
+ - Create a library which can be used also from Qt
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
   - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level
- - Create a library which can be used also from Qt
+ - Extract utility functions to separate (general-purpose) library projects
  - Make it possible to use the classes with both GLFW and with Qt (make it framework-independent in general)
  - Support planar shapes/meshes
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals

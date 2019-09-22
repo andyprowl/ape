@@ -229,6 +229,12 @@ auto Window::swapBuffers()
     glfwSwapBuffers(handle);
 }
 
+auto Window::isMouseCaptured() const
+    -> bool
+{
+    return (glfwGetInputMode(handle, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
+}
+
 auto Window::captureMouse()
     -> void
 {

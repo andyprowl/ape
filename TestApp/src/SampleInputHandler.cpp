@@ -13,28 +13,20 @@
 namespace
 {
 
-auto toggle(bool & b)
-    -> void
-{
-    b = !b;
-}
-
 auto rotateBodyAroundOwnX(ape::Body & body, float const radians)
     -> void
 {
-    auto const & transformation = getTransformation(body);
+    auto const & transformation = ape::getTransformation(body);
 
     auto const newTransformation = glm::rotate(transformation, radians, {1.0f, 0.0f, 0.0f});
     
-    setTransformation(body, newTransformation);
+    ape::setTransformation(body, newTransformation);
 }
 
-auto rotateLightAroundWorldY(SampleScene & scene, float const radians)
+auto rotateBodyAroundWorldY(ape::Body & body, float const radians)
     -> void
 {
-    auto & body = *scene.lamps.front();
-
-    auto const position = getPosition(body);
+    auto const position = ape::getPosition(body);
     
     auto const revolution = glm::rotate(glm::mat4{1.0f}, radians, {0.0f, 1.0f, 0.0f});
 
@@ -46,7 +38,7 @@ auto rotateLightAroundWorldY(SampleScene & scene, float const radians)
         glm::translate(glm::mat4{1.0f}, -position) *
         getTransformation(body);
 
-    setTransformation(body, newTransformation);
+    ape::setTransformation(body, newTransformation);
 }
 
 } // unnamed namespace
@@ -55,64 +47,42 @@ SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     SampleScene & scene,
     ape::StandardShaderProgram & shader)
-    : window{&window}
-    , scene{&scene}
-    , cameraManipulator{scene, window, 0.1f}
+    : StandardInputHandler{window, scene}
     , blinnPhongSwitcher{window, shader}
-    , keyboardHandlerConnection{registerKeyboardEventHandler()}
 {
 }
 
-auto SampleInputHandler::registerKeyboardEventHandler() const
-    -> ape::ScopedSignalConnection
+auto SampleInputHandler::getScene() const
+    -> SampleScene &
 {
-    return window->onKeyboard.registerHandler([this] (auto const ... args)
-    {
-        onKeyboardEvent(std::forward<decltype(args)>(args)...);
-    });
+    return static_cast<SampleScene &>(ape::StandardInputHandler::getScene());
 }
 
 // virtual (from InputHandler)
-auto SampleInputHandler::processInput(double const lastFrameDuration)
+auto SampleInputHandler::onProcessInput(double const lastFrameDuration)
     -> void
 {
-    processTerminationRequest();
-    
-    processMouseCapture();
-
-    processCameraManipulation(lastFrameDuration);
-
     processShapeModification(lastFrameDuration);
 
     processLightRevolution(lastFrameDuration);
 }
 
-auto SampleInputHandler::processTerminationRequest() const
-    -> void
+auto SampleInputHandler::onKeyPressed(ape::Key const key, ape::KeyModifier const modifier)
+    -> bool
 {
-    if (window->isKeyPressed(ape::Key::keyEscape))
+    if (key == ape::Key::keyEscape)
     {
-        window->requestClosure();
-    }
-}
+        getWindow().requestClosure();
 
-auto SampleInputHandler::processMouseCapture() const
-    -> void
-{
-    if (window->isKeyPressed(ape::Key::keyM))
-    {
-        window->releaseMouse();
+        return true;
     }
-    else if (window->isKeyPressed(ape::Key::keyN))
-    {
-        window->captureMouse();
-    }
-}
 
-auto SampleInputHandler::processCameraManipulation(double const lastFrameDuration)
-    -> void
-{
-    cameraManipulator.update(lastFrameDuration);
+    if (processMouseCapture(key, modifier))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 auto SampleInputHandler::processShapeModification(double const lastFrameDuration) const
@@ -126,157 +96,80 @@ auto SampleInputHandler::processShapeModification(double const lastFrameDuration
 auto SampleInputHandler::processShapeRotation(double const lastFrameDuration) const
     -> void
 {
+    auto & scene = getScene();
+
+    auto const & window = getWindow();
+
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (window->isKeyPressed(ape::Key::keyA))
+    if (window.isKeyPressed(ape::Key::keyA))
     {
-        rotateBodyAroundOwnX(*scene->rotatingContainer, +rotationDelta);
+        rotateBodyAroundOwnX(*scene.rotatingContainer, +rotationDelta);
     }
-    else if (window->isKeyPressed(ape::Key::keyD))
+    else if (window.isKeyPressed(ape::Key::keyD))
     {
-        rotateBodyAroundOwnX(*scene->rotatingContainer, -rotationDelta);
+        rotateBodyAroundOwnX(*scene.rotatingContainer, -rotationDelta);
     }
 }
 
 auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) const
     -> void
 {
+    auto & scene = getScene();
+
+    auto const & window = getWindow();
+
     auto const scalingDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (window->isKeyPressed(ape::Key::keyS))
+    if (window.isKeyPressed(ape::Key::keyS))
     {
-        scaleUniformly(*scene->scalingContainer, 1 + scalingDelta);
+        ape::scaleUniformly(*scene.scalingContainer, 1 + scalingDelta);
     }
-    else if (window->isKeyPressed(ape::Key::keyW))
+    else if (window.isKeyPressed(ape::Key::keyW))
     {
-        scaleUniformly(*scene->scalingContainer, 1 - scalingDelta);
+        ape::scaleUniformly(*scene.scalingContainer, 1 - scalingDelta);
     }
 }
 
 auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) const
     -> void
 {
+    auto & lampBody = *getScene().lamps.front();
+
+    auto const & window = getWindow();
+
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (window->isKeyPressed(ape::Key::keyO))
+    if (window.isKeyPressed(ape::Key::keyO))
     {
-        rotateLightAroundWorldY(*scene, +rotationDelta);
+        rotateBodyAroundWorldY(lampBody, +rotationDelta);
     }
-    else if (window->isKeyPressed(ape::Key::keyP))
+    else if (window.isKeyPressed(ape::Key::keyP))
     {
-        rotateLightAroundWorldY(*scene, -rotationDelta);
+        rotateBodyAroundWorldY(lampBody, -rotationDelta);
     }
 }
 
-auto SampleInputHandler::onKeyboardEvent(
-    ape::Key const key,
-    ape::KeyAction const action,
-    ape::KeyModifier const modifier) const
-    -> void
-{
-    if (action != ape::KeyAction::press)
-    {
-        return;
-    }
-
-    processLightToggling(key, modifier);
-
-    processCameraSwitching(key, modifier);
-
-    processFullScreenToggling(key);
-}
-
-auto SampleInputHandler::processLightToggling(
+auto SampleInputHandler::processMouseCapture(
     ape::Key const key,
     ape::KeyModifier const modifier) const
-    -> void
+    -> bool
 {
-    if ((key < ape::Key::key1) || (key > ape::Key::key9))
+    if ((key != ape::Key::keyM) || (modifier != ape::KeyModifier::none))
     {
-        return;
+        return false;
     }
 
-    auto const index = static_cast<int>(key) - static_cast<int>(ape::Key::key1);
+    auto & window = getWindow();
 
-    if (modifier == ape::KeyModifier::shift)
+    if (window.isMouseCaptured())
     {
-        togglePointLight(index);
-    }
-    else if (modifier == ape::KeyModifier::none)
-    {
-        toggleSpotLight(index);
-    }
-}
-
-auto SampleInputHandler::processCameraSwitching(
-    ape::Key const key,
-    ape::KeyModifier const modifier) const
-    -> void
-{
-    if ((key < ape::Key::key1) || (key > ape::Key::key9))
-    {
-        return;
-    }
-
-    auto const index = static_cast<int>(key) - static_cast<int>(ape::Key::key1);
-
-    if (modifier == ape::KeyModifier::control)
-    {
-        switchToCamera(index);
-    }
-}
-
-auto SampleInputHandler::processFullScreenToggling(ape::Key const key) const
-    -> void
-{
-    if (key != ape::Key::keyF11)
-    {
-        return;
-    }
-
-    if (!window->isFullScreen())
-    {
-        window->setFullScreen();
+        window.releaseMouse();
     }
     else
     {
-        window->exitFullScreen();
-    }
-}
-
-auto SampleInputHandler::togglePointLight(int const index) const
-    -> void
-{
-    if (index >= static_cast<int>(scene->lighting.point.size()))
-    {
-        return;
+        window.captureMouse();
     }
 
-    toggle(scene->lighting.point[index].isTurnedOn);
-}
-
-auto SampleInputHandler::toggleSpotLight(int const index) const
-    -> void
-{
-    if (index >= static_cast<int>(scene->lighting.spot.size()))
-    {
-        return;
-    }
-
-    toggle(scene->lighting.spot[index].isTurnedOn);
-}
-
-auto SampleInputHandler::switchToCamera(int const index) const
-    -> void
-{
-    auto & cameras = scene->cameraSystem.cameras;
-
-    if (index >= static_cast<int>(cameras.size()))
-    {
-        return;
-    }
-
-    scene->cameraSystem.activeCamera = &cameras[index];
-
-    scene->cameraSystem.activeCamera->setAspectRatio(window->getAspectRatio());
+    return true;
 }
