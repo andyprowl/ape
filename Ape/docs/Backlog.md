@@ -1,0 +1,8 @@
+ - Introduce "ape" namespace at least for generic/reusable units
+ - Support event dispatching for multiple windows in Window.cpp
+ - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
+  - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level
+ - Create a library which can be used also from Qt
+ - Make it possible to use the classes with both GLFW and with Qt (make it framework-independent in general)
+ - Support planar shapes/meshes
+ - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
