@@ -7,8 +7,9 @@ StandardShaderProgram::StandardShaderProgram()
     : ShaderProgram{"Vertex.glsl", "Fragment.glsl"}
     , camera{*this, "camera"}
     , lighting{*this, "lighting"}
-    , modelTransformation{*this, "model.transform"}
-    , normalMatrix{*this, "model.normal"}
+    , modelTransformation{*this, "transform.model"}
+    , cameraTransformation{*this, "transform.camera"}
+    , normalTransformation{*this, "transform.normal"}
     , materialAmbient{*this, "material.ambient"}
     , materialShininess{*this, "material.shininess"}
     , useBlinnPhongModel{*this, "useBlinnPhongModel", true}

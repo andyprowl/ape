@@ -16,29 +16,37 @@ class SceneRenderer
 
 public:
 
-    SceneRenderer(StandardShaderProgram & shader, glm::vec3 const & backgroundColor);
+    SceneRenderer(
+        Scene const & scene,
+        StandardShaderProgram & shader,
+        glm::vec3 const & backgroundColor);
 
-    auto render(Scene const & s) const
+    auto render() const
         -> void;
+
+    auto getScene() const
+        -> Scene const &;
 
 private:
 
     auto clear() const
         -> void;
 
-    auto drawScene(Scene const & scene) const
+    auto drawScene() const
         -> void;
 
-    auto drawBody(Body const & body) const
+    auto drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
         -> void;
 
-    auto drawBodyPart(BodyPart const & part) const
+    auto drawBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
         -> void;
 
     auto drawMesh(Mesh const & mesh) const
         -> void;
 
 private:
+
+    Scene const * scene;
 
     StandardShaderProgram * shader;
 

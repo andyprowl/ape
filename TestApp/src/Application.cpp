@@ -39,9 +39,9 @@ public:
         : window{gateway.createWindow("APE 3D engine", false)}
         , assets{createAssets()}
         , scene{createScene(assets)}
-        , renderer{shader, {0.0f, 0.0f, 0.0f}}
+        , renderer{scene, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, scene, shader}
-        , engine{window, scene, renderer, inputHandler}
+        , engine{window, renderer, inputHandler}
     {
     }
 

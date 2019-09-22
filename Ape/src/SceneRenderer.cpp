@@ -12,25 +12,35 @@
 namespace ape
 {
 
-SceneRenderer::SceneRenderer(StandardShaderProgram & shader, glm::vec3 const & backgroundColor)
-    : shader{&shader}
+SceneRenderer::SceneRenderer(
+    Scene const & scene,
+    StandardShaderProgram & shader,
+    glm::vec3 const & backgroundColor)
+    : scene{&scene}
+    , shader{&shader}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
 }
 
-auto SceneRenderer::render(Scene const & s) const
+auto SceneRenderer::render() const
     -> void
 {
     clear();
 
     shader->use();
 
-    shader->camera.set(*s.cameraSystem.activeCamera);
+    shader->camera.set(*(scene->cameraSystem.activeCamera));
 
-    shader->lighting.set(s.lighting);
+    shader->lighting.set(scene->lighting);
 
-    drawScene(s);
+    drawScene();
+}
+
+auto SceneRenderer::getScene() const
+    -> Scene const &
+{
+    return *scene;
 }
 
 auto SceneRenderer::clear() const
@@ -43,30 +53,38 @@ auto SceneRenderer::clear() const
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-auto SceneRenderer::drawScene(Scene const & scene) const
+auto SceneRenderer::drawScene() const
     -> void
 {
-    for (auto const & body : scene.bodies)
+    auto const & cameraTransformation = scene->cameraSystem.activeCamera->getTransformation();
+
+    for (auto const & body : scene->bodies)
     {
-        drawBody(body);
+        drawBody(body, cameraTransformation);
     }
 }
 
-auto SceneRenderer::drawBody(Body const & body) const
+auto SceneRenderer::drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
     -> void
 {
     for (auto const & part : body.getParts())
     {
-        drawBodyPart(part);
+        drawBodyPart(part, cameraTransformation);
     }
 }
 
-auto SceneRenderer::drawBodyPart(BodyPart const & part) const
+auto SceneRenderer::drawBodyPart(
+    BodyPart const & part,
+    glm::mat4 const & cameraTransformation) const
     -> void
 {
-    shader->modelTransformation = part.getGlobalTransformation();
+    auto const & modelTransformation = part.getGlobalTransformation();
 
-    shader->normalMatrix = part.getGlobalNormalTransformation();
+    shader->modelTransformation = modelTransformation;
+
+    shader->cameraTransformation = cameraTransformation * modelTransformation;
+
+    shader->normalTransformation = part.getGlobalNormalTransformation();
 
     for (auto const mesh : part.getModel().getMeshes())
     {

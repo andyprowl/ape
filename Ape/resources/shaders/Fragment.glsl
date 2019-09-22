@@ -16,8 +16,6 @@ struct Camera
 
     vec3 position;
 
-    mat4 transform;
-
 };
 
 struct Material

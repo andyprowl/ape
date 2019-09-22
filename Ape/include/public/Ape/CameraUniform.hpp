@@ -14,7 +14,6 @@ public:
 
     Uniform(ShaderProgram & program, std::string const & prefix)
         : cameraPosition{program, prefix + ".position"}
-        , cameraTransformation{program, prefix + ".transform"}
     {
     }
 
@@ -22,15 +21,11 @@ public:
         -> void
     {
         cameraPosition = camera.getPosition();
-
-        cameraTransformation = camera.getTransformation();
     }
 
 public:
 
     Uniform<glm::vec3> cameraPosition;
-
-    Uniform<glm::mat4> cameraTransformation;
     
 };
 

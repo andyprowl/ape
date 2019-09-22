@@ -22,7 +22,9 @@ public:
 
     Uniform<glm::mat4> modelTransformation;
 
-    Uniform<glm::mat3> normalMatrix;
+    Uniform<glm::mat4> cameraTransformation;
+
+    Uniform<glm::mat3> normalTransformation;
 
     Uniform<glm::vec3> materialAmbient;
 

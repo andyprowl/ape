@@ -16,14 +16,14 @@ struct Camera
 
     vec3 position;
 
-    mat4 transform;
-
 };
 
-struct Model
+struct Transform
 {
 
-    mat4 transform;
+    mat4 model;
+
+    mat4 camera;
 
     mat3 normal;
 
@@ -37,17 +37,17 @@ layout (location = 2) in vec2 textureCoordsAttribute;
 
 out Vertex vertex;
 
-uniform Model model;
+uniform Transform transform;
 
 uniform Camera camera;
 
 void main()
 {
-    gl_Position = camera.transform * model.transform * vec4(positionAttribute, 1.0);
+    gl_Position = transform.camera * vec4(positionAttribute, 1.0);
 
-    vertex.position = vec3(model.transform * vec4(positionAttribute, 1.0));
+    vertex.position = vec3(transform.model * vec4(positionAttribute, 1.0));
 
-    vertex.normal = normalize(model.normal * normalAttribute);
+    vertex.normal = normalize(transform.normal * normalAttribute);
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
 }

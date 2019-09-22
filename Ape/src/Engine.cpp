@@ -22,9 +22,8 @@ class Engine::Impl
 
 public:
 
-    Impl(Window & window, Scene & scene, SceneRenderer & renderer, InputHandler & inputHandler)
+    Impl(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
         : window{&window}
-        , scene{&scene}
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , rateTracker{timeTracker, 500}
@@ -73,7 +72,9 @@ public:
 
         auto const aspectRatio = window->getAspectRatio();
 
-        scene->cameraSystem.activeCamera->setAspectRatio(aspectRatio);
+        auto const & scene = renderer->getScene();
+
+        scene.cameraSystem.activeCamera->setAspectRatio(aspectRatio);
     }
 
     auto wasTerminationRequested() const
@@ -100,7 +101,7 @@ public:
             return;
         }
 
-        renderer->render(*scene);
+        renderer->render();
 
         window->swapBuffers();
     }
@@ -129,8 +130,6 @@ private:
     
     Window * window;
 
-    Scene * scene;
-
     SceneRenderer * renderer;
 
     InputHandler * inputHandler;
@@ -143,12 +142,8 @@ private:
 
 };
 
-Engine::Engine(
-    Window & window,
-    Scene & scene,
-    SceneRenderer & renderer,
-    InputHandler & inputHandler)
-    : impl{std::make_unique<Impl>(window, scene, renderer, inputHandler)}
+Engine::Engine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
+    : impl{std::make_unique<Impl>(window, renderer, inputHandler)}
 {
 }
 

@@ -6,7 +6,6 @@ namespace ape
 {
 
 class InputHandler;
-class Scene;
 class SceneRenderer;
 class Window;
 
@@ -15,7 +14,7 @@ class Engine
 
 public:
 
-    Engine(Window & window, Scene & scene, SceneRenderer & renderer, InputHandler & inputHandler);
+    Engine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler);
 
     Engine(Engine const &) = delete;
 
