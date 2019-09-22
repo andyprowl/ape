@@ -5,6 +5,7 @@
 #include <Ape/Signal.hpp>
 #include <Ape/Size.hpp>
 
+#include <functional>
 #include <stdexcept>
 #include <string>
 
@@ -88,11 +89,11 @@ public:
 
 public:
 
-    Signal<auto (Size<int> const & newSize) -> void> onResize;
+    mutable Signal<auto (Size<int> const & newSize) -> void> onResize;
 
-    Signal<auto (double offset) -> void> onMouseWheel;
+    mutable Signal<auto (double offset) -> void> onMouseWheel;
 
-    Signal<auto (Key key, KeyAction action, KeyModifier modifier) -> void> onKeyboard;
+    mutable Signal<auto (Key key, KeyAction action, KeyModifier modifier) -> void> onKeyboard;
 
 private:
 
@@ -129,3 +130,14 @@ private:
     WindowArea lastWindowedArea;
 
 };
+
+auto onKeyPressed(
+    Window const & window,
+    std::function<auto (Key key, KeyModifier modifier) -> void> handler)
+    -> ScopedSignalConnection;
+
+auto onKeyPressed(
+    Window const & window,
+    Key key,
+    std::function<auto (KeyModifier modifier) -> void> handler)
+    -> ScopedSignalConnection;

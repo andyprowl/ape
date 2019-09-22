@@ -9,7 +9,7 @@ class Uniform<Camera>
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram & program, std::string const & prefix)
         : cameraPosition{program, prefix + ".position"}
         , cameraTransformation{program, prefix + ".transform"}
     {

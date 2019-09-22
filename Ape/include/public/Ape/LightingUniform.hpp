@@ -13,7 +13,7 @@ public:
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram & program, std::string const & prefix)
         : constant{program, prefix + ".constant"}
         , linear{program, prefix + ".linear"}
         , quadratic{program, prefix + ".quadratic"}
@@ -64,7 +64,7 @@ public:
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram & program, std::string const & prefix)
         : ambient{program, prefix + ".ambient"}
         , diffuse{program, prefix + ".diffuse"}
         , specular{program, prefix + ".specular"}
@@ -114,7 +114,7 @@ public:
 
 public:
 
-    PointLightUniform(ShaderProgram const & program, std::string const & prefix)
+    PointLightUniform(ShaderProgram & program, std::string const & prefix)
         : position{program, prefix + ".position"}
         , color{program, prefix + ".color"}
         , attenuation{program, prefix + ".attenuation"}
@@ -169,7 +169,7 @@ public:
 
 public:
 
-    SpotLightUniform(ShaderProgram const & program, std::string const & prefix)
+    SpotLightUniform(ShaderProgram & program, std::string const & prefix)
         : position{program, prefix + ".position"}
         , direction{program, prefix + ".direction"}
         , innerCutoffCosine{program, prefix + ".innerCutoffCosine"}
@@ -245,7 +245,7 @@ public:
 
 public:
 
-    DirectionalLightUniform(ShaderProgram const & program, std::string const & prefix)
+    DirectionalLightUniform(ShaderProgram & program, std::string const & prefix)
         : direction{program, prefix + ".direction"}
         , color{program, prefix + ".color"}
         , isTurnedOn{program, prefix + ".isTurnedOn"}
@@ -296,7 +296,7 @@ public:
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string prefix)
+    Uniform(ShaderProgram & program, std::string prefix)
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, prefix + ".directional"}

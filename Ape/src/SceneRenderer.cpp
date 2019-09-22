@@ -5,13 +5,13 @@
 #include <Ape/Scene.hpp>
 #include <Ape/ShaderProgram.hpp>
 #include <Ape/Shape.hpp>
+#include <Ape/StandardShaderProgram.hpp>
 
 #include <glad/glad.h>
 
-SceneRenderer::SceneRenderer(ShaderProgram const & shader, glm::vec3 const & backgroundColor)
+SceneRenderer::SceneRenderer(StandardShaderProgram & shader, glm::vec3 const & backgroundColor)
     : shader{&shader}
     , backgroundColor{backgroundColor}
-    , uniforms{shader}
 {
     glEnable(GL_DEPTH_TEST);
 }
@@ -23,9 +23,9 @@ auto SceneRenderer::render(Scene const & s) const
 
     shader->use();
 
-    uniforms.camera.set(*s.cameraSystem.activeCamera);
+    shader->camera.set(*s.cameraSystem.activeCamera);
 
-    uniforms.lighting.set(s.lighting);
+    shader->lighting.set(s.lighting);
 
     drawScene(s);
 }
@@ -61,9 +61,9 @@ auto SceneRenderer::drawBody(Body const & body) const
 auto SceneRenderer::drawBodyPart(BodyPart const & part) const
     -> void
 {
-    uniforms.modelTransformation = part.getGlobalTransformation();
+    shader->modelTransformation = part.getGlobalTransformation();
 
-    uniforms.normalMatrix = part.getGlobalNormalTransformation();
+    shader->normalMatrix = part.getGlobalNormalTransformation();
 
     for (auto const mesh : part.getModel().getMeshes())
     {
@@ -76,9 +76,9 @@ auto SceneRenderer::drawMesh(Mesh const & mesh) const
 {
     auto const & material = mesh.getMaterial();
 
-    uniforms.materialAmbient = material.ambient;
+    shader->materialAmbient = material.ambient;
 
-    uniforms.materialShininess = material.shininess;
+    shader->materialShininess = material.shininess;
 
     if (material.diffuseMap)
     {

@@ -7,8 +7,11 @@
 
 class ShaderProgram;
 
+namespace detail
+{
+
 template<typename T>
-class Uniform
+class BasicUniform
 {
 
 public:
@@ -17,39 +20,76 @@ public:
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string const & name);
+    BasicUniform(ShaderProgram & program, std::string const & name);
+
+    BasicUniform(ShaderProgram & program, std::string const & name, T const & value);
 
     auto get() const
         -> T;
 
     auto set(T const & value)
         -> void;
+    
+protected:
+
+    friend class ShaderProgram;
+
+protected:
+
+    BasicUniform(int const programId, int const location)
+        : programId{programId}
+        , location{location}
+    {
+    }
+
+protected:
+
+    int programId;
+    
+    int location;
+
+};
+
+} // namespace detail
+
+template<typename T>
+class Uniform : public detail::BasicUniform<T>
+{
+
+public:
+
+    using detail::BasicUniform<T>::BasicUniform;
 
     auto operator = (T const & value)
+        -> Uniform &
+    {
+        this->set(value);
+
+        return *this;
+    }
+
+};
+
+template<>
+class Uniform<bool> : public detail::BasicUniform<bool>
+{
+
+public:
+
+    using detail::BasicUniform<bool>::BasicUniform;
+
+    explicit operator bool () const
+    {
+        return this->get();
+    }
+
+    auto operator = (ValueType const value)
         -> Uniform &
     {
         set(value);
 
         return *this;
     }
-
-private:
-
-    friend class ShaderProgram;
-
-private:
-
-    Uniform(int const programId, int const location)
-        : programId{programId}
-        , location{location}
-    {
-    }
-
-private:
-
-    int programId;
-    
-    int location;
 
 };
 
@@ -63,14 +103,14 @@ public:
 
 public:
 
-    Uniform(ShaderProgram const & program, std::string const & prefix)
+    Uniform(ShaderProgram & program, std::string const & prefix)
         : program{&program}
         , prefix{prefix}
         , arraySize{program, prefix + "ArraySize"}
     {
     }
 
-    Uniform(ShaderProgram const & program, std::string prefix, int const size)
+    Uniform(ShaderProgram & program, std::string prefix, int const size)
         : Uniform{program, std::move(prefix)}
     {
         resize(size);
@@ -148,7 +188,7 @@ public:
 
 private:
 
-    ShaderProgram const * program;
+    ShaderProgram * program;
 
     std::string prefix;
 

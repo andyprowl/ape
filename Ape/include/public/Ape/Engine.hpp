@@ -4,6 +4,7 @@
 
 class InputHandler;
 class Scene;
+class SceneRenderer;
 class Window;
 
 class Engine
@@ -11,7 +12,7 @@ class Engine
 
 public:
 
-    Engine(Window & window, Scene & scene, InputHandler & inputHandler);
+    Engine(Window & window, Scene & scene, SceneRenderer & renderer, InputHandler & inputHandler);
 
     Engine(Engine const &) = delete;
 

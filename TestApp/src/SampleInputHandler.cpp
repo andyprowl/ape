@@ -51,10 +51,14 @@ auto rotateLightAroundWorldY(SampleScene & scene, float const radians)
 
 } // unnamed namespace
 
-SampleInputHandler::SampleInputHandler(Window & window, SampleScene & scene)
+SampleInputHandler::SampleInputHandler(
+    Window & window,
+    SampleScene & scene,
+    StandardShaderProgram & shader)
     : window{&window}
     , scene{&scene}
     , cameraManipulator{scene, window, 0.1f}
+    , blinnPhongSwitcher{window, shader}
     , keyboardHandlerConnection{registerKeyboardEventHandler()}
 {
 }

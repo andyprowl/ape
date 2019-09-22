@@ -1,5 +1,6 @@
  - Introduce "ape" namespace at least for generic/reusable units
  - Support event dispatching for multiple windows in Window.cpp
+ - For efficiency, compute camera.transform * model.transform on CPU rather than in vertex shader
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
   - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level
  - Create a library which can be used also from Qt

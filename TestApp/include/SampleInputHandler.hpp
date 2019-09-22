@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Ape/BlinnPhongKeySwitcher.hpp>
 #include <Ape/CameraManipulator.hpp>
 #include <Ape/InputHandler.hpp>
 #include <Ape/MouseTracker.hpp>
@@ -11,6 +12,7 @@ enum class KeyAction;
 enum class KeyModifier;
 
 class SampleScene;
+class StandardShaderProgram;
 class Window;
 
 class SampleInputHandler : public InputHandler
@@ -18,7 +20,7 @@ class SampleInputHandler : public InputHandler
 
 public:
 
-    SampleInputHandler(Window & window, SampleScene & scene);
+    SampleInputHandler(Window & window, SampleScene & scene, StandardShaderProgram & shader);
     
     // virtual (from InputHandler)
     auto processInput(double lastFrameDuration)
@@ -78,6 +80,8 @@ private:
     SampleScene * scene;
 
     CameraManipulator cameraManipulator;
+
+    BlinnPhongKeySwitcher blinnPhongSwitcher;
 
     ScopedSignalConnection keyboardHandlerConnection;
 

@@ -4,6 +4,8 @@
 #include "SampleSceneBuilder.hpp"
 
 #include <Ape/OpenGLGateway.hpp>
+#include <Ape/SceneRenderer.hpp>
+#include <Ape/StandardShaderProgram.hpp>
 
 namespace
 {
@@ -35,8 +37,9 @@ public:
         : window{gateway.createWindow("APE 3D engine", false)}
         , assets{createAssets()}
         , scene{createScene(assets)}
-        , inputHandler{window, scene}
-        , engine{window, scene, inputHandler}
+        , renderer{shader, {0.0f, 0.0f, 0.0f}}
+        , inputHandler{window, scene, shader}
+        , engine{window, scene, renderer, inputHandler}
     {
     }
 
@@ -55,6 +58,10 @@ private:
     SampleAssetCollection assets;
 
     SampleScene scene;
+
+    StandardShaderProgram shader;
+
+    SceneRenderer renderer;
 
     SampleInputHandler inputHandler;
 

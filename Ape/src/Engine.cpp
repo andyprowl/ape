@@ -10,41 +10,20 @@
 #include <Ape/Scene.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
-#include <Ape/ShaderProgram.hpp>
 #include <Ape/Window.hpp>
 
 #include "GLFW.hpp"
-
-namespace
-{
-
-auto createShader()
-    -> ShaderProgram
-{
-    auto shader = ShaderProgram{"Object.Vertex.glsl", "Object.Fragment.glsl"};
-
-    shader.use();
-
-    shader.getUniform<int>("material.diffuse") = 0;
-
-    shader.getUniform<int>("material.specular") = 1;
-
-    return shader;
-}
-
-} // unnamed namespace
 
 class Engine::Impl
 {
 
 public:
 
-    Impl(Window & window, Scene & scene, InputHandler & inputHandler)
+    Impl(Window & window, Scene & scene, SceneRenderer & renderer, InputHandler & inputHandler)
         : window{&window}
         , scene{&scene}
+        , renderer{&renderer}
         , inputHandler{&inputHandler}
-        , shader{createShader()}
-        , renderer{shader, {0.0f, 0.0f, 0.0f}}
         , rateTracker{timeTracker, 500}
         , resizeHandlerConnection{registerWindowResizeHandler()}
     {
@@ -118,7 +97,7 @@ public:
             return;
         }
 
-        renderer.render(*scene);
+        renderer->render(*scene);
 
         window->swapBuffers();
     }
@@ -149,11 +128,9 @@ private:
 
     Scene * scene;
 
+    SceneRenderer * renderer;
+
     InputHandler * inputHandler;
-
-    ShaderProgram shader;
-
-    SceneRenderer renderer;
 
     FrameTimeTracker timeTracker;
 
@@ -163,8 +140,12 @@ private:
 
 };
 
-Engine::Engine(Window & window, Scene & scene, InputHandler & inputHandler)
-    : impl{std::make_unique<Impl>(window, scene, inputHandler)}
+Engine::Engine(
+    Window & window,
+    Scene & scene,
+    SceneRenderer & renderer,
+    InputHandler & inputHandler)
+    : impl{std::make_unique<Impl>(window, scene, renderer, inputHandler)}
 {
 }
 

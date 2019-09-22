@@ -135,6 +135,8 @@ uniform Material material;
 
 uniform Lighting lighting;
 
+uniform bool useBlinnPhongModel;
+
 vec3 computeAmbientLight(LightColor color)
 {
     vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
@@ -151,17 +153,37 @@ vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
     return color.diffuse * (diffusion * diffuseColor);
 }
 
+float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
+{
+    if (useBlinnPhongModel)
+    {
+        vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+
+        float shininessAdjuster = 4.0;
+
+        float shininess = material.shininess * shininessAdjuster;
+
+        return pow(max(dot(vertex.normal, halfwayDirection), 0.0), shininess);
+    }
+    else
+    {
+        // Uses classical Phong model
+
+        vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
+
+        return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    }
+}
+
 vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
 {
     vec3 viewDirection = normalize(camera.position - vertex.position);
 
-    vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
-
-    float reflection = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
 
     vec3 specularColor = vec3(texture(material.specular, vertex.textureCoords));
 
-    return color.specular * (reflection * specularColor);
+    return color.specular * (reflectivity * specularColor);
 }
 
 vec3 computePointLight(PointLight light)
