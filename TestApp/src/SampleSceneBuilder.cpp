@@ -76,6 +76,9 @@ private:
     auto createBackCamera()
         -> Camera &;
 
+    auto createRightCamera()
+        -> Camera &;
+
     auto createLighting()
         -> void;
 
@@ -361,6 +364,8 @@ auto StatefulSceneBuilder::createCameras()
 
     createBackCamera();
 
+    createRightCamera();
+
     scene.cameraSystem.activeCamera = &scene.cameraSystem.cameras.front();
 }
 
@@ -388,6 +393,24 @@ auto StatefulSceneBuilder::createBackCamera()
     auto const position = glm::vec3{0.0f, 0.0f, -3.0f};
 
     auto const direction = glm::vec3{0.0f, 0.0f, 1.0f};
+
+    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+    auto const fieldOfView = glm::radians(45.0f);
+
+    auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
+
+    auto & cameras = scene.cameraSystem.cameras;
+
+    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+}
+
+auto StatefulSceneBuilder::createRightCamera()
+     -> Camera &
+{
+    auto const position = glm::vec3{5.0f, 0.0f, 0.0f};
+
+    auto const direction = glm::vec3{-1.0f, 0.0f, 0.0f};
 
     auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
 
