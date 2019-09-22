@@ -1,4 +1,20 @@
-project(TestApp)
+cmake_minimum_required(VERSION 3.10)
+
+project(QtTestApp)
+
+set(CMAKE_AUTOMOC ON)
+
+set(CMAKE_AUTORCC ON)
+
+set(CMAKE_AUTOUIC ON)
+
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+
+    set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+endif()
+
+find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
 
 file(
     GLOB
@@ -78,4 +94,4 @@ set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE Ape)
+target_link_libraries(${PROJECT_NAME} PRIVATE Ape opengl32 Qt5::OpenGL Qt5::Widgets)

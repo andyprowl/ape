@@ -30,31 +30,39 @@ public:
         , resizeHandlerConnection{registerWindowResizeHandler()}
     {
         window.captureMouse();
+
+        setViewport();
     }
 
     auto run()
         -> void
     {
-        setViewport();
-
         while (!wasTerminationRequested())
         {
-            processInput();
-
-            render();
-
-            recordFrameDuration();
-
-            reportFramesPerSecond();
+            processOneFrame();
         }
     }
+
+    auto processOneFrame()
+        -> void
+    {
+        processInput();
+
+        render();
+
+        recordFrameDuration();
+
+        reportFramesPerSecond();
+    }
+
+private:
     
     auto registerWindowResizeHandler()
         -> ScopedSignalConnection
     {
-        return window->onResize.registerHandler([this] (Size<int> const & /*newSize*/)
+        return window->onResize.registerHandler([this] (Size<int> const & size)
         {
-            setViewport();
+            setViewport(size);
         });
     }
 
@@ -63,6 +71,12 @@ public:
     {
         auto const size = window->getSize();
 
+        return setViewport(size);
+    }
+
+    auto setViewport(Size<int> const & size)
+        -> void
+    {
         if (size.height == 0)
         {
             return;
@@ -158,6 +172,12 @@ auto Engine::run()
     -> void
 {
     return impl->run();
+}
+
+auto Engine::processOneFrame()
+    -> void
+{
+    return impl->processOneFrame();
 }
 
 } // namespace ape

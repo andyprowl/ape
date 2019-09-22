@@ -31,6 +31,9 @@ public:
     auto run()
         -> void;
 
+    auto processOneFrame()
+        -> void;
+
 private:
 
     class Impl;

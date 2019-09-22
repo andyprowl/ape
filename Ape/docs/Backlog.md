@@ -1,7 +1,5 @@
  - Figure out why Blender models get loaded without textures
  - Create separate library for model import units using Assimp
- - Provide a camera-driving input handler as part of the engine
-  - Currently there is no ready-to-use input handler in the engine library
  - Create a library which can be used also from Qt
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
   - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level
