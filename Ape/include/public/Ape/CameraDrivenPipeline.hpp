@@ -3,6 +3,9 @@
 #include <Ape/CameraViewSensor.hpp>
 #include <Ape/SpotLightOrientator.hpp>
 
+namespace ape
+{
+
 class CameraDrivenPipeline
 {
 
@@ -22,3 +25,5 @@ private:
     SpotLightOrientator lightOrientator;
 
 };
+
+} // namespace ape

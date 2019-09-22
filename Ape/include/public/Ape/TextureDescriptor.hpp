@@ -6,6 +6,9 @@
 #include <stdexcept>
 #include <string>
 
+namespace ape
+{
+
 class CouldNotLoadTexture : public std::logic_error
 {
 
@@ -64,3 +67,5 @@ auto readTextureDescriptor(std::string const & filepath)
 
 auto determineFormat(int const numOfChannels)
     -> unsigned int;
+
+} // namespace ape

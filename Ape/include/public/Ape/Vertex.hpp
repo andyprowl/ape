@@ -3,6 +3,9 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
+namespace ape
+{
+
 class Vertex
 {
 
@@ -27,3 +30,5 @@ public:
     glm::vec2 textureCoordinates;
 
 };
+
+} // namespace ape

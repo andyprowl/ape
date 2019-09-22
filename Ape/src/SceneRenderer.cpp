@@ -9,6 +9,9 @@
 
 #include <glad/glad.h>
 
+namespace ape
+{
+
 SceneRenderer::SceneRenderer(StandardShaderProgram & shader, glm::vec3 const & backgroundColor)
     : shader{&shader}
     , backgroundColor{backgroundColor}
@@ -92,3 +95,5 @@ auto SceneRenderer::drawMesh(Mesh const & mesh) const
 
     mesh.getShape().draw();
 }
+
+} // namespace ape

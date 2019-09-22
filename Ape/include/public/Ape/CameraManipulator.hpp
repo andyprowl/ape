@@ -2,6 +2,9 @@
 
 #include <Ape/CameraSightMouseDriver.hpp>
 
+namespace ape
+{
+
 class Scene;
 class Window;
 
@@ -38,3 +41,5 @@ private:
     CameraSightMouseDriver sightDriver;
 
 };
+
+} // namespace ape

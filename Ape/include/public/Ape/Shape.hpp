@@ -4,6 +4,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class Shape
 {
 
@@ -60,3 +63,5 @@ private:
     int numOfVertices;
 
 };
+
+} // namespace ape

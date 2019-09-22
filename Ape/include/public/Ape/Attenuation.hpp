@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class Attenuation
 {
 
@@ -21,3 +24,5 @@ public:
     float quadratic;
 
 };
+
+} // namespace ape

@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class FrameTimeTracker;
 
 class FrameRateTracker
@@ -41,3 +44,5 @@ private:
     bool isStopped;
 
 };
+
+} // namespace ape

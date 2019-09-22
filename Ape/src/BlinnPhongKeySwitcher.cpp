@@ -3,6 +3,9 @@
 #include <Ape/StandardShaderProgram.hpp>
 #include <Ape/Window.hpp>
 
+namespace ape
+{
+
 BlinnPhongKeySwitcher::BlinnPhongKeySwitcher(Window const & window, StandardShaderProgram & shader)
     : shader{&shader}
     , onKeyPressedConnection{registerKeyPressedHandler(window)}
@@ -23,3 +26,5 @@ auto BlinnPhongKeySwitcher::registerKeyPressedHandler(Window const & window) con
         toggleBlinnPhongModel();
     });
 }
+
+} // namespace ape

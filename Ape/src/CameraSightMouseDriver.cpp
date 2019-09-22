@@ -8,6 +8,9 @@
 
 #include <algorithm>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -77,3 +80,5 @@ auto CameraSightMouseDriver::registerForWheelNotifications()
         camera->setFieldOfView(glm::radians(clampedFieldOfView));
     });
 }
+
+} // namespace ape

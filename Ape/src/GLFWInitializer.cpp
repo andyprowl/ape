@@ -2,6 +2,9 @@
 
 #include "GLFW.hpp"
 
+namespace ape
+{
+
 namespace
 {
 
@@ -49,3 +52,5 @@ GLFWInitializer::~GLFWInitializer()
         glfwTerminate();
     }
 }
+
+} // namespace ape

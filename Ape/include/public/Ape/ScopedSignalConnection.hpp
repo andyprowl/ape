@@ -2,6 +2,9 @@
 
 #include <functional>
 
+namespace ape
+{
+
 // [[nodiscard]]
 class ScopedSignalConnection
 {
@@ -30,3 +33,5 @@ private:
     std::function<void()> disconnector;
 
 };
+
+} // namespace ape

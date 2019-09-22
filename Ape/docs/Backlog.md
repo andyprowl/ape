@@ -1,6 +1,6 @@
- - Introduce "ape" namespace at least for generic/reusable units
- - Support event dispatching for multiple windows in Window.cpp
  - Figure out why Blender models get loaded without textures
+ - Create separate library for model import units using Assimp
+ - Provide a camera-driving input handler as part of the engine
  - For efficiency, compute camera.transform * model.transform on CPU rather than in vertex shader
  - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
   - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level

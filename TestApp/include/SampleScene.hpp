@@ -6,23 +6,23 @@
 
 #include <vector>
 
-class SampleScene : public Scene
+class SampleScene : public ape::Scene
 {
 
 public:
     
     SampleScene() = default;
 
-    std::vector<Body *> lamps;
+    std::vector<ape::Body *> lamps;
 
-    SpotLight * playerFlashlight = nullptr;
+    ape::SpotLight * playerFlashlight = nullptr;
 
-    Body * rotatingContainer = nullptr;
+    ape::Body * rotatingContainer = nullptr;
 
-    Body * scalingContainer = nullptr;
+    ape::Body * scalingContainer = nullptr;
 
-    std::vector<CameraSpotlightSynchronizer> spotLightSynchronizers;
+    std::vector<ape::CameraSpotlightSynchronizer> spotLightSynchronizers;
 
-    std::vector<BodyPointLightSynchronizer> bodyLightSynchronizers;
+    std::vector<ape::BodyPointLightSynchronizer> bodyLightSynchronizers;
 
 };

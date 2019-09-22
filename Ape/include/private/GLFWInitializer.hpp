@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class GLFWInitializer
 {
 
@@ -24,3 +27,5 @@ public:
     bool isInitialized;
 
 };
+
+} // namespace ape

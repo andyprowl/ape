@@ -3,6 +3,9 @@
 #include <functional>
 #include <vector>
 
+namespace ape
+{
+
 template<typename T>
 class Receiver
 {
@@ -70,3 +73,5 @@ private:
     TransformationFunction function;
 
 };
+
+} // namespace ape

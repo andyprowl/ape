@@ -3,6 +3,9 @@
 #include <Ape/CameraUniform.hpp>
 #include <Ape/LightingUniform.hpp>
 
+namespace ape
+{
+
 class Body;
 class BodyPart;
 class Scene;
@@ -42,3 +45,5 @@ private:
     glm::vec3 backgroundColor;
 
 };
+
+} // namespace ape

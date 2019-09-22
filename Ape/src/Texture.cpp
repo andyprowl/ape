@@ -5,6 +5,9 @@
 
 #include <cassert>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -81,3 +84,5 @@ auto Texture::getSize() const
 {
     return size;
 }
+
+} // namespace ape

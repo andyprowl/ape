@@ -7,12 +7,12 @@ class SampleAssetCollection
 
 public:
 
-    AssetRepository generalAssets;
+    ape::AssetRepository generalAssets;
 
-    AssetRepository nanosuitAssets;
+    ape::AssetRepository nanosuitAssets;
 
-    AssetRepository dragonAssets;
+    ape::AssetRepository dragonAssets;
 
-    AssetRepository spaceshipAssets;
+    ape::AssetRepository spaceshipAssets;
 
 };

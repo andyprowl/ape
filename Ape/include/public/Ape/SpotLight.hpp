@@ -3,6 +3,9 @@
 #include <Ape/Attenuation.hpp>
 #include <Ape/Light.hpp>
 
+namespace ape
+{
+
 class SpotLight : public Light
 {
 
@@ -55,3 +58,5 @@ public:
     Attenuation attenuation;
 
 };
+
+} // namespace ape

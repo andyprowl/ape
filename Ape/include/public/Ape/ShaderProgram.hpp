@@ -8,6 +8,9 @@
 #include <string>
 #include <vector>
 
+namespace ape
+{
+
 class CouldNotOpenShaderFile : public std::logic_error
 {
 
@@ -111,3 +114,5 @@ auto makeShaderProgram(
     std::string const & vertexShaderFilename,
     std::string const & fragmentShaderFilename)
     -> int;
+
+} // namespace ape

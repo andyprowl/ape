@@ -3,6 +3,9 @@
 #include <Ape/Camera.hpp>
 #include <Ape/Uniform.hpp>
 
+namespace ape
+{
+
 template<>
 class Uniform<Camera>
 {
@@ -30,3 +33,5 @@ public:
     Uniform<glm::mat4> cameraTransformation;
     
 };
+
+} // namespace ape

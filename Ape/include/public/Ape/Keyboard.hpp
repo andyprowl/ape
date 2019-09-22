@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 enum class Key
 {
 
@@ -270,3 +273,5 @@ enum class KeyModifier
     numLock = 0x0020
 
 };
+
+} // namespace ape

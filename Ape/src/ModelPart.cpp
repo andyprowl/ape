@@ -2,6 +2,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace ape
+{
+
 ModelPart::ModelPart(
     std::string name,
     std::vector<Mesh const *> meshes,
@@ -82,3 +85,5 @@ auto isRoot(ModelPart const & part)
 {
     return (part.getParent() == nullptr);
 }
+
+} // namespace ape

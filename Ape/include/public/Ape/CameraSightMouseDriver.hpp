@@ -3,6 +3,9 @@
 #include <Ape/MouseTracker.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 
+namespace ape
+{
+
 class Camera;
 class MouseWheelPublisher;
 class Window;
@@ -42,3 +45,5 @@ private:
     ScopedSignalConnection wheelHandlerConnection;
 
 };
+
+} // namespace ape

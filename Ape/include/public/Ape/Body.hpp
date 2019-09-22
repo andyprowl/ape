@@ -7,6 +7,9 @@
 #include <string>
 #include <vector>
 
+namespace ape
+{
+
 class Model;
 
 class Body
@@ -89,3 +92,5 @@ auto setTransformation(Body & model, glm::mat4 const & newTransformation)
 
 auto scaleUniformly(Body & model, float factor)
     -> void;
+
+} // namespace ape

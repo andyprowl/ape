@@ -4,6 +4,9 @@
 #include <Ape/LightingUniform.hpp>
 #include <Ape/ShaderProgram.hpp>
 
+namespace ape
+{
+
 class StandardShaderProgram : public ShaderProgram
 {
 
@@ -28,3 +31,5 @@ public:
     Uniform<bool> useBlinnPhongModel;
 
 };
+
+} // namespace ape

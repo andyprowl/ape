@@ -2,6 +2,9 @@
 
 #include <Ape/Light.hpp>
 
+namespace ape
+{
+
 class DirectionalLight : public Light
 {
 
@@ -18,3 +21,5 @@ public:
     glm::vec3 direction;
 
 };
+
+} // namespace ape

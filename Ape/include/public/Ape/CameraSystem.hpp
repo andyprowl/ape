@@ -4,6 +4,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class CameraSystem 
 {
 
@@ -27,3 +30,5 @@ public:
     Camera * activeCamera;
 
 };
+
+} // namespace ape

@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class FrameTimeTracker
 {
 
@@ -20,3 +23,5 @@ private:
     double lastFrameDuration;
 
 };
+
+} // namespace ape

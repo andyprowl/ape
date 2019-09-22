@@ -5,6 +5,9 @@
 
 #include <glm/trigonometric.hpp>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -121,3 +124,5 @@ auto CameraManipulator::processStrafeMovement(double const lastFrameDuration) co
         moveCameraSideways(*scene->cameraSystem.activeCamera, +translationDelta);
     }
 }
+
+} // namespace ape

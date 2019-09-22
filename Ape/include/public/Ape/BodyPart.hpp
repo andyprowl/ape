@@ -4,6 +4,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class Body;
 class ModelPart;
 
@@ -98,3 +101,5 @@ auto setLocalPosition(BodyPart & part, glm::vec3 const & newPosition)
 
 auto getGlobalPosition(BodyPart const & part)
     -> glm::vec3;
+
+} // namespace ape

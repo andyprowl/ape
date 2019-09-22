@@ -5,6 +5,9 @@
 #include <functional>
 #include <unordered_map>
 
+namespace ape
+{
+
 template<typename S>
 class Signal
 {
@@ -51,3 +54,5 @@ private:
     std::unordered_map<Cookie, Handler> registrations;
 
 };
+
+} // namespace ape

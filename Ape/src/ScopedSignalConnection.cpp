@@ -1,5 +1,8 @@
 #include <Ape/ScopedSignalConnection.hpp>
 
+namespace ape
+{
+
 ScopedSignalConnection::ScopedSignalConnection(std::function<void()> disconnector)
     : disconnector{std::move(disconnector)}
 {
@@ -18,3 +21,5 @@ ScopedSignalConnection::~ScopedSignalConnection()
         disconnector();
     }
 }
+
+} // namespace ape

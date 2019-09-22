@@ -2,6 +2,9 @@
 
 #include <Ape/Camera.hpp>
 
+namespace ape
+{
+
 CameraViewSensor::CameraViewSensor(Camera & camera)
     : handlerConnection{registerViewChangeEventHandler(camera)}
 {
@@ -15,3 +18,5 @@ auto CameraViewSensor::registerViewChangeEventHandler(Camera & camera)
         send(view);
     });
 }
+
+} // namespace ape

@@ -5,6 +5,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace ape
+{
+
 class PointLight : public Light
 {
 
@@ -28,3 +31,5 @@ public:
     Attenuation attenuation;
 
 };
+
+} // namespace ape

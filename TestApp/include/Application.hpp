@@ -1,12 +1,5 @@
 #pragma once
 
-#include "SampleAssetCollection.hpp"
-#include "SampleInputHandler.hpp"
-#include "SampleScene.hpp"
-
-#include <Ape/Engine.hpp>
-#include <Ape/Window.hpp>
-
 #include <memory>
 
 class Application

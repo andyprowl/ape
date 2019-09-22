@@ -2,6 +2,9 @@
 
 #include <Ape/ScopedSignalConnection.hpp>
 
+namespace ape
+{
+
 class Camera;
 class SpotLight;
 
@@ -22,3 +25,5 @@ private:
     ScopedSignalConnection handlerConnection;
 
 };
+
+} // namespace ape

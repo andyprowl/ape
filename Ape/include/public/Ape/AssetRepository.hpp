@@ -9,6 +9,9 @@
 #include <memory>
 #include <vector>
 
+namespace ape
+{
+
 class AssetRepository
 {
 
@@ -25,3 +28,5 @@ public:
     std::vector<Model> models;
 
 };
+
+} // namespace ape

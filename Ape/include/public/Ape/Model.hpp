@@ -4,6 +4,9 @@
 
 #include <memory>
 
+namespace ape
+{
+
 class Model
 {
 
@@ -29,3 +32,5 @@ private:
     std::string source;
 
 };
+
+} // namespace ape

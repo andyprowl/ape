@@ -2,6 +2,9 @@
 
 #include <Ape/TextureDescriptor.hpp>
 
+namespace ape
+{
+
 class Texture
 {
 
@@ -34,3 +37,5 @@ private:
     Size<int> size;
 
 };
+
+} // namespace ape

@@ -7,20 +7,29 @@
 
 #include <vector>
 
+namespace ape
+{
+
 enum class Key;
 enum class KeyAction;
 enum class KeyModifier;
 
-class SampleScene;
 class StandardShaderProgram;
 class Window;
 
-class SampleInputHandler : public InputHandler
+} // namespace ape
+
+class SampleScene;
+
+class SampleInputHandler : public ape::InputHandler
 {
 
 public:
 
-    SampleInputHandler(Window & window, SampleScene & scene, StandardShaderProgram & shader);
+    SampleInputHandler(
+        ape::Window & window,
+        SampleScene & scene,
+        ape::StandardShaderProgram & shader);
     
     // virtual (from InputHandler)
     auto processInput(double lastFrameDuration)
@@ -29,7 +38,7 @@ public:
 private:
 
     auto registerKeyboardEventHandler() const
-        -> ScopedSignalConnection;
+        -> ape::ScopedSignalConnection;
 
     auto processTerminationRequest() const
         -> void;
@@ -52,16 +61,16 @@ private:
     auto processLightRevolution(double lastFrameDuration) const
         -> void;
 
-    auto onKeyboardEvent(Key key, KeyAction action, KeyModifier modifier) const
+    auto onKeyboardEvent(ape::Key key, ape::KeyAction action, ape::KeyModifier modifier) const
         -> void;
 
-    auto processLightToggling(Key key, KeyModifier const modifier) const
+    auto processLightToggling(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 
-    auto processCameraSwitching(Key key, KeyModifier const modifier) const
+    auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 
-    auto processFullScreenToggling(Key key) const
+    auto processFullScreenToggling(ape::Key key) const
         -> void;
 
     auto togglePointLight(int index) const
@@ -75,14 +84,14 @@ private:
 
 private:
 
-    Window * window;
+    ape::Window * window;
 
     SampleScene * scene;
 
-    CameraManipulator cameraManipulator;
+    ape::CameraManipulator cameraManipulator;
 
-    BlinnPhongKeySwitcher blinnPhongSwitcher;
+    ape::BlinnPhongKeySwitcher blinnPhongSwitcher;
 
-    ScopedSignalConnection keyboardHandlerConnection;
+    ape::ScopedSignalConnection keyboardHandlerConnection;
 
 };

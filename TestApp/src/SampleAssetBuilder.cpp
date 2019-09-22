@@ -10,10 +10,10 @@
 namespace
 {
 
-auto makeBox(NormalDirection const normalDirection, glm::vec3 const & size)
-    -> Shape
+auto makeBox(ape::NormalDirection const normalDirection, glm::vec3 const & size)
+    -> ape::Shape
 {
-    auto const builder = BoxBuilder{};
+    auto const builder = ape::BoxBuilder{};
 
     return builder.build(normalDirection, size);
 }
@@ -24,7 +24,7 @@ class StatefulAssetBuilder
 public:
 
     auto build()
-        -> AssetRepository;
+        -> ape::AssetRepository;
 
 private:
 
@@ -34,53 +34,56 @@ private:
     auto createGroundTileModels()
         -> void;
 
-    auto createConcreteGroundTileModel(Shape const & shape)
-        -> Model &;
+    auto createConcreteGroundTileModel(ape::Shape const & shape)
+        -> ape::Model &;
 
-    auto createWoodenFloorTileModel(Shape const & shape)
-        -> Model &;
+    auto createWoodenFloorTileModel(ape::Shape const & shape)
+        -> ape::Model &;
 
     auto createConcreteGroundMaterial()
-        -> Material &;
+        -> ape::Material &;
 
     auto createWoodenFloorMaterial()
-        -> Material &;
+        -> ape::Material &;
 
     auto createContainerModel()
-        -> Model &;
+        -> ape::Model &;
 
     auto createContainerMaterial()
-        -> Material &;
+        -> ape::Material &;
 
     auto createLampModel()
-        -> Model &;
+        -> ape::Model &;
 
     auto createLampMaterial()
-        -> Material &;
+        -> ape::Material &;
 
     auto createFlashlightModel()
-        -> Model &;
+        -> ape::Model &;
 
     auto createFlashlightMaterial()
-        -> Material &;
+        -> ape::Material &;
 
-    auto createSingleMeshModel(Shape const & shape, Material const & material, std::string name)
-        -> Model &;
+    auto createSingleMeshModel(
+        ape::Shape const & shape,
+        ape::Material const & material,
+        std::string name)
+        -> ape::Model &;
 
-    auto createTrivialModelFromMesh(Mesh const & mesh)
-        -> Model &;
+    auto createTrivialModelFromMesh(ape::Mesh const & mesh)
+        -> ape::Model &;
 
     auto createTextureFromLocalFile(std::string filename)
-        -> Texture &;
+        -> ape::Texture &;
 
 private:
 
-    AssetRepository assets;
+    ape::AssetRepository assets;
 
 };
 
 auto StatefulAssetBuilder::build()
-    -> AssetRepository
+    -> ape::AssetRepository
 {
     preventReallocation();
 
@@ -112,7 +115,7 @@ auto StatefulAssetBuilder::preventReallocation()
 auto StatefulAssetBuilder::createGroundTileModels()
     -> void
 {
-    auto box = makeBox(NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
+    auto box = makeBox(ape::NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
@@ -121,16 +124,16 @@ auto StatefulAssetBuilder::createGroundTileModels()
     createWoodenFloorTileModel(shape);
 }
 
-auto StatefulAssetBuilder::createConcreteGroundTileModel(Shape const & shape)
-    -> Model &
+auto StatefulAssetBuilder::createConcreteGroundTileModel(ape::Shape const & shape)
+    -> ape::Model &
 {
     auto const & material = createConcreteGroundMaterial();
 
     return createSingleMeshModel(shape, material, "Concrete Floor Tile");
 }
 
-auto StatefulAssetBuilder::createWoodenFloorTileModel(Shape const & shape)
-    -> Model &
+auto StatefulAssetBuilder::createWoodenFloorTileModel(ape::Shape const & shape)
+    -> ape::Model &
 {
     auto const & material = createWoodenFloorMaterial();
 
@@ -138,7 +141,7 @@ auto StatefulAssetBuilder::createWoodenFloorTileModel(Shape const & shape)
 }
 
 auto StatefulAssetBuilder::createConcreteGroundMaterial()
-    -> Material &
+    -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
@@ -154,7 +157,7 @@ auto StatefulAssetBuilder::createConcreteGroundMaterial()
 }
 
 auto StatefulAssetBuilder::createWoodenFloorMaterial()
-    -> Material &
+    -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
@@ -170,9 +173,9 @@ auto StatefulAssetBuilder::createWoodenFloorMaterial()
 }
 
 auto StatefulAssetBuilder::createContainerModel()
-    -> Model &
+    -> ape::Model &
 {
-    auto box = makeBox(NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
+    auto box = makeBox(ape::NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
@@ -182,7 +185,7 @@ auto StatefulAssetBuilder::createContainerModel()
 }
 
 auto StatefulAssetBuilder::createContainerMaterial()
-    -> Material &
+    -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
@@ -196,9 +199,9 @@ auto StatefulAssetBuilder::createContainerMaterial()
 }
 
 auto StatefulAssetBuilder::createLampModel()
-    -> Model &
+    -> ape::Model &
 {
-    auto box = makeBox(NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
+    auto box = makeBox(ape::NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
@@ -208,7 +211,7 @@ auto StatefulAssetBuilder::createLampModel()
 }
 
 auto StatefulAssetBuilder::createLampMaterial()
-    -> Material &
+    -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
@@ -224,9 +227,9 @@ auto StatefulAssetBuilder::createLampMaterial()
 }
 
 auto StatefulAssetBuilder::createFlashlightModel()
-    -> Model &
+    -> ape::Model &
 {
-    auto box = makeBox(NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
+    auto box = makeBox(ape::NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
@@ -236,7 +239,7 @@ auto StatefulAssetBuilder::createFlashlightModel()
 }
 
 auto StatefulAssetBuilder::createFlashlightMaterial()
-    -> Material &
+    -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
@@ -252,30 +255,30 @@ auto StatefulAssetBuilder::createFlashlightMaterial()
 }
 
 auto StatefulAssetBuilder::createSingleMeshModel(
-    Shape const & shape,
-    Material const & material,
+    ape::Shape const & shape,
+    ape::Material const & material,
     std::string name)
-    -> Model &
+    -> ape::Model &
 {
     auto const & mesh = assets.meshes.emplace_back(std::move(name), shape, material);
 
     return createTrivialModelFromMesh(mesh);
 }
 
-auto StatefulAssetBuilder::createTrivialModelFromMesh(Mesh const & mesh)
-    -> Model &
+auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
+    -> ape::Model &
 {
     auto const meshName = mesh.getName();;
 
-    auto rootPart = ModelPart{meshName, {&mesh}, {}, glm::mat4{1.0f}};
+    auto rootPart = ape::ModelPart{meshName, {&mesh}, {}, glm::mat4{1.0f}};
 
-    auto model = Model{std::move(rootPart), meshName, ""};
+    auto model = ape::Model{std::move(rootPart), meshName, ""};
 
     return assets.models.emplace_back(std::move(model));
 }
 
 auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
-    -> Texture &
+    -> ape::Texture &
 {
     auto filepath = std::string{textureFolder} + "/" + filename;
 
@@ -299,7 +302,7 @@ auto SampleAssetBuilder::build() const
 
     collection.generalAssets = builder.build();
 
-    auto const loader = AssetLoader{};
+    auto const loader = ape::AssetLoader{};
 
     auto const nanosuiteFilepath = resolveModelFilepath("/Nanosuit/nanosuit.obj");
 

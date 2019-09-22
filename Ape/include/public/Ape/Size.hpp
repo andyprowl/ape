@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 template<typename T>
 class Size
 {
@@ -19,3 +22,5 @@ public:
     T height;
 
 };
+
+} // namespace ape

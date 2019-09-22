@@ -7,6 +7,9 @@
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -78,3 +81,5 @@ auto ModelPartImporter::importMeshes(aiNode const & node) const
 
     return bodyMeshes;
 }
+
+} // namespace ape

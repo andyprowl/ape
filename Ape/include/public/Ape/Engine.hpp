@@ -2,6 +2,9 @@
 
 #include <memory>
 
+namespace ape
+{
+
 class InputHandler;
 class Scene;
 class SceneRenderer;
@@ -38,3 +41,5 @@ private:
     std::unique_ptr<Impl> impl;
 
 };
+
+} // namespace ape

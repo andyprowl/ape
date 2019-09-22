@@ -12,6 +12,9 @@
 #include <type_traits>
 #include <vector>
 
+namespace ape
+{
+
 template<typename Container, typename = void>
 class ContainerView
 {
@@ -117,3 +120,5 @@ auto makeView(Container & c)
 {
     return ContainerView<Container>{c};
 }
+
+} // namespace ape

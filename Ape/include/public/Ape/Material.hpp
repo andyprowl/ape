@@ -4,6 +4,9 @@
 
 #include <glm/vec3.hpp>
 
+namespace ape
+{
+
 class Material
 {
 
@@ -32,3 +35,5 @@ public:
     float shininess;
 
 };
+
+} // namespace ape

@@ -3,9 +3,12 @@
 #include <stdexcept>
 #include <string>
 
-class AssetRepository;
-
 struct aiScene;
+
+namespace ape
+{
+
+class AssetRepository;
 
 class CouldNotLoadAssets : public std::logic_error
 {
@@ -60,3 +63,5 @@ private:
         -> void;
 
 };
+
+} // namespace ape

@@ -3,6 +3,9 @@
 #include <Ape/Lighting.hpp>
 #include <Ape/ShaderProgram.hpp>
 
+namespace ape
+{
+
 template<>
 class Uniform<Attenuation>
 {
@@ -336,3 +339,5 @@ public:
     Uniform<std::vector<DirectionalLightUniform>> directional;
 
 };
+
+} // namespace ape

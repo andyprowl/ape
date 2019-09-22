@@ -4,6 +4,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace ape
+{
+
 SpotLightOrientator::SpotLightOrientator(SpotLight & light)
     : light{&light}
 {
@@ -19,3 +22,5 @@ auto SpotLightOrientator::receive(glm::mat4 const & transformation)
 
     light->direction = -glm::vec3{inv[2]};
 }
+
+} // namespace ape

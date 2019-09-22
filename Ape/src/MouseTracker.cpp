@@ -2,6 +2,9 @@
 
 #include <Ape/Window.hpp>
 
+namespace ape
+{
+
 MouseTracker::MouseTracker(Window & window)
     : window{&window}
     , lastPosition{window.getMousePosition()}
@@ -24,3 +27,5 @@ auto MouseTracker::getLastMovement() const
 {
     return lastMovement;
 }
+
+} // namespace ape

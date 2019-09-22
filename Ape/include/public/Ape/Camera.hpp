@@ -6,6 +6,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class Mesh;
 class ShaderProgram;
 class Scene;
@@ -103,3 +106,5 @@ private:
     glm::mat4 transformation;
 
 };
+
+} // namespace ape

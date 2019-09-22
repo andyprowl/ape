@@ -4,6 +4,9 @@
 
 #include <glm/mat4x4.hpp>
 
+namespace ape
+{
+
 class SpotLight;
 
 class SpotLightOrientator : public Receiver<glm::mat4>
@@ -22,3 +25,5 @@ private:
     SpotLight * light;
 
 };
+
+} // namespace ape

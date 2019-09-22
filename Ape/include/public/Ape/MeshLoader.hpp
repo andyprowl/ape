@@ -5,6 +5,9 @@
 struct aiMesh;
 struct aiScene;
 
+namespace ape
+{
+
 class MeshLoader
 {
 
@@ -34,3 +37,5 @@ private:
     AssetRepository * assets;
 
 };
+
+} // namespace ape

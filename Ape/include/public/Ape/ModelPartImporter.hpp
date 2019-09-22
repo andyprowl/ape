@@ -6,6 +6,9 @@
 struct aiNode;
 struct aiScene;
 
+namespace ape
+{
+
 class AssetRepository;
 class Mesh;
 class Model;
@@ -34,3 +37,5 @@ private:
     AssetRepository * target;
 
 };
+
+} // namespace ape

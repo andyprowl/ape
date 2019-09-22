@@ -11,6 +11,9 @@ enum aiTextureType : int;
 struct aiMaterial;
 struct aiScene;
 
+namespace ape
+{
+
 class MaterialLoader
 {
 
@@ -55,3 +58,5 @@ private:
     AssetRepository * assets;
 
 };
+
+} // namespace ape

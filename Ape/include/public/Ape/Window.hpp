@@ -11,6 +11,9 @@
 
 struct GLFWwindow;
 
+namespace ape
+{
+
 class CouldNotCreateWindow : public std::logic_error
 {
 
@@ -141,3 +144,5 @@ auto onKeyPressed(
     Key key,
     std::function<auto (KeyModifier modifier) -> void> handler)
     -> ScopedSignalConnection;
+
+} // namespace ape

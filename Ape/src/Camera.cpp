@@ -6,6 +6,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace ape
+{
+
 Camera::Camera(
     glm::vec3 const & position,
     glm::vec3 const & direction,
@@ -166,3 +169,5 @@ auto Camera::setProjectionAndFireEvent(glm::mat4 const & newProjection)
 
     onTransformationChanged.fire(view);
 }
+
+} // namespace ape

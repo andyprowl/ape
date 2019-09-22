@@ -5,6 +5,9 @@
 
 #include <glm/mat4x4.hpp>
 
+namespace ape
+{
+
 CameraSpotlightSynchronizer::CameraSpotlightSynchronizer(Camera const & camera, SpotLight & light)
     : handlerConnection{registerViewChangeEventHandler(camera, light)}
 {
@@ -22,3 +25,5 @@ auto CameraSpotlightSynchronizer::registerViewChangeEventHandler(
         light.direction = camera.getDirection();
     });
 }
+
+} // namespace ape

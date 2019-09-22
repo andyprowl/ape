@@ -5,6 +5,9 @@
 
 #include <glm/mat4x4.hpp>
 
+namespace ape
+{
+
 class Camera;
 
 class CameraViewSensor : public Sender<glm::mat4>
@@ -24,3 +27,5 @@ private:
     ScopedSignalConnection handlerConnection;
 
 };
+
+} // namespace ape

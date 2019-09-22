@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class InputHandler
 {
 
@@ -11,3 +14,5 @@ public:
         -> void = 0;
 
 };
+
+} // namespace ape

@@ -1,8 +1,10 @@
 #include "Application.hpp"
 
 #include "SampleAssetBuilder.hpp"
+#include "SampleInputHandler.hpp"
 #include "SampleSceneBuilder.hpp"
 
+#include <Ape/Engine.hpp>
 #include <Ape/OpenGLGateway.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/StandardShaderProgram.hpp>
@@ -51,21 +53,21 @@ public:
 
 private:
 
-    OpenGLGateway gateway;
+    ape::OpenGLGateway gateway;
 
-    Window window;
+    ape::Window window;
 
     SampleAssetCollection assets;
 
     SampleScene scene;
 
-    StandardShaderProgram shader;
+    ape::StandardShaderProgram shader;
 
-    SceneRenderer renderer;
+    ape::SceneRenderer renderer;
 
     SampleInputHandler inputHandler;
 
-    Engine engine;
+    ape::Engine engine;
 
 };
 

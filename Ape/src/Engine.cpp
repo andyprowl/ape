@@ -14,6 +14,9 @@
 
 #include "GLFW.hpp"
 
+namespace ape
+{
+
 class Engine::Impl
 {
 
@@ -161,3 +164,5 @@ auto Engine::run()
 {
     return impl->run();
 }
+
+} // namespace ape

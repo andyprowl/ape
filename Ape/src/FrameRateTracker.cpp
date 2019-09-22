@@ -6,6 +6,9 @@
 
 #include <iostream>
 
+namespace ape
+{
+
 FrameRateTracker::FrameRateTracker(
     FrameTimeTracker & timeTracker,
     int const reportFrequencyInMs)
@@ -73,3 +76,5 @@ auto FrameRateTracker::report() const
 
     std::cout << "FPS: " << framesPerSecond << std::endl;
 }
+
+} // namespace ape

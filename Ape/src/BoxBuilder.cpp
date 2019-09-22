@@ -6,6 +6,9 @@
 #include <array>
 #include <vector>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -171,3 +174,5 @@ auto BoxBuilder::build(
 {
     return StatefulBuilder{normalDirection, size, center}.build();
 }
+
+} // namespace ape

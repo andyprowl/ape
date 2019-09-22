@@ -1,5 +1,8 @@
 #include <Ape/StandardShaderProgram.hpp>
 
+namespace ape
+{
+
 StandardShaderProgram::StandardShaderProgram()
     : ShaderProgram{"Vertex.glsl", "Fragment.glsl"}
     , camera{*this, "camera"}
@@ -16,3 +19,5 @@ StandardShaderProgram::StandardShaderProgram()
 
     getUniform<int>("material.specular") = 1;
 }
+
+} // namespace ape

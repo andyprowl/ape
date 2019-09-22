@@ -3,6 +3,9 @@
 #include <Ape/InputHandler.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 
+namespace ape
+{
+
 class StandardShaderProgram;
 class Window;
 
@@ -29,3 +32,4 @@ private:
 
 };
 
+} // namespace ape

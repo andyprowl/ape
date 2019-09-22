@@ -4,6 +4,9 @@
 
 #include "GLFW.hpp"
 
+namespace ape
+{
+
 class OpenGLGateway::Impl
 {
 
@@ -66,3 +69,5 @@ auto OpenGLGateway::createWindow(std::string const & title, bool const createAsF
 {
     return impl->createWindow(title, createAsFullscreen);
 }
+
+} // namespace ape

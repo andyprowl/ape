@@ -28,8 +28,8 @@ private:
     auto createGroundTiles()
         -> void;
 
-    auto createGroundTile(int row, int col, Model const & model)
-        -> Body &;
+    auto createGroundTile(int row, int col, ape::Model const & model)
+        -> ape::Body &;
 
     auto createContainers()
         -> void;
@@ -46,8 +46,8 @@ private:
     auto createFlashlights()
         -> void;
 
-    auto createFlashlight(glm::mat4 const & transformation, Model const & model)
-        -> Body &;
+    auto createFlashlight(glm::mat4 const & transformation, ape::Model const & model)
+        -> ape::Body &;
 
     auto getFlashlightPositions() const
         -> std::vector<glm::vec3>;
@@ -77,13 +77,13 @@ private:
         -> void;
 
     auto createFrontCamera()
-        -> Camera &;
+        -> ape::Camera &;
 
     auto createBackCamera()
-        -> Camera &;
+        -> ape::Camera &;
 
     auto createRightCamera()
-        -> Camera &;
+        -> ape::Camera &;
 
     auto createLighting()
         -> void;
@@ -92,19 +92,19 @@ private:
         -> void;
 
     auto createPointLight(glm::vec3 const & position)
-        -> PointLight &;
+        -> ape::PointLight &;
 
     auto createSpotLights()
         -> void;
 
     auto getSpotLightColors()
-        -> std::vector<Light::Color>;
+        -> std::vector<ape::Light::Color>;
 
     auto createSpotLight(
         glm::vec3 const & position,
         glm::vec3 const & direction,
-        Light::Color const & color)
-        -> SpotLight &;
+        ape::Light::Color const & color)
+        -> ape::SpotLight &;
 
     auto createDirectionalLights()
         -> void;
@@ -113,10 +113,10 @@ private:
         -> std::vector<glm::vec3>;
 
     auto createDirectionalLight(glm::vec3 const & direction)
-        -> DirectionalLight &;
+        -> ape::DirectionalLight &;
     
-    auto addBody(glm::mat4 const & transformation, Model const & model)
-        -> Body &;
+    auto addBody(glm::mat4 const & transformation, ape::Model const & model)
+        -> ape::Body &;
 
     auto createSynchronizers()
         -> void;
@@ -186,14 +186,14 @@ auto StatefulSceneBuilder::createGroundTiles()
     }
 }
 
-auto StatefulSceneBuilder::createGroundTile(int const row, int const col, Model const & model)
-    -> Body &
+auto StatefulSceneBuilder::createGroundTile(int const row, int const col, ape::Model const & model)
+    -> ape::Body &
 {
     auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
 
-    auto body = Body{model};
+    auto body = ape::Body{model};
 
-    setPosition(body, position);
+    ape::setPosition(body, position);
 
     return scene.bodies.emplace_back(std::move(body));
 }
@@ -287,12 +287,14 @@ auto StatefulSceneBuilder::createFlashlights()
     }
 }
 
-auto StatefulSceneBuilder::createFlashlight(glm::mat4 const & transformation, Model const & model)
-    -> Body &
+auto StatefulSceneBuilder::createFlashlight(
+    glm::mat4 const & transformation,
+    ape::Model const & model)
+    -> ape::Body &
 {
-    auto body = Body{model};
+    auto body = ape::Body{model};
 
-    setTransformation(body, transformation);
+    ape::setTransformation(body, transformation);
 
     return scene.bodies.emplace_back(std::move(body));
 }
@@ -402,7 +404,7 @@ auto StatefulSceneBuilder::createCameras()
 }
 
 auto StatefulSceneBuilder::createFrontCamera()
-     -> Camera &
+     -> ape::Camera &
 {
     auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
 
@@ -420,7 +422,7 @@ auto StatefulSceneBuilder::createFrontCamera()
 }
 
 auto StatefulSceneBuilder::createBackCamera()
-     -> Camera &
+     -> ape::Camera &
 {
     auto const position = glm::vec3{0.0f, 0.0f, -3.0f};
 
@@ -438,7 +440,7 @@ auto StatefulSceneBuilder::createBackCamera()
 }
 
 auto StatefulSceneBuilder::createRightCamera()
-     -> Camera &
+     -> ape::Camera &
 {
     auto const position = glm::vec3{5.0f, 0.0f, 0.0f};
 
@@ -479,7 +481,7 @@ auto StatefulSceneBuilder::createPointLights()
 }
 
 auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position)
-    -> PointLight &
+    -> ape::PointLight &
 {
     auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
 
@@ -487,9 +489,9 @@ auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position)
 
     auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
 
-    auto const attenuation = Attenuation{1.0f, 0.09f, 0.032f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.09f, 0.032f};
 
-    auto const color = Light::Color{ambient, diffuse, specular};
+    auto const color = ape::Light::Color{ambient, diffuse, specular};
 
     return scene.lighting.point.emplace_back(position, attenuation, color, true);
 }
@@ -516,7 +518,7 @@ auto StatefulSceneBuilder::createSpotLights()
 }
 
 auto StatefulSceneBuilder::getSpotLightColors()
-    -> std::vector<Light::Color>
+    -> std::vector<ape::Light::Color>
 {
     using Ambient = glm::vec3;
 
@@ -533,12 +535,12 @@ auto StatefulSceneBuilder::getSpotLightColors()
 auto StatefulSceneBuilder::createSpotLight(
     glm::vec3 const & position,
     glm::vec3 const & direction,
-    Light::Color const & color)
-    -> SpotLight &
+    ape::Light::Color const & color)
+    -> ape::SpotLight &
 {
-    auto const cutoff = SpotLight::CutoffAngle{glm::radians(10.0f), glm::radians(20.0f)};
+    auto const cutoff = ape::SpotLight::CutoffAngle{glm::radians(10.0f), glm::radians(20.0f)};
 
-    auto const attenuation = Attenuation{1.0f, 0.01f, 0.0052f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.0052f};
 
     return scene.lighting.spot.emplace_back(position, direction, cutoff, attenuation, color, true);
 }
@@ -563,7 +565,7 @@ auto StatefulSceneBuilder::getDirectionalLightDirections()
 }
 
 auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
-    -> DirectionalLight &
+    -> ape::DirectionalLight &
 {
     auto const ambient = glm::vec3{0.0f, 0.0f, 0.0f};
 
@@ -571,17 +573,17 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
 
     auto const specular = glm::vec3{0.2f, 0.2f, 0.2f};
 
-    auto const color = Light::Color{ambient, diffuse, specular};
+    auto const color = ape::Light::Color{ambient, diffuse, specular};
 
     return scene.lighting.directional.emplace_back(direction, color, true);
 }
 
-auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, Model const & model)
-    -> Body &
+auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model const & model)
+    -> ape::Body &
 {
-    auto body = Body{model};
+    auto body = ape::Body{model};
 
-    setTransformation(body, transformation);
+    ape::setTransformation(body, transformation);
 
     return scene.bodies.emplace_back(std::move(body));
 }

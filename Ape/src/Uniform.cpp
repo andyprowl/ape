@@ -15,7 +15,7 @@ restoreCompilerWarnings()
 
 #include <array>
 
-namespace detail
+namespace ape::detail
 {
 
 template<typename T>
@@ -197,4 +197,4 @@ template class BasicUniform<glm::vec3>;
 
 template class BasicUniform<glm::vec4>;
 
-} // namespace detail
+} // namespace ape::detail

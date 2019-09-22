@@ -13,6 +13,9 @@ restoreCompilerWarnings()
 #include <iostream>
 #include <array>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -226,3 +229,5 @@ auto ShaderProgram::getUniformLocation(std::string const & name) const
 
     return location;
 }
+
+} // namespace ape

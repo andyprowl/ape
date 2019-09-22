@@ -11,6 +11,9 @@
 
 #include <algorithm>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -105,3 +108,5 @@ auto AssetLoader::importModel(
 
     target.models.emplace_back(std::move(rootPart), std::move(name), std::move(source));
 }
+
+} // namespace ape

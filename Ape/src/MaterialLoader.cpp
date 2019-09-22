@@ -2,6 +2,9 @@
 
 #include <assimp/scene.h>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -176,3 +179,5 @@ auto MaterialLoader::findTexture(std::string const & filepath) const
 
     return &(*it);
 }
+
+} // namespace ape

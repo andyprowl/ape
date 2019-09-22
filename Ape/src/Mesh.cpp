@@ -1,5 +1,8 @@
 #include <Ape/Mesh.hpp>
 
+namespace ape
+{
+
 Mesh::Mesh(std::string name, Shape const & shape, Material const & material)
     : name{std::move(name)}
     , shape{&shape}
@@ -24,3 +27,5 @@ auto Mesh::getMaterial() const
 {
     return *material;
 }
+
+} // namespace ape

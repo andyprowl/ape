@@ -5,9 +5,14 @@
 #include <string>
 #include <vector>
 
+namespace ape
+{
+
 class ShaderProgram;
 
-namespace detail
+} // namespace ape
+
+namespace ape::detail
 {
 
 template<typename T>
@@ -50,7 +55,10 @@ protected:
 
 };
 
-} // namespace detail
+} // namespace ape::detail
+
+namespace ape
+{
 
 template<typename T>
 class Uniform : public detail::BasicUniform<T>
@@ -197,3 +205,5 @@ private:
     std::vector<T> uniforms;
 
 };
+
+} // namespace ape

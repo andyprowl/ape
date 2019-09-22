@@ -2,6 +2,9 @@
 
 #include <Ape/Model.hpp>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -182,3 +185,5 @@ auto scaleUniformly(Body & model, float const factor)
 {
     getRootPart(model).scaleUniformly(factor);
 }
+
+} // namespace ape

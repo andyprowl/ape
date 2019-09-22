@@ -5,6 +5,9 @@
 
 #include <cassert>
 
+namespace ape
+{
+
 auto TextureBytesDeleter::operator () (unsigned char * const data) const
     -> void
 {
@@ -60,3 +63,5 @@ auto determineFormat(int const numOfChannels)
         }
     }
 }
+
+} // namespace ape

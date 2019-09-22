@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 template<typename T>
 class Position
 {
@@ -19,3 +22,5 @@ public:
     T y;
 
 };
+
+} // namespace ape

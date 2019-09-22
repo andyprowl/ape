@@ -5,6 +5,9 @@
 #include <memory>
 #include <stdexcept>
 
+namespace ape
+{
+
 class CouldNotLoadOpenGLFunctions : public std::logic_error
 {
 
@@ -48,3 +51,5 @@ private:
     std::unique_ptr<Impl> impl;
 
 };
+
+} // namespace ape

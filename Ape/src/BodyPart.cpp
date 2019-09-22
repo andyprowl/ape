@@ -7,6 +7,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -211,3 +214,5 @@ auto getGlobalPosition(BodyPart const & part)
 
     return transformation[3];
 }
+
+} // namespace ape

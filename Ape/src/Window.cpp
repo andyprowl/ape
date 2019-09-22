@@ -5,6 +5,9 @@
 #include <iostream>
 #include <unordered_map>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -295,11 +298,11 @@ auto Window::makeCurrent()
 auto Window::registerEventHandlers()
     -> void
 {
-    glfwSetScrollCallback(handle, ::onMouseWheel);
+    glfwSetScrollCallback(handle, ape::onMouseWheel);
 
-    glfwSetFramebufferSizeCallback(handle, ::onResize);
+    glfwSetFramebufferSizeCallback(handle, ape::onResize);
 
-    glfwSetKeyCallback(handle, ::onKeyboard);
+    glfwSetKeyCallback(handle, ape::onKeyboard);
 }
 
 auto onKeyPressed(
@@ -338,3 +341,5 @@ auto onKeyPressed(
         }
     });
 }
+
+} // namespace ape

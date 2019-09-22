@@ -6,6 +6,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class Lighting
 {
 
@@ -32,3 +35,5 @@ public:
     std::vector<DirectionalLight> directional;
 
 };
+
+} // namespace ape

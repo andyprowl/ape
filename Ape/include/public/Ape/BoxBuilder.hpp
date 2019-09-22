@@ -3,6 +3,9 @@
 #include <Ape/Normal.hpp>
 #include <Ape/Shape.hpp>
 
+namespace ape
+{
+
 class BoxBuilder
 {
 
@@ -45,3 +48,5 @@ public:
         -> Shape;
 
 };
+
+} // namespace ape

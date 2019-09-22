@@ -3,6 +3,9 @@
 #include <Ape/Movement.hpp>
 #include <Ape/Position.hpp>
 
+namespace ape
+{
+
 class Window;
 
 class MouseTracker
@@ -27,3 +30,5 @@ private:
     Movement lastMovement;
 
 };
+
+} // namespace ape

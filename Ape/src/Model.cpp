@@ -1,5 +1,8 @@
 #include <Ape/Model.hpp>
 
+namespace ape
+{
+
 Model::Model(ModelPart rootPart, std::string source, std::string name)
     : rootPart{std::move(rootPart)}
     , name{std::move(name)}
@@ -24,3 +27,5 @@ auto Model::getSource() const
 {
     return source;
 }
+
+} // namespace ape

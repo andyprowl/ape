@@ -2,6 +2,9 @@
 
 #include <assimp/scene.h>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -87,3 +90,5 @@ auto MeshLoader::importIndices(aiMesh const & mesh) const
 
     return indices;
 }
+
+} // namespace ape

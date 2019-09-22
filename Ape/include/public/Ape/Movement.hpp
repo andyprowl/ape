@@ -1,5 +1,8 @@
 #pragma once
 
+namespace ape
+{
+
 class Movement
 {
 
@@ -18,3 +21,5 @@ public:
     double deltaY;
 
 };
+
+} // namespace ape

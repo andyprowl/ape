@@ -6,6 +6,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class Scene
 {
 
@@ -29,3 +32,5 @@ public:
     Lighting lighting;
 
 };
+
+} // namespace ape

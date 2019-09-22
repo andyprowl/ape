@@ -2,6 +2,9 @@
 
 #include "GLFW.hpp"
 
+namespace ape
+{
+
 FrameTimeTracker::FrameTimeTracker()
     : lastTime{glfwGetTime()}
     , lastFrameDuration{0.0}
@@ -23,3 +26,5 @@ auto FrameTimeTracker::getLastFrameDuration() const
 {
     return lastFrameDuration;
 }
+
+} // namespace ape

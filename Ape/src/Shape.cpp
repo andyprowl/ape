@@ -8,6 +8,9 @@
 #include <numeric>
 #include <tuple>
 
+namespace ape
+{
+
 namespace
 {
 
@@ -135,3 +138,5 @@ auto Shape::draw() const
     
     glBindVertexArray(0);
 }
+
+} // namespace ape

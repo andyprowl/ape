@@ -2,6 +2,9 @@
 
 #include <string>
 
+namespace ape
+{
+
 class Material;
 class Shape;
 
@@ -30,3 +33,5 @@ private:
     Material const * material;
 
 };
+
+} // namespace ape

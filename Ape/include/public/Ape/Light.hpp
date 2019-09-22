@@ -2,6 +2,9 @@
 
 #include <glm/vec3.hpp>
 
+namespace ape
+{
+
 class ShaderProgram;
 
 class Light
@@ -49,3 +52,5 @@ public:
     bool isTurnedOn;
 
 };
+
+} // namespace ape

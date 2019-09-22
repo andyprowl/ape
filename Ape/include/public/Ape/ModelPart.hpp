@@ -6,6 +6,9 @@
 
 #include <vector>
 
+namespace ape
+{
+
 class ModelPart
 {
 
@@ -61,3 +64,5 @@ private:
 
 auto isRoot(ModelPart const & part)
     -> bool;
+
+} // namespace ape
