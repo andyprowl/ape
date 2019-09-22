@@ -3,33 +3,61 @@
 #include "GLFW.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 namespace
 {
 
-auto theWindow = static_cast<Window *>(nullptr);
+auto windowMap = std::unordered_map<GLFWwindow *, Window *>{};
 
-auto onResize(GLFWwindow * const /*window*/, int const width, int const height)
+auto onResize(GLFWwindow * const handle, int const width, int const height)
     -> void
 {
-    theWindow->onResize.fire(Size<int>{width, height});
+    auto const it = windowMap.find(handle);
+
+    if (it == std::cend(windowMap))
+    {
+        return;
+    }
+
+    auto const window = it->second;
+
+    window->onResize.fire(Size<int>{width, height});
 }
 
-auto onMouseWheel(GLFWwindow * const /*window*/, double const /*xOffset*/, double const yOffset)
+auto onMouseWheel(GLFWwindow * const handle, double const /*xOffset*/, double const yOffset)
     -> void
 {
-    theWindow->onMouseWheel.fire(yOffset);
+    auto const it = windowMap.find(handle);
+
+    if (it == std::cend(windowMap))
+    {
+        return;
+    }
+
+    auto const window = it->second;
+
+    window->onMouseWheel.fire(yOffset);
 }
 
 auto onKeyboard(
-    GLFWwindow * const /*window*/,
+    GLFWwindow * const handle,
     int const key,
     int const /*scancode*/,
     int const action,
     int const modifiers)
     -> void
 {
-    theWindow->onKeyboard.fire(
+    auto const it = windowMap.find(handle);
+
+    if (it == std::cend(windowMap))
+    {
+        return;
+    }
+
+    auto const window = it->second;
+
+    window->onKeyboard.fire(
         static_cast<Key>(key),
         static_cast<KeyAction>(action),
         static_cast<KeyModifier>(modifiers));
@@ -81,7 +109,7 @@ Window::Window(std::string const & title, bool const createAsFullScreen)
     , isFullScreenModeOn{createAsFullScreen}
     , lastWindowedArea{getPosition(), getSize()}
 {
-    theWindow = this;
+    windowMap.emplace(handle, this);
 
     registerEventHandlers();
 }
@@ -91,7 +119,7 @@ Window::Window(Window && rhs) noexcept
     , isFullScreenModeOn{rhs.isFullScreenModeOn}
     , lastWindowedArea{rhs.lastWindowedArea}
 {
-    theWindow = this;
+    windowMap[handle] = this;
 
     rhs.handle = nullptr;
 }
@@ -99,7 +127,7 @@ Window::Window(Window && rhs) noexcept
 auto Window::operator = (Window && rhs) noexcept
     -> Window &
 {
-    theWindow = this;
+    windowMap[handle] = this;
 
     handle = rhs.handle;
     

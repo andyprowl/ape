@@ -67,6 +67,12 @@ private:
     auto getDragonPositions() const
         -> std::vector<glm::vec3>;
 
+    auto createSpaceships()
+        -> void;
+
+    auto getSpaceshipPositions() const
+        -> std::vector<glm::vec3>;
+
     auto createCameras()
         -> void;
 
@@ -156,6 +162,8 @@ auto StatefulSceneBuilder::createBodies()
     createNanosuits();
 
     createDragons();
+
+    createSpaceships();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
@@ -355,6 +363,30 @@ auto StatefulSceneBuilder::getDragonPositions() const
 {
     return {
         {-7.0f, -2.0f, -2.0f}};
+}
+
+auto StatefulSceneBuilder::createSpaceships()
+    -> void
+{
+    auto const & model = assets->spaceshipAssets.models[0];
+
+    auto const positions = getSpaceshipPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {1.0f, 1.0f, 1.0f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getSpaceshipPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-0.0f, 6.0f, -5.0f}};
 }
 
 auto StatefulSceneBuilder::createCameras()

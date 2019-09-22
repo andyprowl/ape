@@ -13,4 +13,6 @@ public:
 
     AssetRepository dragonAssets;
 
+    AssetRepository spaceshipAssets;
+
 };

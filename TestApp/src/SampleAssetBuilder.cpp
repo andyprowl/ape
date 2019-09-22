@@ -301,13 +301,18 @@ auto SampleAssetBuilder::build() const
 
     auto const loader = AssetLoader{};
 
-    auto nanosuiteFilepath = resolveModelFilepath("/nanosuit/nanosuit.obj");
+    auto const nanosuiteFilepath = resolveModelFilepath("/Nanosuit/nanosuit.obj");
 
     collection.nanosuitAssets = loader.load(nanosuiteFilepath, "Nanosuit");
 
-    auto dragonFilepath = resolveModelFilepath("/dragon/Dragon_Baked_Actions.obj");
+    auto const dragonFilepath = resolveModelFilepath("/Dragon/Dragon_Baked_Actions.obj");
 
     collection.dragonAssets = loader.load(dragonFilepath, "Dragon");
+
+    auto const spaceshipFilepath = resolveModelFilepath(
+        "/Spaceship/Intergalactic Spaceship_Blender_2.79b_BI.obj");
+
+    collection.spaceshipAssets = loader.load(spaceshipFilepath, "Spaceship");
 
     return collection;
 }
