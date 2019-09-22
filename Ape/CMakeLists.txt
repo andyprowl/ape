@@ -6,6 +6,11 @@ ImportDependencies()
 
 file(
     GLOB
+    DOC_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
+    
+file(
+    GLOB
     CMAKE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.*"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
@@ -36,11 +41,6 @@ file(
     TEXTURE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/textures/*.*")
 
-file(
-    GLOB
-    DOC_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
-
 source_group("CMake Files" FILES ${CMAKE_FILES})
 
 source_group("Header Files\\Private" FILES ${PRIVATE_HEADER_FILES})
@@ -57,13 +57,13 @@ source_group("Documentation" FILES ${DOC_FILES})
 
 add_library(
     ${PROJECT_NAME}
+    ${DOC_FILES}
     ${CMAKE_FILES}
     ${PRIVATE_HEADER_FILES}
     ${PUBLIC_HEADER_FILES}
     ${SOURCE_FILES}
     ${SHADER_FILES}
-    ${TEXTURE_FILES}
-    ${DOC_FILES})
+    ${TEXTURE_FILES})
 
 AddPrivateDefinitions(shaderFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders")
 

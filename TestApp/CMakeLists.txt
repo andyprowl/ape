@@ -2,6 +2,11 @@ project(TestApp)
 
 file(
     GLOB
+    DOC_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
+
+file(
+    GLOB
     CMAKE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.*"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
@@ -24,18 +29,13 @@ file(
 
 file(
     GLOB
-    MODEL_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/models/*.*")
-    
-file(
-    GLOB
     TEXTURE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/textures/*.*")
 
 file(
-    GLOB
-    DOC_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
+    GLOB_RECURSE
+    MODEL_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/models/*.*")
 
 source_group("CMake Files" FILES ${CMAKE_FILES})
 
@@ -47,19 +47,25 @@ source_group("Resources\\Shader Files" FILES ${SHADER_FILES})
 
 source_group("Resources\\Texture Files" FILES ${TEXTURE_FILES})
 
-source_group("Resources\\Model Files" FILES ${MODEL_FILES})
+source_group(
+    TREE
+    "${CMAKE_CURRENT_SOURCE_DIR}/resources/models"
+    PREFIX
+    "Resources\\Model Files"
+    FILES
+    ${MODEL_FILES})
 
 source_group("Documentation" FILES ${DOC_FILES})
 
 add_executable(
     ${PROJECT_NAME}
+    ${DOC_FILES}
     ${CMAKE_FILES}
     ${HEADER_FILES}
     ${SOURCE_FILES}
     ${SHADER_FILES}
     ${TEXTURE_FILES}
-    ${MODEL_FILES}
-    ${DOC_FILES})
+    ${MODEL_FILES})
 
 AddPrivateDefinitions(shaderFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders")
 
