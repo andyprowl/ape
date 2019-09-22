@@ -38,6 +38,16 @@ function(ImportAssimp)
 
 endfunction()
 
+function(ImportGLAD)
+
+    add_library(glad STATIC IMPORTED)
+
+    set_target_properties(glad PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${glad_DIR}/include")
+
+    set_target_properties(glad PROPERTIES IMPORTED_LOCATION "${glad_DIR}/lib/GLAD.lib")
+
+endfunction()
+
 function(ImportGLFW)
 
     find_package(glfw3 REQUIRED COMPONENTS glfw)
@@ -54,12 +64,36 @@ function(ImportGLFW)
 
 endfunction()
 
+function(ImportGLM)
+
+    add_library(glm INTERFACE)
+
+    set_target_properties(glm PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${glm_DIR}")
+
+endfunction()
+
+function(ImportStb)
+
+    add_library(stb STATIC IMPORTED)
+
+    set_target_properties(stb PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${stb_DIR}/include")
+
+    set_target_properties(stb PROPERTIES IMPORTED_LOCATION "${stb_DIR}/lib/stb.lib")
+
+endfunction()
+
 function(ImportDependencies)
 
     message("-- Importing external dependencies...")
 
     ImportAssimp()
     
+    ImportGLAD()
+
     ImportGLFW()
+
+    ImportGLM()
+
+    ImportStb()
 
 endfunction()
