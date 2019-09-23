@@ -240,7 +240,9 @@ enum class Key
 
     keyRightSuper = 347,
 
-    keyMenu = 348
+    keyMenu = 348,
+
+    last = keyMenu
 
 };
 
@@ -271,6 +273,15 @@ enum class KeyModifier
     capsLock = 0x0010,
     
     numLock = 0x0020
+
+};
+
+enum class KeyStatus
+{
+
+    released = 0,
+
+    pressed = 1
 
 };
 

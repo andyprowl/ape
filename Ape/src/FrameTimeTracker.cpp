@@ -1,30 +1,37 @@
 #include <Ape/FrameTimeTracker.hpp>
 
-#include "GLFW.hpp"
+#include <Ape/Stopwatch.hpp>
 
 namespace ape
 {
 
-FrameTimeTracker::FrameTimeTracker()
-    : lastTime{glfwGetTime()}
-    , lastFrameDuration{0.0}
+FrameTimeTracker::FrameTimeTracker(Stopwatch const & stopwatch)
+    : stopwatch{&stopwatch}
+    , lastElapsedTime{stopwatch.getElapsedTime()}
+    , lastFrameDuration{std::chrono::nanoseconds{0}}
 {
 }
 
 auto FrameTimeTracker::update()
     -> void
 {
-    auto const currentTime = glfwGetTime();
+    auto const timeFromStart = stopwatch->getElapsedTime();
 
-    lastFrameDuration = currentTime - lastTime;
+    lastFrameDuration = timeFromStart - lastElapsedTime;
 
-    lastTime = currentTime;
+    lastElapsedTime = timeFromStart;
 }
 
 auto FrameTimeTracker::getLastFrameDuration() const
-    -> double
+    -> std::chrono::nanoseconds
 {
     return lastFrameDuration;
+}
+
+auto FrameTimeTracker::getStopwatch() const
+    -> Stopwatch const &
+{
+    return *stopwatch;
 }
 
 } // namespace ape

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Ape/Window.hpp>
+#include <Ape/GLFWWindow.hpp>
 
 #include <memory>
 #include <stdexcept>
-
+ 
 namespace ape
 {
 
@@ -20,27 +20,30 @@ public:
 
 };
 
-class OpenGLGateway
+class GLFWGateway
 {
 
 public:
 
-    OpenGLGateway();
+    GLFWGateway();
 
-    OpenGLGateway(OpenGLGateway const & rhs) = delete;
+    GLFWGateway(GLFWGateway const & rhs) = delete;
 
-    OpenGLGateway(OpenGLGateway && rhs) noexcept;
+    GLFWGateway(GLFWGateway && rhs) noexcept;
 
-    auto operator = (OpenGLGateway const & rhs)
-        -> OpenGLGateway & = delete;
+    auto operator = (GLFWGateway const & rhs)
+        -> GLFWGateway & = delete;
 
-    auto operator = (OpenGLGateway && rhs) noexcept
-        -> OpenGLGateway &;
+    auto operator = (GLFWGateway && rhs) noexcept
+        -> GLFWGateway &;
 
-    ~OpenGLGateway();
+    ~GLFWGateway();
 
     auto createWindow(std::string const & title, bool createAsFullscreen)
-        -> Window;
+        -> GLFWWindow;
+
+    auto initializeOpenGL()
+        -> void;
 
 private:
 

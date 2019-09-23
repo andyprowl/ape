@@ -14,6 +14,8 @@ SetCpp17StandardCompliance()
 
 add_subdirectory(Ape)
 
+add_subdirectory(TestScene)
+
 add_subdirectory(TestApp)
 
 add_subdirectory(QtTestApp)

@@ -1,26 +1,35 @@
 #pragma once
 
+#include <chrono>
+
 namespace ape
 {
+
+class Stopwatch;
 
 class FrameTimeTracker
 {
 
 public:
 
-    FrameTimeTracker();
+    explicit FrameTimeTracker(Stopwatch const & stopwatch);
 
     auto update()
         -> void;
 
     auto getLastFrameDuration() const
-        -> double;
+        -> std::chrono::nanoseconds;
+
+    auto getStopwatch() const
+        -> Stopwatch const &;
 
 private:
 
-    double lastTime;
+    Stopwatch const * stopwatch;
 
-    double lastFrameDuration;
+    std::chrono::nanoseconds lastElapsedTime;
+
+    std::chrono::nanoseconds lastFrameDuration;
 
 };
 

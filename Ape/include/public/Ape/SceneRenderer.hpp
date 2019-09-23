@@ -27,6 +27,9 @@ public:
     auto getScene() const
         -> Scene const &;
 
+    auto setScene(Scene const & newScene)
+        -> void;
+
 private:
 
     auto clear() const

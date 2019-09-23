@@ -1,4 +1,4 @@
-#include "SampleAssetBuilder.hpp"
+#include <TestScene/SampleAssetBuilder.hpp>
 
 #include <Ape/AssetLoader.hpp>
 #include <Ape/BoxBuilder.hpp>

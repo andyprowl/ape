@@ -1,6 +1,63 @@
 #include "SceneWidget.hpp"
 
-#include <GLFW/glfw3.h>
+#include "WidgetWindow.hpp"
+
+#include <TestScene/SampleAssetBuilder.hpp>
+#include <TestScene/SampleSceneBuilder.hpp>
+
+#include <Ape/GLFWGateway.hpp>
+
+class SceneWidget::EngineData
+{
+
+public:
+
+    class OpenGLLoader
+    {
+
+    public:
+
+        OpenGLLoader(ape::GLFWGateway & gateway)
+        {
+            gateway.initializeOpenGL();
+        }
+
+    };
+
+public:
+
+    explicit EngineData(QOpenGLWidget & widget)
+        : loader{gateway}
+        , window{widget}
+        , assets{createSampleAssets()}
+        , scene{createSampleScene(assets)}
+        , renderer{scene, shader, {0.0f, 0.0f, 0.0f}}
+        , inputHandler{window, scene, 0.1f}
+        , engine{window, renderer, inputHandler}
+    {
+    }
+
+public:
+
+    ape::GLFWGateway gateway;
+
+    OpenGLLoader loader;
+
+    ape::qt::WidgetWindow window;
+
+    SampleAssetCollection assets;
+
+    SampleScene scene;
+
+    ape::StandardShaderProgram shader;
+
+    ape::SceneRenderer renderer;
+
+    ape::StandardInputHandler inputHandler;
+
+    ape::Engine engine;
+
+};
 
 SceneWidget::SceneWidget(QWidget * const parent)
     : QOpenGLWidget{parent}
@@ -21,30 +78,20 @@ SceneWidget::~SceneWidget()
 auto SceneWidget::paintGL()
     -> void
 {
-    glClearColor(0.3f, 0.5f, 0.5f, 1.0f);
+    data->engine.processOneFrame();
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    update();
 }
 
 // virtual (from QOpenGLWidget)
 auto SceneWidget::initializeGL()
     -> void
 {
-    // Do all initialization here rather than inside the constructo
+    // Do all initialization here rather than inside the constructor
 
-    glfwInit();
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    data = std::make_shared<EngineData>(*this);
 
     initializeOpenGLFunctions();
-
-    glEnable(GL_DEPTH_TEST);
 }
 
 // virtual (from QOpenGLWidget)

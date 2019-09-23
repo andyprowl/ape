@@ -43,6 +43,12 @@ auto SceneRenderer::getScene() const
     return *scene;
 }
 
+auto SceneRenderer::setScene(Scene const & newScene)
+    -> void
+{
+    scene = &newScene;
+}
+
 auto SceneRenderer::clear() const
     -> void
 {

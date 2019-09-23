@@ -1,22 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
-
-project(QtTestApp)
-
-set(CMAKE_AUTOMOC ON)
-
-set(CMAKE_AUTORCC ON)
-
-set(CMAKE_AUTOUIC ON)
-
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-if(CMAKE_VERSION VERSION_LESS "3.7.0")
-
-    set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
-endif()
-
-find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
+project(TestScene)
 
 file(
     GLOB
@@ -31,8 +13,13 @@ file(
 
 file(
     GLOB_RECURSE
-    HEADER_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
+    PRIVATE_HEADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/private/*.hpp")
+
+file(
+    GLOB_RECURSE
+    PUBLIC_HEADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.hpp")
 
 file(
     GLOB
@@ -57,7 +44,9 @@ file(
 
 source_group("CMake Files" FILES ${CMAKE_FILES})
 
-source_group("Header Files" FILES ${HEADER_FILES})
+source_group("Header Files\\Private" FILES ${PRIVATE_HEADER_FILES})
+
+source_group("Header Files\\Public" FILES ${PUBLIC_HEADER_FILES})
 
 source_group("Source Files" FILES ${SOURCE_FILES})
 
@@ -75,11 +64,12 @@ source_group(
 
 source_group("Documentation" FILES ${DOC_FILES})
 
-add_executable(
+add_library(
     ${PROJECT_NAME}
     ${DOC_FILES}
     ${CMAKE_FILES}
-    ${HEADER_FILES}
+    ${PRIVATE_HEADER_FILES}
+    ${PUBLIC_HEADER_FILES}
     ${SOURCE_FILES}
     ${SHADER_FILES}
     ${TEXTURE_FILES}
@@ -94,6 +84,8 @@ AddPrivateDefinitions(modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/models"
 # The following prevents .obj model files to be interpreted as object files to be linked.
 set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE opengl32 Qt5::OpenGL Qt5::Widgets TestScene)
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Ape)

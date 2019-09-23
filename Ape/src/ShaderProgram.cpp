@@ -9,9 +9,10 @@ disableCompilerWarnings()
 #include <glm/gtc/type_ptr.hpp>
 restoreCompilerWarnings()
 
+#include <array>
+#include <cassert>
 #include <fstream>
 #include <iostream>
-#include <array>
 
 namespace ape
 {
@@ -215,6 +216,8 @@ auto ShaderProgram::use() const
     -> void
 {
     glUseProgram(id);
+
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 auto ShaderProgram::getUniformLocation(std::string const & name) const

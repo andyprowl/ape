@@ -1,7 +1,8 @@
-#include "SampleInputHandler.hpp"
+#include <TestScene/SampleInputHandler.hpp>
+
+#include <TestScene/SampleScene.hpp>
 
 #include <Ape/Camera.hpp>
-#include "SampleScene.hpp"
 #include <Ape/ShaderProgram.hpp>
 #include <Ape/Window.hpp>
 

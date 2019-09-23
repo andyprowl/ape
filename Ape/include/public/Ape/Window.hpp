@@ -31,67 +31,70 @@ class Window
 
 public:
 
-    Window(std::string const & title, bool createAsFullScreen);
+    Window() = default;
 
     Window(Window const & rhs) = delete;
 
-    Window(Window && rhs) noexcept;
+    Window(Window && rhs) noexcept = default;
 
     auto operator = (Window const & rhs)
         -> Window & = delete;
 
     auto operator = (Window && rhs) noexcept
-        -> Window &;
+        -> Window & = default;
 
-    ~Window();
+    virtual ~Window() = default;
 
-    auto getAspectRatio() const
-        -> float;
+    virtual auto getAspectRatio() const
+        -> float = 0;
 
-    auto getCenter() const
-        -> Position<double>;
+    virtual auto getCenter() const
+        -> Position<double> = 0;
 
-    auto getSize() const
-        -> Size<int>;
+    virtual auto getSize() const
+        -> Size<int> = 0;
 
-    auto getPosition() const
-        -> Position<int>;
+    virtual auto getPosition() const
+        -> Position<int> = 0;
 
-    auto getMousePosition() const
-        -> Position<double>;
+    virtual auto getMousePosition() const
+        -> Position<double> = 0;
 
-    auto isKeyPressed(Key key) const
-        -> bool;
+    virtual auto isKeyPressed(Key key) const
+        -> bool = 0;
 
-    auto shouldClose() const
-        -> bool;
+    virtual auto shouldClose() const
+        -> bool = 0;
 
-    auto requestClosure()
-        -> void;
+    virtual auto requestClosure()
+        -> void = 0;
 
-    auto swapBuffers()
-        -> void;
+    virtual auto swapBuffers()
+        -> void = 0;
 
-    auto isMouseCaptured() const
-        -> bool;
+    virtual auto isMouseCaptured() const
+        -> bool = 0;
 
-    auto captureMouse()
-        -> void;
+    virtual auto captureMouse()
+        -> void = 0;
 
-    auto releaseMouse()
-        -> void;
+    virtual auto releaseMouse()
+        -> void = 0;
 
-    auto isFullScreen() const
-        -> bool;
+    virtual auto isFullScreen() const
+        -> bool = 0;
 
-    auto setFullScreen()
-        -> void;
+    virtual auto setFullScreen()
+        -> void = 0;
 
-    auto exitFullScreen()
-        -> void;
+    virtual auto exitFullScreen()
+        -> void = 0;
 
-    auto makeCurrent()
-        -> void;
+    virtual auto makeCurrent()
+        -> void = 0;
+
+    virtual auto pollEvents()
+        -> void = 0;
 
 public:
 
@@ -100,40 +103,6 @@ public:
     mutable Signal<auto (double offset) -> void> onMouseWheel;
 
     mutable Signal<auto (Key key, KeyAction action, KeyModifier modifier) -> void> onKeyboard;
-
-private:
-
-    class WindowArea
-    {
-
-    public:
-
-        WindowArea(Position<int> const & position, Size<int> const & size)
-            : position{position}
-            , size{size}
-        {
-        }
-
-    public:
-    
-        Position<int> position;
-
-        Size<int> size;
-    
-    };
-
-private:
-
-    auto registerEventHandlers()
-        -> void;
-
-private:
-
-    GLFWwindow * handle;
-
-    bool isFullScreenModeOn;
-
-    WindowArea lastWindowedArea;
 
 };
 

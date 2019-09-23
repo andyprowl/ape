@@ -1,8 +1,7 @@
 #include <Ape/FrameRateTracker.hpp>
 
 #include <Ape/FrameTimeTracker.hpp>
-
-#include "GLFW.hpp"
+#include <Ape/Stopwatch.hpp>
 
 #include <iostream>
 
@@ -10,13 +9,13 @@ namespace ape
 {
 
 FrameRateTracker::FrameRateTracker(
-    FrameTimeTracker & timeTracker,
+    FrameTimeTracker const & timeTracker,
     int const reportFrequencyInMs)
     : timeTracker{&timeTracker}
     , reportFrequencyInMs{reportFrequencyInMs}
     , numOfReports{0}
     , numOfSamplesInBurst{0}
-    , burstDuration{0.0}
+    , burstDuration{std::chrono::nanoseconds{0}}
     , isStopped{true}
 {
 }
@@ -34,7 +33,7 @@ auto FrameRateTracker::stop()
 
     numOfSamplesInBurst = 0;
 
-    burstDuration = 0.0;
+    burstDuration = std::chrono::nanoseconds{0};
 }
 
 auto FrameRateTracker::update()
@@ -55,7 +54,7 @@ auto FrameRateTracker::update()
 
         numOfSamplesInBurst = 0;
 
-        burstDuration = 0.0;
+        burstDuration = std::chrono::nanoseconds{0};
 
         ++numOfReports;
     }
@@ -64,15 +63,19 @@ auto FrameRateTracker::update()
 auto FrameRateTracker::isTimeToReport() const
     -> bool
 {
-    auto const elapsedMilliseconds = static_cast<int>(glfwGetTime() * 1000);
+    auto const timeSinceStart = timeTracker->getStopwatch().getElapsedTime();
 
-    return ((elapsedMilliseconds / reportFrequencyInMs) > numOfReports);
+    auto const elapsedMs = std::chrono::duration_cast<std::chrono::milliseconds>(timeSinceStart);
+
+    return ((elapsedMs.count() / reportFrequencyInMs) > numOfReports);
 }
 
 auto FrameRateTracker::report() const
     -> void
 {
-    auto const framesPerSecond = (numOfSamplesInBurst / burstDuration);
+    auto const burstDurationInSeconds = (burstDuration.count() / 1'000'000'000.0);
+
+    auto const framesPerSecond = (numOfSamplesInBurst / burstDurationInSeconds);
 
     std::cout << "FPS: " << framesPerSecond << std::endl;
 }

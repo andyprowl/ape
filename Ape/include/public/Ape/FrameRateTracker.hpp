@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 namespace ape
 {
 
@@ -10,7 +12,7 @@ class FrameRateTracker
 
 public:
 
-    FrameRateTracker(FrameTimeTracker & timeTracker, int reportFrequencyInMs);
+    FrameRateTracker(FrameTimeTracker const & timeTracker, int reportFrequencyInMs);
 
     auto start()
         -> void;
@@ -31,7 +33,7 @@ private:
 
 private:
 
-    FrameTimeTracker * timeTracker;
+    FrameTimeTracker const * timeTracker;
 
     int reportFrequencyInMs;
 
@@ -39,7 +41,7 @@ private:
 
     int numOfSamplesInBurst;
 
-    double burstDuration;
+    std::chrono::nanoseconds burstDuration;
 
     bool isStopped;
 

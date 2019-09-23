@@ -97,7 +97,11 @@ int main(int argc, char *argv[])
 
     auto & sceneView1 = makeSceneWidget(centralWidget);
 
+    sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
     auto & sceneView2 = makeSceneWidget(centralWidget);
+
+    sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
     getGridLayout(centralWidget).addWidget(&tableView1, 0, 0);
 

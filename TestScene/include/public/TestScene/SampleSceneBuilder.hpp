@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SampleScene.hpp"
+#include <TestScene/SampleScene.hpp>
 
 class SampleAssetCollection;
 
@@ -19,3 +19,11 @@ private:
     SampleAssetCollection * assets;
 
 };
+
+inline auto createSampleScene(SampleAssetCollection & assets)
+    -> SampleScene
+{
+    auto const builder = SampleSceneBuilder{assets};
+
+    return builder.build();
+}

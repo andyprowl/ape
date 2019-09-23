@@ -1,30 +1,36 @@
 #pragma once
 
+#include <Ape/Keyboard.hpp>
 #include <Ape/Window.hpp>
 
-struct GLFWwindow;
+#include <QObject>
+#include <QOpenGLWidget>
 
-namespace ape
+#include <vector>
+
+namespace ape::qt
 {
 
-class GLFWWindow : public Window
+class WidgetWindow : public QObject, public Window
 {
+
+    Q_OBJECT
 
 public:
 
-    GLFWWindow(std::string const & title, bool createAsFullScreen);
+    WidgetWindow(QOpenGLWidget & widget);
 
-    GLFWWindow(GLFWWindow const & rhs) = delete;
+    WidgetWindow(WidgetWindow const & rhs) = delete;
 
-    GLFWWindow(GLFWWindow && rhs) noexcept;
+    WidgetWindow(WidgetWindow && rhs) noexcept = default;
 
-    auto operator = (GLFWWindow const & rhs)
-        -> GLFWWindow & = delete;
+    auto operator = (WidgetWindow const & rhs)
+        -> WidgetWindow & = delete;
 
-    auto operator = (GLFWWindow && rhs) noexcept
-        -> GLFWWindow &;
+    auto operator = (WidgetWindow && rhs) noexcept
+        -> WidgetWindow & = default;
 
-    ~GLFWWindow();
+    ~WidgetWindow() = default;
 
     auto getAspectRatio() const
         -> float override;
@@ -77,40 +83,18 @@ public:
     auto pollEvents()
         -> void override;
 
-private:
-
-    class WindowArea
-    {
-
-    public:
-
-        WindowArea(Position<int> const & position, Size<int> const & size)
-            : position{position}
-            , size{size}
-        {
-        }
-
-    public:
+protected:
     
-        Position<int> position;
-
-        Size<int> size;
-    
-    };
+    // virtual (from QObject)
+    auto eventFilter(QObject * obj, QEvent * e)
+        -> bool override;
 
 private:
 
-    auto registerEventHandlers()
-        -> void;
+    QOpenGLWidget * widget;
 
-private:
-
-    GLFWwindow * handle;
-
-    bool isFullScreenModeOn;
-
-    WindowArea lastGLFWWindowedArea;
+    std::vector<ape::KeyStatus> keyStatus;
 
 };
 
-} // namespace ape
+} // namespace ape::qt

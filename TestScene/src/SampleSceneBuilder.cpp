@@ -1,6 +1,6 @@
-#include "SampleSceneBuilder.hpp"
+#include <TestScene/SampleSceneBuilder.hpp>
 
-#include "SampleAssetBuilder.hpp"
+#include <TestScene/SampleAssetBuilder.hpp>
 
 #include <Ape/BoxBuilder.hpp>
 

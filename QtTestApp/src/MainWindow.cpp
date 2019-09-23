@@ -40,22 +40,22 @@ auto MainWindow::makeClearAction()
     return *action;
 }
 
-auto MainWindow::makeEditMenu(QAction & clearAction)
+auto MainWindow::makeEditMenu(QAction & action)
     -> QMenu &
 {
     auto menu = menuBar()->addMenu("Edit");
 
-    menu->addAction(&clearAction);
+    menu->addAction(&action);
 
     return *menu;
 }
 
-auto MainWindow::makeToolbar(QAction & clearAction)
+auto MainWindow::makeToolbar(QAction & action)
     -> QToolBar &
 {
     auto bar = new QToolBar{this};
 
-    bar->addAction(&clearAction);
+    bar->addAction(&action);
 
     bar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
 

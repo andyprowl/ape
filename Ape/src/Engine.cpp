@@ -10,9 +10,10 @@
 #include <Ape/Scene.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
+#include <Ape/Stopwatch.hpp>
 #include <Ape/Window.hpp>
 
-#include "GLFW.hpp"
+#include <glad/glad.h>
 
 namespace ape
 {
@@ -26,11 +27,10 @@ public:
         : window{&window}
         , renderer{&renderer}
         , inputHandler{&inputHandler}
+        , timeTracker{stopwatch}
         , rateTracker{timeTracker, 500}
         , resizeHandlerConnection{registerWindowResizeHandler()}
     {
-        window.captureMouse();
-
         setViewport();
     }
 
@@ -100,11 +100,13 @@ private:
     auto processInput()
         -> void
     {
-        glfwPollEvents();
+        window->pollEvents();
 
         auto const lastFrameDuration = timeTracker.getLastFrameDuration();
 
-        inputHandler->processInput(lastFrameDuration);
+        auto const durationInSeconds = lastFrameDuration.count() / 1'000'000'000.0;
+
+        inputHandler->processInput(durationInSeconds);
     }
 
     auto render()
@@ -141,6 +143,8 @@ private:
     }
 
 private:
+
+    Stopwatch stopwatch;
     
     Window * window;
 

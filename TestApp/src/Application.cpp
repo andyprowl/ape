@@ -1,34 +1,13 @@
 #include "Application.hpp"
 
-#include "SampleAssetBuilder.hpp"
-#include "SampleInputHandler.hpp"
-#include "SampleSceneBuilder.hpp"
+#include <TestScene/SampleAssetBuilder.hpp>
+#include <TestScene/SampleInputHandler.hpp>
+#include <TestScene/SampleSceneBuilder.hpp>
 
 #include <Ape/Engine.hpp>
-#include <Ape/OpenGLGateway.hpp>
+#include <Ape/GLFWGateway.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/StandardShaderProgram.hpp>
-
-namespace
-{
-
-auto createAssets()
-    -> SampleAssetCollection
-{
-    auto const builder = SampleAssetBuilder{};
-
-    return builder.build();
-}
-
-auto createScene(SampleAssetCollection & assets)
-    -> SampleScene
-{
-    auto const builder = SampleSceneBuilder{assets};
-
-    return builder.build();
-}
-
-} // unnamed namespace
 
 class Application::Impl
 {
@@ -37,8 +16,8 @@ public:
 
     Impl()
         : window{gateway.createWindow("APE 3D engine", false)}
-        , assets{createAssets()}
-        , scene{createScene(assets)}
+        , assets{createSampleAssets()}
+        , scene{createSampleScene(assets)}
         , renderer{scene, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, scene, shader}
         , engine{window, renderer, inputHandler}
@@ -48,14 +27,16 @@ public:
     auto run()
         -> void
     {
+        window.captureMouse();
+
         engine.run();
     }
 
 private:
 
-    ape::OpenGLGateway gateway;
+    ape::GLFWGateway gateway;
 
-    ape::Window window;
+    ape::GLFWWindow window;
 
     SampleAssetCollection assets;
 
