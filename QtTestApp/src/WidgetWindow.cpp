@@ -19,6 +19,12 @@ auto const keyTranslationTable = std::unordered_map<Qt::Key, ape::Key>{
     {Qt::Key_Shift, ape::Key::keyLeftShift},
     {Qt::Key_Control, ape::Key::keyLeftControl}};
 
+auto const modifierTranslationTable = std::unordered_map<Qt::KeyboardModifier, ape::KeyModifier>{
+    {Qt::KeyboardModifier::ShiftModifier, ape::KeyModifier::shift},
+    {Qt::KeyboardModifier::ControlModifier, ape::KeyModifier::control},
+    {Qt::KeyboardModifier::AltModifier, ape::KeyModifier::alt},
+    {Qt::KeyboardModifier::NoModifier, ape::KeyModifier::none}};
+
 auto translateKey(Qt::Key const key)
     -> ape::Key
 {
@@ -30,6 +36,22 @@ auto translateKey(Qt::Key const key)
     }
 
     return it->second;
+}
+
+auto translateModifier(Qt::KeyboardModifiers const modifier)
+    -> ape::KeyModifier
+{
+    auto translatedModifiers = 0;
+
+    for (auto const & entry : modifierTranslationTable)
+    {
+        if (modifier & entry.first)
+        {
+            translatedModifiers |= static_cast<int>(entry.second);
+        }
+    }
+
+    return static_cast<ape::KeyModifier>(translatedModifiers);
 }
 
 } // unnamed namespace
@@ -168,7 +190,7 @@ auto WidgetWindow::eventFilter(QObject * const obj, QEvent * const e)
             return false;
         }
 
-        auto const modifiers = static_cast<int>(keyEvent->modifiers());
+        auto const modifiers = translateModifier(keyEvent->modifiers());
 
         keyStatus[static_cast<std::size_t>(key)] = ape::KeyStatus::pressed;
 
@@ -187,7 +209,7 @@ auto WidgetWindow::eventFilter(QObject * const obj, QEvent * const e)
             return false;
         }
 
-        auto const modifiers = static_cast<int>(keyEvent->modifiers());
+        auto const modifiers = translateModifier(keyEvent->modifiers());
 
         keyStatus[static_cast<std::size_t>(key)] = ape::KeyStatus::released;
 

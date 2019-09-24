@@ -3,6 +3,7 @@
 #include "WidgetWindow.hpp"
 
 #include <TestScene/SampleAssetBuilder.hpp>
+#include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
 #include <Ape/CameraSelector.hpp>
@@ -38,7 +39,7 @@ public:
         , cameraSelector{scene}
         , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , window{widget}
-        , inputHandler{window, cameraSelector, 0.1f}
+        , inputHandler{window, cameraSelector, shader, scene}
         , engine{window, renderer, inputHandler}
     {
     }
@@ -61,7 +62,7 @@ public:
 
     ape::qt::WidgetWindow window;
 
-    ape::StandardInputHandler inputHandler;
+    SampleInputHandler inputHandler;
 
     ape::Engine engine;
 

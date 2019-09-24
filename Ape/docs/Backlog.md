@@ -1,11 +1,7 @@
- - Regulate "capturing of mouse" by camera sight drivers in multiple widgets
- - QtTestApp is much slower now
  - Figure out why Blender models get loaded without textures
- - Create separate library for model import units using Assimp
- - Create a library which can be used also from Qt
- - Separate renderer from application and meshes (at least the part dealing with setting uniforms)
-  - Only couple renderer to shader, mesh/shape coupling will only be at input (attribute) level, not uniform level
+ - Separate engine from GLFW-specific classes
+ - Create a separate library for Qt's SceneWidget
+ - Create a separate library for model import units using Assimp
  - Extract utility functions to separate (general-purpose) library projects
- - Make it possible to use the classes with both GLFW and with Qt (make it framework-independent in general)
  - Support planar shapes/meshes
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
