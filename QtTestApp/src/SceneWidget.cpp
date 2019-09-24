@@ -82,6 +82,28 @@ SceneWidget::~SceneWidget()
     doneCurrent();
 }
 
+auto SceneWidget::setFocus(bool const focus)
+    -> void
+{
+    if (!data)
+    {
+        return;
+    }
+
+    auto & cameraManipulator = data->inputHandler.getCameraManipulator();
+
+    if (focus)
+    {
+        cameraManipulator.activate();
+
+        QWidget::setFocus();
+    }
+    else
+    {
+        cameraManipulator.deactivate();
+    }
+}
+
 // virtual (from QOpenGLWidget)
 auto SceneWidget::paintGL()
     -> void
@@ -108,3 +130,19 @@ auto SceneWidget::resizeGL(int const width, int const height)
 {
     glViewport(0, 0, width, height);
 }
+
+/*
+// virtual (from QOpenGLWidget)
+auto SceneWidget::enterEvent(QEvent * const)
+    -> void
+{
+    data->inputHandler.getCameraManipulator().activate();
+}
+
+// virtual (from QOpenGLWidget)
+auto SceneWidget::leaveEvent(QEvent * const)
+    -> void
+{
+    data->inputHandler.getCameraManipulator().deactivate();
+}
+*/

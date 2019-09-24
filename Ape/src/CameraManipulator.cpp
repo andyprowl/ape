@@ -49,12 +49,18 @@ CameraManipulator::CameraManipulator(
     : cameraSelector{&cameraSelector}
     , window{&window}
     , sightDriver{window, cameraSelector, sensitivity}
+    , isEngaged{true}
 {
 }
 
 auto CameraManipulator::update(double const lastFrameDuration)
     -> void
 {
+    if (!isActive())
+    {
+        return;
+    }
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     if (activeCamera == nullptr)
@@ -73,6 +79,24 @@ auto CameraManipulator::getCameraSelector() const
     -> CameraSelector &
 {
     return *cameraSelector;
+}
+
+auto CameraManipulator::isActive() const
+    -> bool
+{
+    return isEngaged;
+}
+
+auto CameraManipulator::activate()
+    -> void
+{
+    isEngaged = true;;
+}
+
+auto CameraManipulator::deactivate()
+    -> void
+{
+    isEngaged = false;
 }
 
 auto CameraManipulator::processMouseMovement()

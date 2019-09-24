@@ -3,6 +3,7 @@
 #include <TestScene/SampleScene.hpp>
 
 #include <Ape/CameraSelector.hpp>
+#include <Ape/CompilerWarnings.hpp>
 #include <Ape/ShaderProgram.hpp>
 #include <Ape/Window.hpp>
 
@@ -48,7 +49,7 @@ SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
     ape::StandardShaderProgram & shader,
-    SampleScene & scene)
+    maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
     , blinnPhongSwitcher{window, shader}
 {
@@ -58,9 +59,9 @@ SampleInputHandler::SampleInputHandler(
 auto SampleInputHandler::getScene() const
     -> SampleScene &
 {
-    auto const & cameraSelector = getCameraSelector();
+    auto & scene = ape::getScene(*this);
 
-    return static_cast<SampleScene &>(cameraSelector.getScene());
+    return static_cast<SampleScene &>(scene);
 }
 
 // virtual (from InputHandler)

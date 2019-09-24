@@ -131,5 +131,13 @@ int main(int argc, char *argv[])
 
     window.show();
 
+    sceneView1.setFocus(false);
+
+    sceneView2.setFocus(false);
+
+    window.registerSceneWidget(sceneView1);
+
+    window.registerSceneWidget(sceneView2);
+
     return app.exec();
 }

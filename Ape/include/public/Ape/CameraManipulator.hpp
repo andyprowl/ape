@@ -22,6 +22,15 @@ public:
     auto getCameraSelector() const
         -> CameraSelector &;
 
+    auto isActive() const
+        -> bool;
+
+    auto activate()
+        -> void;
+
+    auto deactivate()
+        -> void;
+
 private:
 
     auto processMouseMovement()
@@ -40,6 +49,8 @@ private:
     Window * window;
 
     CameraSightMouseDriver sightDriver;
+
+    bool isEngaged;
 
 };
 

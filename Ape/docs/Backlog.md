@@ -1,3 +1,5 @@
+ - Regulate "capturing of mouse" by camera sight drivers in multiple widgets
+ - QtTestApp is much slower now
  - Figure out why Blender models get loaded without textures
  - Create separate library for model import units using Assimp
  - Create a library which can be used also from Qt

@@ -3,6 +3,7 @@
 #include <QMainWindow>
 
 class QGridLayout;
+class SceneWidget;
 class TableModel;
 
 class MainWindow : public QMainWindow
@@ -16,18 +17,36 @@ public:
     
     ~MainWindow();
 
+    auto registerSceneWidget(SceneWidget & widget)
+        -> void;
+
 private:
 
     auto makeClearAction()
         -> QAction &;
 
-    auto makeEditMenu(QAction & clearAction)
+    auto makeFocusActions()
+        -> std::vector<QAction *>;
+
+    auto makeEditMenu()
         -> QMenu &;
 
-    auto makeToolbar(QAction & clearAction)
+    auto makeViewMenu()
+        -> QMenu &;
+
+    auto makeToolbar()
         -> QToolBar &;
 
     auto onClear()
+        -> void;
+
+    auto onFocusSceneWidget1()
+        -> void;
+
+    auto onFocusSceneWidget2()
+        -> void;
+
+    auto onNoFocusSceneWidget()
         -> void;
 
 private:
@@ -36,8 +55,14 @@ private:
 
     QAction * clearAction;
 
+    std::vector<QAction *> focusActions;
+
     QMenu * editMenu;
 
+    QMenu * viewMenu;
+
     QToolBar * toolBar;
+
+    std::vector<SceneWidget *> sceneWidgets;
 
 };

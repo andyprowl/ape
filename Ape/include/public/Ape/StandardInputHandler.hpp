@@ -4,6 +4,8 @@
 #include <Ape/InputHandler.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 
+#include <memory>
+
 namespace ape
 {
 
@@ -28,11 +30,11 @@ public:
     auto processInput(double lastFrameDuration)
         -> void override;
 
-    auto getCameraSelector() const
-        -> CameraSelector &;
-
     auto getWindow() const
         -> Window &;
+
+    auto getCameraManipulator() const
+        -> CameraManipulator &;
 
 private:
 
@@ -54,7 +56,7 @@ private:
     auto processLightToggling(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 
-    auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier) const
+    auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier)
         -> void;
 
     auto togglePointLight(int index) const
@@ -63,18 +65,21 @@ private:
     auto toggleSpotLight(int index) const
         -> void;
 
-    auto switchToCamera(int index) const
+    auto switchToCamera(int index)
         -> void;
 
 private:
 
     Window * handledWindow;
 
-    CameraManipulator cameraManipulator;
+    std::unique_ptr<CameraManipulator> cameraManipulator;
 
     ScopedSignalConnection keyboardHandlerConnection;
 
 };
+
+auto getCameraSelector(StandardInputHandler const & handler)
+    -> CameraSelector &;
 
 auto getScene(StandardInputHandler const & handler)
     -> Scene &;

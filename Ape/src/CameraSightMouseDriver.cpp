@@ -82,7 +82,7 @@ auto CameraSightMouseDriver::update()
 
     auto const angularOffset = Offset{offset.deltaX * sensitivity, -offset.deltaY * sensitivity};
 
-    moveBy(angularOffset);
+    moveBy(*activeCamera, angularOffset);
 }
 
 auto CameraSightMouseDriver::registerForWheelNotifications()
@@ -90,9 +90,16 @@ auto CameraSightMouseDriver::registerForWheelNotifications()
 {
     return window->onMouseWheel.registerHandler([this] (double const offset)
     {
+        auto const activeCamera = cameraSelector->getActiveCamera();
+
+        if (activeCamera == nullptr)
+        {
+            return;
+        }
+
         auto const factor = offset * 2.0;
 
-        zoomBy(factor);
+        zoomBy(*activeCamera, factor);
     });
 }
 
@@ -106,42 +113,28 @@ auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
     });
 }
 
-auto CameraSightMouseDriver::moveBy(Offset const & angularOffset)
+auto CameraSightMouseDriver::moveBy(Camera & camera, Offset const & angularOffset)
     -> void
 {
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    if (activeCamera == nullptr)
-    {
-        return;
-    }
-    
     angles.pitch = clamp(angles.pitch + static_cast<float>(angularOffset.deltaY), -89.0f, 89.0f);
 
     angles.yaw += static_cast<float>(angularOffset.deltaX);
 
     auto const newDirection = computeDirection(angles);
 
-    activeCamera->setDirection(newDirection);
+    camera.setDirection(newDirection);
 }
 
-auto CameraSightMouseDriver::zoomBy(double const factor) const
+auto CameraSightMouseDriver::zoomBy(Camera & camera, double const factor) const
     -> void
 {
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    if (activeCamera == nullptr)
-    {
-        return;
-    }
-
-    auto const currentFieldOfView = glm::degrees(activeCamera->getFieldOfView());
+    auto const currentFieldOfView = glm::degrees(camera.getFieldOfView());
 
     auto const newFieldOfView = currentFieldOfView - static_cast<float>(factor);
 
     auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
 
-    activeCamera->setFieldOfView(glm::radians(clampedFieldOfView));
+    camera.setFieldOfView(glm::radians(clampedFieldOfView));
 }
 
 } // namespace ape

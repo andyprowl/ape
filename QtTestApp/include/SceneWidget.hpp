@@ -14,6 +14,9 @@ public:
 
     ~SceneWidget();
 
+    auto setFocus(bool focus)
+        -> void;
+
 private:
 
     // virtual (from QOpenGLWidget)
@@ -27,6 +30,16 @@ private:
     // virtual (from QOpenGLWidget)
     auto resizeGL(int width, int height)
         -> void override;
+
+    /*
+    // virtual (from QOpenGLWidget)
+    auto enterEvent(QEvent * e)
+        -> void override;
+
+    // virtual (from QOpenGLWidget)
+    auto leaveEvent(QEvent * e)
+        -> void override;
+    */
 
 private:
 

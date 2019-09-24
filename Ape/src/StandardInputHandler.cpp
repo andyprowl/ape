@@ -23,7 +23,10 @@ StandardInputHandler::StandardInputHandler(
     CameraSelector & cameraSelector,
     float const manipulatorSensitivity)
     : handledWindow{&window}
-    , cameraManipulator{cameraSelector, window, manipulatorSensitivity}
+    , cameraManipulator{std::make_unique<CameraManipulator>(
+        cameraSelector,
+        window,
+        manipulatorSensitivity)}
     , keyboardHandlerConnection{registerKeyboardHandler()}
 {
 }
@@ -32,7 +35,7 @@ StandardInputHandler::StandardInputHandler(
 auto StandardInputHandler::processInput(double lastFrameDuration)
     -> void
 {
-    cameraManipulator.update(lastFrameDuration);
+    cameraManipulator->update(lastFrameDuration);
 
     onProcessInput(lastFrameDuration);
 }
@@ -43,10 +46,10 @@ auto StandardInputHandler::getWindow() const
     return *handledWindow;
 }
 
-auto StandardInputHandler::getCameraSelector() const
-    -> CameraSelector &
+auto StandardInputHandler::getCameraManipulator() const
+    -> CameraManipulator &
 {
-    return cameraManipulator.getCameraSelector();
+    return *cameraManipulator;
 }
 
 auto StandardInputHandler::onProcessInput(double const /*lastFrameDuration*/)
@@ -141,7 +144,7 @@ auto StandardInputHandler::processLightToggling(
 
 auto StandardInputHandler::processCameraSwitching(
     ape::Key const key,
-    ape::KeyModifier const modifier) const
+    ape::KeyModifier const modifier)
     -> void
 {
     if ((key < ape::Key::key1) || (key > ape::Key::key9))
@@ -183,18 +186,24 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
     toggle(scene.lighting.spot[index].isTurnedOn);
 }
 
-auto StandardInputHandler::switchToCamera(int const index) const
+auto StandardInputHandler::switchToCamera(int const index)
     -> void
 {
-    auto & cameraSelector = getCameraSelector();
+    auto & cameraSelector = cameraManipulator->getCameraSelector();
 
     cameraSelector.activateCamera(index);
+}
+
+auto getCameraSelector(StandardInputHandler const & handler)
+    -> CameraSelector &
+{
+    return handler.getCameraManipulator().getCameraSelector();
 }
 
 auto getScene(StandardInputHandler const & handler)
     -> Scene &
 {
-    return handler.getCameraSelector().getScene();
+    return getCameraSelector(handler).getScene();
 }
 
 } // namespace ape

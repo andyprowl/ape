@@ -7,6 +7,7 @@
 namespace ape
 {
 
+class Camera;
 class CameraSelector;
 class MouseWheelPublisher;
 class Window;
@@ -29,10 +30,10 @@ private:
     auto registerForActiveCameraChangeNotifications()
         -> ScopedSignalConnection;
 
-    auto moveBy(Offset const & offset)
+    auto moveBy(Camera & camera, Offset const & offset)
         -> void;
 
-    auto zoomBy(double factor) const
+    auto zoomBy(Camera & camera, double factor) const
         -> void;
 
 private:
