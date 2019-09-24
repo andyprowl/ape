@@ -1,11 +1,5 @@
 #pragma once
 
-#include <Ape/Engine.hpp>
-#include <Ape/GLFWGateway.hpp>
-#include <Ape/SceneRenderer.hpp>
-#include <Ape/StandardInputHandler.hpp>
-#include <Ape/StandardShaderProgram.hpp>
-
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 

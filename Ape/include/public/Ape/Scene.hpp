@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/CameraSystem.hpp>
+#include <Ape/Camera.hpp>
 #include <Ape/Lighting.hpp>
 #include <Ape/Body.hpp>
 
@@ -16,9 +16,9 @@ public:
 
     Scene() = default;
 
-    Scene(std::vector<Body> bodies, CameraSystem cameraSystem, Lighting lighting)
+    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, Lighting lighting)
         : bodies{std::move(bodies)}
-        , cameraSystem{std::move(cameraSystem)}
+        , cameras{std::move(cameras)}
         , lighting{std::move(lighting)}
     {
     }
@@ -27,7 +27,7 @@ public:
 
     std::vector<Body> bodies;
 
-    CameraSystem cameraSystem;
+    std::vector<Camera> cameras;
 
     Lighting lighting;
 

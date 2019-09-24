@@ -2,7 +2,7 @@
 
 #include <TestScene/SampleScene.hpp>
 
-#include <Ape/Camera.hpp>
+#include <Ape/CameraSelector.hpp>
 #include <Ape/ShaderProgram.hpp>
 #include <Ape/Window.hpp>
 
@@ -46,17 +46,21 @@ auto rotateBodyAroundWorldY(ape::Body & body, float const radians)
 
 SampleInputHandler::SampleInputHandler(
     ape::Window & window,
-    SampleScene & scene,
-    ape::StandardShaderProgram & shader)
-    : StandardInputHandler{window, scene}
+    ape::CameraSelector & cameraSelector,
+    ape::StandardShaderProgram & shader,
+    SampleScene & scene)
+    : StandardInputHandler{window, cameraSelector}
     , blinnPhongSwitcher{window, shader}
 {
+    assert(&scene == &cameraSelector.getScene());
 }
 
 auto SampleInputHandler::getScene() const
     -> SampleScene &
 {
-    return static_cast<SampleScene &>(ape::StandardInputHandler::getScene());
+    auto const & cameraSelector = getCameraSelector();
+
+    return static_cast<SampleScene &>(cameraSelector.getScene());
 }
 
 // virtual (from InputHandler)

@@ -27,8 +27,9 @@ public:
 
     SampleInputHandler(
         ape::Window & window,
-        SampleScene & scene,
-        ape::StandardShaderProgram & shader);
+        ape::CameraSelector & cameraSelector,
+        ape::StandardShaderProgram & shader,
+        SampleScene & scene);
 
     auto getScene() const
         -> SampleScene &;

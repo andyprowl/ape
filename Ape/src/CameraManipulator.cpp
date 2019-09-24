@@ -1,5 +1,6 @@
 #include <Ape/CameraManipulator.hpp>
 
+#include <Ape/CameraSelector.hpp>
 #include <Ape/Scene.hpp>
 #include <Ape/Window.hpp>
 
@@ -41,56 +42,72 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
 
 } // unnamed namespace
 
-CameraManipulator::CameraManipulator(Scene & scene, Window & window, float const sensitivity)
-    : scene{&scene}
+CameraManipulator::CameraManipulator(
+    CameraSelector & cameraSelector,
+    Window & window,
+    float const sensitivity)
+    : cameraSelector{&cameraSelector}
     , window{&window}
-    , sightDriver{window, *scene.cameraSystem.activeCamera, sensitivity}
+    , sightDriver{window, cameraSelector, sensitivity}
 {
 }
 
-auto CameraManipulator::update(double lastFrameDuration)
+auto CameraManipulator::update(double const lastFrameDuration)
     -> void
 {
-    processMouseMovement(lastFrameDuration);
+    auto const activeCamera = cameraSelector->getActiveCamera();
 
-    processStraightMovement(lastFrameDuration);
+    if (activeCamera == nullptr)
+    {
+        return;
+    }
 
-    processStrafeMovement(lastFrameDuration);
+    processMouseMovement();
+
+    processStraightMovement(*activeCamera, lastFrameDuration);
+
+    processStrafeMovement(*activeCamera, lastFrameDuration);
 }
 
-auto CameraManipulator::processMouseMovement(double const lastFrameDuration)
+auto CameraManipulator::getCameraSelector() const
+    -> CameraSelector &
+{
+    return *cameraSelector;
+}
+
+auto CameraManipulator::processMouseMovement()
     -> void
 {
-    sightDriver.update(lastFrameDuration);
+    sightDriver.update();
 }
 
-auto CameraManipulator::processStraightMovement(double lastFrameDuration) const
+auto CameraManipulator::processStraightMovement(Camera & camera, double lastFrameDuration) const
     -> void
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
     if (window->isKeyPressed(Key::keyUp))
     {
-        moveCameraAlongDirection(*scene->cameraSystem.activeCamera, +translationDelta);
+        moveCameraAlongDirection(camera, +translationDelta);
     }
     else if (window->isKeyPressed(Key::keyDown))
     {
-        moveCameraAlongDirection(*scene->cameraSystem.activeCamera, -translationDelta);
+        moveCameraAlongDirection(camera, -translationDelta);
     }
 }
 
-auto CameraManipulator::processStrafeMovement(double const lastFrameDuration) const
+auto CameraManipulator::processStrafeMovement(Camera & camera, double const lastFrameDuration) const
     -> void
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
     if (window->isKeyPressed(Key::keyLeft))
     {
-        moveCameraSideways(*scene->cameraSystem.activeCamera, -translationDelta);
+        moveCameraSideways(camera, -translationDelta);
     }
     else if (window->isKeyPressed(Key::keyRight))
     {
-        moveCameraSideways(*scene->cameraSystem.activeCamera, +translationDelta);
+        moveCameraSideways(camera, +translationDelta);
     }
 }
 

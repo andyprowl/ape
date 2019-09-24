@@ -3,12 +3,12 @@
 namespace ape
 {
 
-class Movement
+class Offset
 {
 
 public:
 
-    Movement(double const deltaX, double const deltaY)
+    Offset(double const deltaX, double const deltaY)
         : deltaX{deltaX}
         , deltaY{deltaY}
     {

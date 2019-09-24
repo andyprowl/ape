@@ -1,6 +1,7 @@
 #include <Ape/CameraSightMouseDriver.hpp>
 
 #include <Ape/Camera.hpp>
+#include <Ape/CameraSelector.hpp>
 #include <Ape/Math.hpp>
 #include <Ape/Window.hpp>
 
@@ -14,56 +15,74 @@ namespace ape
 namespace
 {
 
-auto getInitialYaw(Camera const & camera)
-    -> float
+auto computeDirection(TaitBryanAngles const & angles)
+    -> glm::vec3
 {
-    auto const currentDirection = camera.getDirection();
+    return glm::vec3{
+        cos(glm::radians(angles.pitch)) * cos(glm::radians(angles.yaw)),
+        sin(glm::radians(angles.pitch)),
+        cos(glm::radians(angles.pitch)) * sin(glm::radians(angles.yaw))};
+}
 
-    auto const yawDirection = glm::normalize(glm::vec3{
-        cos(glm::radians(0.0)) * cos(glm::radians(0.0)),
-        sin(glm::radians(0.0)),
-        cos(glm::radians(0.0)) * sin(glm::radians(0.0))});
+auto getInitialAngles(CameraSelector const & selector)
+    -> TaitBryanAngles
+{
+    auto const activeCamera = selector.getActiveCamera();
 
-    auto const angle = glm::acos(glm::dot(currentDirection, yawDirection));
+    if (activeCamera == nullptr)
+    {
+        return {0.0, 0.0, 0.0};
+    }
 
-    return glm::degrees(-angle);
+    auto const direction = activeCamera->getDirection();
+
+    const auto pitch = asin(direction.y);
+
+    auto const yaw = acos(direction.x / cos(pitch)) * ((direction.z < 0) ? -1.0f : 1.0f);
+
+    const auto roll = 0.0f;
+
+    return {glm::degrees(yaw), glm::degrees(pitch), glm::degrees(roll)};
 }
 
 } // unnamed namespace
 
 CameraSightMouseDriver::CameraSightMouseDriver(
     Window & window,
-    Camera & camera,
+    CameraSelector & cameraSelector,
     float const sensitivity)
     : window{&window}
+    , cameraSelector{&cameraSelector}
     , mouseTracker{window}
-    , camera{&camera}
-    , pitch{0.0}
-    , yaw{getInitialYaw(camera)}
+    , angles{getInitialAngles(cameraSelector)}
     , sensitivity{sensitivity}
     , wheelHandlerConnection{registerForWheelNotifications()}
+    , cameraChangeHandlerConnection{registerForActiveCameraChangeNotifications()}
 {
 }
 
-auto CameraSightMouseDriver::update(double const /*lastFrameDuration*/)
+auto CameraSightMouseDriver::update()
     -> void
 {
     mouseTracker.update();
 
-    auto const movement = mouseTracker.getLastMovement();
+    auto const activeCamera = cameraSelector->getActiveCamera();
 
-    auto const offset = Movement{movement.deltaX * sensitivity, -movement.deltaY * sensitivity};
+    if (activeCamera == nullptr)
+    {
+        return;
+    }
 
-    yaw += static_cast<float>(offset.deltaX);
+    auto const offset = mouseTracker.getLastMovement();
 
-    pitch = clamp(pitch + static_cast<float>(offset.deltaY), -89.0f, 89.0f);
+    if ((offset.deltaX == 0.0) || (offset.deltaY == 0.0))
+    {
+        return;
+    }
 
-    auto const newDirection = glm::vec3{
-        cos(glm::radians(pitch)) * cos(glm::radians(yaw)),
-        sin(glm::radians(pitch)),
-        cos(glm::radians(pitch)) * sin(glm::radians(yaw))};
+    auto const angularOffset = Offset{offset.deltaX * sensitivity, -offset.deltaY * sensitivity};
 
-    camera->setDirection(newDirection);
+    moveBy(angularOffset);
 }
 
 auto CameraSightMouseDriver::registerForWheelNotifications()
@@ -71,14 +90,58 @@ auto CameraSightMouseDriver::registerForWheelNotifications()
 {
     return window->onMouseWheel.registerHandler([this] (double const offset)
     {
-        auto const currentFieldOfView = glm::degrees(camera->getFieldOfView());
+        auto const factor = offset * 2.0;
 
-        auto const newFieldOfView = currentFieldOfView - static_cast<float>(offset * 2.0);
-
-        auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
-
-        camera->setFieldOfView(glm::radians(clampedFieldOfView));
+        zoomBy(factor);
     });
+}
+
+auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
+    -> ScopedSignalConnection
+{
+    return cameraSelector->onActiveCameraChanged.registerHandler(
+        [this] (Camera const * const /*activeCamera*/)
+    {
+        angles = getInitialAngles(*cameraSelector);
+    });
+}
+
+auto CameraSightMouseDriver::moveBy(Offset const & angularOffset)
+    -> void
+{
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    if (activeCamera == nullptr)
+    {
+        return;
+    }
+    
+    angles.pitch = clamp(angles.pitch + static_cast<float>(angularOffset.deltaY), -89.0f, 89.0f);
+
+    angles.yaw += static_cast<float>(angularOffset.deltaX);
+
+    auto const newDirection = computeDirection(angles);
+
+    activeCamera->setDirection(newDirection);
+}
+
+auto CameraSightMouseDriver::zoomBy(double const factor) const
+    -> void
+{
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    if (activeCamera == nullptr)
+    {
+        return;
+    }
+
+    auto const currentFieldOfView = glm::degrees(activeCamera->getFieldOfView());
+
+    auto const newFieldOfView = currentFieldOfView - static_cast<float>(factor);
+
+    auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
+
+    activeCamera->setFieldOfView(glm::radians(clampedFieldOfView));
 }
 
 } // namespace ape

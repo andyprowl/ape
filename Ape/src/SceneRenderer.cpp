@@ -1,5 +1,7 @@
 #include <Ape/SceneRenderer.hpp>
 
+#include <Ape/Camera.hpp>
+#include <Ape/CameraSelector.hpp>
 #include <Ape/Material.hpp>
 #include <Ape/ModelPart.hpp>
 #include <Ape/Scene.hpp>
@@ -9,14 +11,17 @@
 
 #include <glad/glad.h>
 
+#include <algorithm>
+#include <cassert>
+
 namespace ape
 {
 
 SceneRenderer::SceneRenderer(
-    Scene const & scene,
+    CameraSelector const & cameraSelector,
     StandardShaderProgram & shader,
     glm::vec3 const & backgroundColor)
-    : scene{&scene}
+    : cameraSelector{&cameraSelector}
     , shader{&shader}
     , backgroundColor{backgroundColor}
 {
@@ -28,25 +33,34 @@ auto SceneRenderer::render() const
 {
     clear();
 
+    auto const camera = cameraSelector->getActiveCamera();
+
+    if (camera == nullptr)
+    {
+        return;
+    }
+
     shader->use();
 
-    shader->camera.set(*(scene->cameraSystem.activeCamera));
+    shader->camera.set(*camera);
 
-    shader->lighting.set(scene->lighting);
+    auto const & scene = cameraSelector->getScene();
 
-    drawScene();
+    shader->lighting.set(scene.lighting);
+
+    drawScene(scene, *camera);
 }
 
-auto SceneRenderer::getScene() const
-    -> Scene const &
+auto SceneRenderer::getCameraSelector() const
+    -> CameraSelector const &
 {
-    return *scene;
+    return *cameraSelector;
 }
 
-auto SceneRenderer::setScene(Scene const & newScene)
+auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
     -> void
 {
-    scene = &newScene;
+    cameraSelector = &newSelector;
 }
 
 auto SceneRenderer::clear() const
@@ -59,12 +73,12 @@ auto SceneRenderer::clear() const
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-auto SceneRenderer::drawScene() const
+auto SceneRenderer::drawScene(Scene const & scene, Camera const & camera) const
     -> void
 {
-    auto const & cameraTransformation = scene->cameraSystem.activeCamera->getTransformation();
+    auto const & cameraTransformation = camera.getTransformation();
 
-    for (auto const & body : scene->bodies)
+    for (auto const & body : scene.bodies)
     {
         drawBody(body, cameraTransformation);
     }
@@ -118,6 +132,18 @@ auto SceneRenderer::drawMesh(Mesh const & mesh) const
     }
 
     mesh.getShape().draw();
+}
+
+auto getCamera(SceneRenderer const & renderer)
+    -> Camera *
+{
+    return renderer.getCameraSelector().getActiveCamera();
+}
+
+auto getScene(SceneRenderer const & renderer)
+    -> Scene &
+{
+    return renderer.getCameraSelector().getScene();
 }
 
 } // namespace ape

@@ -4,6 +4,7 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
+#include <Ape/CameraSelector.hpp>
 #include <Ape/Engine.hpp>
 #include <Ape/GLFWGateway.hpp>
 #include <Ape/SceneRenderer.hpp>
@@ -18,8 +19,9 @@ public:
         : window{gateway.createWindow("APE 3D engine", false)}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
-        , renderer{scene, shader, {0.0f, 0.0f, 0.0f}}
-        , inputHandler{window, scene, shader}
+        , cameraSelector{scene}
+        , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
+        , inputHandler{window, cameraSelector, shader, scene}
         , engine{window, renderer, inputHandler}
     {
     }
@@ -41,6 +43,8 @@ private:
     SampleAssetCollection assets;
 
     SampleScene scene;
+
+    ape::CameraSelector cameraSelector;
 
     ape::StandardShaderProgram shader;
 

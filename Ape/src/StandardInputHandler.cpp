@@ -1,9 +1,13 @@
 #include <Ape/StandardInputHandler.hpp>
 
+#include <Ape/CameraSelector.hpp>
 #include <Ape/Scene.hpp>
 #include <Ape/Window.hpp>
 
 namespace ape
+{
+
+namespace
 {
 
 auto toggle(bool & b)
@@ -12,13 +16,14 @@ auto toggle(bool & b)
     b = !b;
 }
 
+} // unnamed namespace
+
 StandardInputHandler::StandardInputHandler(
     Window & window,
-    Scene & scene,
+    CameraSelector & cameraSelector,
     float const manipulatorSensitivity)
     : handledWindow{&window}
-    , handledScene{&scene}
-    , cameraManipulator{scene, window, manipulatorSensitivity}
+    , cameraManipulator{cameraSelector, window, manipulatorSensitivity}
     , keyboardHandlerConnection{registerKeyboardHandler()}
 {
 }
@@ -32,16 +37,16 @@ auto StandardInputHandler::processInput(double lastFrameDuration)
     onProcessInput(lastFrameDuration);
 }
 
-auto StandardInputHandler::getScene() const
-    -> Scene &
-{
-    return *handledScene;
-}
-
 auto StandardInputHandler::getWindow() const
     -> Window &
 {
     return *handledWindow;
+}
+
+auto StandardInputHandler::getCameraSelector() const
+    -> CameraSelector &
+{
+    return cameraManipulator.getCameraSelector();
 }
 
 auto StandardInputHandler::onProcessInput(double const /*lastFrameDuration*/)
@@ -155,7 +160,7 @@ auto StandardInputHandler::processCameraSwitching(
 auto StandardInputHandler::togglePointLight(int const index) const
     -> void
 {
-    auto & scene = getScene();
+    auto & scene = getScene(*this);
 
     if (index >= static_cast<int>(scene.lighting.point.size()))
     {
@@ -168,7 +173,7 @@ auto StandardInputHandler::togglePointLight(int const index) const
 auto StandardInputHandler::toggleSpotLight(int const index) const
     -> void
 {
-    auto & scene = getScene();
+    auto & scene = getScene(*this);
 
     if (index >= static_cast<int>(scene.lighting.spot.size()))
     {
@@ -181,20 +186,15 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
 auto StandardInputHandler::switchToCamera(int const index) const
     -> void
 {
-    auto & scene = getScene();
+    auto & cameraSelector = getCameraSelector();
 
-    auto & cameras = scene.cameraSystem.cameras;
+    cameraSelector.activateCamera(index);
+}
 
-    if (index >= static_cast<int>(cameras.size()))
-    {
-        return;
-    }
-
-    auto const & window = getWindow();
-
-    scene.cameraSystem.activeCamera = &cameras[index];
-
-    scene.cameraSystem.activeCamera->setAspectRatio(window.getAspectRatio());
+auto getScene(StandardInputHandler const & handler)
+    -> Scene &
+{
+    return handler.getCameraSelector().getScene();
 }
 
 } // namespace ape

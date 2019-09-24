@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Movement.hpp>
+#include <Ape/Offset.hpp>
 #include <Ape/Position.hpp>
 
 namespace ape
@@ -19,7 +19,7 @@ public:
         -> void;
 
     auto getLastMovement() const
-        -> Movement;
+        -> Offset;
 
 private:
 
@@ -27,7 +27,7 @@ private:
 
     Position<double> lastPosition;
 
-    Movement lastMovement;
+    Offset lastMovement;
 
 };
 

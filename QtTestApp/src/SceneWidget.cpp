@@ -5,7 +5,12 @@
 #include <TestScene/SampleAssetBuilder.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
+#include <Ape/CameraSelector.hpp>
+#include <Ape/Engine.hpp>
 #include <Ape/GLFWGateway.hpp>
+#include <Ape/SceneRenderer.hpp>
+#include <Ape/StandardInputHandler.hpp>
+#include <Ape/StandardShaderProgram.hpp>
 
 class SceneWidget::EngineData
 {
@@ -28,11 +33,12 @@ public:
 
     explicit EngineData(QOpenGLWidget & widget)
         : loader{gateway}
-        , window{widget}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
-        , renderer{scene, shader, {0.0f, 0.0f, 0.0f}}
-        , inputHandler{window, scene, 0.1f}
+        , cameraSelector{scene}
+        , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
+        , window{widget}
+        , inputHandler{window, cameraSelector, 0.1f}
         , engine{window, renderer, inputHandler}
     {
     }
@@ -43,15 +49,17 @@ public:
 
     OpenGLLoader loader;
 
-    ape::qt::WidgetWindow window;
-
     SampleAssetCollection assets;
 
     SampleScene scene;
 
+    ape::CameraSelector cameraSelector;
+
     ape::StandardShaderProgram shader;
 
     ape::SceneRenderer renderer;
+
+    ape::qt::WidgetWindow window;
 
     ape::StandardInputHandler inputHandler;
 

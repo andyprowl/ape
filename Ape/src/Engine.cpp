@@ -86,9 +86,12 @@ private:
 
         auto const aspectRatio = window->getAspectRatio();
 
-        auto const & scene = renderer->getScene();
+        auto & scene = getScene(*renderer);
 
-        scene.cameraSystem.activeCamera->setAspectRatio(aspectRatio);
+        for (auto & camera : scene.cameras)
+        {
+            camera.setAspectRatio(aspectRatio);
+        }
     }
 
     auto wasTerminationRequested() const

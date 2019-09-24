@@ -2,11 +2,12 @@
 
 #include <Ape/MouseTracker.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
+#include <Ape/TaitBryanAngles.hpp>
 
 namespace ape
 {
 
-class Camera;
+class CameraSelector;
 class MouseWheelPublisher;
 class Window;
 
@@ -15,12 +16,9 @@ class CameraSightMouseDriver
 
 public:
 
-    CameraSightMouseDriver(
-        Window & window,
-        Camera & camera,
-        float sensitivity);
+    CameraSightMouseDriver(Window & window, CameraSelector & cameraSelector, float sensitivity);
 
-    auto update(double lastFrameDuration)
+    auto update()
         -> void;
 
 private:
@@ -28,21 +26,30 @@ private:
     auto registerForWheelNotifications()
         -> ScopedSignalConnection;
 
+    auto registerForActiveCameraChangeNotifications()
+        -> ScopedSignalConnection;
+
+    auto moveBy(Offset const & offset)
+        -> void;
+
+    auto zoomBy(double factor) const
+        -> void;
+
 private:
 
     Window * window;
 
+    CameraSelector * cameraSelector;
+
     MouseTracker mouseTracker;
 
-    Camera * camera;
-
-    float pitch;
-
-    float yaw;
+    TaitBryanAngles angles;
 
     float sensitivity;
 
     ScopedSignalConnection wheelHandlerConnection;
+
+    ScopedSignalConnection cameraChangeHandlerConnection;
 
 };
 

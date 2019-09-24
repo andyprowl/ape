@@ -399,8 +399,6 @@ auto StatefulSceneBuilder::createCameras()
     createBackCamera();
 
     createRightCamera();
-
-    scene.cameraSystem.activeCamera = &scene.cameraSystem.cameras.front();
 }
 
 auto StatefulSceneBuilder::createFrontCamera()
@@ -416,9 +414,7 @@ auto StatefulSceneBuilder::createFrontCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto & cameras = scene.cameraSystem.cameras;
-
-    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
 }
 
 auto StatefulSceneBuilder::createBackCamera()
@@ -434,9 +430,7 @@ auto StatefulSceneBuilder::createBackCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto & cameras = scene.cameraSystem.cameras;
-
-    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
 }
 
 auto StatefulSceneBuilder::createRightCamera()
@@ -452,9 +446,7 @@ auto StatefulSceneBuilder::createRightCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto & cameras = scene.cameraSystem.cameras;
-
-    return cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
 }
 
 auto StatefulSceneBuilder::createLighting()
@@ -592,7 +584,7 @@ auto StatefulSceneBuilder::createSynchronizers()
     -> void
 {
     scene.spotLightSynchronizers.emplace_back(
-        *scene.cameraSystem.activeCamera,
+        scene.cameras.front(),
         *scene.playerFlashlight);
 
     scene.bodyLightSynchronizers.emplace_back(

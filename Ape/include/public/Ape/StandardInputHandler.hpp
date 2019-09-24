@@ -10,19 +10,26 @@ namespace ape
 enum class Key;
 enum class KeyModifier;
 
+class CameraSelector;
+class Scene;
+class Window;
+
 class StandardInputHandler : public InputHandler
 {
 
 public:
 
-    StandardInputHandler(Window & window, Scene & scene, float manipulatorSensitivity = 0.1f);
+    StandardInputHandler(
+        Window & window, 
+        CameraSelector & cameraSelector,
+        float manipulatorSensitivity = 0.1f);
 
     // virtual (from InputHandler)
     auto processInput(double lastFrameDuration)
         -> void override;
 
-    auto getScene() const
-        -> Scene &;
+    auto getCameraSelector() const
+        -> CameraSelector &;
 
     auto getWindow() const
         -> Window &;
@@ -63,12 +70,13 @@ private:
 
     Window * handledWindow;
 
-    Scene * handledScene;
-
     CameraManipulator cameraManipulator;
 
     ScopedSignalConnection keyboardHandlerConnection;
 
 };
+
+auto getScene(StandardInputHandler const & handler)
+    -> Scene &;
 
 } // namespace ape

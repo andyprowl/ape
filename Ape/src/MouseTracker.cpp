@@ -17,13 +17,13 @@ auto MouseTracker::update()
 {
     auto const currentPosition = window->getMousePosition();
 
-    lastMovement = Movement{currentPosition.x - lastPosition.x, currentPosition.y - lastPosition.y};
+    lastMovement = Offset{currentPosition.x - lastPosition.x, currentPosition.y - lastPosition.y};
 
     lastPosition = currentPosition;
 }
 
 auto MouseTracker::getLastMovement() const
-    -> Movement
+    -> Offset
 {
     return lastMovement;
 }

@@ -5,7 +5,8 @@
 namespace ape
 {
 
-class Scene;
+class Camera;
+class CameraSelector;
 class Window;
 
 class CameraManipulator
@@ -13,25 +14,28 @@ class CameraManipulator
 
 public:
 
-    CameraManipulator(Scene & scene, Window & window, float sensitivity);
+    CameraManipulator(CameraSelector & cameraSelector, Window & window, float sensitivity);
 
     auto update(double lastFrameDuration)
         -> void;
 
-private:
-
-    auto processMouseMovement(double lastFrameDuration)
-        -> void;
-
-    auto processStraightMovement(double lastFrameDuration) const
-        -> void;
-
-    auto processStrafeMovement(double lastFrameDuration) const
-        -> void;
+    auto getCameraSelector() const
+        -> CameraSelector &;
 
 private:
 
-    Scene * scene;
+    auto processMouseMovement()
+        -> void;
+
+    auto processStraightMovement(Camera & camera, double lastFrameDuration) const
+        -> void;
+
+    auto processStrafeMovement(Camera & camera, double lastFrameDuration) const
+        -> void;
+
+private:
+
+    CameraSelector * cameraSelector;
 
     Window * window;
 
