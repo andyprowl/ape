@@ -13,6 +13,9 @@
 #include <Ape/StandardInputHandler.hpp>
 #include <Ape/StandardShaderProgram.hpp>
 
+namespace ape::qt
+{
+
 class SceneWidget::EngineData
 {
 
@@ -83,28 +86,6 @@ SceneWidget::~SceneWidget()
     doneCurrent();
 }
 
-auto SceneWidget::setFocus(bool const focus)
-    -> void
-{
-    if (!data)
-    {
-        return;
-    }
-
-    auto & cameraManipulator = data->inputHandler.getCameraManipulator();
-
-    if (focus)
-    {
-        cameraManipulator.activate();
-
-        QWidget::setFocus();
-    }
-    else
-    {
-        cameraManipulator.deactivate();
-    }
-}
-
 // virtual (from QOpenGLWidget)
 auto SceneWidget::paintGL()
     -> void
@@ -122,28 +103,23 @@ auto SceneWidget::initializeGL()
 
     data = std::make_shared<EngineData>(*this);
 
+    data->inputHandler.getCameraManipulator().deactivate();
+
     initializeOpenGLFunctions();
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::resizeGL(int const width, int const height)
-    -> void
-{
-    glViewport(0, 0, width, height);
-}
-
-/*
-// virtual (from QOpenGLWidget)
-auto SceneWidget::enterEvent(QEvent * const)
+auto SceneWidget::focusInEvent(QFocusEvent * const)
     -> void
 {
     data->inputHandler.getCameraManipulator().activate();
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::leaveEvent(QEvent * const)
+auto SceneWidget::focusOutEvent(QFocusEvent * const)
     -> void
 {
     data->inputHandler.getCameraManipulator().deactivate();
 }
-*/
+
+} // namespace ape::qt

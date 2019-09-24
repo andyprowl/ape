@@ -2,8 +2,14 @@
 
 #include <QMainWindow>
 
-class QGridLayout;
+namespace ape::qt
+{
+
 class SceneWidget;
+
+} // namespace ape::qt
+
+class QGridLayout;
 class TableModel;
 
 class MainWindow : public QMainWindow
@@ -17,7 +23,7 @@ public:
     
     ~MainWindow();
 
-    auto registerSceneWidget(SceneWidget & widget)
+    auto registerSceneWidget(ape::qt::SceneWidget & widget)
         -> void;
 
 private:
@@ -63,6 +69,6 @@ private:
 
     QToolBar * toolBar;
 
-    std::vector<SceneWidget *> sceneWidgets;
+    std::vector<ape::qt::SceneWidget *> sceneWidgets;
 
 };

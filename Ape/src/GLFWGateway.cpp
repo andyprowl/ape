@@ -35,10 +35,17 @@ public:
     auto initializeOpenGL()
         -> void
     {
+        if (areOpenGLFunctionsLoaded)
+        {
+            return;
+        }
+
         if (!gladLoadGL())
         {
             throw CouldNotLoadOpenGLFunctions{};
         }
+
+        areOpenGLFunctionsLoaded = true;
     }
 
 private:

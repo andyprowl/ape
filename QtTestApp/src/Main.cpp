@@ -2,6 +2,9 @@
 #include "SceneWidget.hpp"
 #include "TableModel.hpp"
 
+#include <TestScene/SampleAssetBuilder.hpp>
+#include <TestScene/SampleSceneBuilder.hpp>
+
 #include <QApplication>
 #include <QFileSystemModel>
 #include <QGridLayout>
@@ -44,9 +47,9 @@ auto makeTreeView(QWidget & parent, Model & model)
 }
 
 auto makeSceneWidget(QWidget & parent)
-    -> SceneWidget &
+    -> ape::qt::SceneWidget &
 {
-    auto const widget = new SceneWidget{&parent};
+    auto const widget = new ape::qt::SceneWidget{&parent};
 
     return *widget;
 }
@@ -130,10 +133,6 @@ int main(int argc, char *argv[])
     window.resize(1024, 768);
 
     window.show();
-
-    sceneView1.setFocus(false);
-
-    sceneView2.setFocus(false);
 
     window.registerSceneWidget(sceneView1);
 

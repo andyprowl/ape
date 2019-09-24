@@ -89,6 +89,15 @@ protected:
     auto eventFilter(QObject * obj, QEvent * e)
         -> bool override;
 
+    auto processKeyPressEvent(QEvent const * e)
+        -> bool;
+
+    auto processKeyReleaseEvent(QEvent const * e)
+        -> bool;
+
+    auto processKeyEvent(QEvent const * e, ape::KeyStatus status, ape::KeyAction const action)
+        -> bool;
+
 private:
 
     QOpenGLWidget * widget;

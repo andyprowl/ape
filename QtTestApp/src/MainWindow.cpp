@@ -116,35 +116,22 @@ auto MainWindow::onClear()
 auto MainWindow::onFocusSceneWidget1()
     -> void
 {
-    for (auto const widget : sceneWidgets)
-    {
-        widget->setFocus(false);
-    }
-
-    sceneWidgets[0]->setFocus(true);
+    sceneWidgets[0]->setFocus();
 }
 
 auto MainWindow::onFocusSceneWidget2()
     -> void
 {
-    for (auto const widget : sceneWidgets)
-    {
-        widget->setFocus(false);
-    }
-
-    sceneWidgets[1]->setFocus(true);
+    sceneWidgets[1]->setFocus();
 }
 
 auto MainWindow::onNoFocusSceneWidget()
     -> void
 {
-    for (auto const widget : sceneWidgets)
-    {
-        widget->setFocus(false);
-    }
+    setFocus(Qt::FocusReason::OtherFocusReason);
 }
 
-auto MainWindow::registerSceneWidget(SceneWidget & widget)
+auto MainWindow::registerSceneWidget(ape::qt::SceneWidget & widget)
     -> void
 {
     sceneWidgets.push_back(&widget);

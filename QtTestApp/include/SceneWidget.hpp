@@ -3,6 +3,9 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 
+namespace ape::qt
+{
+
 class SceneWidget : public QOpenGLWidget, public QOpenGLFunctions
 {
 
@@ -13,9 +16,6 @@ public:
     explicit SceneWidget(QWidget * parent);
 
     ~SceneWidget();
-
-    auto setFocus(bool focus)
-        -> void;
 
 private:
 
@@ -28,18 +28,12 @@ private:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto resizeGL(int width, int height)
-        -> void override;
-
-    /*
-    // virtual (from QOpenGLWidget)
-    auto enterEvent(QEvent * e)
+    auto focusInEvent(QFocusEvent * const)
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto leaveEvent(QEvent * e)
+    auto focusOutEvent(QFocusEvent * const)
         -> void override;
-    */
 
 private:
 
@@ -50,3 +44,5 @@ private:
     std::shared_ptr<EngineData> data;
 
 };
+
+} // namespace ape::qt

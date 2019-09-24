@@ -181,46 +181,52 @@ auto WidgetWindow::eventFilter(QObject * const obj, QEvent * const e)
 {
     if (e->type() == QEvent::KeyPress)
     {
-        auto const keyEvent = static_cast<QKeyEvent const *>(e);
-
-        auto const key = translateKey(static_cast<Qt::Key>(keyEvent->key()));
-
-        if (key > ape::Key::last)
-        {
-            return false;
-        }
-
-        auto const modifiers = translateModifier(keyEvent->modifiers());
-
-        keyStatus[static_cast<std::size_t>(key)] = ape::KeyStatus::pressed;
-
-        onKeyboard.fire(key, ape::KeyAction::press, static_cast<ape::KeyModifier>(modifiers));
-        
-        return true;
+        return processKeyPressEvent(e);
     }
     else if (e->type() == QEvent::KeyRelease)
     {
-        auto const keyEvent = static_cast<QKeyEvent const *>(e);
-
-        auto const key = translateKey(static_cast<Qt::Key>(keyEvent->key()));
-
-        if (key > ape::Key::last)
-        {
-            return false;
-        }
-
-        auto const modifiers = translateModifier(keyEvent->modifiers());
-
-        keyStatus[static_cast<std::size_t>(key)] = ape::KeyStatus::released;
-
-        onKeyboard.fire(key, ape::KeyAction::release, static_cast<ape::KeyModifier>(modifiers));
-        
-        return true;
+        return processKeyReleaseEvent(e);
     }
     else
     {
         return QObject::eventFilter(obj, e);
     }
+}
+
+auto WidgetWindow::processKeyPressEvent(QEvent const * e)
+    -> bool
+{
+    return processKeyEvent(e, ape::KeyStatus::pressed, ape::KeyAction::press);
+}
+
+auto WidgetWindow::processKeyReleaseEvent(QEvent const * e)
+    -> bool
+{
+    return processKeyEvent(e, ape::KeyStatus::released, ape::KeyAction::release);
+}
+
+auto WidgetWindow::processKeyEvent(
+    QEvent const * const e,
+    ape::KeyStatus const status,
+    ape::KeyAction const action)
+    -> bool
+{
+    auto const keyEvent = static_cast<QKeyEvent const *>(e);
+
+    auto const key = translateKey(static_cast<Qt::Key>(keyEvent->key()));
+
+    if (key > ape::Key::last)
+    {
+        return false;
+    }
+
+    auto const modifiers = translateModifier(keyEvent->modifiers());
+
+    keyStatus[static_cast<std::size_t>(key)] = status;
+
+    onKeyboard.fire(key, action, static_cast<ape::KeyModifier>(modifiers));
+
+    return true;
 }
 
 } // namespace ape::qt
