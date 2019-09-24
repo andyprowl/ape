@@ -103,7 +103,7 @@ auto WidgetWindow::requestClosure()
 auto WidgetWindow::swapBuffers()
     -> void
 {
-    widget->context()->swapBuffers(nullptr);
+    // Qt framework takes care of this
 }
 
 auto WidgetWindow::isMouseCaptured() const
@@ -151,6 +151,7 @@ auto WidgetWindow::makeCurrent()
 auto WidgetWindow::pollEvents()
     -> void
 {
+    // Qt framework takes care of this
 }
 
 auto WidgetWindow::eventFilter(QObject * const obj, QEvent * const e)
