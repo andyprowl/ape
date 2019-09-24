@@ -20,6 +20,9 @@ private:
     auto registerViewChangeEventHandler(Camera const & camera, SpotLight & light)
         -> ScopedSignalConnection;
 
+    auto synchronize(Camera const & camera, SpotLight & light) const
+        -> void;
+
 private:
 
     ScopedSignalConnection handlerConnection;

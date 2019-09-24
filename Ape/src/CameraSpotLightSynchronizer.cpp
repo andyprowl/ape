@@ -11,6 +11,7 @@ namespace ape
 CameraSpotlightSynchronizer::CameraSpotlightSynchronizer(Camera const & camera, SpotLight & light)
     : handlerConnection{registerViewChangeEventHandler(camera, light)}
 {
+    synchronize(camera, light);
 }
 
 auto CameraSpotlightSynchronizer::registerViewChangeEventHandler(
@@ -18,12 +19,19 @@ auto CameraSpotlightSynchronizer::registerViewChangeEventHandler(
     SpotLight & light)
     -> ScopedSignalConnection
 {
-    return camera.onViewChanged.registerHandler([&camera, &light] (glm::mat4 const & /*view*/)
+    return camera.onViewChanged.registerHandler(
+        [this, &camera, &light] (glm::mat4 const & /*view*/)
     {
-        light.position = camera.getPosition();
-
-        light.direction = camera.getDirection();
+        synchronize(camera, light);
     });
+}
+
+auto CameraSpotlightSynchronizer::synchronize(Camera const & camera, SpotLight & light) const
+    -> void
+{
+    light.position = camera.getPosition();
+
+    light.direction = camera.getDirection();
 }
 
 } // namespace ape
