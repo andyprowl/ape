@@ -3,10 +3,12 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 
+class SampleScene;
+
 namespace ape::qt
 {
 
-class SceneWidget : public QOpenGLWidget, public QOpenGLFunctions
+class SceneWidget : public QOpenGLWidget
 {
 
     Q_OBJECT;
@@ -16,6 +18,9 @@ public:
     explicit SceneWidget(QWidget * parent);
 
     ~SceneWidget();
+
+    auto start(SampleScene & scene)
+        -> void;
 
 private:
 
@@ -37,11 +42,13 @@ private:
 
 private:
 
-    class EngineData;
+    class EngineHolder;
 
 private:
 
-    std::shared_ptr<EngineData> data;
+    std::shared_ptr<EngineHolder> holder;
+
+    QOpenGLContext * sharedContext;
 
 };
 

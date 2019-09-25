@@ -7,6 +7,7 @@
 #include <Ape/CameraSelector.hpp>
 #include <Ape/Engine.hpp>
 #include <Ape/GLFWGateway.hpp>
+#include <Ape/OpenGLLoader.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/StandardShaderProgram.hpp>
 
@@ -17,6 +18,7 @@ public:
 
     Impl()
         : window{gateway.createWindow("APE 3D engine", false)}
+        , loader{true, true}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
         , cameraSelector{scene}
@@ -39,6 +41,8 @@ private:
     ape::GLFWGateway gateway;
 
     ape::GLFWWindow window;
+
+    ape::OpenGLLoader loader;
 
     SampleAssetCollection assets;
 

@@ -2,7 +2,6 @@
 
 #include "GLFW.hpp"
 
-#include <iostream>
 #include <unordered_map>
 
 namespace ape

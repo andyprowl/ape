@@ -59,6 +59,8 @@ private:
 
     glm::vec3 backgroundColor;
 
+    unsigned int vaoId;
+
 };
 
 auto getCamera(SceneRenderer const & renderer)

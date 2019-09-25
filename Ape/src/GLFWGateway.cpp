@@ -12,11 +12,6 @@ class GLFWGateway::Impl
 
 public:
 
-    Impl()
-        : areOpenGLFunctionsLoaded{false}
-    {
-    }
-
     auto createWindow(std::string const & title, bool createAsFullscreen)
         -> GLFWWindow
     {
@@ -24,35 +19,12 @@ public:
 
         window.makeCurrent();
 
-        if (!areOpenGLFunctionsLoaded)
-        {
-            initializeOpenGL();
-        }
-
         return window;
-    }
-
-    auto initializeOpenGL()
-        -> void
-    {
-        if (areOpenGLFunctionsLoaded)
-        {
-            return;
-        }
-
-        if (!gladLoadGL())
-        {
-            throw CouldNotLoadOpenGLFunctions{};
-        }
-
-        areOpenGLFunctionsLoaded = true;
     }
 
 private:
 
     GLFWInitializer glfwInitializer;
-
-    bool areOpenGLFunctionsLoaded;
 
 };
 
@@ -72,12 +44,6 @@ auto GLFWGateway::createWindow(std::string const & title, bool const createAsFul
     -> GLFWWindow
 {
     return impl->createWindow(title, createAsFullscreen);
-}
-
-auto GLFWGateway::initializeOpenGL()
-    -> void
-{
-    return impl->initializeOpenGL();
 }
 
 } // namespace ape

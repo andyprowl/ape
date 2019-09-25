@@ -2,6 +2,8 @@
 #include "SceneWidget.hpp"
 #include "TableModel.hpp"
 
+#include <Ape/OpenGLLoader.hpp>
+
 #include <TestScene/SampleAssetBuilder.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
@@ -12,6 +14,8 @@
 #include <QTableView>
 #include <QTreeView>
 #include <QWidget>
+
+#include <iostream>
 
 template<typename Model>
 auto makeListView(QWidget & parent, Model & model)
@@ -50,6 +54,12 @@ auto makeSceneWidget(QWidget & parent)
     -> ape::qt::SceneWidget &
 {
     auto const widget = new ape::qt::SceneWidget{&parent};
+
+    auto format = QSurfaceFormat{};
+
+    format.setVersion(4, 3);
+
+    widget->setFormat(format);
 
     return *widget;
 }
@@ -98,11 +108,11 @@ int main(int argc, char *argv[])
 
     auto & listView1 = makeListView(centralWidget, model);
 
-    auto & sceneView1 = makeSceneWidget(centralWidget);
+    auto & sceneView1 = makeSceneWidget(window);
 
     sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView2 = makeSceneWidget(centralWidget);
+    auto & sceneView2 = makeSceneWidget(window);
 
     sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
@@ -137,6 +147,23 @@ int main(int argc, char *argv[])
     window.registerSceneWidget(sceneView1);
 
     window.registerSceneWidget(sceneView2);
+
+    // The OpenGL context has been created after window.show() was called
+    ape::OpenGLLoader loader{true, true};
+
+    auto const sharing = QOpenGLContext::areSharing(sceneView1.context(), sceneView2.context());
+
+    std::cout << "Sharing is " << (sharing ? "enabled" : "disabled") << std::endl;
+
+    sceneView1.makeCurrent();
+
+    auto assets = createSampleAssets();
+    
+    auto scene = createSampleScene(assets);
+
+    sceneView1.start(scene);
+
+    sceneView2.start(scene);
 
     return app.exec();
 }

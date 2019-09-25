@@ -16,30 +16,13 @@
 namespace ape::qt
 {
 
-class SceneWidget::EngineData
+class SceneWidget::EngineHolder
 {
 
 public:
 
-    class OpenGLLoader
-    {
-
-    public:
-
-        OpenGLLoader(ape::GLFWGateway & gateway)
-        {
-            gateway.initializeOpenGL();
-        }
-
-    };
-
-public:
-
-    explicit EngineData(QOpenGLWidget & widget)
-        : loader{gateway}
-        , assets{createSampleAssets()}
-        , scene{createSampleScene(assets)}
-        , cameraSelector{scene}
+    EngineHolder(QOpenGLWidget & widget, SampleScene & scene)
+        : cameraSelector{scene}
         , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , window{widget}
         , inputHandler{window, cameraSelector, shader, scene}
@@ -48,14 +31,6 @@ public:
     }
 
 public:
-
-    ape::GLFWGateway gateway;
-
-    OpenGLLoader loader;
-
-    SampleAssetCollection assets;
-
-    SampleScene scene;
 
     ape::CameraSelector cameraSelector;
 
@@ -86,11 +61,26 @@ SceneWidget::~SceneWidget()
     doneCurrent();
 }
 
+auto SceneWidget::start(SampleScene & scene)
+    -> void
+{
+    makeCurrent();
+
+    holder = std::make_shared<EngineHolder>(*this, scene);
+
+    holder->inputHandler.getCameraManipulator().deactivate();
+}
+
 // virtual (from QOpenGLWidget)
 auto SceneWidget::paintGL()
     -> void
 {
-    data->engine.processOneFrame();
+    if (holder == nullptr)
+    {
+        return;
+    }
+
+    holder->engine.processOneFrame();
 
     update();
 }
@@ -100,26 +90,20 @@ auto SceneWidget::initializeGL()
     -> void
 {
     // Do all initialization here rather than inside the constructor
-
-    data = std::make_shared<EngineData>(*this);
-
-    data->inputHandler.getCameraManipulator().deactivate();
-
-    initializeOpenGLFunctions();
 }
 
 // virtual (from QOpenGLWidget)
 auto SceneWidget::focusInEvent(QFocusEvent * const)
     -> void
 {
-    data->inputHandler.getCameraManipulator().activate();
+    holder->inputHandler.getCameraManipulator().activate();
 }
 
 // virtual (from QOpenGLWidget)
 auto SceneWidget::focusOutEvent(QFocusEvent * const)
     -> void
 {
-    data->inputHandler.getCameraManipulator().deactivate();
+    holder->inputHandler.getCameraManipulator().deactivate();
 }
 
 } // namespace ape::qt

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <cassert>
 #include <numeric>
 #include <tuple>
 
@@ -16,7 +17,7 @@ namespace
 
 #define encodeComponentOffset(component) (void*)(offsetof(Vertex, component))
 
-auto setAttribute(int const position, int const numOfFloats, void * componentOffset)
+auto setVertexAttribute(int const position, int const numOfFloats, void * componentOffset)
     -> void
 {
     auto const stride = sizeof(Vertex);
@@ -39,11 +40,11 @@ auto makeVertexBufferObject(std::vector<Vertex> const & vertices)
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    setAttribute(0, 3, encodeComponentOffset(position));
+    setVertexAttribute(0, 3, encodeComponentOffset(position));
 
-    setAttribute(1, 3, encodeComponentOffset(normal));
+    setVertexAttribute(1, 3, encodeComponentOffset(normal));
 
-    setAttribute(2, 2, encodeComponentOffset(textureCoordinates));
+    setVertexAttribute(2, 2, encodeComponentOffset(textureCoordinates));
 
     return vboId;
 }
@@ -132,11 +133,21 @@ auto Shape::draw() const
     // However, when appropriate, it will save at least 50% of fragment shader calls.
     glEnable(GL_CULL_FACE);
 
-    glBindVertexArray(objectIds.vertexArrayObjectId);
+    //glBindVertexArray(objectIds.vertexArrayObjectId);
+
+    glBindBuffer(GL_ARRAY_BUFFER, objectIds.vertexBufferObjectId);
+
+    setVertexAttribute(0, 3, encodeComponentOffset(position));
+
+    setVertexAttribute(1, 3, encodeComponentOffset(normal));
+
+    setVertexAttribute(2, 2, encodeComponentOffset(textureCoordinates));
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objectIds.elementBufferObjectId);
 
     glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
     
-    glBindVertexArray(0);
+    //glBindVertexArray(0);
 }
 
 } // namespace ape

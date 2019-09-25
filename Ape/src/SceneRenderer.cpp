@@ -24,8 +24,9 @@ SceneRenderer::SceneRenderer(
     : cameraSelector{&cameraSelector}
     , shader{&shader}
     , backgroundColor{backgroundColor}
+    , vaoId{0}
 {
-    glEnable(GL_DEPTH_TEST);
+    glGenVertexArrays(1, &vaoId);
 }
 
 auto SceneRenderer::render() const
@@ -66,6 +67,8 @@ auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
 auto SceneRenderer::clear() const
     -> void
 {
+    glEnable(GL_DEPTH_TEST);
+
     glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -76,12 +79,16 @@ auto SceneRenderer::clear() const
 auto SceneRenderer::drawScene(Scene const & scene, Camera const & camera) const
     -> void
 {
+    glBindVertexArray(vaoId);
+
     auto const & cameraTransformation = camera.getTransformation();
 
     for (auto const & body : scene.bodies)
     {
         drawBody(body, cameraTransformation);
     }
+
+    glBindVertexArray(0);
 }
 
 auto SceneRenderer::drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
