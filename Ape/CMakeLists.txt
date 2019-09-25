@@ -74,3 +74,5 @@ target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/i
 target_link_libraries(${PROJECT_NAME} PUBLIC assimp glm)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw stb)
+
+export(TARGETS ${EXPORTS} NAMESPACE Ape:: FILE ${PROJECT_NAME}Config.cmake)

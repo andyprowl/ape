@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Ape/CameraSightMouseDriver.hpp>
+#include <Ape/MouseTracker.hpp>
 
 namespace ape
 {
@@ -47,6 +48,8 @@ private:
     CameraSelector * cameraSelector;
 
     Window * window;
+
+    MouseTracker mouseTracker;
 
     CameraSightMouseDriver sightDriver;
 

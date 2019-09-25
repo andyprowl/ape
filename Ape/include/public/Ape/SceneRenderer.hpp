@@ -2,6 +2,8 @@
 
 #include <Ape/CameraUniform.hpp>
 #include <Ape/LightingUniform.hpp>
+#include <Ape/RenderingContext.hpp>
+#include <Ape/VertexArrayObject.hpp>
 
 #include <stdexcept>
 
@@ -21,6 +23,7 @@ class SceneRenderer
 public:
 
     SceneRenderer(
+        RenderingContext const & renderingContext,
         CameraSelector const & cameraSelector,
         StandardShaderProgram & shader,
         glm::vec3 const & backgroundColor);
@@ -39,7 +42,13 @@ private:
     auto clear() const
         -> void;
 
-    auto drawScene(Scene const & scene, Camera const & camera) const
+    auto setupLighting() const
+        -> void;
+
+    auto setupCamera(Camera const & camera) const
+        -> void;
+
+    auto drawBodies(Camera const & camera) const
         -> void;
 
     auto drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
@@ -53,13 +62,15 @@ private:
 
 private:
 
+    RenderingContext renderingContext;
+
     CameraSelector const * cameraSelector;
 
     StandardShaderProgram * shader;
 
     glm::vec3 backgroundColor;
 
-    unsigned int vaoId;
+    VertexArrayObject arrayObject;
 
 };
 

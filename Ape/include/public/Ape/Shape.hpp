@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Ape/ElementBufferObject.hpp>
+#include <Ape/VertexArrayObject.hpp>
+#include <Ape/VertexBufferObject.hpp>
 #include <Ape/Vertex.hpp>
 
 #include <vector>
@@ -7,33 +10,31 @@
 namespace ape
 {
 
+class RenderingContext;
+
 class Shape
 {
 
 public:
 
-    class ObjectIdSet
+    class BufferSet
     {
 
     public:
 
-        ObjectIdSet(
-            unsigned int const vertexBufferObjectId,
-            unsigned int const elementBufferObjectId,
-            unsigned int const vertexArrayObjectId)
-            : vertexBufferObjectId{vertexBufferObjectId}
-            , elementBufferObjectId{elementBufferObjectId}
-            , vertexArrayObjectId{vertexArrayObjectId}
+        BufferSet(
+            VertexBufferObject vertexBufferObject,
+            ElementBufferObject elementBufferObject)
+            : vertexBufferObject{std::move(vertexBufferObject)}
+            , elementBufferObject{std::move(elementBufferObject)}
         {
         }
 
     public:
 
-        unsigned int vertexBufferObjectId;
+        VertexBufferObject vertexBufferObject;
 
-        unsigned int elementBufferObjectId;
-
-        unsigned int vertexArrayObjectId;
+        ElementBufferObject elementBufferObject;
 
     };
 
@@ -41,26 +42,39 @@ public:
 
     Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
 
-    Shape(Shape const & rhs) = delete;
-
-    Shape(Shape && rhs) noexcept;
-
-    auto operator = (Shape const & rhs)
-        -> Shape & = delete;
-
-    auto operator = (Shape && rhs) noexcept
-        -> Shape &;
-
-    ~Shape();
-
-    auto draw() const
+    auto draw(RenderingContext const & context) const
         -> void;
 
 private:
 
-    ObjectIdSet objectIds;
+    auto drawWithoutArrayVertexObject() const
+        -> void;
+
+    auto drawWithArrayVertexObject(RenderingContext const & context) const
+        -> void;
+
+    auto retrieveBoundVertexArrayObject(RenderingContext const & context) const
+        -> VertexArrayObject &;
+
+    auto bindExistingVertexArrayObject(RenderingContext const & context) const
+        -> VertexArrayObject &;
+
+    auto hasVertexArrayObject(RenderingContext const & context) const
+        -> bool;
+
+    auto createNewVertexArrayObject(RenderingContext const & context) const
+        -> VertexArrayObject &;
+
+    auto setupRenderingState() const
+        -> void;
+
+private:
+
+    BufferSet buffers;
 
     int numOfVertices;
+
+    mutable std::vector<VertexArrayObject> contextArrayObjectMap;
 
 };
 

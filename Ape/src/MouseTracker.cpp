@@ -28,4 +28,10 @@ auto MouseTracker::getLastMovement() const
     return lastMovement;
 }
 
+auto MouseTracker::getWindow() const
+    -> Window &
+{
+    return *window;
+}
+
 } // namespace ape

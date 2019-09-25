@@ -18,15 +18,15 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
+    RenderingContext const & renderingContext,
     CameraSelector const & cameraSelector,
     StandardShaderProgram & shader,
     glm::vec3 const & backgroundColor)
-    : cameraSelector{&cameraSelector}
+    : renderingContext{renderingContext}
+    , cameraSelector{&cameraSelector}
     , shader{&shader}
     , backgroundColor{backgroundColor}
-    , vaoId{0}
 {
-    glGenVertexArrays(1, &vaoId);
 }
 
 auto SceneRenderer::render() const
@@ -34,22 +34,20 @@ auto SceneRenderer::render() const
 {
     clear();
 
-    auto const camera = cameraSelector->getActiveCamera();
+    auto const activeCamera = cameraSelector->getActiveCamera();
 
-    if (camera == nullptr)
+    if (activeCamera == nullptr)
     {
         return;
     }
 
     shader->use();
 
-    shader->camera.set(*camera);
+    setupLighting();
 
-    auto const & scene = cameraSelector->getScene();
+    setupCamera(*activeCamera);
 
-    shader->lighting.set(scene.lighting);
-
-    drawScene(scene, *camera);
+    drawBodies(*activeCamera);
 }
 
 auto SceneRenderer::getCameraSelector() const
@@ -76,10 +74,26 @@ auto SceneRenderer::clear() const
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-auto SceneRenderer::drawScene(Scene const & scene, Camera const & camera) const
+auto SceneRenderer::setupLighting() const
     -> void
 {
-    glBindVertexArray(vaoId);
+    auto const & scene = cameraSelector->getScene();
+
+    shader->lighting.set(scene.lighting);
+}
+
+auto SceneRenderer::setupCamera(Camera const & camera) const
+    -> void
+{
+    shader->camera.set(camera);
+}
+
+auto SceneRenderer::drawBodies(Camera const & camera) const
+    -> void
+{
+    auto const & scene = cameraSelector->getScene();
+
+    arrayObject.bind();
 
     auto const & cameraTransformation = camera.getTransformation();
 
@@ -88,7 +102,7 @@ auto SceneRenderer::drawScene(Scene const & scene, Camera const & camera) const
         drawBody(body, cameraTransformation);
     }
 
-    glBindVertexArray(0);
+    arrayObject.unbind();
 }
 
 auto SceneRenderer::drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
@@ -138,7 +152,7 @@ auto SceneRenderer::drawMesh(Mesh const & mesh) const
         material.specularMap->bind(1);
     }
 
-    mesh.getShape().draw();
+    mesh.getShape().draw(renderingContext);
 }
 
 auto getCamera(SceneRenderer const & renderer)

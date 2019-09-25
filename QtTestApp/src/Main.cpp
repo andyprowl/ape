@@ -2,7 +2,9 @@
 #include "SceneWidget.hpp"
 #include "TableModel.hpp"
 
+#include <Ape/CameraSelector.hpp>
 #include <Ape/OpenGLLoader.hpp>
+#include <Ape/RenderingContext.hpp>
 
 #include <TestScene/SampleAssetBuilder.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
@@ -50,10 +52,10 @@ auto makeTreeView(QWidget & parent, Model & model)
     return *view;
 }
 
-auto makeSceneWidget(QWidget & parent)
+auto makeSceneWidget(QWidget & parent, ape::RenderingContext const & context)
     -> ape::qt::SceneWidget &
 {
-    auto const widget = new ape::qt::SceneWidget{&parent};
+    auto const widget = new ape::qt::SceneWidget{context, &parent};
 
     auto format = QSurfaceFormat{};
 
@@ -108,11 +110,11 @@ int main(int argc, char *argv[])
 
     auto & listView1 = makeListView(centralWidget, model);
 
-    auto & sceneView1 = makeSceneWidget(window);
+    auto & sceneView1 = makeSceneWidget(window, {0, ape::RenderingPolicy::useArrayObjects});
 
     sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView2 = makeSceneWidget(window);
+    auto & sceneView2 = makeSceneWidget(window, {1, ape::RenderingPolicy::useArrayObjects});
 
     sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
@@ -161,9 +163,11 @@ int main(int argc, char *argv[])
     
     auto scene = createSampleScene(assets);
 
-    sceneView1.start(scene);
+    sceneView1.engage(scene);
 
-    sceneView2.start(scene);
+    sceneView2.engage(scene);
+
+    sceneView2.getCameraSelector().activateNextCamera();
 
     return app.exec();
 }

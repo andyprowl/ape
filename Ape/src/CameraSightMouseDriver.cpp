@@ -3,6 +3,8 @@
 #include <Ape/Camera.hpp>
 #include <Ape/CameraSelector.hpp>
 #include <Ape/Math.hpp>
+#include <Ape/MouseTracker.hpp>
+#include <Ape/Offset.hpp>
 #include <Ape/Window.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -48,12 +50,11 @@ auto getInitialAngles(CameraSelector const & selector)
 } // unnamed namespace
 
 CameraSightMouseDriver::CameraSightMouseDriver(
-    Window & window,
+    MouseTracker & mouseTracker,
     CameraSelector & cameraSelector,
     float const sensitivity)
-    : window{&window}
+    : mouseTracker{&mouseTracker}
     , cameraSelector{&cameraSelector}
-    , mouseTracker{window}
     , angles{getInitialAngles(cameraSelector)}
     , sensitivity{sensitivity}
     , wheelHandlerConnection{registerForWheelNotifications()}
@@ -64,8 +65,6 @@ CameraSightMouseDriver::CameraSightMouseDriver(
 auto CameraSightMouseDriver::update()
     -> void
 {
-    mouseTracker.update();
-
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     if (activeCamera == nullptr)
@@ -73,7 +72,7 @@ auto CameraSightMouseDriver::update()
         return;
     }
 
-    auto const offset = mouseTracker.getLastMovement();
+    auto const offset = mouseTracker->getLastMovement();
 
     if ((offset.deltaX == 0.0) || (offset.deltaY == 0.0))
     {
@@ -88,7 +87,9 @@ auto CameraSightMouseDriver::update()
 auto CameraSightMouseDriver::registerForWheelNotifications()
     -> ScopedSignalConnection
 {
-    return window->onMouseWheel.registerHandler([this] (double const offset)
+    auto & window = mouseTracker->getWindow();
+
+    return window.onMouseWheel.registerHandler([this] (double const offset)
     {
         auto const activeCamera = cameraSelector->getActiveCamera();
 

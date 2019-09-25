@@ -48,7 +48,8 @@ CameraManipulator::CameraManipulator(
     float const sensitivity)
     : cameraSelector{&cameraSelector}
     , window{&window}
-    , sightDriver{window, cameraSelector, sensitivity}
+    , mouseTracker{window}
+    , sightDriver{mouseTracker, cameraSelector, sensitivity}
     , isEngaged{true}
 {
 }
@@ -56,6 +57,8 @@ CameraManipulator::CameraManipulator(
 auto CameraManipulator::update(double const lastFrameDuration)
     -> void
 {
+    mouseTracker.update();
+
     if (!isActive())
     {
         return;
@@ -90,7 +93,7 @@ auto CameraManipulator::isActive() const
 auto CameraManipulator::activate()
     -> void
 {
-    isEngaged = true;;
+    isEngaged = true;
 }
 
 auto CameraManipulator::deactivate()

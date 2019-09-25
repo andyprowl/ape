@@ -21,6 +21,9 @@ public:
     auto getLastMovement() const
         -> Offset;
 
+    auto getWindow() const
+        -> Window &;
+
 private:
 
     Window * window;

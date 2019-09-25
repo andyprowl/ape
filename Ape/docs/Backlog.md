@@ -1,4 +1,5 @@
  - Figure out why Blender models get loaded without textures
+ - Automatically assign incremental IDs to rendering contexts
  - Separate engine from GLFW-specific classes
  - Create a separate library for Qt's SceneWidget
  - Create a separate library for model import units using Assimp

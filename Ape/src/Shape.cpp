@@ -1,5 +1,7 @@
 #include <Ape/Shape.hpp>
 
+#include <Ape/RenderingContext.hpp>
+
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -28,13 +30,11 @@ auto setVertexAttribute(int const position, int const numOfFloats, void * compon
 }
 
 auto makeVertexBufferObject(std::vector<Vertex> const & vertices)
-    -> unsigned int
+    -> VertexBufferObject
 {
-    auto vboId = static_cast<unsigned int>(0);
+    auto vbo = VertexBufferObject{};
 
-    glGenBuffers(1, &vboId);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vboId);
+    vbo.bind();
 
     auto const vertexBufferSize = vertices.size() * sizeof(Vertex);
 
@@ -46,17 +46,15 @@ auto makeVertexBufferObject(std::vector<Vertex> const & vertices)
 
     setVertexAttribute(2, 2, encodeComponentOffset(textureCoordinates));
 
-    return vboId;
+    return vbo;
 }
 
 auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
-    -> unsigned int
+    -> ElementBufferObject
 {
-    auto eboId = static_cast<unsigned int>(0);
+    auto ebo = ElementBufferObject{};
 
-    glGenBuffers(1, &eboId);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboId);
+    ebo.bind();
 
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
@@ -64,78 +62,117 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
         indices.data(),
         GL_STATIC_DRAW);
 
-    return eboId;
+    return ebo;
 }
 
 auto makeVertices(
     std::vector<Vertex> const & vertices,
     std::vector<unsigned int> const & indices)
-    -> Shape::ObjectIdSet
+    -> Shape::BufferSet
 {
-    auto vaoId = static_cast<unsigned int>(0);
+    auto vao = VertexArrayObject{};
 
-    glGenVertexArrays(1, &vaoId);
+    vao.bind();
 
-    glBindVertexArray(vaoId);
+    auto vbo = makeVertexBufferObject(vertices);
 
-    auto const vboId = makeVertexBufferObject(vertices);
+    auto ebo = makeVertexIndexBufferObject(indices);
 
-    auto const eboId = makeVertexIndexBufferObject(indices);
+    vao.unbind();
 
-    glBindVertexArray(0);
-
-    return {vboId, eboId, vaoId};
+    return {std::move(vbo), std::move(ebo)};
 }
 
 } // unnamed namespace
 
 Shape::Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices)
-    : objectIds{makeVertices(vertices, indices)}
+    : buffers{makeVertices(vertices, indices)}
     , numOfVertices{static_cast<int>(indices.size())}
 {
 }
 
-Shape::Shape(Shape && rhs) noexcept
-    : objectIds{rhs.objectIds}
-    , numOfVertices{rhs.numOfVertices}
-{
-    rhs.numOfVertices = 0;
-}
-
-auto Shape::operator = (Shape && rhs) noexcept
-    -> Shape &
-{
-    objectIds = rhs.objectIds;
-
-    numOfVertices = rhs.numOfVertices;
-
-    rhs.numOfVertices = 0;
-
-    return *this;
-}
-
-Shape::~Shape()
-{
-    if (numOfVertices != 0)
-    {
-        glDeleteVertexArrays(1, &objectIds.vertexArrayObjectId);
-
-        glDeleteVertexArrays(1, &objectIds.elementBufferObjectId);
-
-        glDeleteVertexArrays(1, &objectIds.vertexBufferObjectId);
-    }
-}
-
-auto Shape::draw() const
+auto Shape::draw(RenderingContext const & context) const
     -> void
 {
     // Culling is not appropriate for all shapes. This should be done conditionally in the future.
     // However, when appropriate, it will save at least 50% of fragment shader calls.
     glEnable(GL_CULL_FACE);
 
-    //glBindVertexArray(objectIds.vertexArrayObjectId);
+    if (context.policy == RenderingPolicy::doNotUseArrayObjects)
+    {
+        drawWithoutArrayVertexObject();
+    }
+    else
+    {
+        drawWithArrayVertexObject(context);
+    }
+}
 
-    glBindBuffer(GL_ARRAY_BUFFER, objectIds.vertexBufferObjectId);
+auto Shape::drawWithoutArrayVertexObject() const
+    -> void
+{
+    setupRenderingState();
+
+    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
+}
+
+auto Shape::drawWithArrayVertexObject(RenderingContext const & context) const
+    -> void
+{
+    auto & vertexArrayObject = retrieveBoundVertexArrayObject(context);
+    
+    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
+
+    vertexArrayObject.unbind();
+}
+
+auto Shape::retrieveBoundVertexArrayObject(RenderingContext const & context) const
+    -> VertexArrayObject &
+{
+    if (hasVertexArrayObject(context))
+    {
+        return bindExistingVertexArrayObject(context);
+    }
+    else
+    {
+        return createNewVertexArrayObject(context);
+    }
+}
+
+auto Shape::hasVertexArrayObject(RenderingContext const & context) const
+    -> bool
+{
+    return (context.id < static_cast<int>(contextArrayObjectMap.size()));
+}
+
+auto Shape::bindExistingVertexArrayObject(RenderingContext const & context) const
+    -> VertexArrayObject &
+{
+    auto & arrayObject = contextArrayObjectMap[context.id];
+
+    arrayObject.bind();
+
+    return arrayObject;
+}
+
+auto Shape::createNewVertexArrayObject(RenderingContext const & context) const
+    -> VertexArrayObject &
+{
+    contextArrayObjectMap.resize(context.id + 1);
+
+    auto & newArrayObject = contextArrayObjectMap.back();
+
+    newArrayObject.bind();
+
+    setupRenderingState();
+
+    return newArrayObject;
+}
+
+auto Shape::setupRenderingState() const
+    -> void
+{
+    buffers.vertexBufferObject.bind();
 
     setVertexAttribute(0, 3, encodeComponentOffset(position));
 
@@ -143,11 +180,7 @@ auto Shape::draw() const
 
     setVertexAttribute(2, 2, encodeComponentOffset(textureCoordinates));
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, objectIds.elementBufferObjectId);
-
-    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
-    
-    //glBindVertexArray(0);
+    buffers.elementBufferObject.bind();
 }
 
 } // namespace ape

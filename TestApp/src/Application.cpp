@@ -22,7 +22,8 @@ public:
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
         , cameraSelector{scene}
-        , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
+        , context{0, ape::RenderingPolicy::useArrayObjects}
+        , renderer{context, cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, cameraSelector, shader, scene}
         , engine{window, renderer, inputHandler}
     {
@@ -51,6 +52,8 @@ private:
     ape::CameraSelector cameraSelector;
 
     ape::StandardShaderProgram shader;
+
+    ape::RenderingContext context;
 
     ape::SceneRenderer renderer;
 

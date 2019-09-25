@@ -21,10 +21,10 @@ class SceneWidget::EngineHolder
 
 public:
 
-    EngineHolder(QOpenGLWidget & widget, SampleScene & scene)
-        : cameraSelector{scene}
-        , renderer{cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
-        , window{widget}
+    EngineHolder(QOpenGLWidget & widget, SampleScene & scene, RenderingContext const & context)
+        : window{widget}
+        , cameraSelector{scene}
+        , renderer{context, cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, cameraSelector, shader, scene}
         , engine{window, renderer, inputHandler}
     {
@@ -32,13 +32,13 @@ public:
 
 public:
 
+    ape::qt::WidgetWindow window;
+
     ape::CameraSelector cameraSelector;
 
     ape::StandardShaderProgram shader;
 
     ape::SceneRenderer renderer;
-
-    ape::qt::WidgetWindow window;
 
     SampleInputHandler inputHandler;
 
@@ -46,8 +46,9 @@ public:
 
 };
 
-SceneWidget::SceneWidget(QWidget * const parent)
+SceneWidget::SceneWidget(ape::RenderingContext const & renderingContext, QWidget * const parent)
     : QOpenGLWidget{parent}
+    , renderingContext{renderingContext}
 {
     // No calls to OpenGL here, do those in initializeGL instead
 }
@@ -61,14 +62,25 @@ SceneWidget::~SceneWidget()
     doneCurrent();
 }
 
-auto SceneWidget::start(SampleScene & scene)
+auto SceneWidget::engage(SampleScene & scene)
     -> void
 {
     makeCurrent();
 
-    holder = std::make_shared<EngineHolder>(*this, scene);
+    holder = std::make_shared<EngineHolder>(*this, scene, renderingContext);
 
     holder->inputHandler.getCameraManipulator().deactivate();
+}
+
+auto SceneWidget::getCameraSelector()
+    -> CameraSelector &
+{
+    if (holder == nullptr)
+    {
+        throw SceneWidgetNotEngaged{};
+    }
+
+    return holder->cameraSelector;
 }
 
 // virtual (from QOpenGLWidget)

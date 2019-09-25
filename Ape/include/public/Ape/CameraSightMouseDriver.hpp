@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Ape/MouseTracker.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 #include <Ape/TaitBryanAngles.hpp>
 
@@ -10,14 +9,18 @@ namespace ape
 class Camera;
 class CameraSelector;
 class MouseWheelPublisher;
-class Window;
+class MouseTracker;
+class Offset;
 
 class CameraSightMouseDriver
 {
 
 public:
 
-    CameraSightMouseDriver(Window & window, CameraSelector & cameraSelector, float sensitivity);
+    CameraSightMouseDriver(
+        MouseTracker & mouseTracker,
+        CameraSelector & cameraSelector,
+        float sensitivity);
 
     auto update()
         -> void;
@@ -38,11 +41,9 @@ private:
 
 private:
 
-    Window * window;
-
     CameraSelector * cameraSelector;
 
-    MouseTracker mouseTracker;
+    MouseTracker * mouseTracker;
 
     TaitBryanAngles angles;
 
