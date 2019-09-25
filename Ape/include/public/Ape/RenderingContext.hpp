@@ -17,13 +17,31 @@ class RenderingContext
 
 public:
 
-    RenderingContext(int const id, RenderingPolicy const policy)
-        : id{id}
+    explicit RenderingContext(RenderingPolicy const policy)
+        : id{nextId++}
         , policy{policy}
     {
     }
 
 public:
+
+    auto getId() const
+        -> int
+    {
+        return id;
+    }
+
+    auto getPolicy() const
+        -> RenderingPolicy
+    {
+        return policy;
+    }
+
+private:
+
+    static inline auto nextId = 0;
+
+private:
 
     int id;
 

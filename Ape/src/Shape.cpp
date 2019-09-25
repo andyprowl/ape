@@ -98,7 +98,7 @@ auto Shape::draw(RenderingContext const & context) const
     // However, when appropriate, it will save at least 50% of fragment shader calls.
     glEnable(GL_CULL_FACE);
 
-    if (context.policy == RenderingPolicy::doNotUseArrayObjects)
+    if (context.getPolicy() == RenderingPolicy::doNotUseArrayObjects)
     {
         drawWithoutArrayVertexObject();
     }
@@ -142,13 +142,13 @@ auto Shape::retrieveBoundVertexArrayObject(RenderingContext const & context) con
 auto Shape::hasVertexArrayObject(RenderingContext const & context) const
     -> bool
 {
-    return (context.id < static_cast<int>(contextArrayObjectMap.size()));
+    return (context.getId() < static_cast<int>(contextArrayObjectMap.size()));
 }
 
 auto Shape::bindExistingVertexArrayObject(RenderingContext const & context) const
     -> VertexArrayObject &
 {
-    auto & arrayObject = contextArrayObjectMap[context.id];
+    auto & arrayObject = contextArrayObjectMap[context.getId()];
 
     arrayObject.bind();
 
@@ -158,7 +158,7 @@ auto Shape::bindExistingVertexArrayObject(RenderingContext const & context) cons
 auto Shape::createNewVertexArrayObject(RenderingContext const & context) const
     -> VertexArrayObject &
 {
-    contextArrayObjectMap.resize(context.id + 1);
+    contextArrayObjectMap.resize(context.getId() + 1);
 
     auto & newArrayObject = contextArrayObjectMap.back();
 

@@ -8,9 +8,7 @@
 
 #include <Ape/CameraSelector.hpp>
 #include <Ape/Engine.hpp>
-#include <Ape/GLFWGateway.hpp>
 #include <Ape/SceneRenderer.hpp>
-#include <Ape/StandardInputHandler.hpp>
 #include <Ape/StandardShaderProgram.hpp>
 
 namespace ape::qt
@@ -50,7 +48,6 @@ SceneWidget::SceneWidget(ape::RenderingContext const & renderingContext, QWidget
     : QOpenGLWidget{parent}
     , renderingContext{renderingContext}
 {
-    // No calls to OpenGL here, do those in initializeGL instead
 }
 
 SceneWidget::~SceneWidget()
@@ -95,13 +92,6 @@ auto SceneWidget::paintGL()
     holder->engine.processOneFrame();
 
     update();
-}
-
-// virtual (from QOpenGLWidget)
-auto SceneWidget::initializeGL()
-    -> void
-{
-    // Do all initialization here rather than inside the constructor
 }
 
 // virtual (from QOpenGLWidget)

@@ -53,10 +53,6 @@ private:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto initializeGL()
-        -> void override;
-
-    // virtual (from QOpenGLWidget)
     auto focusInEvent(QFocusEvent * const)
         -> void override;
 

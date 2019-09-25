@@ -52,9 +52,11 @@ auto makeTreeView(QWidget & parent, Model & model)
     return *view;
 }
 
-auto makeSceneWidget(QWidget & parent, ape::RenderingContext const & context)
+auto makeSceneWidget(QWidget & parent)
     -> ape::qt::SceneWidget &
 {
+    auto const context = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
+
     auto const widget = new ape::qt::SceneWidget{context, &parent};
 
     auto format = QSurfaceFormat{};
@@ -110,11 +112,11 @@ int main(int argc, char *argv[])
 
     auto & listView1 = makeListView(centralWidget, model);
 
-    auto & sceneView1 = makeSceneWidget(window, {0, ape::RenderingPolicy::useArrayObjects});
+    auto & sceneView1 = makeSceneWidget(window);
 
     sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView2 = makeSceneWidget(window, {1, ape::RenderingPolicy::useArrayObjects});
+    auto & sceneView2 = makeSceneWidget(window);
 
     sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 

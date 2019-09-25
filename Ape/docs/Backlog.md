@@ -1,8 +1,11 @@
  - Figure out why Blender models get loaded without textures
- - Automatically assign incremental IDs to rendering contexts
+ - Is it correct to have cameras be part of the scene?
+   - Is it correct to force renderers to use a camera from a scene?
+   - This way when two widgets use the same camera and one manipulates it, the other one also gets
+     updated...
  - Separate engine from GLFW-specific classes
  - Create a separate library for Qt's SceneWidget
  - Create a separate library for model import units using Assimp
  - Extract utility functions to separate (general-purpose) library projects
- - Support planar shapes/meshes
+ - Support flat shapes/meshes
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals

@@ -22,7 +22,7 @@ public:
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
         , cameraSelector{scene}
-        , context{0, ape::RenderingPolicy::useArrayObjects}
+        , context{ape::RenderingPolicy::useArrayObjects}
         , renderer{context, cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, cameraSelector, shader, scene}
         , engine{window, renderer, inputHandler}
