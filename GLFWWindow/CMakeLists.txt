@@ -1,4 +1,4 @@
-project(Ape)
+project(GLFWWindow)
 
 include("cmake/Dependencies.cmake")
 
@@ -35,7 +35,7 @@ file(
     SHADER_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/*.glsl"
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders/*.glsi")
-    
+
 file(
     GLOB
     TEXTURE_FILES
@@ -71,8 +71,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC assimp glm)
+target_link_libraries(${PROJECT_NAME} PUBLIC Ape)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE glad stb)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw)
 
 export(TARGETS ${EXPORTS} NAMESPACE Ape:: FILE ${PROJECT_NAME}Config.cmake)

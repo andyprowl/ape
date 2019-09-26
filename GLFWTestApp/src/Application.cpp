@@ -4,9 +4,10 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
+#include <GLFWWindow/GLFWGateway.hpp>
+
 #include <Ape/CameraSelector.hpp>
 #include <Ape/Engine.hpp>
-#include <Ape/GLFWGateway.hpp>
 #include <Ape/OpenGLLoader.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/StandardShaderProgram.hpp>

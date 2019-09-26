@@ -3,7 +3,10 @@
    - Is it correct to force renderers to use a camera from a scene?
    - This way when two widgets use the same camera and one manipulates it, the other one also gets
      updated...
- - Separate engine from GLFW-specific classes
+ - Clean up CMake build system and factor out common boilerplate
+  - Especially cmake/dependencies.cmake files for all projects
+  - Have "Infrastructure" folder with top-level docs and backlog
+ - Add CMake install target handling correct deployment of dependencies too
  - Create a separate library for Qt's SceneWidget
  - Create a separate library for model import units using Assimp
  - Extract utility functions to separate (general-purpose) library projects

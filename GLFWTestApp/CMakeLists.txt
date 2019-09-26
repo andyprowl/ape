@@ -1,4 +1,4 @@
-project(TestApp)
+project(GLFWTestApp)
 
 file(
     GLOB
@@ -78,4 +78,4 @@ set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
 target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE TestScene)
+target_link_libraries(${PROJECT_NAME} PRIVATE GLFWWindow TestScene)

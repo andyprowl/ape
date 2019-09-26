@@ -48,22 +48,6 @@ function(ImportGLAD)
 
 endfunction()
 
-function(ImportGLFW)
-
-    find_package(glfw3 REQUIRED COMPONENTS glfw)
-
-    if(glfw3_FOUND)
-    
-        message(" -- GLFW was found")
-    
-    else()
-    
-        message(" XX GLFW was not found!")
-    
-    endif()
-
-endfunction()
-
 function(ImportGLM)
 
     add_library(glm INTERFACE)
@@ -89,8 +73,6 @@ function(ImportDependencies)
     ImportAssimp()
     
     ImportGLAD()
-
-    ImportGLFW()
 
     ImportGLM()
 
