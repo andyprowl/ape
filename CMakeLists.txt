@@ -18,10 +18,12 @@ add_subdirectory(Glad)
 
 add_subdirectory(GLFWWindow)
 
+add_subdirectory(GLFWTestApp)
+
+add_subdirectory(QtTestApp)
+
 add_subdirectory(QtWindow)
 
 add_subdirectory(TestScene)
 
-add_subdirectory(GLFWTestApp)
-
-add_subdirectory(QtTestApp)
+add_subdirectory(Stb)

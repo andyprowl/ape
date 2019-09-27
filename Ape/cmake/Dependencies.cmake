@@ -16,26 +16,6 @@ function(ImportAssimp)
 
     endif()
 
-    add_library(assimp STATIC IMPORTED)
-
-    set_target_properties(
-        assimp
-        PROPERTIES
-        INTERFACE_INCLUDE_DIRECTORIES
-        "${ASSIMP_INCLUDE_DIRS}")
-    
-    if(WIN32)
-
-        set(ASSIMP_LIBRARY_EXTENSION ".lib")
-
-    endif()
-
-    set_target_properties(
-        assimp
-        PROPERTIES
-        IMPORTED_LOCATION
-        "${ASSIMP_LIBRARY_DIRS}/${ASSIMP_LIBRARIES}${ASSIMP_LIBRARY_EXTENSION}")
-
 endfunction()
 
 function(ImportGlfw)

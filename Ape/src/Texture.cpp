@@ -1,7 +1,6 @@
 #include <Ape/Texture.hpp>
 
 #include <glad/glad.h>
-#include <stb/stbimage.h>
 
 #include <cassert>
 

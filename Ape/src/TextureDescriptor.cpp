@@ -1,7 +1,7 @@
 #include <Ape/TextureDescriptor.hpp>
 
 #include <glad/glad.h>
-#include <stb/stbimage.h>
+#include <stb/stb_image.h>
 
 #include <cassert>
 
