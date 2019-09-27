@@ -4,13 +4,13 @@
 #include <Ape/CameraSpotlightSynchronizer.hpp>
 #include <Ape/CameraUniform.hpp>
 #include <Ape/FrameRateTracker.hpp>
-#include <Ape/FrameTimeTracker.hpp>
 #include <Ape/InputHandler.hpp>
 #include <Ape/LightingUniform.hpp>
 #include <Ape/Scene.hpp>
 #include <Ape/SceneRenderer.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 #include <Ape/Stopwatch.hpp>
+#include <Ape/TimeIntervalTracker.hpp>
 #include <Ape/Window.hpp>
 
 #include <glad/glad.h>
@@ -43,6 +43,17 @@ public:
         }
     }
 
+private:
+    
+    auto registerWindowResizeHandler()
+        -> ScopedSignalConnection
+    {
+        return window->onResize.registerHandler([this] (Size<int> const & size)
+        {
+            setViewport(size);
+        });
+    }
+
     auto processOneFrame()
         -> void
     {
@@ -53,17 +64,6 @@ public:
         recordFrameDuration();
 
         reportFramesPerSecond();
-    }
-
-private:
-    
-    auto registerWindowResizeHandler()
-        -> ScopedSignalConnection
-    {
-        return window->onResize.registerHandler([this] (Size<int> const & size)
-        {
-            setViewport(size);
-        });
     }
 
     auto setViewport()
@@ -105,7 +105,7 @@ private:
     {
         window->pollEvents();
 
-        auto const lastFrameDuration = timeTracker.getLastFrameDuration();
+        auto const lastFrameDuration = timeTracker.getLastIntervalDuration();
 
         auto const durationInSeconds = lastFrameDuration.count() / 1'000'000'000.0;
 
@@ -155,7 +155,7 @@ private:
 
     InputHandler * inputHandler;
 
-    FrameTimeTracker timeTracker;
+    TimeIntervalTracker timeTracker;
 
     FrameRateTracker rateTracker;
 

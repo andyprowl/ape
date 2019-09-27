@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(QtTestApp)
+project(QtWindow)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -22,7 +22,7 @@ file(
     GLOB
     DOC_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/docs/*.*")
-
+    
 file(
     GLOB
     CMAKE_FILES
@@ -31,8 +31,13 @@ file(
 
 file(
     GLOB_RECURSE
-    HEADER_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
+    PRIVATE_HEADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/private/*.hpp")
+
+file(
+    GLOB_RECURSE
+    PUBLIC_HEADER_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.hpp")
 
 file(
     GLOB
@@ -50,14 +55,11 @@ file(
     TEXTURE_FILES
     "${CMAKE_CURRENT_SOURCE_DIR}/resources/textures/*.*")
 
-file(
-    GLOB_RECURSE
-    MODEL_FILES
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/models/*.*")
-
 source_group("CMake Files" FILES ${CMAKE_FILES})
 
-source_group("Header Files" FILES ${HEADER_FILES})
+source_group("Header Files\\Private" FILES ${PRIVATE_HEADER_FILES})
+
+source_group("Header Files\\Public" FILES ${PUBLIC_HEADER_FILES})
 
 source_group("Source Files" FILES ${SOURCE_FILES})
 
@@ -65,25 +67,17 @@ source_group("Resources\\Shader Files" FILES ${SHADER_FILES})
 
 source_group("Resources\\Texture Files" FILES ${TEXTURE_FILES})
 
-source_group(
-    TREE
-    "${CMAKE_CURRENT_SOURCE_DIR}/resources/models"
-    PREFIX
-    "Resources\\Model Files"
-    FILES
-    ${MODEL_FILES})
-
 source_group("Documentation" FILES ${DOC_FILES})
 
-add_executable(
+add_library(
     ${PROJECT_NAME}
     ${DOC_FILES}
     ${CMAKE_FILES}
-    ${HEADER_FILES}
+    ${PRIVATE_HEADER_FILES}
+    ${PUBLIC_HEADER_FILES}
     ${SOURCE_FILES}
     ${SHADER_FILES}
-    ${TEXTURE_FILES}
-    ${MODEL_FILES})
+    ${TEXTURE_FILES})
 
 AddPrivateDefinitions(shaderFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/shaders")
 
@@ -94,6 +88,10 @@ AddPrivateDefinitions(modelFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources/models"
 # The following prevents .obj model files to be interpreted as object files to be linked.
 set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
-target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+target_include_directories(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE QtWindow TestScene)
+target_include_directories(${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Ape Qt5::OpenGL Qt5::Widgets)
+
+target_link_libraries(${PROJECT_NAME} PRIVATE opengl32)

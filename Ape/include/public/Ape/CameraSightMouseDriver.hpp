@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Ape/MovementTracker.hpp>
+#include <Ape/Offset.hpp>
+#include <Ape/Position.hpp>
 #include <Ape/ScopedSignalConnection.hpp>
 #include <Ape/TaitBryanAngles.hpp>
 
@@ -9,47 +12,54 @@ namespace ape
 class Camera;
 class CameraSelector;
 class MouseWheelPublisher;
-class MouseTracker;
-class Offset;
+class Window;
 
 class CameraSightMouseDriver
 {
 
 public:
 
-    CameraSightMouseDriver(
-        MouseTracker & mouseTracker,
-        CameraSelector & cameraSelector,
-        float sensitivity);
+    CameraSightMouseDriver(CameraSelector & cameraSelector, Window & window, float sensitivity);
 
-    auto update()
+    auto isActive() const
+        -> bool;
+
+    auto activate()
+        -> void;
+
+    auto deactivate()
+        -> void;
+
+    auto onFrame()
+        -> void;
+
+    auto onMouseWheel(Offset<int> offset)
         -> void;
 
 private:
 
-    auto registerForWheelNotifications()
-        -> ScopedSignalConnection;
-
     auto registerForActiveCameraChangeNotifications()
         -> ScopedSignalConnection;
 
-    auto moveBy(Camera & camera, Offset const & offset)
+    auto moveBy(Camera & camera, Offset<float> const & angularOffset)
         -> void;
 
-    auto zoomBy(Camera & camera, double factor) const
+    auto zoomBy(Camera & camera, float factor) const
         -> void;
 
 private:
 
     CameraSelector * cameraSelector;
 
-    MouseTracker * mouseTracker;
+    Window * window;
+
+    MovementTracker mouseMovementTracker;
 
     TaitBryanAngles angles;
 
     float sensitivity;
 
-    ScopedSignalConnection wheelHandlerConnection;
+    bool isEngaged;
 
     ScopedSignalConnection cameraChangeHandlerConnection;
 

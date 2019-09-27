@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Ape/BlinnPhongKeySwitcher.hpp>
 #include <Ape/CameraManipulator.hpp>
 #include <Ape/StandardInputHandler.hpp>
 
@@ -37,12 +36,12 @@ public:
 private:
 
     // virtual (from StandardInputHandler)
-    auto onProcessInput(double lastFrameDuration)
+    auto onFrame(std::chrono::nanoseconds frameDuration)
         -> void override;
-
-    // virtual (from StandardInputHandler)
-    auto onKeyPressed(ape::Key key, ape::KeyModifier modifier)
-        -> bool override;
+    
+    // virtual (from InputHandler)
+    auto onKeyPress(ape::Key key, ape::KeyModifier modifier)
+        -> void override;
 
     auto processShapeModification(double lastFrameDuration) const
         -> void;
@@ -56,11 +55,11 @@ private:
     auto processLightRevolution(double lastFrameDuration) const
         -> void;
 
-    auto processMouseCapture(ape::Key const key, ape::KeyModifier const modifier) const
-        -> bool;
+    auto toggleBlinnPhongModel() const
+        -> void;
 
 private:
 
-    ape::BlinnPhongKeySwitcher blinnPhongSwitcher;
+    ape::StandardShaderProgram * shader;
 
 };

@@ -16,6 +16,8 @@ add_subdirectory(Ape)
 
 add_subdirectory(GLFWWindow)
 
+add_subdirectory(QtWindow)
+
 add_subdirectory(TestScene)
 
 add_subdirectory(GLFWTestApp)

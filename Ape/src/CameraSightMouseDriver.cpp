@@ -3,7 +3,7 @@
 #include <Ape/Camera.hpp>
 #include <Ape/CameraSelector.hpp>
 #include <Ape/Math.hpp>
-#include <Ape/MouseTracker.hpp>
+#include <Ape/MovementTracker.hpp>
 #include <Ape/Offset.hpp>
 #include <Ape/Window.hpp>
 
@@ -50,29 +50,55 @@ auto getInitialAngles(CameraSelector const & selector)
 } // unnamed namespace
 
 CameraSightMouseDriver::CameraSightMouseDriver(
-    MouseTracker & mouseTracker,
     CameraSelector & cameraSelector,
+    Window & window,
     float const sensitivity)
-    : mouseTracker{&mouseTracker}
-    , cameraSelector{&cameraSelector}
+    : cameraSelector{&cameraSelector}
+    , window{&window}
+    , mouseMovementTracker{window.getMousePosition()}
     , angles{getInitialAngles(cameraSelector)}
     , sensitivity{sensitivity}
-    , wheelHandlerConnection{registerForWheelNotifications()}
+    , isEngaged{false}
     , cameraChangeHandlerConnection{registerForActiveCameraChangeNotifications()}
 {
 }
 
-auto CameraSightMouseDriver::update()
+auto CameraSightMouseDriver::isActive() const
+    -> bool
+{
+    return isEngaged;
+}
+
+auto CameraSightMouseDriver::activate()
     -> void
 {
+    mouseMovementTracker.updatePosition(window->getMousePosition());
+
+    isEngaged = true;
+}
+
+auto CameraSightMouseDriver::deactivate()
+    -> void
+{
+    isEngaged = false;
+}
+
+auto CameraSightMouseDriver::onFrame()
+    -> void
+{
+    auto const offset = mouseMovementTracker.updatePosition(window->getMousePosition());
+
+    if (!isActive())
+    {
+        return;
+    }
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     if (activeCamera == nullptr)
     {
         return;
     }
-
-    auto const offset = mouseTracker->getLastMovement();
 
     if ((offset.deltaX == 0.0) || (offset.deltaY == 0.0))
     {
@@ -84,24 +110,19 @@ auto CameraSightMouseDriver::update()
     moveBy(*activeCamera, angularOffset);
 }
 
-auto CameraSightMouseDriver::registerForWheelNotifications()
-    -> ScopedSignalConnection
+auto CameraSightMouseDriver::onMouseWheel(Offset<int> const offset)
+    -> void
 {
-    auto & window = mouseTracker->getWindow();
+    auto const activeCamera = cameraSelector->getActiveCamera();
 
-    return window.onMouseWheel.registerHandler([this] (double const offset)
+    if (activeCamera == nullptr)
     {
-        auto const activeCamera = cameraSelector->getActiveCamera();
+        return;
+    }
 
-        if (activeCamera == nullptr)
-        {
-            return;
-        }
+    auto const factor = offset.deltaY * 2.0f;
 
-        auto const factor = offset * 2.0;
-
-        zoomBy(*activeCamera, factor);
-    });
+    zoomBy(*activeCamera, factor);
 }
 
 auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
@@ -114,24 +135,24 @@ auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
     });
 }
 
-auto CameraSightMouseDriver::moveBy(Camera & camera, Offset const & angularOffset)
+auto CameraSightMouseDriver::moveBy(Camera & camera, Offset<float> const & angularOffset)
     -> void
 {
-    angles.pitch = clamp(angles.pitch + static_cast<float>(angularOffset.deltaY), -89.0f, 89.0f);
+    angles.pitch = clamp((angles.pitch + angularOffset.deltaY), -89.0f, 89.0f);
 
-    angles.yaw += static_cast<float>(angularOffset.deltaX);
+    angles.yaw += angularOffset.deltaX;
 
     auto const newDirection = computeDirection(angles);
 
     camera.setDirection(newDirection);
 }
 
-auto CameraSightMouseDriver::zoomBy(Camera & camera, double const factor) const
+auto CameraSightMouseDriver::zoomBy(Camera & camera, float const factor) const
     -> void
 {
     auto const currentFieldOfView = glm::degrees(camera.getFieldOfView());
 
-    auto const newFieldOfView = currentFieldOfView - static_cast<float>(factor);
+    auto const newFieldOfView = currentFieldOfView - factor;
 
     auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
 

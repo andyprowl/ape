@@ -1,7 +1,7 @@
 #include <Ape/FrameRateTracker.hpp>
 
-#include <Ape/FrameTimeTracker.hpp>
 #include <Ape/Stopwatch.hpp>
+#include <Ape/TimeIntervalTracker.hpp>
 
 #include <iostream>
 
@@ -9,7 +9,7 @@ namespace ape
 {
 
 FrameRateTracker::FrameRateTracker(
-    FrameTimeTracker const & timeTracker,
+    TimeIntervalTracker const & timeTracker,
     int const reportFrequencyInMs)
     : timeTracker{&timeTracker}
     , reportFrequencyInMs{reportFrequencyInMs}
@@ -44,7 +44,7 @@ auto FrameRateTracker::update()
         return;
     }
 
-    burstDuration += timeTracker->getLastFrameDuration();
+    burstDuration += timeTracker->getLastIntervalDuration();
 
     ++numOfSamplesInBurst;
 

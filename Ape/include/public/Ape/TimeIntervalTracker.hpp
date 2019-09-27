@@ -7,17 +7,17 @@ namespace ape
 
 class Stopwatch;
 
-class FrameTimeTracker
+class TimeIntervalTracker
 {
 
 public:
 
-    explicit FrameTimeTracker(Stopwatch const & stopwatch);
+    explicit TimeIntervalTracker(Stopwatch const & stopwatch);
 
-    auto update()
-        -> void;
+    auto tick()
+        -> std::chrono::nanoseconds;
 
-    auto getLastFrameDuration() const
+    auto getLastIntervalDuration() const
         -> std::chrono::nanoseconds;
 
     auto getStopwatch() const

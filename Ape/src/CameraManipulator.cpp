@@ -48,40 +48,9 @@ CameraManipulator::CameraManipulator(
     float const sensitivity)
     : cameraSelector{&cameraSelector}
     , window{&window}
-    , mouseTracker{window}
-    , sightDriver{mouseTracker, cameraSelector, sensitivity}
-    , isEngaged{true}
+    , sightDriver{cameraSelector, window, sensitivity}
+    , isEngaged{false}
 {
-}
-
-auto CameraManipulator::update(double const lastFrameDuration)
-    -> void
-{
-    mouseTracker.update();
-
-    if (!isActive())
-    {
-        return;
-    }
-
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    if (activeCamera == nullptr)
-    {
-        return;
-    }
-
-    processMouseMovement();
-
-    processStraightMovement(*activeCamera, lastFrameDuration);
-
-    processStrafeMovement(*activeCamera, lastFrameDuration);
-}
-
-auto CameraManipulator::getCameraSelector() const
-    -> CameraSelector &
-{
-    return *cameraSelector;
 }
 
 auto CameraManipulator::isActive() const
@@ -94,21 +63,57 @@ auto CameraManipulator::activate()
     -> void
 {
     isEngaged = true;
+
+    sightDriver.activate();
 }
 
 auto CameraManipulator::deactivate()
     -> void
 {
     isEngaged = false;
+
+    sightDriver.deactivate();
 }
 
-auto CameraManipulator::processMouseMovement()
+auto CameraManipulator::onFrame(std::chrono::nanoseconds const frameDuration)
     -> void
 {
-    sightDriver.update();
+    sightDriver.onFrame();
+
+    if (!isActive())
+    {
+        return;
+    }
+
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    if (activeCamera == nullptr)
+    {
+        return;
+    }
+    
+    auto const frameDurationInSeconds = frameDuration.count() / 1'000'000'000.0;
+
+    processStraightMovement(*activeCamera, frameDurationInSeconds);
+
+    processStrafeMovement(*activeCamera, frameDurationInSeconds);
 }
 
-auto CameraManipulator::processStraightMovement(Camera & camera, double lastFrameDuration) const
+auto CameraManipulator::onMouseWheel(Offset<int> const offset)
+    -> void
+{
+    sightDriver.onMouseWheel(offset);
+}
+
+auto CameraManipulator::getCameraSelector() const
+    -> CameraSelector &
+{
+    return *cameraSelector;
+}
+
+auto CameraManipulator::processStraightMovement(
+    Camera & camera,
+    double const lastFrameDuration) const
     -> void
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);

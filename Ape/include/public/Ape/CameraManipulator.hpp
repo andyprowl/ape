@@ -1,7 +1,12 @@
 #pragma once
 
 #include <Ape/CameraSightMouseDriver.hpp>
-#include <Ape/MouseTracker.hpp>
+#include <Ape/Keyboard.hpp>
+#include <Ape/Stopwatch.hpp>
+#include <Ape/TimeIntervalTracker.hpp>
+
+#include <chrono>
+#include <optional>
 
 namespace ape
 {
@@ -17,12 +22,6 @@ public:
 
     CameraManipulator(CameraSelector & cameraSelector, Window & window, float sensitivity);
 
-    auto update(double lastFrameDuration)
-        -> void;
-
-    auto getCameraSelector() const
-        -> CameraSelector &;
-
     auto isActive() const
         -> bool;
 
@@ -32,10 +31,16 @@ public:
     auto deactivate()
         -> void;
 
-private:
-
-    auto processMouseMovement()
+    auto onFrame(std::chrono::nanoseconds frameDuration)
         -> void;
+
+    auto onMouseWheel(Offset<int> offset)
+        -> void;
+
+    auto getCameraSelector() const
+        -> CameraSelector &;
+
+private:
 
     auto processStraightMovement(Camera & camera, double lastFrameDuration) const
         -> void;
@@ -48,8 +53,6 @@ private:
     CameraSelector * cameraSelector;
 
     Window * window;
-
-    MouseTracker mouseTracker;
 
     CameraSightMouseDriver sightDriver;
 

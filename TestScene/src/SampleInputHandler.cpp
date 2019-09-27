@@ -4,7 +4,7 @@
 
 #include <Ape/CameraSelector.hpp>
 #include <Ape/CompilerWarnings.hpp>
-#include <Ape/ShaderProgram.hpp>
+#include <Ape/StandardShaderProgram.hpp>
 #include <Ape/Window.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -51,7 +51,7 @@ SampleInputHandler::SampleInputHandler(
     ape::StandardShaderProgram & shader,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
-    , blinnPhongSwitcher{window, shader}
+    , shader{&shader}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -65,30 +65,27 @@ auto SampleInputHandler::getScene() const
 }
 
 // virtual (from InputHandler)
-auto SampleInputHandler::onProcessInput(double const lastFrameDuration)
+auto SampleInputHandler::onFrame(std::chrono::nanoseconds const frameDuration)
     -> void
 {
-    processShapeModification(lastFrameDuration);
+    StandardInputHandler::onFrame(frameDuration);
 
-    processLightRevolution(lastFrameDuration);
+    auto const frameDurationInSeconds = frameDuration.count() / 1'000'000'000.0;
+
+    processShapeModification(frameDurationInSeconds);
+
+    processLightRevolution(frameDurationInSeconds);
 }
 
-auto SampleInputHandler::onKeyPressed(ape::Key const key, ape::KeyModifier const modifier)
-    -> bool
+auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const modifier)
+    -> void
 {
-    if (key == ape::Key::keyEscape)
+    StandardInputHandler::onKeyPress(key, modifier);
+
+    if ((key == ape::Key::keyB) && (modifier == ape::KeyModifier::none))
     {
-        getWindow().requestClosure();
-
-        return true;
+        toggleBlinnPhongModel();
     }
-
-    if (processMouseCapture(key, modifier))
-    {
-        return true;
-    }
-
-    return false;
 }
 
 auto SampleInputHandler::processShapeModification(double const lastFrameDuration) const
@@ -156,26 +153,10 @@ auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) 
     }
 }
 
-auto SampleInputHandler::processMouseCapture(
-    ape::Key const key,
-    ape::KeyModifier const modifier) const
-    -> bool
+auto SampleInputHandler::toggleBlinnPhongModel() const
+    -> void
 {
-    if ((key != ape::Key::keyM) || (modifier != ape::KeyModifier::none))
-    {
-        return false;
-    }
+    shader->use();
 
-    auto & window = getWindow();
-
-    if (window.isMouseCaptured())
-    {
-        window.releaseMouse();
-    }
-    else
-    {
-        window.captureMouse();
-    }
-
-    return true;
+    shader->useBlinnPhongModel = !shader->useBlinnPhongModel;
 }

@@ -2,7 +2,6 @@
 
 #include <Ape/CameraManipulator.hpp>
 #include <Ape/InputHandler.hpp>
-#include <Ape/ScopedSignalConnection.hpp>
 
 #include <memory>
 
@@ -22,33 +21,48 @@ class StandardInputHandler : public InputHandler
 public:
 
     StandardInputHandler(
-        Window & window, 
+        Window & window,
         CameraSelector & cameraSelector,
         float manipulatorSensitivity = 0.1f);
-
-    // virtual (from InputHandler)
-    auto processInput(double lastFrameDuration)
-        -> void override;
 
     auto getWindow() const
         -> Window &;
 
-    auto getCameraManipulator() const
+    auto getCameraManipulator()
         -> CameraManipulator &;
 
+    auto getCameraManipulator() const
+        -> CameraManipulator const &;
+
+    // virtual (from InputHandler)
+    auto onFrame(std::chrono::nanoseconds frameDuration)
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onKeyPress(Key key, KeyModifier modifier)
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onKeyRelease(Key key, KeyModifier modifier)
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onMouseMove(Position<int> position)
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onMouseWheel(Offset<int> position)
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onFocusAcquired()
+        -> void override;
+
+    // virtual (from InputHandler)
+    auto onFocusLost()
+        -> void override;
+
 private:
-
-    virtual auto onProcessInput(double lastFrameDuration)
-        -> void;
-
-    virtual auto onKeyPressed(Key key, KeyModifier modifier)
-        -> bool;
-
-    auto registerKeyboardHandler()
-        -> ScopedSignalConnection;
-
-    auto handleKeyPress(Key key, KeyModifier modifier)
-        -> void;
 
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
         -> void;
@@ -72,13 +86,11 @@ private:
 
     Window * handledWindow;
 
-    std::unique_ptr<CameraManipulator> cameraManipulator;
-
-    ScopedSignalConnection keyboardHandlerConnection;
+    CameraManipulator cameraManipulator;
 
 };
 
-auto getCameraSelector(StandardInputHandler const & handler)
+auto getCameraSelector(StandardInputHandler & handler)
     -> CameraSelector &;
 
 auto getScene(StandardInputHandler const & handler)

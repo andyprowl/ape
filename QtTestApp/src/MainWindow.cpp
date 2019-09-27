@@ -1,7 +1,8 @@
 #include "MainWindow.hpp"
 
-#include "SceneWidget.hpp"
 #include "TableModel.hpp"
+
+#include <QtWindow/SceneWidget.hpp>
 
 #include <QAbstractItemView>
 #include <QAction>

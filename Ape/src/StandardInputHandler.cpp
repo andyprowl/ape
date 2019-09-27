@@ -1,6 +1,7 @@
 #include <Ape/StandardInputHandler.hpp>
 
 #include <Ape/CameraSelector.hpp>
+#include <Ape/Position.hpp>
 #include <Ape/Scene.hpp>
 #include <Ape/Window.hpp>
 
@@ -19,25 +20,12 @@ auto toggle(bool & b)
 } // unnamed namespace
 
 StandardInputHandler::StandardInputHandler(
-    Window & window,
+    Window & handledWindow,
     CameraSelector & cameraSelector,
     float const manipulatorSensitivity)
-    : handledWindow{&window}
-    , cameraManipulator{std::make_unique<CameraManipulator>(
-        cameraSelector,
-        window,
-        manipulatorSensitivity)}
-    , keyboardHandlerConnection{registerKeyboardHandler()}
+    : handledWindow{&handledWindow}
+    , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
 {
-}
-
-// virtual (from InputHandler)
-auto StandardInputHandler::processInput(double lastFrameDuration)
-    -> void
-{
-    cameraManipulator->update(lastFrameDuration);
-
-    onProcessInput(lastFrameDuration);
 }
 
 auto StandardInputHandler::getWindow() const
@@ -46,49 +34,27 @@ auto StandardInputHandler::getWindow() const
     return *handledWindow;
 }
 
-auto StandardInputHandler::getCameraManipulator() const
+auto StandardInputHandler::getCameraManipulator()
     -> CameraManipulator &
 {
-    return *cameraManipulator;
+    return cameraManipulator;
 }
 
-auto StandardInputHandler::onProcessInput(double const /*lastFrameDuration*/)
+auto StandardInputHandler::getCameraManipulator() const
+    -> CameraManipulator const &
+{
+    return cameraManipulator;
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onFrame(std::chrono::nanoseconds frameDuration)
     -> void
 {
-    // Derived classes may override this.
+    cameraManipulator.onFrame(frameDuration);
 }
 
-auto StandardInputHandler::onKeyPressed(Key const /*key*/, KeyModifier const /*modifier*/)
-    -> bool
-{
-    // Derived classes may override this.
-
-    auto const wasHandled = false;
-
-    return wasHandled;
-}
-
-auto StandardInputHandler::registerKeyboardHandler()
-    -> ScopedSignalConnection
-{
-    return handledWindow->onKeyboard.registerHandler(
-        [this] (Key const key, KeyAction const action, KeyModifier const modifier)
-    {
-        if (action == KeyAction::press)
-        {
-            auto const wasHandled = onKeyPressed(key, modifier);
-
-            if (wasHandled)
-            {
-                return;
-            }
-
-            handleKeyPress(key, modifier);
-        }
-    });
-}
-
-auto StandardInputHandler::handleKeyPress(Key const key, const KeyModifier modifier)
+// virtual (from InputHandler)
+auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     -> void
 {
     processFullScreenToggling(key, modifier);
@@ -96,6 +62,39 @@ auto StandardInputHandler::handleKeyPress(Key const key, const KeyModifier modif
     processLightToggling(key, modifier);
 
     processCameraSwitching(key, modifier);
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onKeyRelease(Key const /*key*/, KeyModifier const /*modifier*/)
+    -> void
+{
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onMouseMove(Position<int> const /*position*/)
+    -> void
+{
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onMouseWheel(Offset<int> const position)
+    -> void
+{
+    cameraManipulator.onMouseWheel(position);
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onFocusAcquired()
+    -> void
+{
+    cameraManipulator.activate();
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::onFocusLost()
+    -> void
+{
+    cameraManipulator.deactivate();
 }
 
 auto StandardInputHandler::processFullScreenToggling(
@@ -108,15 +107,13 @@ auto StandardInputHandler::processFullScreenToggling(
         return;
     }
 
-    auto & window = getWindow();
-
-    if (!window.isFullScreen())
+    if (!handledWindow->isFullScreen())
     {
-        window.setFullScreen();
+        handledWindow->setFullScreen();
     }
     else
     {
-        window.exitFullScreen();
+        handledWindow->exitFullScreen();
     }
 }
 
@@ -189,21 +186,27 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
 auto StandardInputHandler::switchToCamera(int const index)
     -> void
 {
-    auto & cameraSelector = cameraManipulator->getCameraSelector();
+    auto & cameraSelector = cameraManipulator.getCameraSelector();
 
     cameraSelector.activateCamera(index);
 }
 
-auto getCameraSelector(StandardInputHandler const & handler)
+auto getCameraSelector(StandardInputHandler & handler)
     -> CameraSelector &
 {
-    return handler.getCameraManipulator().getCameraSelector();
+    auto & cameraManipulator = handler.getCameraManipulator();
+
+    return cameraManipulator.getCameraSelector();
 }
 
 auto getScene(StandardInputHandler const & handler)
     -> Scene &
 {
-    return getCameraSelector(handler).getScene();
+    auto const & cameraManipulator = handler.getCameraManipulator();
+
+    auto const & cameraSelector = cameraManipulator.getCameraSelector();
+
+    return cameraSelector.getScene();
 }
 
 } // namespace ape

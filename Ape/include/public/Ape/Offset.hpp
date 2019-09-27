@@ -3,12 +3,13 @@
 namespace ape
 {
 
+template<typename T>
 class Offset
 {
 
 public:
 
-    Offset(double const deltaX, double const deltaY)
+    Offset(T const deltaX, T const deltaY)
         : deltaX{deltaX}
         , deltaY{deltaY}
     {
@@ -16,9 +17,9 @@ public:
 
 public:
 
-    double deltaX;
+    T deltaX;
 
-    double deltaY;
+    T deltaY;
 
 };
 

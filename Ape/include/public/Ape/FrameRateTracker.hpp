@@ -5,14 +5,14 @@
 namespace ape
 {
 
-class FrameTimeTracker;
+class TimeIntervalTracker;
 
 class FrameRateTracker
 {
 
 public:
 
-    FrameRateTracker(FrameTimeTracker const & timeTracker, int reportFrequencyInMs);
+    FrameRateTracker(TimeIntervalTracker const & timeTracker, int reportFrequencyInMs);
 
     auto start()
         -> void;
@@ -33,7 +33,7 @@ private:
 
 private:
 
-    FrameTimeTracker const * timeTracker;
+    TimeIntervalTracker const * timeTracker;
 
     int reportFrequencyInMs;
 

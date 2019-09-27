@@ -1,13 +1,16 @@
 #include "MainWindow.hpp"
-#include "SceneWidget.hpp"
 #include "TableModel.hpp"
+
+#include <TestScene/SampleAssetBuilder.hpp>
+#include <TestScene/SampleInputHandler.hpp>
+#include <TestScene/SampleSceneBuilder.hpp>
+
+#include <QtWindow/SceneWidget.hpp>
 
 #include <Ape/CameraSelector.hpp>
 #include <Ape/OpenGLLoader.hpp>
 #include <Ape/RenderingContext.hpp>
-
-#include <TestScene/SampleAssetBuilder.hpp>
-#include <TestScene/SampleSceneBuilder.hpp>
+#include <Ape/StandardShaderProgram.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>
@@ -165,9 +168,19 @@ int main(int argc, char *argv[])
     
     auto scene = createSampleScene(assets);
 
-    sceneView1.engage(scene);
+    auto selector1 = ape::CameraSelector{scene};
 
-    sceneView2.engage(scene);
+    auto shader = ape::StandardShaderProgram{};
+
+    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, shader, scene};
+
+    sceneView1.engage(selector1, inputHandler1, shader);
+
+    auto selector2 = ape::CameraSelector{scene};
+
+    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, shader, scene};
+
+    sceneView2.engage(selector2, inputHandler2, shader);
 
     sceneView2.getCameraSelector().activateNextCamera();
 
