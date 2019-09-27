@@ -14,4 +14,6 @@ SetCpp17StandardCompliance()
 
 add_subdirectory(Ape)
 
+add_subdirectory(Glad)
+
 add_subdirectory(TestApp)
