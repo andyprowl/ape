@@ -14,6 +14,8 @@ SetCpp17StandardCompliance()
 
 add_subdirectory(Ape)
 
+add_subdirectory(Glad)
+
 add_subdirectory(GLFWWindow)
 
 add_subdirectory(QtWindow)
