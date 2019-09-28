@@ -280,7 +280,7 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
 auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
     -> ape::Texture &
 {
-    auto filepath = std::string{ resourceFolder } + "/models" + filename;
+    auto filepath = std::string{resourceFolder} + "/textures/" + filename;
 
     return assets.textures.emplace_back(std::move(filepath));
 }
@@ -288,7 +288,7 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
 auto resolveModelFilepath(std::string filename)
     -> std::string
 {
-    return std::string{resourceFolder} + "/models" + std::move(filename);
+    return std::string{resourceFolder} + "/models/" + std::move(filename);
 }
 
 } // unnamed namespace
