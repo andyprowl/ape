@@ -1,17 +1,17 @@
-#include <Ape/Engine.hpp>
+#include <Core/Engine.hpp>
 
-#include <Ape/CameraDrivenPipeline.hpp>
-#include <Ape/CameraSpotlightSynchronizer.hpp>
-#include <Ape/CameraUniform.hpp>
-#include <Ape/FrameRateTracker.hpp>
-#include <Ape/InputHandler.hpp>
-#include <Ape/LightingUniform.hpp>
-#include <Ape/Scene.hpp>
-#include <Ape/SceneRenderer.hpp>
-#include <Ape/ScopedSignalConnection.hpp>
-#include <Ape/Stopwatch.hpp>
-#include <Ape/TimeIntervalTracker.hpp>
-#include <Ape/Window.hpp>
+#include <Core/CameraDrivenPipeline.hpp>
+#include <Core/CameraSpotlightSynchronizer.hpp>
+#include <Core/CameraUniform.hpp>
+#include <Core/FrameRateTracker.hpp>
+#include <Core/InputHandler.hpp>
+#include <Core/LightingUniform.hpp>
+#include <Core/Scene.hpp>
+#include <Core/SceneRenderer.hpp>
+#include <Core/ScopedSignalConnection.hpp>
+#include <Core/Stopwatch.hpp>
+#include <Core/TimeIntervalTracker.hpp>
+#include <Core/Window.hpp>
 
 #include <glad/glad.h>
 

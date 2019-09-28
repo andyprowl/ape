@@ -1,4 +1,4 @@
-#include <Ape/GLFWGateway.hpp>
+#include <Core/GLFWGateway.hpp>
 
 #include "GLFWInitializer.hpp"
 

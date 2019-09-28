@@ -7,7 +7,7 @@
 # Copyright 2011 Honeywell International Inc. All rights reserved.
 # --------------------------------------------------------------------------------------------------
 
-function(AddPrivateDefinitions SYMBOLS)
+function(AddPrivateDefinitions PROJECT_NAME SYMBOLS)
 
     target_compile_definitions(${PROJECT_NAME} PRIVATE ${SYMBOLS})
 

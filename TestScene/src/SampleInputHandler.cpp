@@ -2,10 +2,10 @@
 
 #include <TestScene/SampleScene.hpp>
 
-#include <Ape/CameraSelector.hpp>
-#include <Ape/CompilerWarnings.hpp>
-#include <Ape/StandardShaderProgram.hpp>
-#include <Ape/Window.hpp>
+#include <Core/CameraSelector.hpp>
+#include <Core/CompilerWarnings.hpp>
+#include <Core/StandardShaderProgram.hpp>
+#include <Core/Window.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>

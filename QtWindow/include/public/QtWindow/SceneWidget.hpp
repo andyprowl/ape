@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Ape/RenderingContext.hpp>
-#include <Ape/Stopwatch.hpp>
-#include <Ape/TimeIntervalTracker.hpp>
-#include <Ape/Window.hpp>
+#include <Core/RenderingContext.hpp>
+#include <Core/Stopwatch.hpp>
+#include <Core/TimeIntervalTracker.hpp>
+#include <Core/Window.hpp>
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>

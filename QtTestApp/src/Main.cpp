@@ -7,10 +7,10 @@
 
 #include <QtWindow/SceneWidget.hpp>
 
-#include <Ape/CameraSelector.hpp>
-#include <Ape/OpenGLLoader.hpp>
-#include <Ape/RenderingContext.hpp>
-#include <Ape/StandardShaderProgram.hpp>
+#include <Core/CameraSelector.hpp>
+#include <Core/OpenGLLoader.hpp>
+#include <Core/RenderingContext.hpp>
+#include <Core/StandardShaderProgram.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>

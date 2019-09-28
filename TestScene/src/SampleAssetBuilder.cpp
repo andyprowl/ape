@@ -1,11 +1,11 @@
 #include <TestScene/SampleAssetBuilder.hpp>
 
-#include <Ape/AssetLoader.hpp>
-#include <Ape/BoxBuilder.hpp>
-#include <Ape/Material.hpp>
-#include <Ape/Mesh.hpp>
-#include <Ape/Normal.hpp>
-#include <Ape/Shape.hpp>
+#include <Core/AssetLoader.hpp>
+#include <Core/BoxBuilder.hpp>
+#include <Core/Material.hpp>
+#include <Core/Mesh.hpp>
+#include <Core/Normal.hpp>
+#include <Core/Shape.hpp>
 
 namespace
 {
@@ -280,7 +280,7 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
 auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
     -> ape::Texture &
 {
-    auto filepath = std::string{textureFolder} + "/" + filename;
+    auto filepath = std::string{ resourceFolder } + "/models" + filename;
 
     return assets.textures.emplace_back(std::move(filepath));
 }
@@ -288,7 +288,7 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
 auto resolveModelFilepath(std::string filename)
     -> std::string
 {
-    return std::string{modelFolder} + '/' + std::move(filename);
+    return std::string{resourceFolder} + "/models" + std::move(filename);
 }
 
 } // unnamed namespace

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Ape/CameraManipulator.hpp>
-#include <Ape/StandardInputHandler.hpp>
+#include <Core/CameraManipulator.hpp>
+#include <Core/StandardInputHandler.hpp>
 
 #include <vector>
 

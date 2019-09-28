@@ -6,11 +6,11 @@
 
 #include <GLFWWindow/GLFWGateway.hpp>
 
-#include <Ape/CameraSelector.hpp>
-#include <Ape/Engine.hpp>
-#include <Ape/OpenGLLoader.hpp>
-#include <Ape/SceneRenderer.hpp>
-#include <Ape/StandardShaderProgram.hpp>
+#include <Core/CameraSelector.hpp>
+#include <Core/Engine.hpp>
+#include <Core/OpenGLLoader.hpp>
+#include <Core/SceneRenderer.hpp>
+#include <Core/StandardShaderProgram.hpp>
 
 class Application::Impl
 {

@@ -1,10 +1,10 @@
 #include <QtWindow/SceneWidget.hpp>
 
-#include <Ape/CameraSelector.hpp>
-#include <Ape/Keyboard.hpp>
-#include <Ape/SceneRenderer.hpp>
-#include <Ape/StandardInputHandler.hpp>
-#include <Ape/StandardShaderProgram.hpp>
+#include <Core/CameraSelector.hpp>
+#include <Core/Keyboard.hpp>
+#include <Core/SceneRenderer.hpp>
+#include <Core/StandardInputHandler.hpp>
+#include <Core/StandardShaderProgram.hpp>
 
 #include <QResizeEvent>
 #include <QTimer>
