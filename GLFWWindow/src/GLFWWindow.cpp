@@ -65,6 +65,27 @@ auto onKeyboard(
         static_cast<KeyModifier>(modifiers));
 }
 
+auto onFocusChange(GLFWwindow * const handle, int const status)
+{
+    auto const it = windowMap.find(handle);
+
+    if (it == std::cend(windowMap))
+    {
+        return;
+    }
+
+    auto const window = it->second;
+
+    if (status == GL_TRUE)
+    {
+        window->onFocusAcquired.fire();
+    }
+    else
+    {
+        window->onFocusLost.fire();
+    }
+}
+
 auto makeRegularGLFWWindow(std::string const & title, Size<int> const & size)
     -> GLFWwindow &
 {
@@ -309,6 +330,8 @@ auto GLFWWindow::registerEventHandlers()
     glfwSetFramebufferSizeCallback(handle, ape::onResize);
 
     glfwSetKeyCallback(handle, ape::onKeyboard);
+
+    glfwSetWindowFocusCallback(handle, ape::onFocusChange);
 }
 
 } // namespace ape

@@ -310,14 +310,14 @@ auto SceneWidget::focusInEvent(QFocusEvent * const)
 {
     setMouseTracking(true);
 
-    holder->inputHandler->onFocusAcquired();
+    onFocusAcquired.fire();
 }
 
 // virtual (from QOpenGLWidget)
 auto SceneWidget::focusOutEvent(QFocusEvent * const)
     -> void
 {
-    holder->inputHandler->onFocusLost();
+    onFocusLost.fire();
 }
 
 // virtual (from QOpenGLWidget)
@@ -340,7 +340,7 @@ auto SceneWidget::keyPressEvent(QKeyEvent * const e)
 {
     handleKeyEvent(*e, KeyStatus::pressed, [this] (Key const key, KeyModifier const modifier)
     {
-        holder->inputHandler->onKeyPress(key, modifier);
+        onKeyboard.fire(key, KeyAction::press, modifier);
     });
 }
 
@@ -350,17 +350,8 @@ auto SceneWidget::keyReleaseEvent(QKeyEvent * const e)
 {
     handleKeyEvent(*e, KeyStatus::released, [this] (Key const key, KeyModifier const modifier)
     {
-        holder->inputHandler->onKeyRelease(key, modifier);
+        onKeyboard.fire(key, KeyAction::release, modifier);
     });
-}
-
-// virtual (from QOpenGLWidget)
-auto SceneWidget::mouseMoveEvent(QMouseEvent * const e)
-    -> void
-{
-    auto const mousePosition = e->pos();
-
-    holder->inputHandler->onMouseMove({mousePosition.x(), mousePosition.y()});
 }
 
 // virtual (from QOpenGLWidget)
@@ -369,11 +360,11 @@ auto SceneWidget::wheelEvent(QWheelEvent * const e)
 {
     auto const delta = e->delta();
 
-    holder->inputHandler->onMouseWheel({0, delta});
+    onMouseWheel.fire(Offset<int>{0, delta});
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::closeEvent(QCloseEvent* const event)
+auto SceneWidget::closeEvent(QCloseEvent * const event)
     -> void
 {
     isWindowClosing = true;

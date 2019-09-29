@@ -39,31 +39,36 @@ public:
     auto onFrame(std::chrono::nanoseconds frameDuration)
         -> void override;
 
-    // virtual (from InputHandler)
-    auto onKeyPress(Key key, KeyModifier modifier)
-        -> void override;
+protected:
 
-    // virtual (from InputHandler)
-    auto onKeyRelease(Key key, KeyModifier modifier)
-        -> void override;
+    virtual auto onKeyPress(Key key, KeyModifier modifier)
+        -> void;
 
-    // virtual (from InputHandler)
-    auto onMouseMove(Position<int> position)
-        -> void override;
+    virtual auto onKeyRelease(Key key, KeyModifier modifier)
+        -> void;
 
-    // virtual (from InputHandler)
-    auto onMouseWheel(Offset<int> position)
-        -> void override;
+    virtual auto onMouseWheel(Offset<int> position)
+        -> void;
 
-    // virtual (from InputHandler)
-    auto onFocusAcquired()
-        -> void override;
+    virtual auto onFocusAcquired()
+        -> void;
 
-    // virtual (from InputHandler)
-    auto onFocusLost()
-        -> void override;
+    virtual auto onFocusLost()
+        -> void;
 
 private:
+
+    auto registerKeyboardHandlerConnection()
+        -> ScopedSignalConnection;
+
+    auto registerMouseWheelHandlerConnection()
+        -> ScopedSignalConnection;
+
+    auto registerFocusAcquiredHandlerConnection()
+        -> ScopedSignalConnection;
+
+    auto registerFocusLostHandlerConnection()
+        -> ScopedSignalConnection;
 
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
         -> void;
@@ -90,6 +95,12 @@ private:
     CameraManipulator cameraManipulator;
 
     ScopedSignalConnection keyPressHandlerConnection;
+
+    ScopedSignalConnection mouseWheelHandlerConnection;
+
+    ScopedSignalConnection focusAcquiredHandlerConnection;
+
+    ScopedSignalConnection focusLostHandlerConnection;
 
 };
 

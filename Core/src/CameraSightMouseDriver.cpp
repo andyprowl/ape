@@ -100,7 +100,7 @@ auto CameraSightMouseDriver::onFrame()
         return;
     }
 
-    if ((offset.deltaX == 0.0) || (offset.deltaY == 0.0))
+    if ((offset.deltaX == 0) || (offset.deltaY == 0))
     {
         return;
     }

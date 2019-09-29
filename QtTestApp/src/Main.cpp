@@ -126,13 +126,13 @@ int main(int argc, char *argv[])
 
     getGridLayout(centralWidget).addWidget(&tableView1, 0, 0);
 
-    getGridLayout(centralWidget).addWidget(&treeView1, 0, 1);
+    getGridLayout(centralWidget).addWidget(&sceneView1, 0, 1);
+
+    getGridLayout(centralWidget).addWidget(&treeView1, 0, 2);
 
     getGridLayout(centralWidget).addWidget(&treeView2, 1, 0);
 
     getGridLayout(centralWidget).addWidget(&listView1, 1, 1);
-
-    getGridLayout(centralWidget).addWidget(&sceneView1, 0, 2);
 
     getGridLayout(centralWidget).addWidget(&sceneView2, 1, 2);
     

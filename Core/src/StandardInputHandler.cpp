@@ -25,14 +25,10 @@ StandardInputHandler::StandardInputHandler(
     float const manipulatorSensitivity)
     : handledWindow{&handledWindow}
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
-    , keyPressHandlerConnection{handledWindow.onKeyboard.registerHandler(
-        [this] (Key key, KeyAction action, KeyModifier modifier)
-    {
-        if (action == KeyAction::press)
-        {
-            onKeyPress(key, modifier);
-        }
-    })}
+    , keyPressHandlerConnection{registerKeyboardHandlerConnection()}
+    , mouseWheelHandlerConnection{registerMouseWheelHandlerConnection()}
+    , focusAcquiredHandlerConnection{registerFocusAcquiredHandlerConnection()}
+    , focusLostHandlerConnection{registerFocusLostHandlerConnection()}
 {
 }
 
@@ -61,7 +57,7 @@ auto StandardInputHandler::onFrame(std::chrono::nanoseconds frameDuration)
     cameraManipulator.onFrame(frameDuration);
 }
 
-// virtual (from InputHandler)
+// virtual
 auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     -> void
 {
@@ -72,37 +68,75 @@ auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     processCameraSwitching(key, modifier);
 }
 
-// virtual (from InputHandler)
+// virtual
 auto StandardInputHandler::onKeyRelease(Key const /*key*/, KeyModifier const /*modifier*/)
     -> void
 {
 }
 
-// virtual (from InputHandler)
-auto StandardInputHandler::onMouseMove(Position<int> const /*position*/)
+// virtual
+auto StandardInputHandler::onMouseWheel(Offset<int> const offset)
     -> void
 {
+    cameraManipulator.onMouseWheel(offset);
 }
 
-// virtual (from InputHandler)
-auto StandardInputHandler::onMouseWheel(Offset<int> const position)
-    -> void
-{
-    cameraManipulator.onMouseWheel(position);
-}
-
-// virtual (from InputHandler)
+// virtual
 auto StandardInputHandler::onFocusAcquired()
     -> void
 {
     cameraManipulator.activate();
 }
 
-// virtual (from InputHandler)
+// virtual
 auto StandardInputHandler::onFocusLost()
     -> void
 {
     cameraManipulator.deactivate();
+}
+
+auto StandardInputHandler::registerKeyboardHandlerConnection()
+    -> ScopedSignalConnection
+{
+    return handledWindow->onKeyboard.registerHandler(
+        [this] (Key const key, KeyAction const action, KeyModifier const modifier)
+    {
+        if (action == KeyAction::press)
+        {
+            onKeyPress(key, modifier);
+        }
+        else
+        {
+            onKeyRelease(key, modifier);
+        }
+    });
+}
+
+auto StandardInputHandler::registerMouseWheelHandlerConnection()
+    -> ScopedSignalConnection
+{
+    return handledWindow->onMouseWheel.registerHandler([this] (Offset<int> const & offset)
+    {
+        onMouseWheel(offset);
+    });
+}
+
+auto StandardInputHandler::registerFocusAcquiredHandlerConnection()
+    -> ScopedSignalConnection
+{
+    return handledWindow->onFocusAcquired.registerHandler([this]
+    {
+        onFocusAcquired();
+    });
+}
+
+auto StandardInputHandler::registerFocusLostHandlerConnection()
+    -> ScopedSignalConnection
+{
+    return handledWindow->onFocusLost.registerHandler([this]
+    {
+        onFocusLost();
+    });
 }
 
 auto StandardInputHandler::processFullScreenToggling(

@@ -144,10 +144,6 @@ protected:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto mouseMoveEvent(QMouseEvent * e)
-        -> void override;
-
-    // virtual (from QOpenGLWidget)
     auto wheelEvent(QWheelEvent * e)
         -> void override;
 

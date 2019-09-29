@@ -101,6 +101,10 @@ public:
 
     Signal<auto () -> void> onClose;
 
+    Signal<auto () -> void> onFocusAcquired;
+
+    Signal<auto () -> void> onFocusLost;
+
 };
 
 } // namespace ape
