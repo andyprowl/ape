@@ -25,6 +25,14 @@ StandardInputHandler::StandardInputHandler(
     float const manipulatorSensitivity)
     : handledWindow{&handledWindow}
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
+    , keyPressHandlerConnection{handledWindow.onKeyboard.registerHandler(
+        [this] (Key key, KeyAction action, KeyModifier modifier)
+    {
+        if (action == KeyAction::press)
+        {
+            onKeyPress(key, modifier);
+        }
+    })}
 {
 }
 

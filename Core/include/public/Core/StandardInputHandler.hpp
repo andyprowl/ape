@@ -2,6 +2,7 @@
 
 #include <Core/CameraManipulator.hpp>
 #include <Core/InputHandler.hpp>
+#include <Core/ScopedSignalConnection.hpp>
 
 #include <memory>
 
@@ -87,6 +88,8 @@ private:
     Window * handledWindow;
 
     CameraManipulator cameraManipulator;
+
+    ScopedSignalConnection keyPressHandlerConnection;
 
 };
 

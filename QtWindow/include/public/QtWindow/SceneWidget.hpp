@@ -53,13 +53,67 @@ public:
     auto getCameraSelector()
         -> CameraSelector &;
 
-private:
+    // virtual (from Window)
+    auto getAspectRatio() const
+        -> float override;
 
-    auto startEventLoop()
-        -> void;
+    // virtual (from Window)
+    auto getSize() const
+        -> Size<int> override;
 
-    auto processOneFrame()
-        -> void;
+    // virtual (from Window)
+    auto getPosition() const
+        -> Position<int> override;
+
+    // virtual (from Window)
+    auto getMousePosition() const
+        -> Position<int> override;
+    
+    // virtual (from Window)
+    auto isKeyPressed(Key key) const
+        -> bool override;
+
+    // virtual (from Window)
+    auto isFullScreen() const
+        -> bool override;
+
+    // virtual (from Window)
+    auto setFullScreen()
+        -> void override;
+
+    // virtual (from Window)
+    auto exitFullScreen()
+        -> void override;
+
+    // virtual (from Window)
+    auto isMouseCaptured() const
+        -> bool override;
+
+    // virtual (from Window)
+    auto captureMouse()
+        -> void override;
+
+    // virtual (from Window)
+    auto releaseMouse()
+        -> void override;
+
+    // virtual (from Window)
+    auto swapBuffers()
+        -> void override;
+
+    // virtual (from Window)
+    auto makeCurrent()
+        -> void override;
+
+    // virtual (from Window)
+    auto close()
+        -> void override;
+
+    // virtual (from Window)
+    auto isClosing()
+        -> bool override;
+
+protected:
 
     // virtual (from QOpenGLWidget)
     auto initializeGL()
@@ -97,37 +151,17 @@ private:
     auto wheelEvent(QWheelEvent * e)
         -> void override;
 
-    // virtual (from Window)
-    auto getAspectRatio() const
-        -> float override;
-
-    // virtual (from Window)
-    auto getSize() const
-        -> Size<int> override;
-
-    // virtual (from Window)
-    auto getPosition() const
-        -> Position<int> override;
-
-    // virtual (from Window)
-    auto getMousePosition() const
-        -> Position<int> override;
-
-    // virtual (from Window)
-    auto isFullScreen() const
-        -> bool override;
-
-    // virtual (from Window)
-    auto setFullScreen()
+    // virtual (from QOpenGLWidget)
+    auto closeEvent(QCloseEvent * event)
         -> void override;
 
-    // virtual (from Window)
-    auto exitFullScreen()
-        -> void override;
+private:
 
-    // virtual (from Window)
-    auto isKeyPressed(Key key) const
-        -> bool override;
+    auto startEventLoop()
+        -> void;
+
+    auto processOneFrame()
+        -> void;
 
     template<typename F>
     auto handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
@@ -151,6 +185,12 @@ private:
     Stopwatch stopwatch;
 
     TimeIntervalTracker timeTracker;
+
+    QMetaObject::Connection loopTimerConnection;
+
+    bool isMouseGrabbed;
+
+    bool isWindowClosing;
 
 };
 

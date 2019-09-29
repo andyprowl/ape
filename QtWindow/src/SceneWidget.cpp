@@ -125,6 +125,8 @@ SceneWidget::SceneWidget(ape::RenderingContext const & renderingContext, QWidget
     : QOpenGLWidget{parent}
     , renderingContext{renderingContext}
     , timeTracker{stopwatch}
+    , isMouseGrabbed{false}
+    , isWindowClosing{false}
 {
     keyStatus.resize(static_cast<std::size_t>(ape::Key::last) + 1, ape::KeyStatus::released);
 }
@@ -160,33 +162,125 @@ auto SceneWidget::getCameraSelector()
     return *(holder->cameraSelector);
 }
 
-auto SceneWidget::startEventLoop()
-    -> void
+// virtual (from Window)
+auto SceneWidget::getAspectRatio() const
+    -> float
 {
-    auto const timer = new QTimer{this};
-    
-    connect(timer, &QTimer::timeout, [this] 
-    { 
-        processOneFrame();
-    });
-    
-    // The timer's callback will be invoke whenever the application is idle.
-    timer->start();
+    auto const windowSize = size();
+
+    return (static_cast<float>(windowSize.width()) / windowSize.height());
 }
 
-auto SceneWidget::processOneFrame()
+// virtual (from Window)
+auto SceneWidget::getSize() const
+    -> Size<int>
+{
+    auto const windowSize = size();
+
+    return {windowSize.width(), windowSize.height()};
+}
+
+// virtual (from Window)
+auto SceneWidget::getPosition() const
+    -> Position<int>
+{
+    auto const position = pos();
+
+    return {position.x(), position.y()};
+}
+
+// virtual (from Window)
+auto SceneWidget::getMousePosition() const
+    -> Position<int>
+{
+    auto const mouseScreenPosition = QCursor::pos();
+    
+    auto const mousePosition = mapFromGlobal(mouseScreenPosition);
+
+    return {mousePosition.x(), mousePosition.y()};
+}
+
+// virtual (from Window)
+auto SceneWidget::isKeyPressed(Key const key) const
+    -> bool
+{
+    return (keyStatus[static_cast<std::size_t>(key)] == KeyStatus::pressed);
+}
+
+// virtual (from Window)
+auto SceneWidget::isFullScreen() const
+    -> bool
+{
+    return (windowState() & Qt::WindowFullScreen);
+}
+
+// virtual (from Window)
+auto SceneWidget::setFullScreen()
     -> void
 {
-    if (holder == nullptr)
-    {
-        return;
-    }
+    setWindowState(windowState() | Qt::WindowFullScreen);
+}
 
-    auto const lastFrameDuration = timeTracker.tick();
+// virtual (from Window)
+auto SceneWidget::exitFullScreen()
+    -> void
+{
+    setWindowState(windowState() & ~Qt::WindowFullScreen);
+}
 
-    holder->inputHandler->onFrame(lastFrameDuration);
+// virtual (from Window)
+auto SceneWidget::isMouseCaptured() const
+    -> bool
+{
+    return isMouseGrabbed;
+}
 
-    update();
+// virtual (from Window)
+auto SceneWidget::captureMouse()
+    -> void
+{
+    QOpenGLWidget::grabMouse();
+
+    isMouseGrabbed = true;
+}
+
+// virtual (from Window)
+auto SceneWidget::releaseMouse()
+    -> void
+{
+    QOpenGLWidget::releaseMouse();
+    
+    isMouseGrabbed = false;
+}
+
+// virtual (from Window)
+auto SceneWidget::swapBuffers()
+    -> void
+{
+    auto const context = QOpenGLWidget::context();
+
+    context->swapBuffers(context->surface());
+}
+
+// virtual (from Window)
+auto SceneWidget::makeCurrent()
+    -> void
+{
+    return QOpenGLWidget::makeCurrent();
+}
+
+// virtual (from Window)
+auto SceneWidget::close()
+    -> void
+{
+    QOpenGLWidget::close();
+}
+
+// virtual (from Window)
+auto SceneWidget::isClosing()
+    -> bool
+{
+    return isWindowClosing;
 }
 
 // virtual (from QOpenGLWidget)
@@ -278,69 +372,42 @@ auto SceneWidget::wheelEvent(QWheelEvent * const e)
     holder->inputHandler->onMouseWheel({0, delta});
 }
 
-// virtual (from Window)
-auto SceneWidget::getAspectRatio() const
-    -> float
+// virtual (from QOpenGLWidget)
+auto SceneWidget::closeEvent(QCloseEvent* const event)
+    -> void
 {
-    auto const windowSize = size();
+    isWindowClosing = true;
 
-    return (static_cast<float>(windowSize.width()) / windowSize.height());
+    event->accept();
 }
 
-// virtual (from Window)
-auto SceneWidget::getSize() const
-    -> Size<int>
+auto SceneWidget::startEventLoop()
+    -> void
 {
-    auto const windowSize = size();
-
-    return {windowSize.width(), windowSize.height()};
-}
-
-// virtual (from Window)
-auto SceneWidget::getPosition() const
-    -> Position<int>
-{
-    auto const position = pos();
-
-    return {position.x(), position.y()};
-}
-
-// virtual (from Window)
-auto SceneWidget::getMousePosition() const
-    -> Position<int>
-{
-    auto const mouseScreenPosition = QCursor::pos();
+    auto const timer = new QTimer{this};
     
-    auto const mousePosition = mapFromGlobal(mouseScreenPosition);
-
-    return {mousePosition.x(), mousePosition.y()};
+    loopTimerConnection = connect(timer, &QTimer::timeout, [this] 
+    { 
+        processOneFrame();
+    });
+    
+    // The timer's callback will be invoke whenever the application is idle.
+    timer->start();
 }
 
-// virtual (from Window)
-auto SceneWidget::isFullScreen() const
-    -> bool
-{
-    return (windowState() & Qt::WindowFullScreen);
-}
-
-// virtual (from Window)
-auto SceneWidget::setFullScreen()
+auto SceneWidget::processOneFrame()
     -> void
 {
-    setWindowState(windowState() | Qt::WindowFullScreen);
-}
+    if (holder == nullptr)
+    {
+        return;
+    }
 
-// virtual (from Window)
-auto SceneWidget::exitFullScreen()
-    -> void
-{
-    setWindowState(windowState() & ~Qt::WindowFullScreen);
-}
+    auto const lastFrameDuration = timeTracker.tick();
 
-auto SceneWidget::isKeyPressed(Key const key) const
-    -> bool
-{
-    return (keyStatus[static_cast<std::size_t>(key)] == KeyStatus::pressed);
+    holder->inputHandler->onFrame(lastFrameDuration);
+
+    update();
 }
 
 template<typename F>

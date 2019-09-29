@@ -16,6 +16,7 @@
 #include <QFileSystemModel>
 #include <QGridLayout>
 #include <QListView>
+#include <QScreen>
 #include <QTableView>
 #include <QTreeView>
 #include <QWidget>
@@ -147,7 +148,9 @@ int main(int argc, char *argv[])
 
     listView1.setSelectionModel(tableView1.selectionModel());
 
-    window.resize(1024, 768);
+    auto const screenSize = QApplication::screens().front()->size();
+
+    window.resize(screenSize.width(), screenSize.height());
 
     window.show();
 
@@ -156,7 +159,7 @@ int main(int argc, char *argv[])
     window.registerSceneWidget(sceneView2);
 
     // The OpenGL context has been created after window.show() was called
-    ape::OpenGLLoader loader{true, true};
+    auto const loader = ape::OpenGLLoader{true, true};
 
     auto const sharing = QOpenGLContext::areSharing(sceneView1.context(), sceneView2.context());
 

@@ -51,7 +51,8 @@ SampleInputHandler::SampleInputHandler(
     ape::StandardShaderProgram & shader,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
-    , shader{&shader}
+    
+, shader{&shader}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -85,6 +86,10 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     if ((key == ape::Key::keyB) && (modifier == ape::KeyModifier::none))
     {
         toggleBlinnPhongModel();
+    }
+    else if (key == ape::Key::keyEscape)
+    {
+        getWindow().close();
     }
 }
 

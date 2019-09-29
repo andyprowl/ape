@@ -4,10 +4,10 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
+#include <GLFWWindow/Engine.hpp>
 #include <GLFWWindow/GLFWGateway.hpp>
 
 #include <Core/CameraSelector.hpp>
-#include <Core/Engine.hpp>
 #include <Core/OpenGLLoader.hpp>
 #include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
@@ -18,7 +18,7 @@ class Application::Impl
 public:
 
     Impl()
-        : window{gateway.createWindow("APE 3D engine", false)}
+        : window{gateway.createWindow("APE 3D engine", {2000, 1000})}
         , loader{true, true}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
@@ -35,7 +35,9 @@ public:
     {
         window.captureMouse();
 
-        engine.run();
+        inputHandler.getCameraManipulator().activate();
+
+        engine.start();
     }
 
 private:

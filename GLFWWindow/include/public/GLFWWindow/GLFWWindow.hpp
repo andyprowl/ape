@@ -12,7 +12,20 @@ class GLFWWindow : public Window
 
 public:
 
-    GLFWWindow(std::string const & title, bool createAsFullScreen);
+    class CreateAsFullscreen
+    {
+
+    public:
+
+        explicit CreateAsFullscreen() = default;
+
+    };
+
+public:
+
+    GLFWWindow(std::string const & title, CreateAsFullscreen);
+
+    GLFWWindow(std::string const & title, Size<int> const & size);
 
     GLFWWindow(GLFWWindow const & rhs) = delete;
 
@@ -26,56 +39,65 @@ public:
 
     ~GLFWWindow();
 
+    // virtual (from Window)
     auto getAspectRatio() const
         -> float override;
 
-    auto getCenter() const
-        -> Position<double> override;
-
+    // virtual (from Window)
     auto getSize() const
         -> Size<int> override;
 
+    // virtual (from Window)
     auto getPosition() const
         -> Position<int> override;
 
+    // virtual (from Window)
     auto getMousePosition() const
-        -> Position<double> override;
+        -> Position<int> override;
 
+    // virtual (from Window)
     auto isKeyPressed(Key key) const
         -> bool override;
 
-    auto shouldClose() const
-        -> bool override;
-
-    auto requestClosure()
-        -> void override;
-
-    auto swapBuffers()
-        -> void override;
-
-    auto isMouseCaptured() const
-        -> bool override;
-
-    auto captureMouse()
-        -> void override;
-
-    auto releaseMouse()
-        -> void override;
-
+    // virtual (from Window)
     auto isFullScreen() const
         -> bool override;
 
+    // virtual (from Window)
     auto setFullScreen()
         -> void override;
 
+    // virtual (from Window)
     auto exitFullScreen()
         -> void override;
 
+    // virtual (from Window)
+    auto isMouseCaptured() const
+        -> bool override;
+
+    // virtual (from Window)
+    auto captureMouse()
+        -> void override;
+
+    // virtual (from Window)
+    auto releaseMouse()
+        -> void override;
+
+    // virtual (from Window)
+    auto swapBuffers()
+        -> void override;
+
+    // virtual (from Window)
     auto makeCurrent()
         -> void override;
 
-    auto pollEvents()
+    // virtual (from Window)
+    auto close()
         -> void override;
+
+    // virtual (from Window)
+    auto isClosing()
+        -> bool override;
 
 private:
 
@@ -99,6 +121,8 @@ private:
     };
 
 private:
+
+    GLFWWindow(GLFWwindow & handle, bool isFullScreen);
 
     auto registerEventHandlers()
         -> void;

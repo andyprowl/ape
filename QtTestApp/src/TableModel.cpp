@@ -130,7 +130,7 @@ auto TableModel::setupTimer()
 {
     timer->setInterval(1'000);
 
-    timer->connect(timer, &QTimer::timeout, this, &TableModel::onTimeout);
+    timerConnection = timer->connect(timer, &QTimer::timeout, this, &TableModel::onTimeout);
 
     timer->start();
 }

@@ -25,6 +25,7 @@ auto initGLFW()
 } // unnamed namespace
 
 GLFWInitializer::GLFWInitializer()
+    : isInitialized{true}
 {
     initGLFW();
 }

@@ -28,10 +28,10 @@ public:
 
     ~Engine();
 
-    auto run()
+    auto start()
         -> void;
 
-    auto processOneFrame()
+    auto stop()
         -> void;
 
 private:

@@ -68,4 +68,6 @@ private:
 
     QTimer * timer;
 
+    QMetaObject::Connection timerConnection;
+
 };

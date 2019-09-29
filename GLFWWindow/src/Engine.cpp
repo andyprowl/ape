@@ -1,4 +1,4 @@
-#include <Core/Engine.hpp>
+#include <GLFWWindow/Engine.hpp>
 
 #include <Core/CameraDrivenPipeline.hpp>
 #include <Core/CameraSpotlightSynchronizer.hpp>
@@ -13,7 +13,7 @@
 #include <Core/TimeIntervalTracker.hpp>
 #include <Core/Window.hpp>
 
-#include <glad/glad.h>
+#include "GLFW.hpp"
 
 namespace ape
 {
@@ -30,17 +30,24 @@ public:
         , timeTracker{stopwatch}
         , rateTracker{timeTracker, 500}
         , resizeHandlerConnection{registerWindowResizeHandler()}
+        , stopBeforeNextIteration{false}
     {
         setViewport();
     }
 
-    auto run()
+    auto start()
         -> void
     {
-        while (!wasTerminationRequested())
+        while (!shouldStop())
         {
             processOneFrame();
         }
+    }
+
+    auto stop()
+        -> void
+    {
+        stopBeforeNextIteration = true;
     }
 
 private:
@@ -52,6 +59,12 @@ private:
         {
             setViewport(size);
         });
+    }
+
+    auto shouldStop() const
+        -> bool
+    {
+        return (stopBeforeNextIteration || window->isClosing());
     }
 
     auto processOneFrame()
@@ -94,22 +107,14 @@ private:
         }
     }
 
-    auto wasTerminationRequested() const
-        -> bool
-    {
-        return window->shouldClose();
-    }
-
     auto processInput()
         -> void
     {
-        window->pollEvents();
+        glfwPollEvents();
 
         auto const lastFrameDuration = timeTracker.getLastIntervalDuration();
 
-        auto const durationInSeconds = lastFrameDuration.count() / 1'000'000'000.0;
-
-        inputHandler->processInput(durationInSeconds);
+        inputHandler->onFrame(lastFrameDuration);
     }
 
     auto render()
@@ -136,7 +141,7 @@ private:
     auto recordFrameDuration()
         -> void
     {
-        timeTracker.update();
+        timeTracker.tick();
     }
 
     auto reportFramesPerSecond()
@@ -161,6 +166,8 @@ private:
 
     ScopedSignalConnection resizeHandlerConnection;
 
+    bool stopBeforeNextIteration;
+
 };
 
 Engine::Engine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
@@ -175,16 +182,16 @@ auto Engine::operator = (Engine &&) noexcept
 
 Engine::~Engine() = default;
 
-auto Engine::run()
+auto Engine::start()
     -> void
 {
-    return impl->run();
+    return impl->start();
 }
 
-auto Engine::processOneFrame()
+auto Engine::stop()
     -> void
 {
-    return impl->processOneFrame();
+    return impl->stop();
 }
 
 } // namespace ape

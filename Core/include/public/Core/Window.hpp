@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Core/Keyboard.hpp>
+#include <Core/Offset.hpp>
 #include <Core/Position.hpp>
 #include <Core/Signal.hpp>
 #include <Core/Size.hpp>
@@ -68,6 +69,37 @@ public:
 
     virtual auto isKeyPressed(Key key) const
         -> bool = 0;
+
+    virtual auto isMouseCaptured() const
+        -> bool = 0;
+
+    virtual auto captureMouse()
+        -> void = 0;
+
+    virtual auto releaseMouse()
+        -> void = 0;
+
+    virtual auto swapBuffers()
+        -> void = 0;
+
+    virtual auto makeCurrent()
+        -> void = 0;
+
+    virtual auto close()
+        -> void = 0;
+
+    virtual auto isClosing()
+        -> bool = 0;
+
+public:
+
+    Signal<auto (Size<int> const & size) -> void> onResize;
+
+    Signal<auto (Offset<int> const & offset) -> void> onMouseWheel;
+
+    Signal<auto (Key key, KeyAction action, KeyModifier modifier) -> void> onKeyboard;
+
+    Signal<auto () -> void> onClose;
 
 };
 

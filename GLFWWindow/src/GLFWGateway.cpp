@@ -1,4 +1,4 @@
-#include <Core/GLFWGateway.hpp>
+#include <GLFWWindow/GLFWGateway.hpp>
 
 #include "GLFWInitializer.hpp"
 
@@ -12,10 +12,20 @@ class GLFWGateway::Impl
 
 public:
 
-    auto createWindow(std::string const & title, bool createAsFullscreen)
+    auto createWindow(std::string const & title, CreateAsFullscreen)
         -> GLFWWindow
     {
-        auto window = GLFWWindow{title, createAsFullscreen};
+        auto window = GLFWWindow{title, GLFWWindow::CreateAsFullscreen{}};
+
+        window.makeCurrent();
+
+        return window;
+    }
+
+    auto createWindow(std::string const & title, Size<int> const & size)
+        -> GLFWWindow
+    {
+        auto window = GLFWWindow{title, size};
 
         window.makeCurrent();
 
@@ -40,10 +50,16 @@ auto GLFWGateway::operator = (GLFWGateway && rhs) noexcept
 
 GLFWGateway::~GLFWGateway() = default;
 
-auto GLFWGateway::createWindow(std::string const & title, bool const createAsFullscreen)
+auto GLFWGateway::createWindow(std::string const & title, CreateAsFullscreen)
     -> GLFWWindow
 {
-    return impl->createWindow(title, createAsFullscreen);
+    return impl->createWindow(title, CreateAsFullscreen{});
+}
+
+auto GLFWGateway::createWindow(std::string const & title, Size<int> const & size)
+    -> GLFWWindow
+{
+    return impl->createWindow(title, size);
 }
 
 } // namespace ape

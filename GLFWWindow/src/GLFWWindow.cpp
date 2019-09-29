@@ -1,4 +1,4 @@
-#include <Core/GLFWWindow.hpp>
+#include <GLFWWindow/GLFWWindow.hpp>
 
 #include "GLFW.hpp"
 
@@ -27,7 +27,7 @@ auto onResize(GLFWwindow * const handle, int const width, int const height)
     window->onResize.fire(Size<int>{width, height});
 }
 
-auto onMouseWheel(GLFWwindow * const handle, double const /*xOffset*/, double const yOffset)
+auto onMouseWheel(GLFWwindow * const handle, double const xOffset, double const yOffset)
     -> void
 {
     auto const it = windowMap.find(handle);
@@ -39,7 +39,7 @@ auto onMouseWheel(GLFWwindow * const handle, double const /*xOffset*/, double co
 
     auto const window = it->second;
 
-    window->onMouseWheel.fire(yOffset);
+    window->onMouseWheel.fire(Offset<int>{static_cast<int>(xOffset), static_cast<int>(yOffset)});
 }
 
 auto onKeyboard(
@@ -65,14 +65,21 @@ auto onKeyboard(
         static_cast<KeyModifier>(modifiers));
 }
 
-auto makeRegularGLFWWindow(std::string const & title)
-    -> GLFWwindow *
+auto makeRegularGLFWWindow(std::string const & title, Size<int> const & size)
+    -> GLFWwindow &
 {
-    return glfwCreateWindow(1024, 768, title.c_str(), nullptr, nullptr);
+    auto const w = glfwCreateWindow(size.width, size.height, title.c_str(), nullptr, nullptr);
+
+    if (w == nullptr)
+    {
+        throw CouldNotCreateWindow{};
+    }
+
+    return *w;
 }
 
 auto makeFullScreenGLFWWindow(std::string const & title)
-    -> GLFWwindow *
+    -> GLFWwindow &
 {
     auto const monitor = glfwGetPrimaryMonitor();
 
@@ -86,34 +93,26 @@ auto makeFullScreenGLFWWindow(std::string const & title)
 
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    return glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
-}
+    auto const w = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
 
-auto makeGLFWWindow(std::string const & title, bool const fullscreen)
-    -> GLFWwindow &
-{
-    auto const window = fullscreen 
-        ? makeFullScreenGLFWWindow(title)
-        : makeRegularGLFWWindow(title);
-
-    if (window == nullptr)
+    if (w == nullptr)
     {
         throw CouldNotCreateWindow{};
     }
 
-    return *window;
+    return *w;
 }
 
 } // unnamed namespace
 
-GLFWWindow::GLFWWindow(std::string const & title, bool const createAsFullScreen)
-    : handle{&makeGLFWWindow(title, createAsFullScreen)}
-    , isFullScreenModeOn{createAsFullScreen}
-    , lastGLFWWindowedArea{getPosition(), getSize()}
+GLFWWindow::GLFWWindow(std::string const & title, CreateAsFullscreen const)
+    : GLFWWindow{makeFullScreenGLFWWindow(title), true}
 {
-    windowMap.emplace(handle, this);
+}
 
-    registerEventHandlers();
+GLFWWindow::GLFWWindow(std::string const & title, Size<int> const & size)
+    : GLFWWindow{makeRegularGLFWWindow(title, size), false}
+{
 }
 
 GLFWWindow::GLFWWindow(GLFWWindow && rhs) noexcept
@@ -144,6 +143,7 @@ auto GLFWWindow::operator = (GLFWWindow && rhs) noexcept
 
 GLFWWindow::~GLFWWindow() = default;
 
+// virtual (from Window)
 auto GLFWWindow::getAspectRatio() const
     -> float
 {
@@ -156,18 +156,7 @@ auto GLFWWindow::getAspectRatio() const
     return (static_cast<float>(width) / height);
 }
 
-auto GLFWWindow::getCenter() const
-    -> Position<double>
-{
-    auto width = int{};
-
-    auto height = int{};
-
-    glfwGetWindowSize(handle, &width, &height);
-
-    return {width / 2.0, height / 2.0};
-}
-
+// virtual (from Window)
 auto GLFWWindow::getSize() const
     -> Size<int>
 {
@@ -180,6 +169,7 @@ auto GLFWWindow::getSize() const
     return {width, height};
 }
 
+// virtual (from Window)
 auto GLFWWindow::getPosition() const
     -> Position<int>
 {
@@ -192,8 +182,9 @@ auto GLFWWindow::getPosition() const
     return {x, y};
 }
 
+// virtual (from Window)
 auto GLFWWindow::getMousePosition() const
-    -> Position<double>
+    -> Position<int>
 {
     auto x = double{};
 
@@ -201,49 +192,7 @@ auto GLFWWindow::getMousePosition() const
 
     glfwGetCursorPos(handle, &x, &y);
 
-    return {x, y};
-}
-
-auto GLFWWindow::isKeyPressed(Key const key) const
-    -> bool
-{
-    return (glfwGetKey(handle, static_cast<int>(key)) == GLFW_PRESS);
-}
-
-auto GLFWWindow::shouldClose() const
-    -> bool
-{
-    return glfwWindowShouldClose(handle);
-}
-
-auto GLFWWindow::requestClosure()
-    -> void
-{
-    glfwSetWindowShouldClose(handle, true);
-}
-
-auto GLFWWindow::swapBuffers()
-    -> void
-{
-    glfwSwapBuffers(handle);
-}
-
-auto GLFWWindow::isMouseCaptured() const
-    -> bool
-{
-    return (glfwGetInputMode(handle, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
-}
-
-auto GLFWWindow::captureMouse()
-    -> void
-{
-    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-}
-
-auto GLFWWindow::releaseMouse()
-    -> void
-{
-    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    return {static_cast<int>(x), static_cast<int>(y)};
 }
 
 auto GLFWWindow::isFullScreen() const
@@ -270,7 +219,7 @@ auto GLFWWindow::setFullScreen()
 
     isFullScreenModeOn = true;
 
-    onResize.fire(lastGLFWWindowedArea.size);
+    onResize.fire(Size<int>{mode->width, mode->height});
 }
 
 auto GLFWWindow::exitFullScreen()
@@ -294,16 +243,62 @@ auto GLFWWindow::exitFullScreen()
     onResize.fire(lastGLFWWindowedArea.size);
 }
 
+auto GLFWWindow::isKeyPressed(Key const key) const
+    -> bool
+{
+    return (glfwGetKey(handle, static_cast<int>(key)) == GLFW_PRESS);
+}
+
+auto GLFWWindow::swapBuffers()
+    -> void
+{
+    glfwSwapBuffers(handle);
+}
+
+auto GLFWWindow::isMouseCaptured() const
+    -> bool
+{
+    return (glfwGetInputMode(handle, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
+}
+
+auto GLFWWindow::captureMouse()
+    -> void
+{
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+auto GLFWWindow::releaseMouse()
+    -> void
+{
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+}
+
 auto GLFWWindow::makeCurrent()
     -> void
 {
     glfwMakeContextCurrent(handle);
 }
 
-auto GLFWWindow::pollEvents()
+auto GLFWWindow::close()
     -> void
 {
-    glfwPollEvents();
+    glfwSetWindowShouldClose(handle, true);
+}
+
+auto GLFWWindow::isClosing()
+    -> bool
+{
+    return glfwWindowShouldClose(handle);
+}
+
+GLFWWindow::GLFWWindow(GLFWwindow & handle, bool const isFullScreen)
+    : handle{&handle}
+    , isFullScreenModeOn{isFullScreen}
+    , lastGLFWWindowedArea{getPosition(), getSize()}
+{
+    windowMap.emplace(&handle, this);
+
+    registerEventHandlers();
 }
 
 auto GLFWWindow::registerEventHandlers()

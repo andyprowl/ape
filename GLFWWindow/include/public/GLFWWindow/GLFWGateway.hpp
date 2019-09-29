@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/GLFWWindow.hpp>
+#include <GLFWWindow/GLFWWindow.hpp>
 
 #include <memory>
  
@@ -14,6 +14,17 @@ class GLFWGateway
 
 public:
 
+    class CreateAsFullscreen
+    {
+
+    public:
+
+        explicit CreateAsFullscreen() = default;
+
+    };
+
+public:
+
     GLFWGateway();
 
     GLFWGateway(GLFWGateway && rhs) noexcept;
@@ -23,7 +34,10 @@ public:
 
     ~GLFWGateway();
 
-    auto createWindow(std::string const & title, bool createAsFullscreen)
+    auto createWindow(std::string const & title, CreateAsFullscreen)
+        -> GLFWWindow;
+
+    auto createWindow(std::string const & title, Size<int> const & size)
         -> GLFWWindow;
 
 private:
