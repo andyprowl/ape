@@ -1,4 +1,4 @@
-project(GLFWTestApp)
+project(ApePlayer)
 
 AddExecutable(${PROJECT_NAME})
 

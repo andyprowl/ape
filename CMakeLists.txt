@@ -18,6 +18,8 @@ SetStrictWarningPolicy()
 
 SetCpp17StandardCompliance()
 
+add_subdirectory(ApePlayer)
+
 add_subdirectory(AssetLoader)
 
 add_subdirectory(BuildSystem)
@@ -29,8 +31,6 @@ add_subdirectory(Documentation)
 add_subdirectory(Glad)
 
 add_subdirectory(GlfwBinding)
-
-add_subdirectory(GLFWTestApp)
 
 add_subdirectory(QtBinding)
 
