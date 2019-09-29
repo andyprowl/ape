@@ -16,8 +16,9 @@ if(CMAKE_VERSION VERSION_LESS "3.7.0")
 
 endif()
 
+# This is necessary so that mocs_compilation.cpp is properly auto-generated
 find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
 
 AddExecutable(${PROJECT_NAME})
 
-target_link_libraries(${PROJECT_NAME} PRIVATE QtWindow TestScene)
+AddPrivateDependencies(${PROJECT_NAME} QtWindow TestScene)

@@ -1,4 +1,4 @@
-include(${SOURCE_ROOT}/BuildSystem/CompilerDefinitions.cmake)
+include(${SOURCE_ROOT}/BuildSystem/cmake/CompilerDefinitions.cmake)
 
 macro(
     FindFilesRecursively
@@ -148,6 +148,8 @@ function(
     AddPrivateDefinitions(
         ${TARGET_NAME} 
         resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
+    export(TARGETS ${EXPORTS} NAMESPACE Ape:: FILE ${TARGET_NAME}Config.cmake)
 
 endfunction()
 

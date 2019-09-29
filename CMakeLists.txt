@@ -6,7 +6,7 @@ set(SOURCE_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include("BuildSystem/BuildSystem.cmake")
+include("BuildSystem/cmake/BuildSystem.cmake")
 
 include("CMake/Dependencies.cmake")
 

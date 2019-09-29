@@ -1,15 +1,12 @@
 project(BuildSystem)
 
-file(GLOB CMAKE_SOURCE_FILES *.cmake)
+file(
+    GLOB_RECURSE
+    CMAKE_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/*.*")
 
-add_custom_target(${PROJECT_NAME} SOURCES ${CMAKE_SOURCE_FILES})
+file(GLOB CMAKELISTS_FILE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 
-get_property(IDE_FOLDER GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER)
+CreateSourceGroup("cmake" "CMake Files" "${CMAKE_FILES}")
 
-source_group("CMake Files" FILES ${CMAKE_SOURCE_FILES})
-
-if(IDE_FOLDER)
-
-    SetProjectFolderForIDE(${IDE_FOLDER})
-
-endif()
+add_custom_target(${PROJECT_NAME} SOURCES ${CMAKE_FILES} ${CMAKELISTS_FILE})
