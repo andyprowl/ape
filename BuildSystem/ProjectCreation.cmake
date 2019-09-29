@@ -88,8 +88,8 @@ function(
 endfunction()
 
 function(
-    AddLibrary
-    LIBRARY_NAME)
+    GetProjectFilesAndCreateGroups
+    PROJECT_FILES)
 
     GetProjectFiles(
         CMAKE_FILES
@@ -107,28 +107,55 @@ function(
         "${SOURCE_FILES}"
         "${RESOURCE_FILES}")
 
-    add_library(
-        ${LIBRARY_NAME}
-        ${CMAKE_FILES}
-        ${DOC_FILES}
-        ${PUBLIC_HEADER_FILES}
-        ${PRIVATE_HEADER_FILES}
-        ${SOURCE_FILES}
-        ${RESOURCE_FILES})
+    set(${PROJECT_FILES}
+        "${CMAKE_FILES}"
+        "${DOC_FILES}"
+        "${PUBLIC_HEADER_FILES}"
+        "${PRIVATE_HEADER_FILES}"
+        "${SOURCE_FILES}"
+        "${RESOURCE_FILES}"
+        PARENT_SCOPE)
+
+endfunction()
+
+function(
+    AddProject
+    TARGET_NAME
+    TARGET_TYPE)
+
+    GetProjectFilesAndCreateGroups(PROJECT_FILES)
+
+    if("${TARGET_TYPE}" STREQUAL "LIBRARY")
+
+        add_library(${TARGET_NAME} ${PROJECT_FILES})
+
+    else()
+
+        add_executable(${TARGET_NAME} ${PROJECT_FILES})
+
+    endif()
 
     target_include_directories(
-        ${LIBRARY_NAME}
+        ${TARGET_NAME}
         PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
 
     target_include_directories(
-        ${LIBRARY_NAME}
+        ${TARGET_NAME}
         PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
     AddPrivateDefinitions(
-        ${LIBRARY_NAME} 
+        ${TARGET_NAME} 
         resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
+endfunction()
+
+function(
+    AddLibrary
+    LIBRARY_NAME)
+
+    AddProject(${LIBRARY_NAME} LIBRARY)
 
 endfunction()
 
@@ -136,43 +163,6 @@ function(
     AddExecutable
     EXECUTABLE_NAME)
 
-    GetProjectFiles(
-        CMAKE_FILES
-        DOC_FILES
-        PUBLIC_HEADER_FILES
-        PRIVATE_HEADER_FILES
-        SOURCE_FILES
-        RESOURCE_FILES)
-
-    CreateSourceGroups(
-        "${CMAKE_FILES}"
-        "${DOC_FILES}"
-        "${PUBLIC_HEADER_FILES}"
-        "${PRIVATE_HEADER_FILES}"
-        "${SOURCE_FILES}"
-        "${RESOURCE_FILES}")
-
-    add_executable(
-        ${EXECUTABLE_NAME}
-        ${CMAKE_FILES}
-        ${DOC_FILES}
-        ${PUBLIC_HEADER_FILES}
-        ${PRIVATE_HEADER_FILES}
-        ${SOURCE_FILES}
-        ${RESOURCE_FILES})
-
-    target_include_directories(
-        ${EXECUTABLE_NAME}
-        PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
-
-    target_include_directories(
-        ${EXECUTABLE_NAME}
-        PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
-
-    AddPrivateDefinitions(
-        ${EXECUTABLE_NAME} 
-        resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+    AddProject(${EXECUTABLE_NAME} EXECUTABLE)
 
 endfunction()

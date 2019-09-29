@@ -20,6 +20,8 @@ add_subdirectory(BuildSystem)
 
 add_subdirectory(Core)
 
+add_subdirectory(Documentation)
+
 add_subdirectory(Glad)
 
 add_subdirectory(GLFWWindow)
