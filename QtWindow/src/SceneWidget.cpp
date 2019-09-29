@@ -358,18 +358,22 @@ auto SceneWidget::keyReleaseEvent(QKeyEvent * const e)
 auto SceneWidget::wheelEvent(QWheelEvent * const e)
     -> void
 {
-    auto const delta = e->delta();
+    auto const delta = e->angleDelta();
 
-    onMouseWheel.fire(Offset<int>{0, delta});
+    auto const deltaX = delta.x() > 0 ? 1 : -1;
+
+    auto const deltaY = delta.y() > 0 ? 1 : -1;
+
+    onMouseWheel.fire(Offset<int>{deltaX, deltaY});
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::closeEvent(QCloseEvent * const event)
+auto SceneWidget::closeEvent(QCloseEvent * const e)
     -> void
 {
     isWindowClosing = true;
 
-    event->accept();
+    e->accept();
 }
 
 auto SceneWidget::startEventLoop()
