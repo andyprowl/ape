@@ -49,7 +49,9 @@ macro(SetStrictWarningPolicy)
 endmacro()
 
 # This implementation currently deals with VS only
-macro(EnableWholeProgramOptimization CONFIGURATION_NAME)
+macro(
+    EnableWholeProgramOptimization
+    CONFIGURATION_NAME)
 
     string(TOUPPER ${CONFIGURATION_NAME} UPPERCASE_CONFIGURATION_NAME)
 

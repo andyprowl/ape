@@ -1,4 +1,4 @@
-#include <GLFWWindow/GLFWWindow.hpp>
+#include <GlfwBinding/GLFWWindow.hpp>
 
 #include "GLFW.hpp"
 

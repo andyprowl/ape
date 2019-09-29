@@ -1,4 +1,4 @@
-#include <GLFWWindow/Engine.hpp>
+#include <GlfwBinding/GLFWEngine.hpp>
 
 #include <Core/CameraDrivenPipeline.hpp>
 #include <Core/CameraSpotlightSynchronizer.hpp>
@@ -18,7 +18,7 @@
 namespace ape
 {
 
-class Engine::Impl
+class GLFWEngine::Impl
 {
 
 public:
@@ -170,25 +170,25 @@ private:
 
 };
 
-Engine::Engine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
+GLFWEngine::GLFWEngine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
     : impl{std::make_unique<Impl>(window, renderer, inputHandler)}
 {
 }
 
-Engine::Engine(Engine &&) noexcept = default;
+GLFWEngine::GLFWEngine(GLFWEngine &&) noexcept = default;
 
-auto Engine::operator = (Engine &&) noexcept
-    -> Engine & = default;
+auto GLFWEngine::operator = (GLFWEngine &&) noexcept
+    -> GLFWEngine & = default;
 
-Engine::~Engine() = default;
+GLFWEngine::~GLFWEngine() = default;
 
-auto Engine::start()
+auto GLFWEngine::start()
     -> void
 {
     return impl->start();
 }
 
-auto Engine::stop()
+auto GLFWEngine::stop()
     -> void
 {
     return impl->stop();

@@ -2,7 +2,7 @@
 
 #include "TableModel.hpp"
 
-#include <QtWindow/SceneWidget.hpp>
+#include <QtBinding/QtWindow.hpp>
 
 #include <QAbstractItemView>
 #include <QAction>
@@ -53,19 +53,19 @@ auto MainWindow::makeFocusActions()
 
     action->setToolTip("Focus Scene Widge 1");
 
-    connect(action, &QAction::triggered, this, &MainWindow::onFocusSceneWidget1);
+    connect(action, &QAction::triggered, this, &MainWindow::onFocusQtWindow1);
 
     action = actions.emplace_back(new QAction{"Scene Widget 2", this});
 
     action->setToolTip("Focus Scene Widge 2");
 
-    connect(action, &QAction::triggered, this, &MainWindow::onFocusSceneWidget2);
+    connect(action, &QAction::triggered, this, &MainWindow::onFocusQtWindow2);
 
     action = actions.emplace_back(new QAction{"No Scene Widget", this});
 
     action->setToolTip("No Focus Scene Widget");
 
-    connect(action, &QAction::triggered, this, &MainWindow::onNoFocusSceneWidget);
+    connect(action, &QAction::triggered, this, &MainWindow::onNoFocusQtWindow);
 
     return actions;
 }
@@ -114,26 +114,26 @@ auto MainWindow::onClear()
     model->clear();
 }
 
-auto MainWindow::onFocusSceneWidget1()
+auto MainWindow::onFocusQtWindow1()
     -> void
 {
-    sceneWidgets[0]->setFocus();
+    QtWindows[0]->setFocus();
 }
 
-auto MainWindow::onFocusSceneWidget2()
+auto MainWindow::onFocusQtWindow2()
     -> void
 {
-    sceneWidgets[1]->setFocus();
+    QtWindows[1]->setFocus();
 }
 
-auto MainWindow::onNoFocusSceneWidget()
+auto MainWindow::onNoFocusQtWindow()
     -> void
 {
     setFocus(Qt::FocusReason::OtherFocusReason);
 }
 
-auto MainWindow::registerSceneWidget(ape::qt::SceneWidget & widget)
+auto MainWindow::registerQtWindow(ape::qt::QtWindow & widget)
     -> void
 {
-    sceneWidgets.push_back(&widget);
+    QtWindows.push_back(&widget);
 }

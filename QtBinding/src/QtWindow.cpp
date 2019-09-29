@@ -1,4 +1,4 @@
-#include <QtWindow/SceneWidget.hpp>
+#include <QtBinding/QtWindow.hpp>
 
 #include <Core/CameraSelector.hpp>
 #include <Core/Keyboard.hpp>
@@ -95,43 +95,17 @@ auto getKey(QKeyEvent & e)
 
 } // unnamed namespace
 
-class SceneWidget::EngineHolder
-{
-
-public:
-
-    EngineHolder(
-        CameraSelector & cameraSelector,
-        InputHandler & inputHandler,
-        StandardShaderProgram & shader,
-        RenderingContext const & context)
-        : cameraSelector{&cameraSelector}
-        , inputHandler{&inputHandler}
-        , renderer{context, cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
-    {
-    }
-
-public:
-
-    CameraSelector * cameraSelector;
-
-    InputHandler * inputHandler;
-
-    SceneRenderer renderer;
-
-};
-
-SceneWidget::SceneWidget(ape::RenderingContext const & renderingContext, QWidget * const parent)
+QtWindow::QtWindow(QWidget * const parent)
     : QOpenGLWidget{parent}
-    , renderingContext{renderingContext}
-    , timeTracker{stopwatch}
+    , renderer{nullptr}
     , isMouseGrabbed{false}
     , isWindowClosing{false}
+    , isOpenGLInitialized{false}
 {
     keyStatus.resize(static_cast<std::size_t>(ape::Key::last) + 1, ape::KeyStatus::released);
 }
 
-SceneWidget::~SceneWidget()
+QtWindow::~QtWindow()
 {
     makeCurrent();
 
@@ -140,30 +114,14 @@ SceneWidget::~SceneWidget()
     doneCurrent();
 }
 
-auto SceneWidget::engage(
-    CameraSelector & cameraSelector,
-    InputHandler & inputHandler,
-    StandardShaderProgram & shader)
+auto QtWindow::engage(SceneRenderer & r)
     -> void
 {
-    makeCurrent();
-
-    holder = std::make_shared<EngineHolder>(cameraSelector, inputHandler, shader, renderingContext);
-}
-
-auto SceneWidget::getCameraSelector()
-    -> CameraSelector &
-{
-    if (holder == nullptr)
-    {
-        throw SceneWidgetNotEngaged{};
-    }
-
-    return *(holder->cameraSelector);
+    renderer = &r;
 }
 
 // virtual (from Window)
-auto SceneWidget::getAspectRatio() const
+auto QtWindow::getAspectRatio() const
     -> float
 {
     auto const windowSize = size();
@@ -172,7 +130,7 @@ auto SceneWidget::getAspectRatio() const
 }
 
 // virtual (from Window)
-auto SceneWidget::getSize() const
+auto QtWindow::getSize() const
     -> Size<int>
 {
     auto const windowSize = size();
@@ -181,7 +139,7 @@ auto SceneWidget::getSize() const
 }
 
 // virtual (from Window)
-auto SceneWidget::getPosition() const
+auto QtWindow::getPosition() const
     -> Position<int>
 {
     auto const position = pos();
@@ -190,7 +148,7 @@ auto SceneWidget::getPosition() const
 }
 
 // virtual (from Window)
-auto SceneWidget::getMousePosition() const
+auto QtWindow::getMousePosition() const
     -> Position<int>
 {
     auto const mouseScreenPosition = QCursor::pos();
@@ -201,42 +159,42 @@ auto SceneWidget::getMousePosition() const
 }
 
 // virtual (from Window)
-auto SceneWidget::isKeyPressed(Key const key) const
+auto QtWindow::isKeyPressed(Key const key) const
     -> bool
 {
     return (keyStatus[static_cast<std::size_t>(key)] == KeyStatus::pressed);
 }
 
 // virtual (from Window)
-auto SceneWidget::isFullScreen() const
+auto QtWindow::isFullScreen() const
     -> bool
 {
     return (windowState() & Qt::WindowFullScreen);
 }
 
 // virtual (from Window)
-auto SceneWidget::setFullScreen()
+auto QtWindow::setFullScreen()
     -> void
 {
     setWindowState(windowState() | Qt::WindowFullScreen);
 }
 
 // virtual (from Window)
-auto SceneWidget::exitFullScreen()
+auto QtWindow::exitFullScreen()
     -> void
 {
     setWindowState(windowState() & ~Qt::WindowFullScreen);
 }
 
 // virtual (from Window)
-auto SceneWidget::isMouseCaptured() const
+auto QtWindow::isMouseCaptured() const
     -> bool
 {
     return isMouseGrabbed;
 }
 
 // virtual (from Window)
-auto SceneWidget::captureMouse()
+auto QtWindow::captureMouse()
     -> void
 {
     QOpenGLWidget::grabMouse();
@@ -245,7 +203,7 @@ auto SceneWidget::captureMouse()
 }
 
 // virtual (from Window)
-auto SceneWidget::releaseMouse()
+auto QtWindow::releaseMouse()
     -> void
 {
     QOpenGLWidget::releaseMouse();
@@ -254,58 +212,50 @@ auto SceneWidget::releaseMouse()
 }
 
 // virtual (from Window)
-auto SceneWidget::swapBuffers()
+auto QtWindow::swapBuffers()
     -> void
 {
-    auto const context = QOpenGLWidget::context();
-
-    context->swapBuffers(context->surface());
+    QOpenGLWidget::update();
 }
 
 // virtual (from Window)
-auto SceneWidget::makeCurrent()
+auto QtWindow::makeCurrent()
     -> void
 {
     return QOpenGLWidget::makeCurrent();
 }
 
 // virtual (from Window)
-auto SceneWidget::close()
+auto QtWindow::close()
     -> void
 {
     QOpenGLWidget::close();
 }
 
 // virtual (from Window)
-auto SceneWidget::isClosing()
+auto QtWindow::isClosing()
     -> bool
 {
     return isWindowClosing;
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::initializeGL()
+auto QtWindow::initializeGL()
     -> void
 {
     initializeOpenGLFunctions();
 
-    startEventLoop();
+    isOpenGLInitialized = true;
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::paintGL()
+auto QtWindow::paintEvent(QPaintEvent *)
     -> void
 {
-    if (holder == nullptr)
-    {
-        return;
-    }
-    
-    holder->renderer.render();
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::focusInEvent(QFocusEvent * const)
+auto QtWindow::focusInEvent(QFocusEvent * const)
     -> void
 {
     setMouseTracking(true);
@@ -314,28 +264,28 @@ auto SceneWidget::focusInEvent(QFocusEvent * const)
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::focusOutEvent(QFocusEvent * const)
+auto QtWindow::focusOutEvent(QFocusEvent * const)
     -> void
 {
     onFocusLost.fire();
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::resizeEvent(QResizeEvent * const e)
+auto QtWindow::resizeEvent(QResizeEvent * const e)
     -> void
 {
-    if (holder == nullptr)
+    if (!isOpenGLInitialized)
     {
         return;
     }
 
     auto const newSize = e->size();
 
-    glViewport(0, 0, newSize.width(), newSize.height());
+    onResize.fire(Size<int>{newSize.width(), newSize.height()});
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::keyPressEvent(QKeyEvent * const e)
+auto QtWindow::keyPressEvent(QKeyEvent * const e)
     -> void
 {
     handleKeyEvent(*e, KeyStatus::pressed, [this] (Key const key, KeyModifier const modifier)
@@ -345,7 +295,7 @@ auto SceneWidget::keyPressEvent(QKeyEvent * const e)
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::keyReleaseEvent(QKeyEvent * const e)
+auto QtWindow::keyReleaseEvent(QKeyEvent * const e)
     -> void
 {
     handleKeyEvent(*e, KeyStatus::released, [this] (Key const key, KeyModifier const modifier)
@@ -355,7 +305,7 @@ auto SceneWidget::keyReleaseEvent(QKeyEvent * const e)
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::wheelEvent(QWheelEvent * const e)
+auto QtWindow::wheelEvent(QWheelEvent * const e)
     -> void
 {
     auto const delta = e->angleDelta();
@@ -368,7 +318,7 @@ auto SceneWidget::wheelEvent(QWheelEvent * const e)
 }
 
 // virtual (from QOpenGLWidget)
-auto SceneWidget::closeEvent(QCloseEvent * const e)
+auto QtWindow::closeEvent(QCloseEvent * const e)
     -> void
 {
     isWindowClosing = true;
@@ -376,37 +326,8 @@ auto SceneWidget::closeEvent(QCloseEvent * const e)
     e->accept();
 }
 
-auto SceneWidget::startEventLoop()
-    -> void
-{
-    auto const timer = new QTimer{this};
-    
-    loopTimerConnection = connect(timer, &QTimer::timeout, [this] 
-    { 
-        processOneFrame();
-    });
-    
-    // The timer's callback will be invoke whenever the application is idle.
-    timer->start();
-}
-
-auto SceneWidget::processOneFrame()
-    -> void
-{
-    if (holder == nullptr)
-    {
-        return;
-    }
-
-    auto const lastFrameDuration = timeTracker.tick();
-
-    holder->inputHandler->onFrame(lastFrameDuration);
-
-    update();
-}
-
 template<typename F>
-auto SceneWidget::handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
+auto QtWindow::handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
     -> void
 {
     auto const key = getKey(e);
@@ -423,7 +344,7 @@ auto SceneWidget::handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandler
     inputHandlerNotifier(*key, modifiers);
 }
 
-auto SceneWidget::setKeyStatus(Key const key, KeyStatus const status)
+auto QtWindow::setKeyStatus(Key const key, KeyStatus const status)
     -> void
 {
     keyStatus[static_cast<std::size_t>(key)] = status;

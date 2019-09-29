@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GLFWWindow/GLFWWindow.hpp>
+#include <GlfwBinding/GLFWWindow.hpp>
 
 #include <memory>
  

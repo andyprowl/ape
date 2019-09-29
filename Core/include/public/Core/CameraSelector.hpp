@@ -43,6 +43,8 @@ public:
 
     explicit CameraSelector(Scene & scene);
 
+    CameraSelector(Scene & scene, std::vector<int> availableCameraIndices);
+
     auto getScene() const
         -> Scene &;
     
@@ -67,8 +69,20 @@ public:
 
 private:
 
+    auto tryGetFirstCameraIndex() const
+        -> std::optional<int>;
+
+    auto tryGetLastCameraIndex() const
+        -> std::optional<int>;
+
+private:
+
     Scene * scene;
 
+    // These are indices into the scene's camera containers.
+    std::vector<int> availableCameraIndices;
+
+    // This is an index into the "availableCameraIndices" data member above.
     std::optional<int> activeCameraIndex;
 
 };

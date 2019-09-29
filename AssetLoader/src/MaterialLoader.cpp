@@ -1,4 +1,6 @@
-#include <Core/MaterialLoader.hpp>
+#include <AssetLoader/MaterialLoader.hpp>
+
+#include <Core/AssetRepository.hpp>
 
 #include <assimp/scene.h>
 

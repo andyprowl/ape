@@ -5,11 +5,13 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
-#include <QtWindow/SceneWidget.hpp>
+#include <QtBinding/QtEngine.hpp>
+#include <QtBinding/QtWindow.hpp>
 
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
 #include <Core/RenderingContext.hpp>
+#include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
 
 #include <QApplication>
@@ -56,12 +58,10 @@ auto makeTreeView(QWidget & parent, Model & model)
     return *view;
 }
 
-auto makeSceneWidget(QWidget & parent)
-    -> ape::qt::SceneWidget &
+auto makeQtWindow(QWidget & parent)
+    -> ape::qt::QtWindow &
 {
-    auto const context = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
-
-    auto const widget = new ape::qt::SceneWidget{context, &parent};
+    auto const widget = new ape::qt::QtWindow{&parent};
 
     auto format = QSurfaceFormat{};
 
@@ -116,13 +116,17 @@ int main(int argc, char *argv[])
 
     auto & listView1 = makeListView(centralWidget, model);
 
-    auto & sceneView1 = makeSceneWidget(window);
+    auto & sceneView1 = makeQtWindow(window);
 
     sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView2 = makeSceneWidget(window);
+    auto & sceneView2 = makeQtWindow(window);
 
     sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
+
+    auto & sceneView3 = makeQtWindow(window);
+
+    sceneView3.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
     getGridLayout(centralWidget).addWidget(&tableView1, 0, 0);
 
@@ -130,11 +134,11 @@ int main(int argc, char *argv[])
 
     getGridLayout(centralWidget).addWidget(&treeView1, 0, 2);
 
-    getGridLayout(centralWidget).addWidget(&treeView2, 1, 0);
+    getGridLayout(centralWidget).addWidget(&sceneView2, 1, 0);
 
     getGridLayout(centralWidget).addWidget(&listView1, 1, 1);
 
-    getGridLayout(centralWidget).addWidget(&sceneView2, 1, 2);
+    getGridLayout(centralWidget).addWidget(&sceneView3, 1, 2);
     
     getGridLayout(centralWidget).setColumnStretch(0, 1.0);
     
@@ -154,9 +158,11 @@ int main(int argc, char *argv[])
 
     window.show();
 
-    window.registerSceneWidget(sceneView1);
+    window.registerQtWindow(sceneView1);
 
-    window.registerSceneWidget(sceneView2);
+    window.registerQtWindow(sceneView2);
+
+    window.registerQtWindow(sceneView3);
 
     // The OpenGL context has been created after window.show() was called
     auto const loader = ape::OpenGLLoader{true, true};
@@ -171,21 +177,70 @@ int main(int argc, char *argv[])
     
     auto scene = createSampleScene(assets);
 
-    auto selector1 = ape::CameraSelector{scene};
-
     auto shader = ape::StandardShaderProgram{};
+
+    /// ---
+
+    auto selector1 = ape::CameraSelector{scene};
 
     auto inputHandler1 = SampleInputHandler{sceneView1, selector1, shader, scene};
 
-    sceneView1.engage(selector1, inputHandler1, shader);
+    auto const context1 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
+
+    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    sceneView1.makeCurrent();
+
+    auto renderer1 = ape::SceneRenderer{context1, selector1, shader, {0.0f, 0.0f, 0.0f}};
+
+    auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
+
+    sceneView1.engage(renderer1);
+
+    engine1.start();
+
+    /// ---
 
     auto selector2 = ape::CameraSelector{scene};
 
     auto inputHandler2 = SampleInputHandler{sceneView2, selector2, shader, scene};
 
-    sceneView2.engage(selector2, inputHandler2, shader);
+    auto const context2 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
-    sceneView2.getCameraSelector().activateNextCamera();
+    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    sceneView2.makeCurrent();
+
+    auto renderer2 = ape::SceneRenderer{context2, selector2, shader, {0.0f, 0.0f, 0.0f}};
+
+    auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
+
+    selector2.activateNextCamera();
+
+    sceneView2.engage(renderer2);
+
+    engine2.start();
+
+    /// ---
+
+    auto selector3 = ape::CameraSelector{scene};
+
+    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, shader, scene};
+
+    auto const context3 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
+
+    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    sceneView3.makeCurrent();
+
+    auto renderer3 = ape::SceneRenderer{context3, selector3, shader, {0.0f, 0.0f, 0.0f}};
+
+    auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
+
+    selector3.activatePreviousCamera();
+
+    sceneView3.engage(renderer3);
+
+    engine3.start();
+
+    // ---
 
     return app.exec();
 }

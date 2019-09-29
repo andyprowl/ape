@@ -1,6 +1,7 @@
 #include <TestScene/SampleAssetBuilder.hpp>
 
-#include <Core/AssetLoader.hpp>
+#include <AssetLoader/AssetLoader.hpp>
+
 #include <Core/BoxBuilder.hpp>
 #include <Core/Material.hpp>
 #include <Core/Mesh.hpp>

@@ -21,4 +21,4 @@ find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
 
 AddExecutable(${PROJECT_NAME})
 
-AddPrivateDependencies(${PROJECT_NAME} QtWindow TestScene)
+AddPrivateDependencies(${PROJECT_NAME} QtBinding TestScene)

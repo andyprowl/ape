@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(QtWindow)
+project(QtBinding)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -21,6 +21,8 @@ find_package(Qt5 COMPONENTS OpenGL Widgets REQUIRED)
 
 AddLibrary(${PROJECT_NAME})
 
-AddPublicDependencies(${PROJECT_NAME} Core Qt5::OpenGL Qt5::Widgets)
+AddPublicDependencies(${PROJECT_NAME} Core Glad Qt5::OpenGL Qt5::Widgets Qt5::Core)
 
 AddPrivateDependencies(${PROJECT_NAME} opengl32)
+
+set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC TRUE)

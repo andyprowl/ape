@@ -1,4 +1,4 @@
-project(GLFWWindow)
+project(GlfwBinding)
 
 AddLibrary(${PROJECT_NAME})
 

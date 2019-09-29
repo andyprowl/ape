@@ -4,17 +4,21 @@ project(Ape)
 
 set(SOURCE_ROOT ${CMAKE_CURRENT_LIST_DIR})
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 include("BuildSystem/cmake/BuildSystem.cmake")
 
 include("CMake/Dependencies.cmake")
+
+set(CMAKE_PREDEFINED_TARGETS_FOLDER "Infrastructure")
+
+EnableIDEFolders()
 
 ImportDependencies()
 
 SetStrictWarningPolicy()
 
 SetCpp17StandardCompliance()
+
+add_subdirectory(AssetLoader)
 
 add_subdirectory(BuildSystem)
 
@@ -24,13 +28,13 @@ add_subdirectory(Documentation)
 
 add_subdirectory(Glad)
 
-add_subdirectory(GLFWWindow)
+add_subdirectory(GlfwBinding)
 
 add_subdirectory(GLFWTestApp)
 
-add_subdirectory(QtTestApp)
+add_subdirectory(QtBinding)
 
-add_subdirectory(QtWindow)
+add_subdirectory(QtTestApp)
 
 add_subdirectory(TestScene)
 

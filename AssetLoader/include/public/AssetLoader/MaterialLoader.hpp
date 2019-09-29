@@ -1,10 +1,9 @@
 #pragma once
 
-#include "AssetRepository.hpp"
-
 #include <glm/vec4.hpp>
 
 #include <string>
+#include <vector>
 
 enum aiTextureType : int;
 
@@ -13,6 +12,9 @@ struct aiScene;
 
 namespace ape
 {
+
+class AssetRepository;
+class Texture;
 
 class MaterialLoader
 {

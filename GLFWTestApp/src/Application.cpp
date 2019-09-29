@@ -4,8 +4,8 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
-#include <GLFWWindow/Engine.hpp>
-#include <GLFWWindow/GLFWGateway.hpp>
+#include <GlfwBinding/GLFWEngine.hpp>
+#include <GlfwBinding/GLFWGateway.hpp>
 
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
@@ -18,15 +18,16 @@ class Application::Impl
 public:
 
     Impl()
-        : window{gateway.createWindow("APE 3D engine", {2000, 1000})}
+        : window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
         , loader{true, true}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
+        , shader{}
         , cameraSelector{scene}
         , context{ape::RenderingPolicy::useArrayObjects}
         , renderer{context, cameraSelector, shader, {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, cameraSelector, shader, scene}
-        , engine{window, renderer, inputHandler}
+        , GLFWEngine{window, renderer, inputHandler}
     {
     }
 
@@ -37,7 +38,7 @@ public:
 
         inputHandler.getCameraManipulator().activate();
 
-        engine.start();
+        GLFWEngine.start();
     }
 
 private:
@@ -52,9 +53,9 @@ private:
 
     SampleScene scene;
 
-    ape::CameraSelector cameraSelector;
-
     ape::StandardShaderProgram shader;
+
+    ape::CameraSelector cameraSelector;
 
     ape::RenderingContext context;
 
@@ -62,7 +63,7 @@ private:
 
     SampleInputHandler inputHandler;
 
-    ape::Engine engine;
+    ape::GLFWEngine GLFWEngine;
 
 };
 

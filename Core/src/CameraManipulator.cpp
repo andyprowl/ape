@@ -128,7 +128,9 @@ auto CameraManipulator::processStraightMovement(
     }
 }
 
-auto CameraManipulator::processStrafeMovement(Camera & camera, double const lastFrameDuration) const
+auto CameraManipulator::processStrafeMovement(
+    Camera & camera,
+    double const lastFrameDuration) const
     -> void
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);

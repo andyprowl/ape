@@ -1,6 +1,10 @@
-#include <Core/MeshLoader.hpp>
+#include <AssetLoader/MeshLoader.hpp>
+
+#include <Core/AssetRepository.hpp>
 
 #include <assimp/scene.h>
+
+#include <glm/glm.hpp>
 
 namespace ape
 {

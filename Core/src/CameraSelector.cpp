@@ -3,34 +3,13 @@
 #include <Core/Scene.hpp>
 
 #include <algorithm>
+#include <numeric>
 
 namespace ape
 {
 
 namespace
 {
-
-auto tryGetFirstCameraIndex(Scene const & scene)
-    -> std::optional<int>
-{
-    if (scene.cameras.empty())
-    {
-        return std::nullopt;
-    }
-
-    return 0;
-}
-
-auto tryGetLastCameraIndex(Scene const & scene)
-    -> std::optional<int>
-{
-    if (scene.cameras.empty())
-    {
-        return std::nullopt;
-    }
-
-    return static_cast<int>(scene.cameras.size() - 1);
-}
 
 auto getIndexInScene(Camera const & camera, Scene const & scene)
     -> std::optional<int>
@@ -51,11 +30,29 @@ auto getIndexInScene(Camera const & camera, Scene const & scene)
     return static_cast<int>(std::distance(std::cbegin(scene.cameras), it));
 }
 
+auto getAllAvailableCameraIndices(Scene const & scene)
+    -> std::vector<int>
+{
+    auto indices = std::vector<int>{};
+
+    indices.resize(scene.cameras.size());
+
+    std::iota(std::begin(indices), std::end(indices), 0);
+
+    return indices;
+}
+
 } // unnamed namespace
 
 CameraSelector::CameraSelector(Scene & scene)
+    : CameraSelector{scene, getAllAvailableCameraIndices(scene)}
+{
+}
+
+CameraSelector::CameraSelector(Scene & scene, std::vector<int> availableCameraIndices)
     : scene{&scene}
-    , activeCameraIndex{tryGetFirstCameraIndex(scene)}
+    , availableCameraIndices{std::move(availableCameraIndices)}
+    , activeCameraIndex{tryGetFirstCameraIndex()}
 {
 }
 
@@ -73,7 +70,9 @@ auto CameraSelector::getActiveCamera() const
         return nullptr;
     }
 
-    return &(scene->cameras[*activeCameraIndex]);
+    auto const sceneCameraIndex = availableCameraIndices[*activeCameraIndex];
+
+    return &(scene->cameras[sceneCameraIndex]);
 }
 
 auto CameraSelector::activateCamera(int const index)
@@ -94,11 +93,11 @@ auto CameraSelector::activateNextCamera()
 {
     if (!activeCameraIndex)
     {
-        activeCameraIndex = tryGetFirstCameraIndex(*scene);
+        activeCameraIndex = tryGetFirstCameraIndex();
     }
     else
     {
-        auto const numOfCameras = static_cast<int>(scene->cameras.size());
+        auto const numOfCameras = static_cast<int>(availableCameraIndices.size());
 
         activeCameraIndex = (*activeCameraIndex + 1) % numOfCameras;
     }
@@ -111,13 +110,13 @@ auto CameraSelector::activatePreviousCamera()
 {
     if (!activeCameraIndex)
     {
-        activeCameraIndex = tryGetLastCameraIndex(*scene);
+        activeCameraIndex = tryGetLastCameraIndex();
     }
     else
     {
-        auto const numOfCameras = static_cast<int>(scene->cameras.size());
+        auto const numOfCameras = static_cast<int>(availableCameraIndices.size());
 
-        activeCameraIndex = (*activeCameraIndex - 1) % numOfCameras;
+        activeCameraIndex = (*activeCameraIndex + numOfCameras - 1) % numOfCameras;
     }
 
     onActiveCameraChanged.fire(getActiveCamera());
@@ -129,6 +128,28 @@ auto CameraSelector::reset()
     activeCameraIndex = std::nullopt;
 
     onActiveCameraChanged.fire(nullptr);
+}
+
+auto CameraSelector::tryGetFirstCameraIndex() const
+    -> std::optional<int>
+{
+    if (availableCameraIndices.empty())
+    {
+        return std::nullopt;
+    }
+
+    return 0;
+}
+
+auto CameraSelector::tryGetLastCameraIndex() const
+    -> std::optional<int>
+{
+    if (availableCameraIndices.empty())
+    {
+        return std::nullopt;
+    }
+
+    return static_cast<int>(availableCameraIndices.size() - 1);
 }
 
 auto activateCamera(CameraSelector & selector, Camera & newCamera)

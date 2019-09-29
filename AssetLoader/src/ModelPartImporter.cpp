@@ -1,6 +1,7 @@
-#include <Core/ModelPartImporter.hpp>
+#include <AssetLoader/ModelPartImporter.hpp>
 
-#include <Core/AssetLoader.hpp>
+#include <AssetLoader/AssetLoader.hpp>
+
 #include <Core/AssetRepository.hpp>
 
 #include <assimp/Importer.hpp>

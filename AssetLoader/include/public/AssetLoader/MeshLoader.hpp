@@ -1,12 +1,16 @@
 #pragma once
 
-#include "AssetRepository.hpp"
+#include <vector>
 
 struct aiMesh;
 struct aiScene;
 
 namespace ape
 {
+
+class AssetRepository;
+class Shape;
+class Vertex;
 
 class MeshLoader
 {

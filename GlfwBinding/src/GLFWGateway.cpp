@@ -1,4 +1,4 @@
-#include <GLFWWindow/GLFWGateway.hpp>
+#include <GlfwBinding/GLFWGateway.hpp>
 
 #include "GLFWInitializer.hpp"
 

@@ -14,6 +14,7 @@ namespace ape
 class CameraSelector;
 class InputHandler;
 class Scene;
+class SceneRenderer;
 class StandardShaderProgram;
 
 } // namespace ape
@@ -21,37 +22,31 @@ class StandardShaderProgram;
 namespace ape::qt
 {
 
-class SceneWidgetNotEngaged : public std::logic_error
+class QtWindowNotEngaged : public std::logic_error
 {
 
 public:
 
-    SceneWidgetNotEngaged()
+    QtWindowNotEngaged()
         : logic_error{"The widget is not associated to a scene"}
     {
     }
 
 };
 
-class SceneWidget : public QOpenGLWidget, public Window, private QOpenGLFunctions
+class QtWindow : public QOpenGLWidget, public Window, private QOpenGLFunctions
 {
 
     Q_OBJECT;
 
 public:
 
-    SceneWidget(RenderingContext const & renderingContext, QWidget * parent);
+    explicit QtWindow(QWidget * parent = nullptr);
 
-    ~SceneWidget();
+    ~QtWindow();
 
-    auto engage(
-        CameraSelector & cameraSelector,
-        InputHandler & inputHandler,
-        StandardShaderProgram & shader)
+    auto engage(SceneRenderer & renderer)
         -> void;
-
-    auto getCameraSelector()
-        -> CameraSelector &;
 
     // virtual (from Window)
     auto getAspectRatio() const
@@ -120,7 +115,7 @@ protected:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto paintGL()
+    auto paintEvent(QPaintEvent *)
         -> void override;
 
     // virtual (from QOpenGLWidget)
@@ -148,16 +143,10 @@ protected:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto closeEvent(QCloseEvent * event)
+    auto closeEvent(QCloseEvent * e)
         -> void override;
 
 private:
-
-    auto startEventLoop()
-        -> void;
-
-    auto processOneFrame()
-        -> void;
 
     template<typename F>
     auto handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
@@ -168,25 +157,15 @@ private:
 
 private:
 
-    class EngineHolder;
-
-private:
-
-    std::shared_ptr<EngineHolder> holder;
+    SceneRenderer * renderer;
 
     std::vector<ape::KeyStatus> keyStatus;
-
-    RenderingContext renderingContext;
-
-    Stopwatch stopwatch;
-
-    TimeIntervalTracker timeTracker;
-
-    QMetaObject::Connection loopTimerConnection;
 
     bool isMouseGrabbed;
 
     bool isWindowClosing;
+
+    bool isOpenGLInitialized;
 
 };
 

@@ -73,6 +73,8 @@ auto OpenGLLoader::prepareDebugOutput()
     glEnable(GL_DEBUG_OUTPUT);
     
     glDebugMessageCallback(onOpenGLError, 0);
+
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 } // namespace ape

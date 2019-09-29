@@ -5,7 +5,7 @@
 namespace ape::qt
 {
 
-class SceneWidget;
+class QtWindow;
 
 } // namespace ape::qt
 
@@ -23,7 +23,7 @@ public:
     
     ~MainWindow();
 
-    auto registerSceneWidget(ape::qt::SceneWidget & widget)
+    auto registerQtWindow(ape::qt::QtWindow & widget)
         -> void;
 
 private:
@@ -46,13 +46,13 @@ private:
     auto onClear()
         -> void;
 
-    auto onFocusSceneWidget1()
+    auto onFocusQtWindow1()
         -> void;
 
-    auto onFocusSceneWidget2()
+    auto onFocusQtWindow2()
         -> void;
 
-    auto onNoFocusSceneWidget()
+    auto onNoFocusQtWindow()
         -> void;
 
 private:
@@ -69,6 +69,6 @@ private:
 
     QToolBar * toolBar;
 
-    std::vector<ape::qt::SceneWidget *> sceneWidgets;
+    std::vector<ape::qt::QtWindow *> QtWindows;
 
 };

@@ -1,16 +1,8 @@
- - Extract Qt timer-based "loop" out of SceneWidget
- - Make SceneWidget independent of InputHandler
-  - Try and generalize GLFW engine-based and Qt's event-based approaches
+ - Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
+   constructing them
+ - Try and generalize GLFW GLFWEngine-based and Qt's event-based approaches
  - Figure out why Blender models get loaded without textures
- - Is it correct to have cameras be part of the scene?
-   - Problem with cameras in scene: two views with different aspect ratio would conflict!
-   - Is it correct to force renderers to use a camera from a scene?
-   - This way when two widgets use the same camera and one manipulates it, the other one also gets
-     updated...
- - Have "Infrastructure" folder with top-level docs and backlog
  - Add CMake install target also handling correct deployment of dependencies
- - Create a separate library for Qt's SceneWidget
- - Create a separate library for model import units using Assimp
  - Extract utility functions to separate (general-purpose) library projects
  - Support flat shapes/meshes
  - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
