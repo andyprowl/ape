@@ -20,6 +20,8 @@ SetCpp17StandardCompliance()
 
 add_subdirectory(ApePlayer)
 
+add_subdirectory(ApeCreator)
+
 add_subdirectory(AssetLoader)
 
 add_subdirectory(BuildSystem)
@@ -33,8 +35,6 @@ add_subdirectory(Glad)
 add_subdirectory(GlfwBinding)
 
 add_subdirectory(QtBinding)
-
-add_subdirectory(QtTestApp)
 
 add_subdirectory(TestScene)
 

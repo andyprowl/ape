@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(QtTestApp)
+project(ApeCreator)
 
 set(CMAKE_AUTOMOC ON)
 
