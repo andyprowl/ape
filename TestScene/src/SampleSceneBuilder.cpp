@@ -380,7 +380,7 @@ auto StatefulSceneBuilder::getDragonPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-7.0f, -2.0f, -2.0f}};
+        {-2.0f, -2.0f, 15.0f}};
 }
 
 auto StatefulSceneBuilder::createSpaceships()
@@ -428,7 +428,7 @@ auto StatefulSceneBuilder::getDynoPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-0.0f, -2.0f, 10.0f}};
+        {10.0f, -2.0f, -5.0f}};
 }
 
 auto StatefulSceneBuilder::createCastles()
@@ -452,7 +452,8 @@ auto StatefulSceneBuilder::getCastlePositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-20.0f, -2.0f, 10.0f}};
+        {-20.0f, -2.0f, 10.0f},
+        {20.0f, -2.0f, 10.0f}};
 }
 
 auto StatefulSceneBuilder::createCameras()
@@ -617,7 +618,7 @@ auto StatefulSceneBuilder::createDirectionalLights()
 auto StatefulSceneBuilder::getDirectionalLightDirections()
     -> std::vector<glm::vec3>
 {
-    return {/*{0.0f, -1.0f, 0.0f}*/};
+    return {{0.0f, -1.0f, 0.0f}};
 }
 
 auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)

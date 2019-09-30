@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/vec2.hpp>
+
 #include <vector>
 
 struct aiMesh;
@@ -32,6 +34,9 @@ private:
 
     auto importVertices(aiMesh const & mesh) const
         -> std::vector<Vertex>;
+
+    auto importTextureCoordinates(aiMesh const & mesh, int vertexIndex) const
+        -> glm::vec2;
 
     auto importIndices(aiMesh const & mesh) const
         -> std::vector<unsigned int>;

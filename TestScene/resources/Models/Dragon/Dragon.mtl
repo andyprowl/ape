@@ -1,0 +1,51 @@
+# Blender MTL File: 'Dragon.blend'
+# Material Count: 4
+
+newmtl EYES
+Ns 86.470579
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 1.000000 1.000000 1.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 0.000000
+illum 9
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg
+
+newmtl Game_dragon
+Ns 68.823543
+Ka 1.000000 1.000000 1.000000
+Kd 0.259625 0.087799 0.036255
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 0.000000
+illum 1
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg
+
+newmtl Game_dragon.001
+Ns 68.823543
+Ka 1.000000 1.000000 1.000000
+Kd 0.582830 0.582830 0.582830
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 0.000000
+illum 1
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg
+
+newmtl Material
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2

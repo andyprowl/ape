@@ -79,12 +79,25 @@ auto MeshLoader::importVertices(aiMesh const & mesh) const
 
         auto const normal = makeVector(mesh.mNormals[i]);
 
-        auto const textureCoords = makeCoordinateVector(mesh.mTextureCoords[0][i]);
+        auto const textureCoords = importTextureCoordinates(mesh, i);
 
         vertices.emplace_back(position, normal, textureCoords);
     }
 
     return vertices;
+}
+
+auto MeshLoader::importTextureCoordinates(aiMesh const & mesh, int const vertexIndex) const
+    -> glm::vec2
+{
+    if ((mesh.mTextureCoords != nullptr) && (mesh.mTextureCoords[0] != nullptr))
+    {
+        return makeCoordinateVector(mesh.mTextureCoords[0][vertexIndex]);
+    }
+    else
+    {
+        return {0.0f, 0.0f};
+    }
 }
 
 auto MeshLoader::importIndices(aiMesh const & mesh) const

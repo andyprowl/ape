@@ -309,12 +309,11 @@ auto SampleAssetBuilder::build() const
 
     collection.nanosuitAssets = loader.load(nanosuiteFilepath, "Nanosuit");
 
-    auto const dragonFilepath = resolveModelFilepath("Dragon/Dragon_Baked_Actions.obj");
+    auto const dragonFilepath = resolveModelFilepath("Dragon/Dragon.obj");
 
     collection.dragonAssets = loader.load(dragonFilepath, "Dragon");
 
-    auto const spaceshipFilepath = resolveModelFilepath(
-        "Spaceship/Intergalactic Spaceship_Blender_2.79b_BI.obj");
+    auto const spaceshipFilepath = resolveModelFilepath("Spaceship/Spaceship.obj");
 
     collection.spaceshipAssets = loader.load(spaceshipFilepath, "Spaceship");
 
