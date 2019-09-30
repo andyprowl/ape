@@ -158,7 +158,7 @@ auto Shape::bindExistingVertexArrayObject(RenderingContext const & context) cons
 auto Shape::createNewVertexArrayObject(RenderingContext const & context) const
     -> VertexArrayObject &
 {
-    contextArrayObjectMap.resize(context.getId() + 1);
+    contextArrayObjectMap.resize(static_cast<std::size_t>(context.getId()) + 1u);
 
     auto & newArrayObject = contextArrayObjectMap.back();
 

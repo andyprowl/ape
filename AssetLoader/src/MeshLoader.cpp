@@ -18,6 +18,14 @@ auto makeVector(aiVector3D const & v)
     return {v.x, v.y, v.z};
 }
 
+auto makeCoordinateVector(aiVector3D const & v)
+    -> glm::vec2
+{
+    // TODO: Inverting the X coordinate necessary to get the correct result, but should not be
+    // needed! There might be a mistake somewhere else.
+    return {-v.x, v.y};
+}
+
 } // unnamed namespace
 
 MeshLoader::MeshLoader(AssetRepository & assets)
@@ -71,7 +79,7 @@ auto MeshLoader::importVertices(aiMesh const & mesh) const
 
         auto const normal = makeVector(mesh.mNormals[i]);
 
-        auto const textureCoords = glm::vec2{makeVector(mesh.mTextureCoords[0][i])};
+        auto const textureCoords = makeCoordinateVector(mesh.mTextureCoords[0][i]);
 
         vertices.emplace_back(position, normal, textureCoords);
     }

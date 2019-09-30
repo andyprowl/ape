@@ -73,6 +73,18 @@ private:
     auto getSpaceshipPositions() const
         -> std::vector<glm::vec3>;
 
+    auto createDynos()
+        -> void;
+
+    auto getDynoPositions() const
+        -> std::vector<glm::vec3>;
+    
+    auto createCastles()
+        -> void;
+
+    auto getCastlePositions() const
+        -> std::vector<glm::vec3>;
+
     auto createCameras()
         -> void;
 
@@ -164,6 +176,10 @@ auto StatefulSceneBuilder::createBodies()
     createDragons();
 
     createSpaceships();
+
+    createDynos();
+
+    createCastles();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
@@ -391,6 +407,54 @@ auto StatefulSceneBuilder::getSpaceshipPositions() const
         {-0.0f, 6.0f, -5.0f}};
 }
 
+auto StatefulSceneBuilder::createDynos()
+    -> void
+{
+    auto const & model = assets->dynoAssets.models[0];
+
+    auto const positions = getDynoPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {1.0f, 1.0f, 1.0f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getDynoPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-0.0f, -2.0f, 10.0f}};
+}
+
+auto StatefulSceneBuilder::createCastles()
+    -> void
+{
+    auto const & model = assets->castleAssets.models[0];
+
+    auto const positions = getCastlePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {4.0f, 4.0f, 4.0f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getCastlePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-20.0f, -2.0f, 10.0f}};
+}
+
 auto StatefulSceneBuilder::createCameras()
     -> void
 {
@@ -553,7 +617,7 @@ auto StatefulSceneBuilder::createDirectionalLights()
 auto StatefulSceneBuilder::getDirectionalLightDirections()
     -> std::vector<glm::vec3>
 {
-    return {};
+    return {/*{0.0f, -1.0f, 0.0f}*/};
 }
 
 auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)

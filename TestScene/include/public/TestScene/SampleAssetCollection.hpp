@@ -15,4 +15,8 @@ public:
 
     ape::AssetRepository spaceshipAssets;
 
+    ape::AssetRepository dynoAssets;
+
+    ape::AssetRepository castleAssets;
+
 };

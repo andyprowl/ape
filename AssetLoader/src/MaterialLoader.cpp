@@ -160,7 +160,7 @@ auto MaterialLoader::importTexture(std::string const & path) const
         return *existingTexture;
     }
 
-    return assets->textures.emplace_back(std::move(path));
+    return assets->textures.emplace_back(path);
 }
 
 auto MaterialLoader::findTexture(std::string const & filepath) const

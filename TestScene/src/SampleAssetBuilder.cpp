@@ -318,5 +318,13 @@ auto SampleAssetBuilder::build() const
 
     collection.spaceshipAssets = loader.load(spaceshipFilepath, "Spaceship");
 
+    auto const dynoFilepath = resolveModelFilepath("Dyno/Apatosaurus.obj");
+
+    collection.dynoAssets = loader.load(dynoFilepath, "Dyno");
+
+    auto const castleFilepath = resolveModelFilepath("Castle/Castle.obj");
+
+    collection.castleAssets = loader.load(castleFilepath, "Castle");
+
     return collection;
 }
