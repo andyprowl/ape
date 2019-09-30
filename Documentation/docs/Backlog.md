@@ -1,3 +1,4 @@
+ - The specular map for certain models (castle, dyno) does not seem to be working
  - Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
    constructing them
  - Try and generalize GLFW GLFWEngine-based and Qt's event-based approaches
