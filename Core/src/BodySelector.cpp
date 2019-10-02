@@ -134,10 +134,21 @@ auto BodySelector::deselectBody(Body const & body)
 auto BodySelector::deselectAllBodies()
     -> void
 {
+    auto deselectedBodies = selectedBodies;
+
     nonSelectedBodies.insert(
         std::end(nonSelectedBodies),
         std::cbegin(selectedBodies),
         std::cend(selectedBodies));
+
+    selectedBodies.clear();
+
+    onSelectionChanged.fire();
+
+    for (auto const deselectedBody : deselectedBodies)
+    {
+        onBodyDeselected.fire(*deselectedBody);
+    }
 }
 
 auto BodySelector::registerBodyReallocationHandler()

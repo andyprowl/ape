@@ -12,6 +12,7 @@
 #include <Core/StandardShaderProgram.hpp>
 
 
+// TODO: Clean this up after cleanup of wireframe/outlining!
 #include <Core/Stopwatch.hpp>
 
 
