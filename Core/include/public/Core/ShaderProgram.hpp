@@ -70,6 +70,7 @@ public:
 
     ShaderProgram(
         std::string const & vertexShaderFilename,
+        std::string const & geometryShaderFilename,
         std::string const & fragmentShaderFilename);
 
     auto use() const
@@ -104,6 +105,9 @@ auto compileShader(std::string const & filename, int const shaderType)
 auto compileVertexShader(std::string const & filename)
     -> int;
 
+auto compileGeometryShader(std::string const & filename)
+    -> int;
+
 auto compileFragmentShader(std::string const & filename)
     -> int;
 
@@ -112,6 +116,7 @@ auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
 
 auto makeShaderProgram(
     std::string const & vertexShaderFilename,
+    std::string const & geometryShaderFilename,
     std::string const & fragmentShaderFilename)
     -> int;
 

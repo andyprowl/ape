@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include <iterator>
 #include <type_traits>
 #include <vector>
 
@@ -62,6 +63,12 @@ public:
         return container->front();
     }
 
+    auto back() const
+        -> decltype(std::declval<Container>().back())
+    {
+        return container->back();
+    }
+
     auto operator [] (const std::size_t index) const
         -> auto const &
     {
@@ -82,9 +89,23 @@ class ContainerView<
 {
 
 public:
+    
+    using ConstView = ContainerView<std::add_const_t<Container>>;
+
+public:
+
+    using ConstView::begin;
+
+    using ConstView::end;
+
+    using ConstView::front;
+
+    using ConstView::back;
+
+    using ConstView::operator [];
 
     explicit ContainerView(Container & container)
-        : ContainerView<std::add_const_t<Container>>{container}
+        : ConstView{container}
     {
     }
 
@@ -102,6 +123,12 @@ public:
         -> auto &
     {
         return const_cast<Container *>(this->container)->front();
+    }
+
+    auto back()
+        -> decltype(std::declval<Container>().back())
+    {
+        return const_cast<Container *>(this->container)->back();
     }
 
     auto operator [] (const std::size_t index)

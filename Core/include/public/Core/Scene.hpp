@@ -1,8 +1,10 @@
 #pragma once
 
-#include <Core/Camera.hpp>
-#include <Core/Lighting.hpp>
 #include <Core/Body.hpp>
+#include <Core/Camera.hpp>
+#include <Core/ContainerView.hpp>
+#include <Core/Lighting.hpp>
+#include <Core/Signal.hpp>
 
 #include <vector>
 
@@ -16,14 +18,55 @@ public:
 
     Scene() = default;
 
-    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, Lighting lighting)
-        : bodies{std::move(bodies)}
-        , cameras{std::move(cameras)}
-        , lighting{std::move(lighting)}
-    {
-    }
+    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, Lighting lighting);
+
+    auto getBody(int index)
+        -> Body &;
+
+    auto getBodies()
+        -> ContainerView<std::vector<Body>>;
+
+    auto getBodies() const
+        -> ContainerView<std::vector<Body> const>;
+
+    auto getNumOfBodies() const
+        -> int;
+
+    auto addBody(Body body)
+        -> Body &;
+
+    auto getCamera(int index)
+        -> Camera &;
+
+    auto getCameras()
+        -> ContainerView<std::vector<Camera>>;
+
+    auto getCameras() const
+        -> ContainerView<std::vector<Camera> const>;
+
+    auto getNumOfCameras() const
+        -> int;
+
+    auto addCamera(Camera camera)
+        -> Camera &;
+
+    auto getLighting()
+        -> Lighting &;
+
+    auto getLighting() const
+        -> Lighting const &;
 
 public:
+
+    mutable Signal<auto (Body &) -> void> onBodyAdded;
+
+    mutable Signal<auto () -> void> onBodyReallocation;
+
+    mutable Signal<auto (Camera &) -> void> onCameraAdded;
+
+    mutable Signal<auto () -> void> onCameraReallocation;
+
+private:
 
     std::vector<Body> bodies;
 

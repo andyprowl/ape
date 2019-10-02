@@ -69,7 +69,7 @@ public:
 
         // bottom
         addScaledFace(face, translate({0.0f, -0.5f, 0.0f}));
-
+        
         // top
         addScaledFace(face, translate({0.0f, 0.5f, 0.0f}) * rotate(180.0f, {1.0f, 0.0f, 0.0f}));
 

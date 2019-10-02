@@ -167,18 +167,37 @@ auto compileVertexShader(std::string const & filename)
     return compileShader(filename, GL_VERTEX_SHADER);
 }
 
+auto compileGeometryShader(std::string const & filename)
+    -> int
+{
+    if (filename.empty())
+    {
+        return -1;
+    }
+
+    return compileShader(filename, GL_GEOMETRY_SHADER);
+}
+
 auto compileFragmentShader(std::string const & filename)
     -> int
 {
     return compileShader(filename, GL_FRAGMENT_SHADER);
 }
 
-auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
+auto linkShaderProgram(
+    int const vertexShaderId,
+    int const geometryShaderId,
+    int const fragmentShaderId)
     -> int
 {
     auto const shaderProgramId = glCreateProgram();
 
     glAttachShader(shaderProgramId, vertexShaderId);
+
+    if (geometryShaderId >= 0)
+    {
+        glAttachShader(shaderProgramId, geometryShaderId);
+    }
 
     glAttachShader(shaderProgramId, fragmentShaderId);
 
@@ -188,6 +207,11 @@ auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
 
     glDeleteShader(vertexShaderId);
 
+    if (geometryShaderId >= 0)
+    {
+        glDeleteShader(geometryShaderId);
+    }
+
     glDeleteShader(fragmentShaderId);
 
     return shaderProgramId;
@@ -195,20 +219,24 @@ auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
 
 auto makeShaderProgram(
     std::string const & vertexShaderFilename,
+    std::string const & geometryShaderFilename,
     std::string const & fragmentShaderFilename)
     -> int
 {
     auto const vertexShaderId = compileVertexShader(vertexShaderFilename);
 
+    auto const geometryShaderId = compileGeometryShader(geometryShaderFilename);
+
     auto const fragmentShaderId = compileFragmentShader(fragmentShaderFilename);
 
-    return linkShaderProgram(vertexShaderId, fragmentShaderId);
+    return linkShaderProgram(vertexShaderId, geometryShaderId, fragmentShaderId);
 }
 
 ShaderProgram::ShaderProgram(
     std::string const & vertexShaderFilename,
+    std::string const & geometryShaderFilename,
     std::string const & fragmentShaderFilename)
-    : id{makeShaderProgram(vertexShaderFilename, fragmentShaderFilename)}
+    : id{makeShaderProgram(vertexShaderFilename, geometryShaderFilename, fragmentShaderFilename)}
 {
 }
 

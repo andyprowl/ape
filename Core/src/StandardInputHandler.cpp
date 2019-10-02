@@ -204,12 +204,14 @@ auto StandardInputHandler::togglePointLight(int const index) const
 {
     auto & scene = getScene(*this);
 
-    if (index >= static_cast<int>(scene.lighting.point.size()))
+    auto & lighting = scene.getLighting();
+
+    if (index >= static_cast<int>(lighting.point.size()))
     {
         return;
     }
 
-    toggle(scene.lighting.point[index].isTurnedOn);
+    toggle(lighting.point[index].isTurnedOn);
 }
 
 auto StandardInputHandler::toggleSpotLight(int const index) const
@@ -217,12 +219,14 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
 {
     auto & scene = getScene(*this);
 
-    if (index >= static_cast<int>(scene.lighting.spot.size()))
+    auto & lighting = scene.getLighting();
+
+    if (index >= static_cast<int>(lighting.spot.size()))
     {
         return;
     }
 
-    toggle(scene.lighting.spot[index].isTurnedOn);
+    toggle(lighting.spot[index].isTurnedOn);
 }
 
 auto StandardInputHandler::switchToCamera(int const index)

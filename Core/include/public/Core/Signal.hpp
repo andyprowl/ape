@@ -39,8 +39,12 @@ public:
         registrations.erase(cookie);
     }
 
+    // Notice that arguments are taken by forwarding references although no forwarding is done.
+    // This allows forwarding references to both const and non-const argument without forcing one
+    // or the other. It is up to handlers to behave sensibly when the arguments are taken by non-
+    // const reference, because possible changes will be seen by handlers that get notified later.
     template<typename... Args>
-    auto fire(Args const & ... args) const
+    auto fire(Args && ... args) const
         -> void
     {
         for (auto const & registration : registrations)

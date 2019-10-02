@@ -101,7 +101,7 @@ private:
 
         auto & scene = getScene(*renderer);
 
-        for (auto & camera : scene.cameras)
+        for (auto & camera : scene.getCameras())
         {
             camera.setAspectRatio(aspectRatio);
         }

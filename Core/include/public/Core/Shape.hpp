@@ -42,6 +42,9 @@ public:
 
     Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
 
+    auto getCenter() const
+        -> glm::vec3;
+
     auto draw(RenderingContext const & context) const
         -> void;
 
@@ -75,6 +78,8 @@ private:
     int numOfVertices;
 
     mutable std::vector<VertexArrayObject> contextArrayObjectMap;
+
+    glm::vec3 center;
 
 };
 

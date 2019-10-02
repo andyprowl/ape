@@ -12,8 +12,10 @@ namespace ape
 
 class Body;
 class BodyPart;
+class BodySelector;
 class Camera;
 class CameraSelector;
+class PickingShaderProgram;
 class Scene;
 class StandardShaderProgram;
 
@@ -25,7 +27,9 @@ public:
     SceneRenderer(
         RenderingContext const & renderingContext,
         CameraSelector const & cameraSelector,
-        StandardShaderProgram & shader,
+        BodySelector const & pickedBodySelector,
+        StandardShaderProgram & standardShader,
+        PickingShaderProgram & pickingShader,
         glm::vec3 const & backgroundColor);
 
     auto render() const
@@ -51,13 +55,25 @@ private:
     auto drawBodies(Camera const & camera) const
         -> void;
 
-    auto drawBody(Body const & body, glm::mat4 const & cameraTransformation) const
+    auto drawBodiesWithStandardShader(
+        Camera const & camera,
+        std::vector<Body *> const & bodies) const
         -> void;
 
-    auto drawBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
+    auto drawBodiesWithPickingShader(
+        Camera const & camera,
+        std::vector<Body *> const & bodies) const
         -> void;
 
-    auto drawMesh(Mesh const & mesh) const
+    auto drawBodyWithStandardShader(Body const & body, glm::mat4 const & transformation) const
+        -> void;
+
+    auto drawBodyPartWithStandardShader(
+        BodyPart const & part,
+        glm::mat4 const & transformation) const
+        -> void;
+
+    auto drawMeshWithStandardShader(Mesh const & mesh) const
         -> void;
 
 private:
@@ -66,7 +82,11 @@ private:
 
     CameraSelector const * cameraSelector;
 
-    StandardShaderProgram * shader;
+    BodySelector const * pickedBodySelector;
+
+    StandardShaderProgram * standardShader;
+
+    PickingShaderProgram * pickingShader;
 
     glm::vec3 backgroundColor;
 

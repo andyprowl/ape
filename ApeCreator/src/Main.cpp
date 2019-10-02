@@ -8,9 +8,11 @@
 #include <QtBinding/QtEngine.hpp>
 #include <QtBinding/QtWindow.hpp>
 
+#include <Core/BodySelector.hpp>
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
 #include <Core/RenderingContext.hpp>
+#include <Core/PickingShaderProgram.hpp>
 #include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
 
@@ -177,20 +179,32 @@ int main(int argc, char *argv[])
     
     auto scene = createSampleScene(assets);
 
-    auto shader = ape::StandardShaderProgram{};
+    auto standardShader = ape::StandardShaderProgram{};
 
+    auto pickingShader = ape::PickingShaderProgram{};
+
+    auto picker = ape::BodySelector{scene};
+
+    auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
+    
     /// ---
 
     auto selector1 = ape::CameraSelector{scene};
 
-    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, shader, scene};
+    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, standardShader, scene};
 
     auto const context1 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
     // Important: fallback VAO in renderer must be created in the corresponding rendering context
     sceneView1.makeCurrent();
 
-    auto renderer1 = ape::SceneRenderer{context1, selector1, shader, {0.0f, 0.0f, 0.0f}};
+    auto renderer1 = ape::SceneRenderer{
+        context1,
+        selector1,
+        picker,
+        standardShader,
+        pickingShader,
+        backgroundColor};
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
 
@@ -202,14 +216,20 @@ int main(int argc, char *argv[])
 
     auto selector2 = ape::CameraSelector{scene};
 
-    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, shader, scene};
+    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, standardShader, scene};
 
     auto const context2 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
     // Important: fallback VAO in renderer must be created in the corresponding rendering context
     sceneView2.makeCurrent();
 
-    auto renderer2 = ape::SceneRenderer{context2, selector2, shader, {0.0f, 0.0f, 0.0f}};
+    auto renderer2 = ape::SceneRenderer{
+        context2,
+        selector2,
+        picker,
+        standardShader,
+        pickingShader,
+        backgroundColor};
 
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
 
@@ -223,14 +243,20 @@ int main(int argc, char *argv[])
 
     auto selector3 = ape::CameraSelector{scene};
 
-    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, shader, scene};
+    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, standardShader, scene};
 
     auto const context3 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
     // Important: fallback VAO in renderer must be created in the corresponding rendering context
     sceneView3.makeCurrent();
 
-    auto renderer3 = ape::SceneRenderer{context3, selector3, shader, {0.0f, 0.0f, 0.0f}};
+    auto renderer3 = ape::SceneRenderer{
+        context3,
+        selector3,
+        picker,
+        standardShader,
+        pickingShader,
+        backgroundColor};
 
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
 

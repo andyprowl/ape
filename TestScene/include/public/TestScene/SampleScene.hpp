@@ -21,6 +21,12 @@ public:
 
     ape::Body * scalingContainer = nullptr;
 
+    ape::Body * dragon = nullptr;
+
+    ape::Body * nanosuit = nullptr;
+
+    ape::Body * castle = nullptr;
+
     std::vector<ape::CameraSpotlightSynchronizer> spotLightSynchronizers;
 
     std::vector<ape::BodyPointLightSynchronizer> bodyLightSynchronizers;

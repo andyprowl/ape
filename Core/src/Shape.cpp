@@ -83,21 +83,37 @@ auto makeVertices(
     return {std::move(vbo), std::move(ebo)};
 }
 
+auto computeCenter(std::vector<Vertex> const & vertices)
+    -> glm::vec3
+{
+    auto sum = glm::vec3{0.0f, 0.0f, 0.0f};
+
+    for (auto const & vertex : vertices)
+    {
+        sum += vertex.position;
+    }
+
+    return sum * (1.0f / vertices.size());
+}
+
 } // unnamed namespace
 
 Shape::Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices)
     : buffers{makeVertices(vertices, indices)}
     , numOfVertices{static_cast<int>(indices.size())}
+    , center{computeCenter(vertices)}
 {
+}
+
+auto Shape::getCenter() const
+    -> glm::vec3
+{
+    return center;
 }
 
 auto Shape::draw(RenderingContext const & context) const
     -> void
 {
-    // Culling is not appropriate for all shapes. This should be done conditionally in the future.
-    // However, when appropriate, it will save at least 50% of fragment shader calls.
-    glEnable(GL_CULL_FACE);
-
     if (context.getPolicy() == RenderingPolicy::doNotUseArrayObjects)
     {
         drawWithoutArrayVertexObject();

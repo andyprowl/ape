@@ -211,7 +211,7 @@ auto StatefulSceneBuilder::createGroundTile(int const row, int const col, ape::M
 
     ape::setPosition(body, position);
 
-    return scene.bodies.emplace_back(std::move(body));
+    return scene.addBody(std::move(body));
 }
 
 auto StatefulSceneBuilder::createContainers()
@@ -221,7 +221,7 @@ auto StatefulSceneBuilder::createContainers()
 
     auto const positions = getContainerPositions();
 
-    auto const numOfBodies = scene.bodies.size();
+    auto const numOfBodies = scene.getNumOfBodies();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -235,9 +235,9 @@ auto StatefulSceneBuilder::createContainers()
         addBody(translation * rotation, model);
     }
 
-    scene.rotatingContainer = &scene.bodies[numOfBodies];
+    scene.rotatingContainer = &scene.getBody(numOfBodies);
 
-    scene.scalingContainer = &scene.bodies[numOfBodies + 1];
+    scene.scalingContainer = &scene.getBody(numOfBodies + 1);
 }
 
 auto StatefulSceneBuilder::getContainerPositions() const
@@ -263,8 +263,6 @@ auto StatefulSceneBuilder::createLamps()
     auto const & model = assets->generalAssets.models[3];
 
     auto const positions = getLampPositions();
-
-    auto const numOfBodies = scene.bodies.size();
 
     for (auto const & position : positions)
     {
@@ -312,7 +310,7 @@ auto StatefulSceneBuilder::createFlashlight(
 
     ape::setTransformation(body, transformation);
 
-    return scene.bodies.emplace_back(std::move(body));
+    return scene.addBody(std::move(body));
 }
 
 auto StatefulSceneBuilder::getFlashlightPositions() const
@@ -348,7 +346,7 @@ auto StatefulSceneBuilder::createNanosuits()
     {
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling, model);
+        scene.nanosuit = &addBody(translation * scaling, model);
     }
 }
 
@@ -367,12 +365,12 @@ auto StatefulSceneBuilder::createDragons()
     auto const positions = getDragonPositions();
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, {0.1f, 0.1f, 0.1f});
-
+    
     for (auto const & position : positions)
     {
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling, model);
+        scene.dragon = &addBody(translation * scaling, model);
     }
 }
 
@@ -444,7 +442,7 @@ auto StatefulSceneBuilder::createCastles()
     {
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling, model);
+        scene.castle = &addBody(translation * scaling, model);
     }
 }
 
@@ -479,7 +477,7 @@ auto StatefulSceneBuilder::createFrontCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
 }
 
 auto StatefulSceneBuilder::createBackCamera()
@@ -495,7 +493,7 @@ auto StatefulSceneBuilder::createBackCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
 }
 
 auto StatefulSceneBuilder::createRightCamera()
@@ -511,7 +509,7 @@ auto StatefulSceneBuilder::createRightCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.cameras.emplace_back(position, direction, up, fieldOfView, aspectRatio);
+    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
 }
 
 auto StatefulSceneBuilder::createLighting()
@@ -550,7 +548,9 @@ auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position)
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
-    return scene.lighting.point.emplace_back(position, attenuation, color, true);
+    auto & lighting = scene.getLighting();
+
+    return lighting.point.emplace_back(position, attenuation, color, true);
 }
 
 auto StatefulSceneBuilder::createSpotLights()
@@ -599,7 +599,9 @@ auto StatefulSceneBuilder::createSpotLight(
 
     auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.0052f};
 
-    return scene.lighting.spot.emplace_back(position, direction, cutoff, attenuation, color, true);
+    auto & lighting = scene.getLighting();
+
+    return lighting.spot.emplace_back(position, direction, cutoff, attenuation, color, true);
 }
 
 auto StatefulSceneBuilder::createDirectionalLights()
@@ -632,7 +634,7 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
-    return scene.lighting.directional.emplace_back(direction, color, true);
+    return scene.getLighting().directional.emplace_back(direction, color, true);
 }
 
 auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model const & model)
@@ -642,19 +644,19 @@ auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model 
 
     ape::setTransformation(body, transformation);
 
-    return scene.bodies.emplace_back(std::move(body));
+    return scene.addBody(std::move(body));
 }
 
 auto StatefulSceneBuilder::createSynchronizers()
     -> void
 {
     scene.spotLightSynchronizers.emplace_back(
-        scene.cameras.front(),
+        scene.getCameras().front(),
         *scene.playerFlashlight);
 
     scene.bodyLightSynchronizers.emplace_back(
         *scene.lamps.front(),
-        scene.lighting.point.front());
+        scene.getLighting().point.front());
 }
 
 } // unnamed namespace

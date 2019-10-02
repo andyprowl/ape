@@ -30,7 +30,7 @@ class BadCameraIndex : public std::logic_error
 public:
 
     explicit BadCameraIndex(int index)
-        : logic_error{"Index " + std::to_string(index) + " is not a valid camera index"}
+        : logic_error{"Index " + std::to_string(index) + " is not an available camera index"}
     {
     }
 
@@ -43,15 +43,19 @@ public:
 
     explicit CameraSelector(Scene & scene);
 
-    CameraSelector(Scene & scene, std::vector<int> availableCameraIndices);
-
     auto getScene() const
         -> Scene &;
-    
+
+    auto getAvailableCameras() const
+        -> std::vector<Camera *> const &;
+
     auto getActiveCamera() const
         -> Camera *;
-
+    
     auto activateCamera(int index)
+        -> void;
+
+    auto activateCamera(Camera const & camera)
         -> void;
 
     auto activateNextCamera()
@@ -60,7 +64,7 @@ public:
     auto activatePreviousCamera()
         -> void;
 
-    auto reset()
+    auto deactivateCamera()
         -> void;
 
 public:
@@ -75,19 +79,27 @@ private:
     auto tryGetLastCameraIndex() const
         -> std::optional<int>;
 
+    auto registerCamerReallocationHandler()
+        -> ScopedSignalConnection;
+
+    auto restoreValidCameraReferences(std::vector<Camera *> & cameras) const
+        -> void;
+
+    auto getCameraIndexInOriginalContainer(Camera const & camera) const
+        -> int;
+
 private:
 
     Scene * scene;
 
-    // These are indices into the scene's camera containers.
-    std::vector<int> availableCameraIndices;
+    Camera const * firstCameraInScene;
 
-    // This is an index into the "availableCameraIndices" data member above.
+    std::vector<Camera *> availableCameras;
+
     std::optional<int> activeCameraIndex;
 
-};
+    ScopedSignalConnection cameraReallocationHandlerConnection;
 
-auto activateCamera(CameraSelector & selector, Camera & newCamera)
-    -> void;
+};
 
 } // namespace ape
