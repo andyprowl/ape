@@ -249,6 +249,8 @@ auto SceneRenderer::drawBodiesWithPickingShader(
             }
         }
     }
+
+    //glEnable(GL_CULL_FACE);
 }
 
 auto getCamera(SceneRenderer const & renderer)

@@ -8,14 +8,12 @@ float lineWidth = 0.05;
 
 int connectorResolution = 16;
 
-vec4 getCameraPosition(int i)
+vec4 getClipSpaceVertex(int i)
 {
-    vec4 pos = gl_in[i].gl_Position;
-
-    return pos;
+    return gl_in[i].gl_Position;
 }
 
-vec2 getXYNormal(vec4 source, vec4 target)
+vec2 getClipSpaceNormal(vec4 source, vec4 target)
 {
     vec2 clipSpaceV1 = (source / source.w).xy;
 
@@ -24,6 +22,19 @@ vec2 getXYNormal(vec4 source, vec4 target)
     vec2 edge = (clipSpaceV2 - clipSpaceV1);
 
     return normalize(vec2(edge.y, -edge.x));
+}
+
+vec4[3] getClipSpaceVertices()
+{
+    return vec4[3](getClipSpaceVertex(0), getClipSpaceVertex(1), getClipSpaceVertex(2));
+}
+
+vec2[3] getClipSpaceNormals(vec4 vertices[3])
+{
+    return vec2[3](
+        getClipSpaceNormal(vertices[0], vertices[1]),
+        getClipSpaceNormal(vertices[1], vertices[2]),
+        getClipSpaceNormal(vertices[2], vertices[0]));
 }
 
 void emitThickLine(vec4 source, vec4 target, vec2 normal)
@@ -47,108 +58,62 @@ void emitThickLine(vec4 source, vec4 target, vec2 normal)
     EmitVertex();
 }
 
-void emitConnector(vec4 pos, vec2 normal01, vec2 normal12, int connectorResolution)
+void emitTriangleFan(
+    vec4 center,
+    vec2 sourceDirection,
+    vec2 targetDirection,
+    float amplitude,
+    int numOfTriangles)
 {
-    float istep = 1.0 / connectorResolution;
+    float istep = 1.0 / numOfTriangles;
 
     for (float i = 0; i <= 1.0 + istep * 2.0; i += istep * 2.0)
     {
-        gl_Position = pos;
+        gl_Position = center;
 
         EmitVertex();
 
-        vec2 n1 = normalize(mix(normal01, normal12, i)) * lineWidth;
+        vec2 n1 = normalize(mix(sourceDirection, targetDirection, i)) * amplitude;
 
-        gl_Position = pos + vec4(n1, 0.0, 0.0);
+        gl_Position = center + vec4(n1, 0.0, 0.0);
 
         EmitVertex();
 
-        vec2 n2 = normalize(mix(normal01, normal12, i + istep)) * lineWidth;
+        vec2 n2 = normalize(mix(sourceDirection, targetDirection, i + istep)) * amplitude;
 
-        gl_Position = pos + vec4(n2, 0.0, 0.0);
+        gl_Position = center + vec4(n2, 0.0, 0.0);
 
         EmitVertex();
     }
 }
 
-vec4[3] getVertices()
+void emitRoundConnector(vec4 vertex, vec2 sourceNormal, vec2 targetNormal)
 {
-    return vec4[3](getCameraPosition(0), getCameraPosition(1), getCameraPosition(2));
-}
+    emitTriangleFan(vertex, sourceNormal, targetNormal, lineWidth, connectorResolution);
 
-vec2[3] getNormals(vec4 vertices[3])
-{
-    return vec2[3](
-        getXYNormal(vertices[0], vertices[1]),
-        getXYNormal(vertices[1], vertices[2]),
-        getXYNormal(vertices[2], vertices[0]));
+    emitTriangleFan(vertex, -targetNormal, -sourceNormal, lineWidth, connectorResolution);
 }
 
 void main()
 {
+    vec4 vertices[] = getClipSpaceVertices();
 
-    vec4 positions[] = getVertices();
+    vec2 normals[] = getClipSpaceNormals(vertices);
 
-    vec2 normals[] = getNormals(positions);
-
-
-
-/* 
-    for (int i = 0; i < gl_in.length(); i++)
+    for (int i = 0; i < 3; ++i)
     {
-        vec4 source = getCameraPosition(i);
+        vec4 thisPosition = vertices[i];
 
-        vec4 target = getCameraPosition((i + 1) % gl_in.length());
+        vec4 nextPosition = vertices[(i + 1) % 3];
 
-        vec2 normal = getXYNormal(source, target);
+        vec2 thisNormal = normals[i];
 
-        emitThickLine(source, target, normal);
+        vec2 nextNormal = normals[(i + 1) % 3];
 
-        vec4 nextTarget = getCameraPosition((i + 2) % gl_in.length());
-
-        vec2 nextNormal = getXYNormal(target, nextTarget);
-
-        emitConnector(pos2, normal, nextNormal, connectorResolution);
-
-        emitConnector(pos2, -nextNormal, -normal, connectorResolution);
+        emitThickLine(thisPosition, nextPosition, thisNormal);
+    
+        emitRoundConnector(nextPosition, thisNormal, nextNormal);
     }
-    
-
-    vec4 source = getCameraPosition(0);
-
-    vec4 target = getCameraPosition(1);
-
-    vec2 normal = getXYNormal(source, target);
-
-    emitThickLine(source, target, normal);
-*/
-
-
-
-    emitThickLine(positions[0], positions[1], normals[0]);
-    
-    emitConnector(positions[1], normals[0], normals[1], connectorResolution);
-
-    emitConnector(positions[1], -normals[1], -normals[0], connectorResolution);
-
-
-    emitThickLine(positions[1], positions[2], normals[1]);
-
-    emitConnector(positions[2], normals[1], normals[2], connectorResolution);
-
-    emitConnector(positions[2], -normals[2], -normals[1], connectorResolution);
-
-    
-    emitThickLine(positions[2], positions[0], normals[2]);
-
-    emitConnector(positions[0], normals[2], normals[0], connectorResolution);
-
-    emitConnector(positions[0], -normals[0], -normals[2], connectorResolution);
-
-
-    emitThickLine(positions[0], positions[1], normals[0]);
-
-
 
     EndPrimitive();
 }
