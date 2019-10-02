@@ -10,4 +10,4 @@ AddLibrary(${PROJECT_NAME})
 # The following prevents .obj model files to be interpreted as object files to be linked.
 set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
-AddPublicDependencies(${PROJECT_NAME} PUBLIC AssetLoader Core)
+AddPublicDependencies(${PROJECT_NAME} PUBLIC AssetLoader CompilerSupport Core)

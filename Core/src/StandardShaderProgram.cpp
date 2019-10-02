@@ -1,6 +1,6 @@
 #include <Core/StandardShaderProgram.hpp>
 
-#include <Shader/ShaderBuilder.hpp>
+#include <Glow/ShaderBuilder.hpp>
 
 namespace ape
 {

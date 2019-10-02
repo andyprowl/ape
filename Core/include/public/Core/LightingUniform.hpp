@@ -2,7 +2,7 @@
 
 #include <Core/Lighting.hpp>
 
-#include <Shader/ShaderProgram.hpp>
+#include <Glow/ShaderProgram.hpp>
 
 namespace ape
 {

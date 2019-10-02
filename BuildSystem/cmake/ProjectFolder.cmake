@@ -15,7 +15,7 @@ function(
 
     if(TARGET_TYPE STREQUAL "INTERFACE_LIBRARY")
 
-        set_target_properties(${TARGET_NAME}.FakeForIDE PROPERTIES FOLDER ${FOLDER_PATH})
+        set_target_properties(${TARGET_NAME}.Interface PROPERTIES FOLDER ${FOLDER_PATH})
 
     else()
     

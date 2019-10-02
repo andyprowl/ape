@@ -3,7 +3,7 @@
 #include <Core/CameraUniform.hpp>
 #include <Core/LightingUniform.hpp>
 
-#include <Shader/ShaderProgram.hpp>
+#include <Glow/ShaderProgram.hpp>
 
 namespace ape
 {

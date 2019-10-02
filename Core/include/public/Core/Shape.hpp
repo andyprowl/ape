@@ -1,9 +1,10 @@
 #pragma once
 
-#include <Core/ElementBufferObject.hpp>
-#include <Core/VertexArrayObject.hpp>
-#include <Core/VertexBufferObject.hpp>
 #include <Core/Vertex.hpp>
+
+#include <Glow/ElementBufferObject.hpp>
+#include <Glow/VertexArrayObject.hpp>
+#include <Glow/VertexBufferObject.hpp>
 
 #include <vector>
 

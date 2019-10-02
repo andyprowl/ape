@@ -2,7 +2,7 @@
 
 #include <Core/Window.hpp>
 
-#include <Shader/ShaderProgram.hpp>
+#include <Glow/ShaderProgram.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

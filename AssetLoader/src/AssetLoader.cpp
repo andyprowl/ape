@@ -3,6 +3,7 @@
 #include <AssetLoader/MaterialLoader.hpp>
 #include <AssetLoader/MeshLoader.hpp>
 #include <AssetLoader/ModelPartImporter.hpp>
+#include <AssetLoader/TextureCache.hpp>
 
 #include <Core/AssetRepository.hpp>
 
@@ -81,7 +82,9 @@ auto AssetLoader::importMaterials(
     AssetRepository & target) const
     -> void
 {
-    auto const loader = MaterialLoader{target};
+    auto textureCache = TextureCache{};
+
+    auto const loader = MaterialLoader{target, textureCache};
 
     auto const directory = extractDirectory(source);
 

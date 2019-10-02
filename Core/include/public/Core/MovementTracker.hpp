@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Core/Offset.hpp>
-#include <Core/Position.hpp>
+#include <Mathematics/Offset.hpp>
+#include <Mathematics/Position.hpp>
 
 namespace ape
 {

@@ -36,10 +36,12 @@ add_subdirectory(Glad)
 
 add_subdirectory(GlfwBinding)
 
+add_subdirectory(Glow)
+
+add_subdirectory(Mathematics)
+
 add_subdirectory(QtBinding)
 
-add_subdirectory(Shader)
+add_subdirectory(Stb)
 
 add_subdirectory(TestScene)
-
-add_subdirectory(Stb)

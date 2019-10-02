@@ -16,7 +16,7 @@ function(
     DOC_FILES
     PUBLIC_HEADER_FILES
     PRIVATE_HEADER_FILES
-    SOURCE_FILES
+    IMPLEMENTATION_FILES
     RESOURCE_FILES)
 
     FindFilesRecursively(
@@ -38,7 +38,7 @@ function(
         "${CMAKE_CURRENT_SOURCE_DIR}/include/private/*.hpp")
 
     FindFilesRecursively(
-        ${SOURCE_FILES}
+        ${IMPLEMENTATION_FILES}
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.c")
 
@@ -70,7 +70,7 @@ function(
     DOC_FILES
     PUBLIC_HEADER_FILES
     PRIVATE_HEADER_FILES
-    SOURCE_FILES
+    IMPLEMENTATION_FILES
     RESOURCE_FILES)
 
     CreateSourceGroup("cmake" "CMake Files" "${CMAKE_FILES}")
@@ -81,7 +81,7 @@ function(
         
     CreateSourceGroup("include/private" "Header Files/Private" "${PRIVATE_HEADER_FILES}")
 
-    CreateSourceGroup("src" "Source Files" "${SOURCE_FILES}")
+    CreateSourceGroup("src" "Source Files" "${IMPLEMENTATION_FILES}")
 
     CreateSourceGroup("resources" "Resource Files" "${RESOURCE_FILES}")
 
@@ -89,14 +89,15 @@ endfunction()
 
 function(
     GetProjectFilesAndCreateGroups
-    PROJECT_FILES)
+    PROJECT_FILES
+    HAS_IMPLEMENTATION_FILES)
 
     GetProjectFiles(
         CMAKE_FILES
         DOC_FILES
         PUBLIC_HEADER_FILES
         PRIVATE_HEADER_FILES
-        SOURCE_FILES
+        IMPLEMENTATION_FILES
         RESOURCE_FILES)
 
     CreateSourceGroups(
@@ -104,7 +105,7 @@ function(
         "${DOC_FILES}"
         "${PUBLIC_HEADER_FILES}"
         "${PRIVATE_HEADER_FILES}"
-        "${SOURCE_FILES}"
+        "${IMPLEMENTATION_FILES}"
         "${RESOURCE_FILES}")
 
     set(${PROJECT_FILES}
@@ -112,42 +113,115 @@ function(
         "${DOC_FILES}"
         "${PUBLIC_HEADER_FILES}"
         "${PRIVATE_HEADER_FILES}"
-        "${SOURCE_FILES}"
+        "${IMPLEMENTATION_FILES}"
         "${RESOURCE_FILES}"
         PARENT_SCOPE)
+
+    if(IMPLEMENTATION_FILES)
+
+        set(${HAS_IMPLEMENTATION_FILES} TRUE PARENT_SCOPE)
+
+    else()
+
+        set(${HAS_IMPLEMENTATION_FILES} FALSE PARENT_SCOPE)
+
+    endif()
 
 endfunction()
 
 function(
-    AddProject
+    AddLocalIncludeDirectories
     TARGET_NAME
-    TARGET_TYPE)
+    HAS_IMPLEMENTATION_FILES)
 
-    GetProjectFilesAndCreateGroups(PROJECT_FILES)
+    if(HAS_IMPLEMENTATION_FILES)
 
-    if("${TARGET_TYPE}" STREQUAL "LIBRARY")
+        target_include_directories(
+            ${TARGET_NAME}
+            PUBLIC
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
 
-        add_library(${TARGET_NAME} ${PROJECT_FILES})
+        target_include_directories(
+            ${TARGET_NAME}
+            PRIVATE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
 
     else()
 
-        add_executable(${TARGET_NAME} ${PROJECT_FILES})
+        target_include_directories(
+            ${TARGET_NAME}
+            INTERFACE
+            "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
 
     endif()
 
-    target_include_directories(
-        ${TARGET_NAME}
-        PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public")
+endfunction()
 
-    target_include_directories(
-        ${TARGET_NAME}
-        PRIVATE
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/private")
+function(
+    AddLibraryTarget
+    TARGET_NAME
+    PROJECT_FILES
+    HAS_IMPLEMENTATION_FILES)
 
-    AddPrivateDefinitions(
-        ${TARGET_NAME} 
-        resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+    if(HAS_IMPLEMENTATION_FILES)
+
+        message("-- Adding static library target for project ${TARGET_NAME}")
+
+        add_library(${TARGET_NAME} STATIC ${PROJECT_FILES})
+
+    else()
+
+        message("-- Adding header-only library target for project ${TARGET_NAME}")
+
+        add_library(${TARGET_NAME} INTERFACE)
+
+        add_custom_target(${TARGET_NAME}.Interface SOURCES ${PROJECT_FILES})
+
+        set_property(TARGET ${TARGET_NAME}.Interface PROPERTY PROJECT_LABEL "${TARGET_NAME}")
+
+        set_target_properties(${TARGET_NAME}.Interface PROPERTIES LINKER_LANGUAGE CXX)
+
+    endif()
+
+endfunction()
+
+function(
+    AddExecutableTarget
+    TARGET_NAME
+    PROJECT_FILES)
+
+    message("-- Adding executable target for project ${TARGET_NAME}")
+
+    add_executable(${TARGET_NAME} ${PROJECT_FILES})
+
+endfunction()
+
+function(
+    AddTarget
+    TARGET_NAME
+    TARGET_TYPE)
+
+    GetProjectFilesAndCreateGroups(PROJECT_FILES HAS_IMPLEMENTATION_FILES)
+    
+    if("${TARGET_TYPE}" STREQUAL "LIBRARY")
+    
+        AddLibraryTarget(${TARGET_NAME} "${PROJECT_FILES}" ${HAS_IMPLEMENTATION_FILES})
+
+    else()
+
+        AddExecutableTarget(${TARGET_NAME} "${PROJECT_FILES}")
+
+    endif()
+
+    AddLocalIncludeDirectories(${PROJECT_NAME} ${HAS_IMPLEMENTATION_FILES})
+
+    if(HAS_IMPLEMENTATION_FILES)
+
+        AddPrivateDefinitions(
+            ${TARGET_NAME} 
+            resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
+    endif()
 
     export(TARGETS ${EXPORTS} NAMESPACE Ape:: FILE ${TARGET_NAME}Config.cmake)
 
@@ -157,7 +231,7 @@ function(
     AddLibrary
     LIBRARY_NAME)
 
-    AddProject(${LIBRARY_NAME} LIBRARY)
+    AddTarget(${LIBRARY_NAME} "LIBRARY")
 
 endfunction()
 
@@ -165,6 +239,6 @@ function(
     AddExecutable
     EXECUTABLE_NAME)
 
-    AddProject(${EXECUTABLE_NAME} EXECUTABLE)
+    AddTarget(${EXECUTABLE_NAME} "EXECUTABLE")
 
 endfunction()

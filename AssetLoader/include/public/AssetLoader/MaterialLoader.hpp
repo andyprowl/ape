@@ -15,13 +15,14 @@ namespace ape
 
 class AssetRepository;
 class Texture;
+class TextureCache;
 
 class MaterialLoader
 {
 
 public:
 
-    explicit MaterialLoader(AssetRepository & assets);
+    MaterialLoader(AssetRepository & assets, TextureCache & textureCache);
 
     auto load(aiScene const & scene, std::string const & directory) const
         -> void;
@@ -52,12 +53,11 @@ private:
     auto importTexture(std::string const & path) const
         -> Texture const &;
 
-    auto findTexture(std::string const & filepath) const
-        -> Texture const *;
-
 private:
 
     AssetRepository * assets;
+
+    TextureCache * textureCache;
 
 };
 

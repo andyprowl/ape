@@ -4,9 +4,10 @@
 
 #include <Core/BodySelector.hpp>
 #include <Core/CameraSelector.hpp>
-#include <Core/CompilerWarnings.hpp>
 #include <Core/StandardShaderProgram.hpp>
 #include <Core/Window.hpp>
+
+#include <CompilerSupport/CompilerWarnings.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>

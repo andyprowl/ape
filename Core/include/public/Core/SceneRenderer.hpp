@@ -3,7 +3,8 @@
 #include <Core/CameraUniform.hpp>
 #include <Core/LightingUniform.hpp>
 #include <Core/RenderingContext.hpp>
-#include <Core/VertexArrayObject.hpp>
+
+#include <Glow/VertexArrayObject.hpp>
 
 #include <stdexcept>
 

@@ -2,7 +2,7 @@
 
 #include <Core/Camera.hpp>
 
-#include <Shader/Uniform.hpp>
+#include <Glow/Uniform.hpp>
 
 namespace ape
 {

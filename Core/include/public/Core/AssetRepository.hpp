@@ -4,7 +4,8 @@
 #include <Core/Mesh.hpp>
 #include <Core/Model.hpp>
 #include <Core/Shape.hpp>
-#include <Core/Texture.hpp>
+
+#include <Glow/Texture.hpp>
 
 #include <memory>
 #include <vector>

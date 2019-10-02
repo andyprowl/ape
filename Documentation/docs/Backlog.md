@@ -1,4 +1,10 @@
- - Extract the Shaders (or Oogle?) project
+ - Reorganize project structure:
+  - Extract the Shader, Texture, and Buffer out of Glow
+  - Make Glow a functional group
+  - Make a 3rdParty functional group (Glfw, Stb, Glad)
+  - Make a Ape functional group including Scene, Engine, QtEngine, GlfwEngine, AssetLoader,
+    TestScene, ApeCreator (rename to ApeStudio), ApePlayer
+  - Make a Foundational functional group with Mathematics, CompilerSupport, Signal
  - Apply Rule of Zero to ownership wrappers
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator

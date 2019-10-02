@@ -2,10 +2,11 @@
 
 #include <Core/Camera.hpp>
 #include <Core/CameraSelector.hpp>
-#include <Core/Math.hpp>
 #include <Core/MovementTracker.hpp>
-#include <Core/Offset.hpp>
 #include <Core/Window.hpp>
+
+#include <Mathematics/Math.hpp>
+#include <Mathematics/Offset.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

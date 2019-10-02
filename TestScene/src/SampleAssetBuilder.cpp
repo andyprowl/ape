@@ -283,7 +283,9 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
 {
     auto filepath = std::string{resourceFolder} + "/textures/" + filename;
 
-    return assets.textures.emplace_back(std::move(filepath));
+    auto descriptor = ape::readTextureDescriptor(filepath);
+
+    return assets.textures.emplace_back(std::move(descriptor));
 }
 
 auto resolveModelFilepath(std::string filename)

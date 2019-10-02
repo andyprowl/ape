@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Texture.hpp>
+#include <Glow/Texture.hpp>
 
 #include <glm/vec3.hpp>
 

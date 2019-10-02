@@ -1,9 +1,10 @@
 #include <Core/StandardInputHandler.hpp>
 
 #include <Core/CameraSelector.hpp>
-#include <Core/Position.hpp>
 #include <Core/Scene.hpp>
 #include <Core/Window.hpp>
+
+#include <Mathematics/Position.hpp>
 
 namespace ape
 {

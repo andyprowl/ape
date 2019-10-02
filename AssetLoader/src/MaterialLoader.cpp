@@ -1,5 +1,7 @@
 #include <AssetLoader/MaterialLoader.hpp>
 
+#include <AssetLoader/TextureCache.hpp>
+
 #include <Core/AssetRepository.hpp>
 
 #include <assimp/scene.h>
@@ -28,8 +30,9 @@ auto getTextureFilename(aiMaterial const & m, aiTextureType const type, int cons
 
 } // unnamed
 
-MaterialLoader::MaterialLoader(AssetRepository & assets)
+MaterialLoader::MaterialLoader(AssetRepository & assets, TextureCache & textureCache)
     : assets{&assets}
+    , textureCache{&textureCache}
 {
 }
 
@@ -153,33 +156,18 @@ auto MaterialLoader::importTextures(
 auto MaterialLoader::importTexture(std::string const & path) const
     -> Texture const &
 {
-    auto const existingTexture = findTexture(path);
+    auto const existingTexture = textureCache->findTexture(path);
 
     if (existingTexture != nullptr)
     {
         return *existingTexture;
     }
 
-    return assets->textures.emplace_back(path);
-}
+    auto & texture = assets->textures.emplace_back(readTextureDescriptor(path));
 
-auto MaterialLoader::findTexture(std::string const & filepath) const
-    -> Texture const *
-{
-    auto const it = std::find_if(
-        std::cbegin(assets->textures),
-        std::cend(assets->textures),
-        [&filepath] (Texture const & t)
-    {
-        return (t.getFilepath() == filepath);
-    });
+    textureCache->registerTexture(texture, path);
 
-    if (it == std::cend(assets->textures))
-    {
-        return nullptr;
-    }
-
-    return &(*it);
+    return texture;
 }
 
 } // namespace ape

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <Core/MovementTracker.hpp>
-#include <Core/Offset.hpp>
-#include <Core/Position.hpp>
 #include <Core/ScopedSignalConnection.hpp>
 #include <Core/TaitBryanAngles.hpp>
+
+#include <Mathematics/Offset.hpp>
+#include <Mathematics/Position.hpp>
 
 namespace ape
 {
