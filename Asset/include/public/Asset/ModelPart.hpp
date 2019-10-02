@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Mesh.hpp>
+#include <Asset/Mesh.hpp>
 
 #include <glm/mat4x4.hpp>
 

@@ -1,4 +1,4 @@
-#include <Core/ModelPart.hpp>
+#include <Asset/ModelPart.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -13,7 +13,7 @@ ModelPart::ModelPart(
     : name{std::move(name)}
     , meshes{std::move(meshes)}
     , components{std::move(components)}
-    , transformation{std::move(transformation)}
+    , transformation{transformation}
     , parent{nullptr}
     , inDepthIndex{0}
 {

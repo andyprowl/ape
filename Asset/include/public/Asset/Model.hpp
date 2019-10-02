@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/ModelPart.hpp>
+#include <Asset/ModelPart.hpp>
 
 #include <memory>
 

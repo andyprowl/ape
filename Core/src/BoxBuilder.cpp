@@ -1,5 +1,6 @@
 #include <Core/BoxBuilder.hpp>
-#include <Core/Vertex.hpp>
+
+#include <Asset/Vertex.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

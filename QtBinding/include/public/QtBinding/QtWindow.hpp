@@ -1,9 +1,10 @@
 #pragma once
 
-#include <Core/RenderingContext.hpp>
 #include <Core/Stopwatch.hpp>
 #include <Core/TimeIntervalTracker.hpp>
 #include <Core/Window.hpp>
+
+#include <Asset/RenderingContext.hpp>
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>

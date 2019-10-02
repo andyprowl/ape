@@ -2,7 +2,7 @@
 
 #include <AssetLoader/AssetLoader.hpp>
 
-#include <Core/AssetRepository.hpp>
+#include <Asset/AssetRepository.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

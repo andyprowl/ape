@@ -3,7 +3,8 @@
 #include <Core/BodyPart.hpp>
 
 #include <Core/Body.hpp>
-#include <Core/ModelPart.hpp>
+
+#include <Asset/ModelPart.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

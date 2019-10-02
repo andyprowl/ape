@@ -22,6 +22,8 @@ add_subdirectory(ApePlayer)
 
 add_subdirectory(ApeCreator)
 
+add_subdirectory(Asset)
+
 add_subdirectory(AssetLoader)
 
 add_subdirectory(BuildSystem)

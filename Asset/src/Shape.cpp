@@ -1,6 +1,6 @@
-#include <Core/Shape.hpp>
+#include <Asset/Shape.hpp>
 
-#include <Core/RenderingContext.hpp>
+#include <Asset/RenderingContext.hpp>
 
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>

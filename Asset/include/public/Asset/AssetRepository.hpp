@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Core/Material.hpp>
-#include <Core/Mesh.hpp>
-#include <Core/Model.hpp>
-#include <Core/Shape.hpp>
+#include <Asset/Material.hpp>
+#include <Asset/Mesh.hpp>
+#include <Asset/Model.hpp>
+#include <Asset/Shape.hpp>
 
 #include <Glow/Texture.hpp>
 

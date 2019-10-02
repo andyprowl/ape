@@ -11,10 +11,11 @@
 #include <Core/BodySelector.hpp>
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
-#include <Core/RenderingContext.hpp>
 #include <Core/WireframeShaderProgram.hpp>
 #include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
+
+#include <Asset/RenderingContext.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>

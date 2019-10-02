@@ -3,10 +3,11 @@
 #include <AssetLoader/AssetLoader.hpp>
 
 #include <Core/BoxBuilder.hpp>
-#include <Core/Material.hpp>
-#include <Core/Mesh.hpp>
-#include <Core/Normal.hpp>
-#include <Core/Shape.hpp>
+#include <Core/NormalDirection.hpp>
+
+#include <Asset/Material.hpp>
+#include <Asset/Mesh.hpp>
+#include <Asset/Shape.hpp>
 
 namespace
 {

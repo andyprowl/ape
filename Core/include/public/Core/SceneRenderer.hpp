@@ -2,7 +2,8 @@
 
 #include <Core/CameraUniform.hpp>
 #include <Core/LightingUniform.hpp>
-#include <Core/RenderingContext.hpp>
+
+#include <Asset/RenderingContext.hpp>
 
 #include <Glow/VertexArrayObject.hpp>
 

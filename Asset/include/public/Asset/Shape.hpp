@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Vertex.hpp>
+#include <Asset/Vertex.hpp>
 
 #include <Glow/ElementBufferObject.hpp>
 #include <Glow/VertexArrayObject.hpp>

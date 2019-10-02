@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Core/Normal.hpp>
-#include <Core/Shape.hpp>
+#include <Core/NormalDirection.hpp>
+
+#include <Asset/Shape.hpp>
 
 namespace ape
 {

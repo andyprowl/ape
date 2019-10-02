@@ -3,12 +3,14 @@
 #include <Core/BodySelector.hpp>
 #include <Core/Camera.hpp>
 #include <Core/CameraSelector.hpp>
-#include <Core/Material.hpp>
-#include <Core/ModelPart.hpp>
 #include <Core/WireframeShaderProgram.hpp>
 #include <Core/Scene.hpp>
-#include <Core/Shape.hpp>
 #include <Core/StandardShaderProgram.hpp>
+
+#include <Asset/Material.hpp>
+#include <Asset/ModelPart.hpp>
+#include <Asset/Shape.hpp>
+
 
 
 // TODO: Clean this up after cleanup of wireframe/outlining!
