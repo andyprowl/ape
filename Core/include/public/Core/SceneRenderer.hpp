@@ -15,7 +15,7 @@ class BodyPart;
 class BodySelector;
 class Camera;
 class CameraSelector;
-class PickingShaderProgram;
+class WireframeShaderProgram;
 class Scene;
 class StandardShaderProgram;
 
@@ -29,7 +29,7 @@ public:
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
         StandardShaderProgram & standardShader,
-        PickingShaderProgram & pickingShader,
+        WireframeShaderProgram & pickingShader,
         glm::vec3 const & backgroundColor);
 
     auto render() const
@@ -86,7 +86,7 @@ private:
 
     StandardShaderProgram * standardShader;
 
-    PickingShaderProgram * pickingShader;
+    WireframeShaderProgram * pickingShader;
 
     glm::vec3 backgroundColor;
 

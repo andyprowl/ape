@@ -28,6 +28,11 @@ protected:
 
     unsigned int id;
 
+private:
+
+    auto destroy()
+        -> void;
+
 };
 
 } // namespace ape

@@ -1,10 +1,27 @@
 #include <Core/StandardShaderProgram.hpp>
 
+#include <Core/ShaderBuilder.hpp>
+
 namespace ape
 {
 
+namespace
+{
+
+auto buildStandardShader()
+    -> ShaderProgram
+{
+    auto const builder = ShaderBuilder{};
+
+    return builder.buildProgram(
+        "Standard/Standard.Vertex.glsl",
+        "Standard/Standard.Fragment.glsl");
+}
+
+} // unnamed namespace
+
 StandardShaderProgram::StandardShaderProgram()
-    : ShaderProgram{"Standard/Standard.Vertex.glsl", "", "Standard/Standard.Fragment.glsl"}
+    : ShaderProgram{buildStandardShader()}
     , camera{*this, "camera"}
     , lighting{*this, "lighting"}
     , modelTransformation{*this, "transform.model"}

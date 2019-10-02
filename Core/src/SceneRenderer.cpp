@@ -5,7 +5,7 @@
 #include <Core/CameraSelector.hpp>
 #include <Core/Material.hpp>
 #include <Core/ModelPart.hpp>
-#include <Core/PickingShaderProgram.hpp>
+#include <Core/WireframeShaderProgram.hpp>
 #include <Core/Scene.hpp>
 #include <Core/ShaderProgram.hpp>
 #include <Core/Shape.hpp>
@@ -29,7 +29,7 @@ SceneRenderer::SceneRenderer(
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
     StandardShaderProgram & standardShader,
-    PickingShaderProgram & pickingShader,
+    WireframeShaderProgram & pickingShader,
     glm::vec3 const & backgroundColor)
     : renderingContext{renderingContext}
     , cameraSelector{&cameraSelector}

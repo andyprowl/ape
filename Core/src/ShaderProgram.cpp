@@ -20,41 +20,6 @@ namespace ape
 namespace
 {
 
-auto const includeDirective = std::string{"#include"};
-
-auto extractIncludedFileName(std::string const & content, std::size_t const directiveStartIndex)
-    -> std::string
-{
-    auto const includeKeywordEnd = directiveStartIndex + includeDirective.length();
-
-    auto const fileNameStart = content.find('\"', includeKeywordEnd) + 1;
-
-    auto const fileNameEnd = content.find('\"', fileNameStart + 1);
-
-    return content.substr(fileNameStart, fileNameEnd - fileNameStart);
-}
-
-auto checkShaderCompilationOutcome(int const shaderId, std::string const & filename)
-    -> void
-{
-    auto success = int{};
-
-    glGetShaderiv(shaderId, GL_COMPILE_STATUS, &success);
-
-    if (success)
-    {
-        std::cout << "Shader << '" << filename << "' successfully compiled\n";
-
-        return;
-    }
-    
-    auto infoLog = std::array<char, 512>{'\0'};
-
-    glGetShaderInfoLog(shaderId, sizeof(infoLog), nullptr, infoLog.data());
-
-    throw CouldNotCompileShader{filename, infoLog.data()};
-}
-
 auto checkShaderLinkingOutcome(int const shaderId)
     -> void
 {
@@ -78,166 +43,47 @@ auto checkShaderLinkingOutcome(int const shaderId)
 
 } // unnamed namespace
 
-auto extractBasePath(std::string const & filename)
-    -> std::string
+ShaderProgram::ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader)
+    : ShaderProgram{std::move(vertexShader), std::nullopt, std::move(fragmentShader)}
 {
-    auto const lastSlash = filename.find_last_of("\\/");
-
-    if (lastSlash == std::string::npos)
-    {
-        return filename;
-    }
-
-    return filename.substr(0, lastSlash);
-}
-
-auto readShader(std::string const & filename)
-    -> std::string
-{
-    auto shaderFile = std::ifstream{
-        std::string{resourceFolder} + "/shaders/" + filename,
-        std::ifstream::ate | std::ifstream::binary};
-
-    if (!shaderFile)
-    {
-        throw CouldNotOpenShaderFile{filename};
-    }
-
-    auto const fileSize = static_cast<std::size_t>(shaderFile.tellg());
-
-    shaderFile.seekg(0, std::ifstream::beg);
-
-    auto data = std::string(fileSize, '\0');
-
-    shaderFile.read(&data[0], fileSize);
-
-    return data;
-}
-
-auto preprocessShader(std::string content)
-    -> std::string
-{
-    auto includeStart = content.find('\n' + includeDirective);
-
-    while (includeStart != std::string::npos)
-    {
-        auto fileName = extractIncludedFileName(content, includeStart);
-
-        auto const includedContent = readShader(fileName);
-            
-        auto preprocessedContent = preprocessShader(includedContent);
-
-        auto const includeEnd = content.find('\n', includeStart + fileName.length() + 3);
-
-        auto prologue = content.substr(0, includeStart);
-
-        auto epilogue = content.substr(includeEnd + 1);
-
-        content = prologue + std::move(preprocessedContent) + epilogue;
-
-        includeStart = content.find(includeDirective, includeStart + content.length());
-    }
-
-    return content;
-}
-
-auto compileShader(std::string const & filename, int const shaderType)
-    -> int
-{
-    auto const originalCode = readShader(filename);
-
-    auto const preprocessedCode = preprocessShader(originalCode);
-
-    auto const shaderId = glCreateShader(shaderType);
-    
-    auto const shaderCode = preprocessedCode.data();
-
-    glShaderSource(shaderId, 1, &shaderCode, nullptr);
-
-    glCompileShader(shaderId);
-
-    checkShaderCompilationOutcome(shaderId, filename);
-
-    return shaderId;
-}
-
-auto compileVertexShader(std::string const & filename)
-    -> int
-{
-    return compileShader(filename, GL_VERTEX_SHADER);
-}
-
-auto compileGeometryShader(std::string const & filename)
-    -> int
-{
-    if (filename.empty())
-    {
-        return -1;
-    }
-
-    return compileShader(filename, GL_GEOMETRY_SHADER);
-}
-
-auto compileFragmentShader(std::string const & filename)
-    -> int
-{
-    return compileShader(filename, GL_FRAGMENT_SHADER);
-}
-
-auto linkShaderProgram(
-    int const vertexShaderId,
-    int const geometryShaderId,
-    int const fragmentShaderId)
-    -> int
-{
-    auto const shaderProgramId = glCreateProgram();
-
-    glAttachShader(shaderProgramId, vertexShaderId);
-
-    if (geometryShaderId >= 0)
-    {
-        glAttachShader(shaderProgramId, geometryShaderId);
-    }
-
-    glAttachShader(shaderProgramId, fragmentShaderId);
-
-    glLinkProgram(shaderProgramId);
-
-    checkShaderLinkingOutcome(shaderProgramId);
-
-    glDeleteShader(vertexShaderId);
-
-    if (geometryShaderId >= 0)
-    {
-        glDeleteShader(geometryShaderId);
-    }
-
-    glDeleteShader(fragmentShaderId);
-
-    return shaderProgramId;
-}
-
-auto makeShaderProgram(
-    std::string const & vertexShaderFilename,
-    std::string const & geometryShaderFilename,
-    std::string const & fragmentShaderFilename)
-    -> int
-{
-    auto const vertexShaderId = compileVertexShader(vertexShaderFilename);
-
-    auto const geometryShaderId = compileGeometryShader(geometryShaderFilename);
-
-    auto const fragmentShaderId = compileFragmentShader(fragmentShaderFilename);
-
-    return linkShaderProgram(vertexShaderId, geometryShaderId, fragmentShaderId);
 }
 
 ShaderProgram::ShaderProgram(
-    std::string const & vertexShaderFilename,
-    std::string const & geometryShaderFilename,
-    std::string const & fragmentShaderFilename)
-    : id{makeShaderProgram(vertexShaderFilename, geometryShaderFilename, fragmentShaderFilename)}
+    VertexShader vertexShader,
+    std::optional<GeometryShader> geometryShader,
+    FragmentShader fragmentShader)
+    : id{glCreateProgram()}
+    , vertexShader{std::move(vertexShader)}
+    , geometryShader{std::move(geometryShader)}
+    , fragmentShader{std::move(fragmentShader)}
 {
+    link();
+}
+
+ShaderProgram::ShaderProgram(ShaderProgram && rhs) noexcept
+    : id{rhs.id}
+    , vertexShader{std::move(rhs.vertexShader)}
+    , geometryShader{std::move(rhs.geometryShader)}
+    , fragmentShader{std::move(rhs.fragmentShader)}
+{
+    rhs.id = 0;
+}
+
+auto ShaderProgram::operator = (ShaderProgram && rhs) noexcept
+    -> ShaderProgram &
+{
+    destroy();
+
+    id = rhs.id;
+
+    rhs.id = 0;
+
+    return *this;
+}
+
+ShaderProgram::~ShaderProgram()
+{
+    destroy();
 }
 
 auto ShaderProgram::use() const
@@ -246,6 +92,50 @@ auto ShaderProgram::use() const
     glUseProgram(id);
 
     assert(glGetError() == GL_NO_ERROR);
+}
+
+auto ShaderProgram::getVertexShader() const
+    -> VertexShader const &
+{
+    return vertexShader;
+}
+
+auto ShaderProgram::getGeometryShader() const
+    -> std::optional<GeometryShader> const &
+{
+    return geometryShader;
+}
+
+auto ShaderProgram::getFragmentShader() const
+    -> FragmentShader const &
+{
+    return fragmentShader;
+}
+
+auto ShaderProgram::link()
+    -> void
+{
+    glAttachShader(id, vertexShader.getId());
+
+    if (geometryShader.has_value())
+    {
+        glAttachShader(id, geometryShader->getId());
+    }
+
+    glAttachShader(id, fragmentShader.getId());
+
+    glLinkProgram(id);
+
+    checkShaderLinkingOutcome(id);
+}
+
+auto ShaderProgram::destroy()
+    -> void
+{
+    if (id != 0)
+    {
+        glDeleteProgram(id);
+    }
 }
 
 auto ShaderProgram::getUniformLocation(std::string const & name) const

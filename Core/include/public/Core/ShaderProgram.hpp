@@ -1,43 +1,20 @@
 #pragma once
 
+#include <Core/FragmentShader.hpp>
+#include <Core/GeometryShader.hpp>
+#include <Core/VertexShader.hpp>
+
 #include <Core/Uniform.hpp>
 
 #include <glm/mat4x4.hpp>
 
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
 namespace ape
 {
-
-class CouldNotOpenShaderFile : public std::logic_error
-{
-
-public:
-
-    CouldNotOpenShaderFile(std::string filename)
-        : logic_error{"Failed to open shader file '" + std::move(filename) + "': "}
-    {
-    }
-
-};
-
-class CouldNotCompileShader : public std::logic_error
-{
-
-public:
-
-    CouldNotCompileShader(std::string filename, std::string message)
-        : logic_error{
-            "Failed to compile shader '" +
-            std::move(filename) +
-            "': " +
-            std::move(message)}
-    {
-    }
-
-};
 
 class CouldNotLinkShaderProgram : public std::logic_error
 {
@@ -68,10 +45,24 @@ class ShaderProgram
 
 public:
 
+    ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader);
+
     ShaderProgram(
-        std::string const & vertexShaderFilename,
-        std::string const & geometryShaderFilename,
-        std::string const & fragmentShaderFilename);
+        VertexShader vertexShader,
+        std::optional<GeometryShader> geometryShader,
+        FragmentShader fragmentShader);
+
+    ShaderProgram(ShaderProgram const & rhs) = delete;
+
+    ShaderProgram(ShaderProgram && rhs) noexcept;
+
+    auto operator = (ShaderProgram const & rhs)
+        -> ShaderProgram & = delete;
+
+    auto operator = (ShaderProgram && rhs) noexcept
+        -> ShaderProgram &;
+
+    ~ShaderProgram();
 
     auto use() const
         -> void;
@@ -85,34 +76,37 @@ public:
         return Uniform<T>{id, location};
     }
 
+    auto getVertexShader() const
+        -> VertexShader const &;
+
+    auto getGeometryShader() const
+        -> std::optional<GeometryShader> const &;
+
+    auto getFragmentShader() const
+        -> FragmentShader const &;
+
 private:
+
+    auto link()
+        -> void;
+
+    auto destroy()
+        -> void;
 
     auto getUniformLocation(std::string const & name) const
         -> int;
 
 private:
 
-    int id;
+    unsigned int id;
+
+    VertexShader vertexShader;
+    
+    std::optional<GeometryShader> geometryShader;
+    
+    FragmentShader fragmentShader;
 
 };
-
-auto readShader(std::string const & filename)
-    -> std::string;
-
-auto compileShader(std::string const & filename, int const shaderType)
-    -> int;
-
-auto compileVertexShader(std::string const & filename)
-    -> int;
-
-auto compileGeometryShader(std::string const & filename)
-    -> int;
-
-auto compileFragmentShader(std::string const & filename)
-    -> int;
-
-auto linkShaderProgram(int const vertexShaderId, int const fragmentShaderId)
-    -> int;
 
 auto makeShaderProgram(
     std::string const & vertexShaderFilename,

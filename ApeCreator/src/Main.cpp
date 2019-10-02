@@ -12,7 +12,7 @@
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
 #include <Core/RenderingContext.hpp>
-#include <Core/PickingShaderProgram.hpp>
+#include <Core/WireframeShaderProgram.hpp>
 #include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
 
@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 
     auto standardShader = ape::StandardShaderProgram{};
 
-    auto pickingShader = ape::PickingShaderProgram{};
+    auto pickingShader = ape::WireframeShaderProgram{};
 
     auto picker = ape::BodySelector{scene};
 

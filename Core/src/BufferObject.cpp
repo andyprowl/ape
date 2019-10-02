@@ -19,6 +19,8 @@ BufferObject::BufferObject(BufferObject && rhs) noexcept
 auto BufferObject::operator = (BufferObject && rhs) noexcept
     -> BufferObject &
 {
+    destroy();
+
     id = rhs.id;
 
     rhs.id = 0;
@@ -27,6 +29,12 @@ auto BufferObject::operator = (BufferObject && rhs) noexcept
 }
 
 BufferObject::~BufferObject()
+{
+    destroy();
+}
+
+auto BufferObject::destroy()
+    -> void
 {
     glDeleteVertexArrays(1, &id);
 }

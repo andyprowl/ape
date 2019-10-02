@@ -41,7 +41,7 @@ protected:
 
 protected:
 
-    BasicUniform(int const programId, int const location)
+    BasicUniform(unsigned int const programId, int const location)
         : programId{programId}
         , location{location}
     {
@@ -49,7 +49,7 @@ protected:
 
 protected:
 
-    int programId;
+    unsigned int programId;
     
     int location;
 

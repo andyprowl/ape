@@ -8,12 +8,12 @@
 namespace ape
 {
 
-class PickingShaderProgram : public ShaderProgram
+class WireframeShaderProgram : public ShaderProgram
 {
 
 public:
 
-    PickingShaderProgram();
+    WireframeShaderProgram();
 
 public:
 

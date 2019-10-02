@@ -1,3 +1,5 @@
+ - Extract the Shaders (or Oogle?) project
+ - Apply Rule of Zero to ownership wrappers
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator
  - Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when

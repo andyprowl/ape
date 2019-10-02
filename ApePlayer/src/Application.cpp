@@ -10,7 +10,7 @@
 #include <Core/BodySelector.hpp>
 #include <Core/CameraSelector.hpp>
 #include <Core/OpenGLLoader.hpp>
-#include <Core/PickingShaderProgram.hpp>
+#include <Core/WireframeShaderProgram.hpp>
 #include <Core/SceneRenderer.hpp>
 #include <Core/StandardShaderProgram.hpp>
 
@@ -44,16 +44,6 @@ public:
     auto run()
         -> void
     {
-        bodyPicker.selectBody(*scene.rotatingContainer);
-
-        bodyPicker.selectBody(*scene.scalingContainer);
-
-        bodyPicker.selectBody(*scene.dragon);
-
-        bodyPicker.selectBody(*scene.nanosuit);
-
-        bodyPicker.selectBody(*scene.lamps[0]);
-
         window.captureMouse();
 
         inputHandler.getCameraManipulator().activate();
@@ -75,7 +65,7 @@ private:
 
     ape::StandardShaderProgram standardShader;
 
-    ape::PickingShaderProgram pickingShader;
+    ape::WireframeShaderProgram pickingShader;
 
     ape::CameraSelector cameraSelector;
 
