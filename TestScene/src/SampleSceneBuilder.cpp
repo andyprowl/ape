@@ -2,7 +2,7 @@
 
 #include <TestScene/SampleAssetBuilder.hpp>
 
-#include <Core/BoxBuilder.hpp>
+#include <Engine/BoxBuilder.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>

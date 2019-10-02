@@ -1,0 +1,23 @@
+#pragma once
+
+#include <algorithm>
+#include <iterator>
+#include <vector>
+
+namespace ape
+{
+
+template<template<typename...> class OutputContainer = std::vector, typename Container, typename F>
+auto transform(Container const & container, F f)
+    -> OutputContainer<std::decay_t<decltype(f(container[0]))>>
+{
+    auto result = OutputContainer<std::decay_t<decltype(f(container[0]))>>{};
+
+    result.reserve(container.size());
+
+    std::transform(std::cbegin(container), std::cend(container), std::back_inserter(result), f);
+
+    return result;
+}
+
+} // namespace ape

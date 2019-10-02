@@ -30,19 +30,25 @@ add_subdirectory(BuildSystem)
 
 add_subdirectory(CompilerSupport)
 
-add_subdirectory(Core)
-
 add_subdirectory(Documentation)
+
+add_subdirectory(Engine)
 
 add_subdirectory(Glad)
 
-add_subdirectory(GlfwBinding)
+add_subdirectory(GlfwEngine)
 
 add_subdirectory(Glow)
 
 add_subdirectory(Mathematics)
 
-add_subdirectory(QtBinding)
+add_subdirectory(QtEngine)
+
+add_subdirectory(Range)
+
+add_subdirectory(Scene)
+
+add_subdirectory(Signal)
 
 add_subdirectory(Stb)
 

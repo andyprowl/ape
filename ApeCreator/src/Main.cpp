@@ -5,15 +5,15 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
-#include <QtBinding/QtEngine.hpp>
-#include <QtBinding/QtWindow.hpp>
+#include <QtEngine/QtEngine.hpp>
+#include <QtEngine/QtWindow.hpp>
 
-#include <Core/BodySelector.hpp>
-#include <Core/CameraSelector.hpp>
-#include <Core/OpenGLLoader.hpp>
-#include <Core/WireframeShaderProgram.hpp>
-#include <Core/SceneRenderer.hpp>
-#include <Core/StandardShaderProgram.hpp>
+#include <Engine/BodySelector.hpp>
+#include <Engine/CameraSelector.hpp>
+#include <Engine/OpenGLLoader.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
+#include <Engine/SceneRenderer.hpp>
+#include <Engine/StandardShaderProgram.hpp>
 
 #include <Asset/RenderingContext.hpp>
 

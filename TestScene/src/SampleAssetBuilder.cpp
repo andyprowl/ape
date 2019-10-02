@@ -2,8 +2,8 @@
 
 #include <AssetLoader/AssetLoader.hpp>
 
-#include <Core/BoxBuilder.hpp>
-#include <Core/NormalDirection.hpp>
+#include <Engine/BoxBuilder.hpp>
+#include <Engine/NormalDirection.hpp>
 
 #include <Asset/Material.hpp>
 #include <Asset/Mesh.hpp>

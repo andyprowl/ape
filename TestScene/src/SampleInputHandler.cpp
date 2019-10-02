@@ -2,10 +2,10 @@
 
 #include <TestScene/SampleScene.hpp>
 
-#include <Core/BodySelector.hpp>
-#include <Core/CameraSelector.hpp>
-#include <Core/StandardShaderProgram.hpp>
-#include <Core/Window.hpp>
+#include <Engine/BodySelector.hpp>
+#include <Engine/CameraSelector.hpp>
+#include <Engine/StandardShaderProgram.hpp>
+#include <Engine/Window.hpp>
 
 #include <CompilerSupport/CompilerWarnings.hpp>
 

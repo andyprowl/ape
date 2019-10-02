@@ -2,7 +2,7 @@
 
 #include "TableModel.hpp"
 
-#include <QtBinding/QtWindow.hpp>
+#include <QtEngine/QtWindow.hpp>
 
 #include <QAbstractItemView>
 #include <QAction>

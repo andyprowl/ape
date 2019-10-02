@@ -1,3 +1,8 @@
+ - Refactor handling of Texture readout - should probably be part of AssetLoader, not Glow
+  - Readout of texture introduces dependency on stb
+ - "Asset" does not seem to be the right name for the project
+  - #include <Asset/RenderingContext.hpp> is weird
+  - #include <Asset/Vertex.hpp> too
  - Reorganize project structure:
   - Extract the Shader, Texture, and Buffer out of Glow
   - Make Glow a functional group

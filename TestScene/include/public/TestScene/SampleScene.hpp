@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Core/BodyPointLightSynchronizer.hpp>
-#include <Core/CameraSpotlightSynchronizer.hpp>
-#include <Core/Scene.hpp>
+#include <Engine/BodyPointLightSynchronizer.hpp>
+#include <Engine/CameraSpotlightSynchronizer.hpp>
+
+#include <Scene/Scene.hpp>
 
 #include <vector>
 

@@ -4,15 +4,15 @@
 #include <TestScene/SampleInputHandler.hpp>
 #include <TestScene/SampleSceneBuilder.hpp>
 
-#include <GlfwBinding/GLFWEngine.hpp>
-#include <GlfwBinding/GLFWGateway.hpp>
+#include <GlfwEngine/GLFWEngine.hpp>
+#include <GlfwEngine/GLFWGateway.hpp>
 
-#include <Core/BodySelector.hpp>
-#include <Core/CameraSelector.hpp>
-#include <Core/OpenGLLoader.hpp>
-#include <Core/WireframeShaderProgram.hpp>
-#include <Core/SceneRenderer.hpp>
-#include <Core/StandardShaderProgram.hpp>
+#include <Engine/BodySelector.hpp>
+#include <Engine/CameraSelector.hpp>
+#include <Engine/OpenGLLoader.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
+#include <Engine/SceneRenderer.hpp>
+#include <Engine/StandardShaderProgram.hpp>
 
 class Application::Impl
 {
