@@ -2,6 +2,7 @@
 
 #include <TestScene/SampleScene.hpp>
 
+#include <Core/BodySelector.hpp>
 #include <Core/CameraSelector.hpp>
 #include <Core/CompilerWarnings.hpp>
 #include <Core/StandardShaderProgram.hpp>
@@ -48,11 +49,12 @@ auto rotateBodyAroundWorldY(ape::Body & body, float const radians)
 SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
+    ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & shader,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
-    
-, shader{&shader}
+    , shader{&shader}
+    , bodyPicker{&bodyPicker}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -86,6 +88,10 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     if ((key == ape::Key::keyB) && (modifier == ape::KeyModifier::none))
     {
         toggleBlinnPhongModel();
+    }
+    else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
+    {
+        togglePickedObjects();
     }
     else if (key == ape::Key::keyEscape)
     {
@@ -133,7 +139,7 @@ auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) con
     {
         ape::scaleUniformly(*scene.scalingContainer, 1 + scalingDelta);
     }
-    else if (window.isKeyPressed(ape::Key::keyW))
+    else if (window.isKeyPressed(ape::Key::keyX))
     {
         ape::scaleUniformly(*scene.scalingContainer, 1 - scalingDelta);
     }
@@ -152,7 +158,7 @@ auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) 
     {
         rotateBodyAroundWorldY(lampBody, +rotationDelta);
     }
-    else if (window.isKeyPressed(ape::Key::keyP))
+    else if (window.isKeyPressed(ape::Key::keyI))
     {
         rotateBodyAroundWorldY(lampBody, -rotationDelta);
     }
@@ -164,4 +170,37 @@ auto SampleInputHandler::toggleBlinnPhongModel() const
     shader->use();
 
     shader->useBlinnPhongModel = !shader->useBlinnPhongModel;
+}
+
+auto SampleInputHandler::togglePickedObjects() const
+    -> void
+{
+    auto & scene = getScene();
+
+    auto const areObjectsPicked = bodyPicker->isBodySelected(*scene.rotatingContainer);
+
+    if (areObjectsPicked)
+    {
+        bodyPicker->deselectAllBodies();
+    }
+    else
+    {
+        pickObjects();
+    }
+}
+
+auto SampleInputHandler::pickObjects() const
+    -> void
+{
+    auto & scene = getScene();
+
+    bodyPicker->selectBody(*scene.rotatingContainer);
+
+    bodyPicker->selectBody(*scene.scalingContainer);
+
+    bodyPicker->selectBody(*scene.dragon);
+
+    bodyPicker->selectBody(*scene.nanosuit);
+
+    bodyPicker->selectBody(*scene.lamps[0]);
 }

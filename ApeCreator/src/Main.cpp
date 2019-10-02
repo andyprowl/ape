@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 
     auto selector1 = ape::CameraSelector{scene};
 
-    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, standardShader, scene};
+    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, picker, standardShader, scene};
 
     auto const context1 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
 
     auto selector2 = ape::CameraSelector{scene};
 
-    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, standardShader, scene};
+    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, picker, standardShader, scene};
 
     auto const context2 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
 
     auto selector3 = ape::CameraSelector{scene};
 
-    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, standardShader, scene};
+    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, picker, standardShader, scene};
 
     auto const context3 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
 

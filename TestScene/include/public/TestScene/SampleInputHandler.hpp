@@ -12,6 +12,8 @@ enum class Key;
 enum class KeyAction;
 enum class KeyModifier;
 
+class BodySelector;
+class CameraSelector;
 class StandardShaderProgram;
 class Window;
 
@@ -27,6 +29,7 @@ public:
     SampleInputHandler(
         ape::Window & window,
         ape::CameraSelector & cameraSelector,
+        ape::BodySelector & bodyPicker,
         ape::StandardShaderProgram & shader,
         SampleScene & scene);
 
@@ -58,8 +61,16 @@ private:
     auto toggleBlinnPhongModel() const
         -> void;
 
+    auto togglePickedObjects() const
+        -> void;
+
+    auto pickObjects() const
+        -> void;
+
 private:
 
     ape::StandardShaderProgram * shader;
+
+    ape::BodySelector * bodyPicker;
 
 };
