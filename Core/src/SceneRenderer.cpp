@@ -221,8 +221,6 @@ auto SceneRenderer::drawBodiesWithPickingShader(
     std::vector<Body *> const & bodies) const
     -> void
 {
-    //glDisable(GL_CULL_FACE);
-
     static auto stopwatch = Stopwatch{};
 
     auto elapsedSeconds = stopwatch.getElapsedTime().count() / 1'000'000'000.0;
@@ -249,8 +247,6 @@ auto SceneRenderer::drawBodiesWithPickingShader(
             }
         }
     }
-
-    //glEnable(GL_CULL_FACE);
 }
 
 auto getCamera(SceneRenderer const & renderer)

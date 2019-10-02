@@ -4,7 +4,7 @@ namespace ape
 {
 
 StandardShaderProgram::StandardShaderProgram()
-    : ShaderProgram{"Vertex.glsl", "", "Fragment.glsl"}
+    : ShaderProgram{"Standard/Standard.Vertex.glsl", "", "Standard/Standard.Fragment.glsl"}
     , camera{*this, "camera"}
     , lighting{*this, "lighting"}
     , modelTransformation{*this, "transform.model"}

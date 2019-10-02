@@ -54,8 +54,6 @@ public:
 
         bodyPicker.selectBody(*scene.lamps[0]);
 
-        //bodyPicker.selectBody(*scene.castle);
-
         window.captureMouse();
 
         inputHandler.getCameraManipulator().activate();

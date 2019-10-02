@@ -21,6 +21,8 @@ public:
 
     Uniform<glm::vec3> borderColor;
 
+    Uniform<float> lineWidth;
+
 };
 
 } // namespace ape

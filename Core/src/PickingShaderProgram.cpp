@@ -4,9 +4,10 @@ namespace ape
 {
 
 PickingShaderProgram::PickingShaderProgram()
-    : ShaderProgram{"Vertex.Plain.glsl", "Geometry.Plain.glsl", "Fragment.Plain.glsl"}
+    : ShaderProgram{"Wire/Wire.Vertex.glsl", "Wire/Wire.Geometry.glsl", "Wire/Wire.Fragment.glsl"}
     , transformation{*this, "transformation"}
     , borderColor{*this, "color"}
+    , lineWidth{*this, "lineWidth"}
 {
 }
 

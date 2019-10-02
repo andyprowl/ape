@@ -85,6 +85,9 @@ private:
     auto toggleSpotLight(int index) const
         -> void;
 
+    auto toggleDirectionalLight(int index) const
+        -> void;
+
     auto switchToCamera(int index)
         -> void;
 

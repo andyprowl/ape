@@ -634,7 +634,7 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
-    return scene.getLighting().directional.emplace_back(direction, color, true);
+    return scene.getLighting().directional.emplace_back(direction, color, false);
 }
 
 auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model const & model)

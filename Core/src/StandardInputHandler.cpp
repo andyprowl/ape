@@ -175,6 +175,10 @@ auto StandardInputHandler::processLightToggling(
     {
         togglePointLight(index);
     }
+    else if (modifier == ape::KeyModifier::alt)
+    {
+        toggleDirectionalLight(index);
+    }
     else if (modifier == ape::KeyModifier::none)
     {
         toggleSpotLight(index);
@@ -227,6 +231,21 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
     }
 
     toggle(lighting.spot[index].isTurnedOn);
+}
+
+auto StandardInputHandler::toggleDirectionalLight(int const index) const
+    -> void
+{
+    auto & scene = getScene(*this);
+
+    auto & lighting = scene.getLighting();
+
+    if (index >= static_cast<int>(lighting.directional.size()))
+    {
+        return;
+    }
+
+    toggle(lighting.directional[index].isTurnedOn);
 }
 
 auto StandardInputHandler::switchToCamera(int const index)
