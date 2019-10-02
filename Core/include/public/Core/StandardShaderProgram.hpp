@@ -2,7 +2,8 @@
 
 #include <Core/CameraUniform.hpp>
 #include <Core/LightingUniform.hpp>
-#include <Core/ShaderProgram.hpp>
+
+#include <Shader/ShaderProgram.hpp>
 
 namespace ape
 {

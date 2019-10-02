@@ -1,9 +1,11 @@
-#include <Core/Uniform.hpp>
+#include <Shader/Uniform.hpp>
 
-#include <Core/CompilerWarnings.hpp>
-#include <Core/ShaderProgram.hpp>
+#include <Shader/ShaderProgram.hpp>
+
+#include <CompilerSupport/CompilerWarnings.hpp>
 
 #include <glad/glad.h>
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>

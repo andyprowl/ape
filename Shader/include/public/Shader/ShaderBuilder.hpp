@@ -1,8 +1,11 @@
 #pragma once
 
-#include <Core/ShaderPreprocessor.hpp>
-#include <Core/ShaderProgram.hpp>
-#include <Core/ShaderReader.hpp>
+#include <Shader/ShaderPreprocessor.hpp>
+#include <Shader/ShaderProgram.hpp>
+#include <Shader/ShaderReader.hpp>
+
+#include <filesystem>
+#include <vector>
 
 namespace ape
 {
@@ -13,6 +16,8 @@ class ShaderBuilder
 public:
 
     ShaderBuilder();
+
+    explicit ShaderBuilder(std::vector<std::filesystem::path> searchPaths);
 
     auto getReader()
         -> ShaderReader &;

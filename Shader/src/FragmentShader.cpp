@@ -1,6 +1,6 @@
-#include <Core/FragmentShader.hpp>
+#include <Shader/FragmentShader.hpp>
 
-#include <Core/ShaderReader.hpp>
+#include <Shader/ShaderReader.hpp>
 
 #include <glad/glad.h>
 

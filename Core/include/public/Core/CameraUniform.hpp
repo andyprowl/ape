@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Core/Camera.hpp>
-#include <Core/Uniform.hpp>
+
+#include <Shader/Uniform.hpp>
 
 namespace ape
 {

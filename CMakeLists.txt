@@ -26,6 +26,8 @@ add_subdirectory(AssetLoader)
 
 add_subdirectory(BuildSystem)
 
+add_subdirectory(CompilerSupport)
+
 add_subdirectory(Core)
 
 add_subdirectory(Documentation)
@@ -35,6 +37,8 @@ add_subdirectory(Glad)
 add_subdirectory(GlfwBinding)
 
 add_subdirectory(QtBinding)
+
+add_subdirectory(Shader)
 
 add_subdirectory(TestScene)
 

@@ -1,6 +1,6 @@
-#include <Core/ShaderPreprocessor.hpp>
+#include <Shader/ShaderPreprocessor.hpp>
 
-#include <Core/ShaderReader.hpp>
+#include <Shader/ShaderReader.hpp>
 
 namespace ape
 {

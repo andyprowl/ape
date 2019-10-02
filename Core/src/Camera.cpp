@@ -1,8 +1,8 @@
 #include <Core/Camera.hpp>
 
-#include <Core/CompilerWarnings.hpp>
-#include <Core/ShaderProgram.hpp>
 #include <Core/Window.hpp>
+
+#include <Shader/ShaderProgram.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

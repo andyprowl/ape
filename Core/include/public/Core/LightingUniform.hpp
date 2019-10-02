@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Core/Lighting.hpp>
-#include <Core/ShaderProgram.hpp>
+
+#include <Shader/ShaderProgram.hpp>
 
 namespace ape
 {

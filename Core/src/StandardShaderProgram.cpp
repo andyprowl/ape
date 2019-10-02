@@ -1,6 +1,6 @@
 #include <Core/StandardShaderProgram.hpp>
 
-#include <Core/ShaderBuilder.hpp>
+#include <Shader/ShaderBuilder.hpp>
 
 namespace ape
 {
@@ -11,7 +11,7 @@ namespace
 auto buildStandardShader()
     -> ShaderProgram
 {
-    auto const builder = ShaderBuilder{};
+    auto const builder = ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
         "Standard/Standard.Vertex.glsl",

@@ -1,4 +1,4 @@
-#include <Core/ShaderReader.hpp>
+#include <Shader/ShaderReader.hpp>
 
 #include <fstream>
 

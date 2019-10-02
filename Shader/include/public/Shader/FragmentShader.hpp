@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Core/Shader.hpp>
+#include <Shader/Shader.hpp>
 
 namespace ape
 {

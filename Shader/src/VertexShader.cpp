@@ -1,6 +1,6 @@
-#include <Core/VertexShader.hpp>
+#include <Shader/VertexShader.hpp>
 
-#include <Core/ShaderReader.hpp>
+#include <Shader/ShaderReader.hpp>
 
 #include <glad/glad.h>
 

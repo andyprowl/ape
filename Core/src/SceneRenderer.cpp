@@ -7,7 +7,6 @@
 #include <Core/ModelPart.hpp>
 #include <Core/WireframeShaderProgram.hpp>
 #include <Core/Scene.hpp>
-#include <Core/ShaderProgram.hpp>
 #include <Core/Shape.hpp>
 #include <Core/StandardShaderProgram.hpp>
 

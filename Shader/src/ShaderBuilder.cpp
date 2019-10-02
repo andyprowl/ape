@@ -1,10 +1,15 @@
-#include <Core/ShaderBuilder.hpp>
+#include <Shader/ShaderBuilder.hpp>
 
 namespace ape
 {
 
 ShaderBuilder::ShaderBuilder()
-    : reader{{resourceFolder "/shaders"}}
+    : ShaderBuilder{{}}
+{
+}
+
+ShaderBuilder::ShaderBuilder(std::vector<std::filesystem::path> searchPaths)
+    : reader{std::move(searchPaths)}
     , preprocessor{reader}
 {
 }

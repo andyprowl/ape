@@ -1,12 +1,9 @@
 #pragma once
 
-#include <Core/FragmentShader.hpp>
-#include <Core/GeometryShader.hpp>
-#include <Core/VertexShader.hpp>
-
-#include <Core/Uniform.hpp>
-
-#include <glm/mat4x4.hpp>
+#include <Shader/FragmentShader.hpp>
+#include <Shader/GeometryShader.hpp>
+#include <Shader/Uniform.hpp>
+#include <Shader/VertexShader.hpp>
 
 #include <optional>
 #include <stdexcept>

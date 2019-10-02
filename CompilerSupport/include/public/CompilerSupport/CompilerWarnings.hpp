@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include <Core/CompilerIdentification.hpp>
+#include <CompilerSupport/CompilerIdentification.hpp>
 
 #ifdef COMPILER_MSVC
 

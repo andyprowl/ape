@@ -2,6 +2,6 @@ project(Core)
 
 AddLibrary(${PROJECT_NAME})
 
-AddPublicDependencies(${PROJECT_NAME} glm)
+AddPublicDependencies(${PROJECT_NAME} glm Shader)
 
-AddPrivateDependencies(${PROJECT_NAME} Glad Stb)
+AddPrivateDependencies(${PROJECT_NAME} CompilerSupport Glad Stb)
