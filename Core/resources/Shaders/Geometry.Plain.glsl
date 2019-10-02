@@ -37,53 +37,46 @@ vec2[3] getClipSpaceNormals(vec4 vertices[3])
         getClipSpaceNormal(vertices[2], vertices[0]));
 }
 
-void emitThickLine(vec4 source, vec4 target, vec2 normal)
+void emitVertex(vec4 position)
 {
-    vec2 offset = normal * lineWidth;
-
-    gl_Position = (source - vec4(offset, 0.0, 0.0));
-
-    EmitVertex();
-
-    gl_Position = (source + vec4(offset, 0.0, 0.0));
-
-    EmitVertex();
-
-    gl_Position = (target - vec4(offset, 0.0, 0.0));
-
-    EmitVertex();
-
-    gl_Position = (target + vec4(offset, 0.0, 0.0));
+    gl_Position = position;
 
     EmitVertex();
 }
 
-void emitTriangleFan(
-    vec4 center,
-    vec2 sourceDirection,
-    vec2 targetDirection,
-    float amplitude,
-    int numOfTriangles)
+void emitThickLine(vec4 source, vec4 target, vec2 normal)
 {
-    float istep = 1.0 / numOfTriangles;
+    vec2 offset = normal * lineWidth;
 
-    for (float i = 0; i <= 1.0 + istep * 2.0; i += istep * 2.0)
+    emitVertex(source - vec4(offset, 0.0, 0.0));
+
+    emitVertex(source + vec4(offset, 0.0, 0.0));
+
+    emitVertex(target - vec4(offset, 0.0, 0.0));
+
+    emitVertex(target + vec4(offset, 0.0, 0.0));
+}
+
+vec2 getTriangleFanVertex(vec2 source, vec2 target, float interpolator, float amplitude)
+{
+    return normalize(mix(source, target, interpolator)) * amplitude;
+}
+
+void emitTriangleFan(vec4 center, vec2 source, vec2 target, float amplitude, int numOfTriangles)
+{
+    float interpolationStep = (1.0 / numOfTriangles);
+
+    for (int i = 0; i < numOfTriangles; ++i)
     {
-        gl_Position = center;
+        emitVertex(center);
 
-        EmitVertex();
+        vec2 v1 = getTriangleFanVertex(source, target, interpolationStep * i, amplitude);
 
-        vec2 n1 = normalize(mix(sourceDirection, targetDirection, i)) * amplitude;
+        emitVertex(center + vec4(v1, 0.0, 0.0));
 
-        gl_Position = center + vec4(n1, 0.0, 0.0);
+        vec2 v2 = getTriangleFanVertex(source, target, interpolationStep * (i + 1), amplitude);
 
-        EmitVertex();
-
-        vec2 n2 = normalize(mix(sourceDirection, targetDirection, i + istep)) * amplitude;
-
-        gl_Position = center + vec4(n2, 0.0, 0.0);
-
-        EmitVertex();
+        emitVertex(center + vec4(v2, 0.0, 0.0));
     }
 }
 
