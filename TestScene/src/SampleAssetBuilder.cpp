@@ -274,11 +274,11 @@ auto StatefulAssetBuilder::createSingleMeshModel(
 auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
     -> ape::Model &
 {
-    auto const meshName = mesh.getName();;
+    auto const meshName = mesh.getName();
 
     auto rootPart = ape::ModelPart{meshName, {&mesh}, {}, glm::mat4{1.0f}};
 
-    auto model = ape::Model{std::move(rootPart), meshName, ""};
+    auto model = ape::Model{std::move(rootPart), meshName};
 
     return assets.models.emplace_back(std::move(model));
 }

@@ -10,6 +10,7 @@ namespace ape
 {
 
 class AssetRepository;
+class TextureCache;
 
 class CouldNotLoadAssets : public std::logic_error
 {
@@ -32,35 +33,43 @@ class AssetLoader
 
 public:
 
-    auto load(std::filesystem::path path, std::string modelName) const
+    auto load(std::filesystem::path const & path, std::string modelName) const
+        -> AssetRepository;
+
+    auto load(
+        std::filesystem::path const & path,
+        TextureCache & textureCache,
+        std::string modelName) const
         -> AssetRepository;
 
 private:
 
-    auto load(aiScene const & scene, std::string modelName, std::filesystem::path source) const
+    auto load(
+        aiScene const & scene,
+        std::filesystem::path const & searchPath,
+        TextureCache & textureCache,
+        std::string modelName) const
         -> AssetRepository;
 
     auto load(
         aiScene const & scene,
-        std::string modelName,
-        std::filesystem::path source,
-        AssetRepository & target) const
+        std::filesystem::path const & searchPath,
+        TextureCache & textureCache,
+        AssetRepository & target,
+        std::string modelName) const
         -> void;
 
     auto importMaterials(
         aiScene const & scene,
-        std::filesystem::path const & source,
+        std::filesystem::path const & searchPath,
+        TextureCache & textureCache,
         AssetRepository & target) const
         -> void;
 
     auto importMeshes(aiScene const & scene, AssetRepository & target) const
         -> void;
 
-    auto importModel(
-        aiScene const & scene,
-        std::string name,
-        std::filesystem::path source,
-        AssetRepository & target) const
+    auto importModel(aiScene const & scene, AssetRepository & target, std::string name) const
         -> void;
 
 };

@@ -16,7 +16,18 @@
 namespace ape
 {
 
-auto AssetLoader::load(std::filesystem::path path, std::string modelName) const
+auto AssetLoader::load(std::filesystem::path const & path, std::string modelName) const
+    -> AssetRepository
+{
+    auto textureCache = TextureCache{};
+
+    return load(path, textureCache, modelName);
+}
+
+auto AssetLoader::load(
+    std::filesystem::path const & path,
+    TextureCache & textureCache,
+    std::string modelName) const
     -> AssetRepository
 {
     auto importer = Assimp::Importer{};
@@ -28,49 +39,50 @@ auto AssetLoader::load(std::filesystem::path path, std::string modelName) const
         throw CouldNotLoadAssets(path, importer.GetErrorString());
     }
 
-    return load(*scene, std::move(modelName), std::move(path));
+    auto const searchPath = path.parent_path();
+
+    return load(*scene, searchPath, textureCache, std::move(modelName));
 }
 
 auto AssetLoader::load(
     aiScene const & scene,
-    std::string modelName,
-    std::filesystem::path source) const
+    std::filesystem::path const & searchPath,
+    TextureCache & textureCache,
+    std::string modelName) const
     -> AssetRepository
 {
     auto repository = AssetRepository{};
 
-    load(scene, std::move(modelName), std::move(source), repository);
+    load(scene, searchPath, textureCache, repository, std::move(modelName));
 
     return repository;
 }
 
 auto AssetLoader::load(
     aiScene const & scene,
-    std::string modelName,
-    std::filesystem::path source,
-    AssetRepository & target) const
+    std::filesystem::path const & searchPath,
+    TextureCache & textureCache,
+    AssetRepository & target,
+    std::string modelName) const
     -> void
 {
-    importMaterials(scene, source, target);
+    importMaterials(scene, searchPath, textureCache, target);
 
     importMeshes(scene, target);
 
-    importModel(scene, std::move(modelName), std::move(source), target);
+    importModel(scene, target, std::move(modelName));
 }
 
 auto AssetLoader::importMaterials(
     aiScene const & scene,
-    std::filesystem::path const & source,
+    std::filesystem::path const & searchPath,
+    TextureCache & textureCache,
     AssetRepository & target) const
     -> void
 {
-    auto textureCache = TextureCache{};
-
     auto const loader = MaterialLoader{target, textureCache};
 
-    auto const directory = source.parent_path();
-
-    loader.load(scene, directory);
+    loader.load(scene, searchPath);
 }
 
 auto AssetLoader::importMeshes(aiScene const & scene, AssetRepository & target) const
@@ -83,16 +95,15 @@ auto AssetLoader::importMeshes(aiScene const & scene, AssetRepository & target) 
 
 auto AssetLoader::importModel(
     aiScene const & scene,
-    std::string name,
-    std::filesystem::path source,
-    AssetRepository & target) const
+    AssetRepository & target,
+    std::string name) const
     -> void
 {
     auto const loader = ModelPartImporter{target};
 
     auto rootPart = loader.importRootPart(scene);
 
-    target.models.emplace_back(std::move(rootPart), std::move(name), std::move(source));
+    target.models.emplace_back(std::move(rootPart), std::move(name));
 }
 
 } // namespace ape
