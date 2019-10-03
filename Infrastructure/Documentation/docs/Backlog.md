@@ -1,0 +1,14 @@
+ - Fix temporary implementation of outlining in SceneRenderer
+ - Refactor handling of Texture readout - should probably be part of AssetLoader, not GpuResource
+  - Readout of texture introduces dependency on stb
+ - "Asset" does not seem to be the right name for the project
+  - #include <Asset/RenderingContext.hpp> is weird
+  - #include <Asset/Vertex.hpp> too
+ - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
+  - Works correctly with ApeCreator
+ - Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
+   constructing them
+ - Try and generalize GLFWEngine-based and Qt's event-based approaches
+ - Add CMake install target also handling correct deployment of dependencies
+ - Support flat shapes/meshes
+ - Support "enterable", room-like shapes with an inner and outer layer with inverted normals
