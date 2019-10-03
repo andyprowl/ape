@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Glow/FileFinder.hpp>
+
 #include <filesystem>
 #include <stdexcept>
 #include <string>
@@ -43,14 +45,17 @@ public:
     auto read(std::filesystem::path const & path) const
         -> std::string;
 
+    auto getSearchPaths() const
+        -> std::vector<std::filesystem::path>;
+
 private:
 
-    auto resolveAbsolutePath(std::filesystem::path const & path) const
+    auto resolveToPathOfExistingFile(std::filesystem::path const & path) const
         -> std::filesystem::path;
 
 private:
 
-    std::vector<std::filesystem::path> searchPaths;
+    FileFinder fileFinder;
 
 };
 

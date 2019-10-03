@@ -1,7 +1,10 @@
 #pragma once
 
+#include <Glow/TextureReader.hpp>
+
 #include <glm/vec4.hpp>
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -24,7 +27,7 @@ public:
 
     MaterialLoader(AssetRepository & assets, TextureCache & textureCache);
 
-    auto load(aiScene const & scene, std::string const & directory) const
+    auto load(aiScene const & scene, std::filesystem::path const & directory) const
         -> void;
 
 private:
@@ -35,7 +38,7 @@ private:
     auto computeNumOfTextures(aiScene const & scene) const
         -> int;
 
-    auto importMaterial(aiMaterial const & material, std::string const & directory) const
+    auto importMaterial(aiMaterial const & material, std::filesystem::path const & directory) const
         -> void;
 
     auto getAmbientColor(aiMaterial const & material) const
@@ -47,10 +50,10 @@ private:
     auto importTextures(
         aiMaterial const & material,
         aiTextureType const type,
-        std::string const & directory) const
+        std::filesystem::path const & directory) const
         -> std::vector<Texture const *>;
 
-    auto importTexture(std::string const & path) const
+    auto importTexture(std::filesystem::path const & path) const
         -> Texture const &;
 
 private:
@@ -58,6 +61,8 @@ private:
     AssetRepository * assets;
 
     TextureCache * textureCache;
+
+    TextureReader textureReader;
 
 };
 

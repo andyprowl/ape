@@ -23,6 +23,16 @@ class Shader
 
 public:
 
+    enum class Type
+    {
+        unknown,
+        vertex,
+        geometry,
+        fragment
+    };
+
+public:
+
     Shader(Shader const & rhs) = delete;
 
     Shader(Shader && rhs) noexcept;
@@ -38,23 +48,23 @@ public:
     auto getId() const
         -> unsigned int;
 
+    auto compile(std::string const & newSourceCode)
+        -> void;
+
     auto getSourceCode() const
         -> std::string;
 
-    auto recompile(std::string newSourceCode)
-        -> void;
+    auto getType() const
+        -> Type;
 
     auto release()
         -> unsigned int;
 
 protected:
 
-    explicit Shader(unsigned int id, std::string sourceCode);
+    explicit Shader(Type type, std::string const & sourceCode);
 
 private:
-
-    auto compile(std::string const & newSourceCode)
-        -> void;
 
     auto destroy()
         -> void;
@@ -62,8 +72,6 @@ private:
 private:
 
     unsigned int id;
-
-    std::string sourceCode;
 
 };
 

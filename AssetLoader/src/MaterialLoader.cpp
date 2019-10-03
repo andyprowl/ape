@@ -36,7 +36,7 @@ MaterialLoader::MaterialLoader(AssetRepository & assets, TextureCache & textureC
 {
 }
 
-auto MaterialLoader::load(aiScene const & scene, std::string const & directory) const
+auto MaterialLoader::load(aiScene const & scene, std::filesystem::path const & directory) const
     -> void
 {
     auto materials = std::vector<Material>{};
@@ -78,7 +78,7 @@ auto MaterialLoader::computeNumOfTextures(aiScene const & scene) const
 
 auto MaterialLoader::importMaterial(
     aiMaterial const & material,
-    std::string const & directory) const
+    std::filesystem::path const & directory) const
     -> void
 {
     auto const diffuseMaps = importTextures(material, aiTextureType_DIFFUSE, directory);
@@ -125,7 +125,7 @@ auto MaterialLoader::getShininess(aiMaterial const & material) const
 auto MaterialLoader::importTextures(
     aiMaterial const & material,
     aiTextureType const type,
-    std::string const & directory) const
+    std::filesystem::path const & directory) const
     -> std::vector<Texture const *>
 {
     auto numOfTextures = material.GetTextureCount(aiTextureType_DIFFUSE);
@@ -143,7 +143,7 @@ auto MaterialLoader::importTextures(
             continue;
         }
 
-        auto const path = directory + '/' + std::move(filename);
+        auto const path = directory / std::move(filename);
 
         auto const & texture = importTexture(path);
 
@@ -153,7 +153,7 @@ auto MaterialLoader::importTextures(
     return textures;
 }
 
-auto MaterialLoader::importTexture(std::string const & path) const
+auto MaterialLoader::importTexture(std::filesystem::path const & path) const
     -> Texture const &
 {
     auto const existingTexture = textureCache->findTexture(path);
@@ -163,7 +163,7 @@ auto MaterialLoader::importTexture(std::string const & path) const
         return *existingTexture;
     }
 
-    auto & texture = assets->textures.emplace_back(readTextureDescriptor(path));
+    auto & texture = assets->textures.emplace_back(textureReader.read(path));
 
     textureCache->registerTexture(texture, path);
 

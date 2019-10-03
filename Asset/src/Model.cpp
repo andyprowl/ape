@@ -3,7 +3,7 @@
 namespace ape
 {
 
-Model::Model(ModelPart rootPart, std::string source, std::string name)
+Model::Model(ModelPart rootPart, std::string name, std::filesystem::path source)
     : rootPart{std::move(rootPart)}
     , name{std::move(name)}
     , source{std::move(source)}
@@ -23,7 +23,7 @@ auto Model::getName() const
 }
 
 auto Model::getSource() const
-    -> std::string
+    -> std::filesystem::path
 {
     return source;
 }

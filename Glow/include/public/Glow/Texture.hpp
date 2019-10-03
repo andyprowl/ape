@@ -28,7 +28,7 @@ public:
         -> void;
 
     auto getFormat() const
-        -> unsigned int;
+        -> TextureFormat;
 
     auto getSize() const
         -> Size<int>;
@@ -41,10 +41,6 @@ private:
 private:
 
     unsigned int id;
-
-    unsigned int format;
-
-    Size<int> size;
 
 };
 

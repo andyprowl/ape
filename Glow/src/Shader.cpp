@@ -1,16 +1,63 @@
 #include <Glow/Shader.hpp>
 
+
 #include <Glow/ShaderReader.hpp>
 
 #include <glad/glad.h>
 
 #include <array>
+#include <cassert>
+#include <unordered_map>
 
 namespace ape
 {
 
 namespace
 {
+
+auto const shaderTypeMap = std::unordered_map<Shader::Type, GLenum>{
+    {Shader::Type::vertex, GL_VERTEX_SHADER},
+    {Shader::Type::geometry, GL_GEOMETRY_SHADER},
+    {Shader::Type::fragment, GL_FRAGMENT_SHADER}};
+
+auto convertToOpenGLShaderType(Shader::Type const type)
+    -> GLenum
+{
+    auto const it = shaderTypeMap.find(type);
+
+    if (it == std::cend(shaderTypeMap))
+    {
+        assert(false);
+
+        return 0;
+    }
+
+    return it->second;
+}
+
+auto convertFromOpenGLShaderType(GLenum const type)
+    -> Shader::Type
+{
+    for (auto const & entry : shaderTypeMap)
+    {
+        if (entry.second == type)
+        {
+            return entry.first;
+        }
+    }
+
+    assert(false);
+
+    return Shader::Type::unknown;
+}
+
+auto generateNewShaderId(Shader::Type const type)
+    -> unsigned int
+{
+    auto const shaderType = convertToOpenGLShaderType(type);
+
+    return glCreateShader(shaderType);
+}
 
 auto checkShaderCompilationOutcome(int const shaderId)
     -> void
@@ -62,18 +109,40 @@ auto Shader::getId() const
     return id;
 }
 
+auto Shader::compile(std::string const & sourceCode)
+    -> void
+{
+    auto const code = sourceCode.data();
+
+    glShaderSource(id, 1, &code, nullptr);
+
+    glCompileShader(id);
+
+    checkShaderCompilationOutcome(id);
+}
+
 auto Shader::getSourceCode() const
     -> std::string
 {
-    return sourceCode;
+    auto sourceLength = 0;
+
+    glGetShaderiv(id, GL_SHADER_SOURCE_LENGTH, &sourceLength);
+ 	
+    auto source = std::string(sourceLength, '\0');
+
+    glGetShaderSource(id, sourceLength, nullptr, source.data());
+
+    return source;
 }
 
-auto Shader::recompile(std::string newSourceCode)
-    -> void
+auto Shader::getType() const
+    -> Type
 {
-    compile(newSourceCode);
+    auto type = 0;
 
-    sourceCode = std::move(newSourceCode);
+    glGetShaderiv(id, GL_SHADER_TYPE, &type);
+
+    return convertFromOpenGLShaderType(static_cast<GLenum>(type));
 }
 
 auto Shader::release()
@@ -86,23 +155,10 @@ auto Shader::release()
     return shaderId;
 }
 
-Shader::Shader(unsigned int id, std::string sourceCode)
-    : id{id}
-    , sourceCode{std::move(sourceCode)}
+Shader::Shader(Type const type, std::string const & sourceCode)
+    : id{generateNewShaderId(type)}
 {
-    compile(this->sourceCode);
-}
-
-auto Shader::compile(std::string const & newSourceCode)
-    -> void
-{
-    auto const code = newSourceCode.data();
-
-    glShaderSource(id, 1, &code, nullptr);
-
-    glCompileShader(id);
-
-    checkShaderCompilationOutcome(id);
+    compile(sourceCode);
 }
 
 auto Shader::destroy()

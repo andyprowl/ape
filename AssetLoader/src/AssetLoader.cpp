@@ -16,30 +16,12 @@
 namespace ape
 {
 
-namespace
-{
-
-auto extractDirectory(std::string const & path)
-    -> std::string
-{
-    auto const lastSlashIndex = path.find_last_of("\\/");
-
-    if (lastSlashIndex == std::string::npos)
-    {
-        return path;
-    }
-
-    return path.substr(0, lastSlashIndex);
-}
-
-} // unnamed namespace
-
-auto AssetLoader::load(std::string path, std::string modelName) const
+auto AssetLoader::load(std::filesystem::path path, std::string modelName) const
     -> AssetRepository
 {
     auto importer = Assimp::Importer{};
 
-    const auto scene = importer.ReadFile(path, aiProcess_Triangulate); 
+    const auto scene = importer.ReadFile(path.string(), aiProcess_Triangulate); 
 
     if (scene == nullptr)
     {
@@ -52,7 +34,7 @@ auto AssetLoader::load(std::string path, std::string modelName) const
 auto AssetLoader::load(
     aiScene const & scene,
     std::string modelName,
-    std::string source) const
+    std::filesystem::path source) const
     -> AssetRepository
 {
     auto repository = AssetRepository{};
@@ -65,7 +47,7 @@ auto AssetLoader::load(
 auto AssetLoader::load(
     aiScene const & scene,
     std::string modelName,
-    std::string source,
+    std::filesystem::path source,
     AssetRepository & target) const
     -> void
 {
@@ -78,7 +60,7 @@ auto AssetLoader::load(
 
 auto AssetLoader::importMaterials(
     aiScene const & scene,
-    std::string const & source,
+    std::filesystem::path const & source,
     AssetRepository & target) const
     -> void
 {
@@ -86,7 +68,7 @@ auto AssetLoader::importMaterials(
 
     auto const loader = MaterialLoader{target, textureCache};
 
-    auto const directory = extractDirectory(source);
+    auto const directory = source.parent_path();
 
     loader.load(scene, directory);
 }
@@ -102,7 +84,7 @@ auto AssetLoader::importMeshes(aiScene const & scene, AssetRepository & target) 
 auto AssetLoader::importModel(
     aiScene const & scene,
     std::string name,
-    std::string source,
+    std::filesystem::path source,
     AssetRepository & target) const
     -> void
 {

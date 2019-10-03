@@ -4,11 +4,6 @@
 
 #include <glad/glad.h>
 
-// Non-standard extensions used in GLM
-disableCompilerWarnings()
-#include <glm/gtc/type_ptr.hpp>
-restoreCompilerWarnings()
-
 #include <array>
 #include <cassert>
 #include <fstream>

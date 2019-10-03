@@ -9,6 +9,8 @@
 #include <Asset/Mesh.hpp>
 #include <Asset/Shape.hpp>
 
+#include <Glow/TextureReader.hpp>
+
 namespace
 {
 
@@ -81,6 +83,8 @@ private:
 private:
 
     ape::AssetRepository assets;
+
+    ape::TextureReader textureReader;
 
 };
 
@@ -282,17 +286,17 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
 auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
     -> ape::Texture &
 {
-    auto filepath = std::string{resourceFolder} + "/textures/" + filename;
+    auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 
-    auto descriptor = ape::readTextureDescriptor(filepath);
+    auto texture = textureReader.read(filepath);
 
-    return assets.textures.emplace_back(std::move(descriptor));
+    return assets.textures.emplace_back(std::move(texture));
 }
 
 auto resolveModelFilepath(std::string filename)
-    -> std::string
+    -> std::filesystem::path
 {
-    return std::string{resourceFolder} + "/models/" + std::move(filename);
+    return std::filesystem::path{resourceFolder} / "models" / std::move(filename);
 }
 
 } // unnamed namespace

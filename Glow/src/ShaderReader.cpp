@@ -8,7 +8,7 @@ namespace ape
 namespace
 {
 
-auto readShader(std::filesystem::path const & path)
+auto readShaderCode(std::filesystem::path const & path)
     -> std::string
 {
     auto shaderFile = std::ifstream{path, std::ifstream::ate | std::ifstream::binary};
@@ -32,37 +32,35 @@ auto readShader(std::filesystem::path const & path)
 } // namespace ape
 
 ShaderReader::ShaderReader(std::vector<std::filesystem::path> searchPaths)
-    : searchPaths{std::move(searchPaths)}
+    : fileFinder{std::move(searchPaths)}
 {
 }
 
 auto ShaderReader::read(std::filesystem::path const & path) const
     -> std::string
 {
-    auto const absolutePath = resolveAbsolutePath(path);
+    auto const absolutePath = resolveToPathOfExistingFile(path);
 
-    return readShader(absolutePath);
+    return readShaderCode(absolutePath);
 }
 
-auto ShaderReader::resolveAbsolutePath(std::filesystem::path const & path) const
+auto ShaderReader::getSearchPaths() const
+    -> std::vector<std::filesystem::path>
+{
+    return fileFinder.getSearchPaths();
+}
+
+auto ShaderReader::resolveToPathOfExistingFile(std::filesystem::path const & path) const
     -> std::filesystem::path
 {
-    if (path.is_absolute())
+    auto existingFilePath = fileFinder.findExistingFile(path);
+
+    if (!existingFilePath)
     {
-        return path;
+        throw CouldNotFindShaderFile{path};
     }
 
-    for (auto const & searchPath : searchPaths)
-    {
-        auto absolutePath = searchPath / path;
-
-        if (std::filesystem::exists(absolutePath))
-        {
-            return absolutePath;
-        }
-    }
-
-    throw CouldNotFindShaderFile{path};
+    return *existingFilePath;
 }
 
 } // namespace ape
