@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 
     auto standardShader = ape::StandardShaderProgram{};
 
-    auto pickingShader = ape::WireframeShaderProgram{};
+    auto wireframeShader = ape::WireframeShaderProgram{};
 
     auto picker = ape::BodySelector{scene};
 
@@ -191,7 +191,13 @@ int main(int argc, char *argv[])
 
     auto selector1 = ape::CameraSelector{scene};
 
-    auto inputHandler1 = SampleInputHandler{sceneView1, selector1, picker, standardShader, scene};
+    auto inputHandler1 = SampleInputHandler{
+        sceneView1,
+        selector1,
+        picker,
+        standardShader,
+        wireframeShader,
+        scene};
 
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
@@ -210,7 +216,7 @@ int main(int argc, char *argv[])
         picker,
         shapeRenderer1,
         standardShader,
-        pickingShader,
+        wireframeShader,
         backgroundColor};
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
@@ -223,7 +229,13 @@ int main(int argc, char *argv[])
 
     auto selector2 = ape::CameraSelector{scene};
 
-    auto inputHandler2 = SampleInputHandler{sceneView2, selector2, picker, standardShader, scene};
+    auto inputHandler2 = SampleInputHandler{
+        sceneView2,
+        selector2,
+        picker,
+        standardShader,
+        wireframeShader,
+        scene};
 
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
@@ -242,7 +254,7 @@ int main(int argc, char *argv[])
         picker,
         shapeRenderer2,
         standardShader,
-        pickingShader,
+        wireframeShader,
         backgroundColor};
 
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
@@ -257,7 +269,13 @@ int main(int argc, char *argv[])
 
     auto selector3 = ape::CameraSelector{scene};
 
-    auto inputHandler3 = SampleInputHandler{sceneView3, selector3, picker, standardShader, scene};
+    auto inputHandler3 = SampleInputHandler{
+        sceneView3,
+        selector3,
+        picker,
+        standardShader,
+        wireframeShader,
+        scene};
 
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
@@ -276,7 +294,7 @@ int main(int argc, char *argv[])
         picker,
         shapeRenderer3,
         standardShader,
-        pickingShader,
+        wireframeShader,
         backgroundColor};
 
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};

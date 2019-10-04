@@ -6,8 +6,11 @@
 #include <Engine/CameraSelector.hpp>
 #include <Engine/StandardShaderProgram.hpp>
 #include <Engine/Window.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
 
 #include <CompilerSupport/CompilerWarnings.hpp>
+
+#include <Mathematics/Math.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -51,10 +54,12 @@ SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
     ape::BodySelector & bodyPicker,
-    ape::StandardShaderProgram & shader,
+    ape::StandardShaderProgram & standardShader,
+    ape::WireframeShaderProgram & wireframeShader,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
-    , shader{&shader}
+    , standardShader{&standardShader}
+    , wireframeShader{&wireframeShader}
     , bodyPicker{&bodyPicker}
 {
     assert(&scene == &cameraSelector.getScene());
@@ -93,6 +98,14 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
     {
         togglePickedObjects();
+    }
+    else if ((key == ape::Key::keyQ) && (modifier == ape::KeyModifier::control))
+    {
+        increaseWireframeLineWidth(0.01f);
+    }
+    else if ((key == ape::Key::keyE) && (modifier == ape::KeyModifier::control))
+    {
+        increaseWireframeLineWidth(-0.01f);
     }
     else if (key == ape::Key::keyEscape)
     {
@@ -168,9 +181,9 @@ auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) 
 auto SampleInputHandler::toggleBlinnPhongModel() const
     -> void
 {
-    shader->use();
+    standardShader->use();
 
-    shader->useBlinnPhongModel = !shader->useBlinnPhongModel;
+    standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
 }
 
 auto SampleInputHandler::togglePickedObjects() const
@@ -204,4 +217,12 @@ auto SampleInputHandler::pickObjects() const
     bodyPicker->selectBody(*scene.nanosuit);
 
     bodyPicker->selectBody(*scene.lamps[0]);
+}
+
+auto SampleInputHandler::increaseWireframeLineWidth(float amount) const
+    -> void
+{
+    auto const newWidth = wireframeShader->lineWidth.get() + amount;
+
+    wireframeShader->lineWidth = ape::clamp(newWidth, 0.0f, 0.1f);
 }

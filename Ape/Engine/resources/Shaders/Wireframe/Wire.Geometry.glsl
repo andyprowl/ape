@@ -4,7 +4,7 @@ layout(triangles) in;
 
 layout(triangle_strip, max_vertices = 16) out;
 
-uniform float lineWidth = 0.03;
+uniform float lineWidth = 0.04;
 
 vec4 getClipSpaceVertex(int i)
 {
@@ -57,18 +57,16 @@ void emitThickLine(vec4 source, vec4 target, vec2 normal)
 
 void main()
 {
-    vec4 vertices[] = getClipSpaceVertices();
+    vec4[3] vertices = getClipSpaceVertices();
 
-    vec2 normals[] = getClipSpaceNormals(vertices);
+    vec2[3] normals = getClipSpaceNormals(vertices);
 
     for (int i = 0; i < 4; ++i)
     {
-        vec4 thisVertex = vertices[i % 3];
+        int thisIndex = i % 3;
 
-        vec4 nextVertex = vertices[(i + 1) % 3];
+        int nextIndex = (i + 1) % 3;
 
-        vec2 thisNormal = normals[i % 3];
-
-        emitThickLine(thisVertex, nextVertex, thisNormal);
+        emitThickLine(vertices[thisIndex], vertices[nextIndex], normals[thisIndex]);
     }
 }

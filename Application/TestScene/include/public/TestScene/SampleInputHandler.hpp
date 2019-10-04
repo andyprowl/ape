@@ -16,6 +16,7 @@ class BodySelector;
 class CameraSelector;
 class StandardShaderProgram;
 class Window;
+class WireframeShaderProgram;
 
 } // namespace ape
 
@@ -30,7 +31,8 @@ public:
         ape::Window & window,
         ape::CameraSelector & cameraSelector,
         ape::BodySelector & bodyPicker,
-        ape::StandardShaderProgram & shader,
+        ape::StandardShaderProgram & standardShader,
+        ape::WireframeShaderProgram & wireframeShader,
         SampleScene & scene);
 
     auto getScene() const
@@ -67,9 +69,14 @@ private:
     auto pickObjects() const
         -> void;
 
+    auto increaseWireframeLineWidth(float amount) const
+        -> void;
+
 private:
 
-    ape::StandardShaderProgram * shader;
+    ape::StandardShaderProgram * standardShader;
+
+    ape::WireframeShaderProgram * wireframeShader;
 
     ape::BodySelector * bodyPicker;
 
