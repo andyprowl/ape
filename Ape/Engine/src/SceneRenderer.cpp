@@ -32,13 +32,13 @@ SceneRenderer::SceneRenderer(
     BodySelector const & pickedBodySelector,
     ShapeRenderer const & shapeRenderer,
     StandardShaderProgram & standardShader,
-    WireframeShaderProgram & pickingShader,
+    WireframeShaderProgram & wireframeShader,
     glm::vec3 const & backgroundColor)
     : cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
     , shapeRenderer{&shapeRenderer}
     , standardShader{&standardShader}
-    , pickingShader{&pickingShader}
+    , wireframeShader{&wireframeShader}
     , backgroundColor{backgroundColor}
 {
 }
@@ -225,9 +225,9 @@ auto SceneRenderer::drawBodiesWithPickingShader(
 
     auto pulser = glm::sin(elapsedSeconds * 6.0) / 4.0;
 
-    pickingShader->use();
+    wireframeShader->use();
 
-    pickingShader->borderColor = glm::vec3{0.2f + pulser, 0.2f + pulser, 1.0f};
+    wireframeShader->borderColor = glm::vec3{0.2f + pulser, 0.2f + pulser, 1.0f};
     
     auto const & cameraTransformation = camera.getTransformation();
 
@@ -237,7 +237,7 @@ auto SceneRenderer::drawBodiesWithPickingShader(
         {
             auto const & modelTransformation = part.getGlobalTransformation();
 
-            pickingShader->transformation = cameraTransformation * modelTransformation;
+            wireframeShader->transformation = cameraTransformation * modelTransformation;
 
             for (auto const mesh : part.getModel().getMeshes())
             {

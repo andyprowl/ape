@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/CameraUniform.hpp>
-#include <Scene/LightingUniform.hpp>
+#include <Engine/CameraUniform.hpp>
+#include <Engine/LightingUniform.hpp>
 
 #include <GpuResource/ShaderProgram.hpp>
 

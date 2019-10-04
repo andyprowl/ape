@@ -45,7 +45,7 @@ public:
             standardShader,
             pickingShader,
             {0.0f, 0.0f, 0.0f}}
-        , inputHandler{window, cameraSelector, bodyPicker, standardShader, scene}
+        , inputHandler{window, cameraSelector, bodyPicker, standardShader, pickingShader, scene}
         , GLFWEngine{window, sceneRenderer, inputHandler}
     {
     }

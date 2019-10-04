@@ -9,8 +9,6 @@
 #include <Engine/TimeIntervalTracker.hpp>
 #include <Engine/Window.hpp>
 
-#include <Scene/CameraUniform.hpp>
-#include <Scene/LightingUniform.hpp>
 #include <Scene/Scene.hpp>
 
 #include <Signal/ScopedSignalConnection.hpp>

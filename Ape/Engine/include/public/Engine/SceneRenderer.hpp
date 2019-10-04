@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/CameraUniform.hpp>
-#include <Scene/LightingUniform.hpp>
+#include <Engine/CameraUniform.hpp>
+#include <Engine/LightingUniform.hpp>
 
 #include <GpuResource/VertexArrayObject.hpp>
 
@@ -30,7 +30,7 @@ public:
         BodySelector const & pickedBodySelector,
         ShapeRenderer const & shapeRenderer,
         StandardShaderProgram & standardShader,
-        WireframeShaderProgram & pickingShader,
+        WireframeShaderProgram & wireframeShader,
         glm::vec3 const & backgroundColor);
 
     auto render() const
@@ -87,7 +87,7 @@ private:
 
     StandardShaderProgram * standardShader;
 
-    WireframeShaderProgram * pickingShader;
+    WireframeShaderProgram * wireframeShader;
 
     glm::vec3 backgroundColor;
 
