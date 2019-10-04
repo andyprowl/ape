@@ -31,4 +31,7 @@ public:
 
 };
 
+auto sendVertexLayoutToGpu()
+    -> void;
+
 } // namespace ape

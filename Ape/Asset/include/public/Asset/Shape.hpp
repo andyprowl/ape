@@ -1,86 +1,55 @@
 #pragma once
 
+#include <Asset/Counted.hpp>
 #include <Asset/Vertex.hpp>
 
 #include <GpuResource/ElementBufferObject.hpp>
-#include <GpuResource/VertexArrayObject.hpp>
 #include <GpuResource/VertexBufferObject.hpp>
-
-#include <vector>
 
 namespace ape
 {
 
-class RenderingContext;
-
-class Shape
+class Shape : public Counted<Shape>
 {
-
-public:
-
-    class BufferSet
-    {
-
-    public:
-
-        BufferSet(
-            VertexBufferObject vertexBufferObject,
-            ElementBufferObject elementBufferObject)
-            : vertexBufferObject{std::move(vertexBufferObject)}
-            , elementBufferObject{std::move(elementBufferObject)}
-        {
-        }
-
-    public:
-
-        VertexBufferObject vertexBufferObject;
-
-        ElementBufferObject elementBufferObject;
-
-    };
 
 public:
 
     Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
 
-    auto getCenter() const
-        -> glm::vec3;
+    auto getVertexBufferObject() const 
+        -> const VertexBufferObject &;
 
-    auto draw(RenderingContext const & context) const
-        -> void;
+    auto getElementBufferObject() const 
+        -> const ElementBufferObject &;
 
-private:
-
-    auto drawWithoutArrayVertexObject() const
-        -> void;
-
-    auto drawWithArrayVertexObject(RenderingContext const & context) const
-        -> void;
-
-    auto retrieveBoundVertexArrayObject(RenderingContext const & context) const
-        -> VertexArrayObject &;
-
-    auto bindExistingVertexArrayObject(RenderingContext const & context) const
-        -> VertexArrayObject &;
-
-    auto hasVertexArrayObject(RenderingContext const & context) const
-        -> bool;
-
-    auto createNewVertexArrayObject(RenderingContext const & context) const
-        -> VertexArrayObject &;
-
-    auto setupRenderingState() const
-        -> void;
+    auto getNumOfVertices() const
+        -> int;
 
 private:
 
-    BufferSet buffers;
+    class BufferObjects
+    {
+    
+    public:
+
+        VertexBufferObject vertex;
+
+        ElementBufferObject element;
+    
+    };
+
+private:
+
+    auto makeVertices(
+        std::vector<Vertex> const & vertices,
+        std::vector<unsigned int> const & indices) const
+        -> BufferObjects;
+
+private:
+    
+    BufferObjects bufferObjects;
 
     int numOfVertices;
-
-    mutable std::vector<VertexArrayObject> contextArrayObjectMap;
-
-    glm::vec3 center;
 
 };
 

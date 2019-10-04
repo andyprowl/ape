@@ -10,9 +10,11 @@
 #include <Engine/BodySelector.hpp>
 #include <Engine/CameraSelector.hpp>
 #include <Engine/OpenGLLoader.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
 #include <Engine/SceneRenderer.hpp>
+#include <Engine/ShapeArrayObjectRenderer.hpp>
+#include <Engine/ShapeBufferObjectRenderer.hpp>
 #include <Engine/StandardShaderProgram.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
 
 class Application::Impl
 {
@@ -28,16 +30,23 @@ public:
         , pickingShader{}
         , cameraSelector{scene}
         , bodyPicker{scene}
-        , context{ape::RenderingPolicy::useArrayObjects}
-        , renderer{
-            context,
+        , shapeArrayObjectRenderer{{
+            &assets.castleAssets,
+            &assets.dragonAssets,
+            &assets.dynoAssets,
+            &assets.generalAssets,
+            &assets.nanosuitAssets,
+            &assets.spaceshipAssets}}
+        , sceneRenderer{
             cameraSelector,
             bodyPicker,
+            shapeArrayObjectRenderer,
+            //shapeBufferObjectRenderer,
             standardShader,
             pickingShader,
             {0.0f, 0.0f, 0.0f}}
         , inputHandler{window, cameraSelector, bodyPicker, standardShader, scene}
-        , GLFWEngine{window, renderer, inputHandler}
+        , GLFWEngine{window, sceneRenderer, inputHandler}
     {
     }
 
@@ -71,9 +80,11 @@ private:
 
     ape::BodySelector bodyPicker;
 
-    ape::RenderingContext context;
+    ape::ShapeArrayObjectRenderer shapeArrayObjectRenderer;
 
-    ape::SceneRenderer renderer;
+    ape::ShapeBufferObjectRenderer shapeBufferObjectRenderer;
+
+    ape::SceneRenderer sceneRenderer;
 
     SampleInputHandler inputHandler;
 

@@ -15,6 +15,12 @@ protected:
     {
     }
 
+    auto isValid() const
+        -> bool
+    {
+        return (resource.get() != 0);
+    }
+
 protected:
 
     GpuResource resource;

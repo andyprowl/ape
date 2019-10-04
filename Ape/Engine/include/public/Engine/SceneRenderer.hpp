@@ -3,8 +3,6 @@
 #include <Scene/CameraUniform.hpp>
 #include <Scene/LightingUniform.hpp>
 
-#include <Asset/RenderingContext.hpp>
-
 #include <GpuResource/VertexArrayObject.hpp>
 
 #include <stdexcept>
@@ -19,6 +17,7 @@ class Camera;
 class CameraSelector;
 class WireframeShaderProgram;
 class Scene;
+class ShapeRenderer;
 class StandardShaderProgram;
 
 class SceneRenderer
@@ -27,9 +26,9 @@ class SceneRenderer
 public:
 
     SceneRenderer(
-        RenderingContext const & renderingContext,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
+        ShapeRenderer const & shapeRenderer,
         StandardShaderProgram & standardShader,
         WireframeShaderProgram & pickingShader,
         glm::vec3 const & backgroundColor);
@@ -80,7 +79,7 @@ private:
 
 private:
 
-    RenderingContext renderingContext;
+    ShapeRenderer const * shapeRenderer;
 
     CameraSelector const * cameraSelector;
 

@@ -2,13 +2,15 @@
 
 #include <glad/glad.h>
 
+#include <cassert>
+
 namespace ape
 {
 
 namespace
 {
 
-auto createVertexBufferResource()
+auto createArrayObjectResource()
     -> GpuResource
 {
     auto id = 0u;
@@ -21,13 +23,15 @@ auto createVertexBufferResource()
 } // unnamed namespace
 
 VertexArrayObject::VertexArrayObject()
-    : BufferObject{createVertexBufferResource()}
+    : BufferObject{createArrayObjectResource()}
 {
 }
 
 auto VertexArrayObject::bind() const
     -> void
 {
+    assert(isValid());
+
     auto const id = resource.get();
 
     glBindVertexArray(id);

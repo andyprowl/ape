@@ -11,11 +11,10 @@
 #include <Engine/BodySelector.hpp>
 #include <Engine/CameraSelector.hpp>
 #include <Engine/OpenGLLoader.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
 #include <Engine/SceneRenderer.hpp>
+#include <Engine/ShapeArrayObjectRenderer.hpp>
 #include <Engine/StandardShaderProgram.hpp>
-
-#include <Asset/RenderingContext.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>
@@ -194,15 +193,22 @@ int main(int argc, char *argv[])
 
     auto inputHandler1 = SampleInputHandler{sceneView1, selector1, picker, standardShader, scene};
 
-    auto const context1 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
-
-    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context!
     sceneView1.makeCurrent();
 
+    auto const shapeRenderer1 = ape::ShapeArrayObjectRenderer{{
+        &assets.castleAssets,
+        &assets.dragonAssets,
+        &assets.dynoAssets,
+        &assets.generalAssets,
+        &assets.nanosuitAssets,
+        &assets.spaceshipAssets}};
+
     auto renderer1 = ape::SceneRenderer{
-        context1,
         selector1,
         picker,
+        shapeRenderer1,
         standardShader,
         pickingShader,
         backgroundColor};
@@ -219,15 +225,22 @@ int main(int argc, char *argv[])
 
     auto inputHandler2 = SampleInputHandler{sceneView2, selector2, picker, standardShader, scene};
 
-    auto const context2 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
-
-    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context!
     sceneView2.makeCurrent();
 
+    auto const shapeRenderer2 = ape::ShapeArrayObjectRenderer{{
+        &assets.castleAssets,
+        &assets.dragonAssets,
+        &assets.dynoAssets,
+        &assets.generalAssets,
+        &assets.nanosuitAssets,
+        &assets.spaceshipAssets}};
+
     auto renderer2 = ape::SceneRenderer{
-        context2,
         selector2,
         picker,
+        shapeRenderer2,
         standardShader,
         pickingShader,
         backgroundColor};
@@ -246,15 +259,22 @@ int main(int argc, char *argv[])
 
     auto inputHandler3 = SampleInputHandler{sceneView3, selector3, picker, standardShader, scene};
 
-    auto const context3 = ape::RenderingContext{ape::RenderingPolicy::useArrayObjects};
-
-    // Important: fallback VAO in renderer must be created in the corresponding rendering context
+    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context!
     sceneView3.makeCurrent();
 
+    auto const shapeRenderer3 = ape::ShapeArrayObjectRenderer{{
+        &assets.castleAssets,
+        &assets.dragonAssets,
+        &assets.dynoAssets,
+        &assets.generalAssets,
+        &assets.nanosuitAssets,
+        &assets.spaceshipAssets}};
+
     auto renderer3 = ape::SceneRenderer{
-        context3,
         selector3,
         picker,
+        shapeRenderer3,
         standardShader,
         pickingShader,
         backgroundColor};

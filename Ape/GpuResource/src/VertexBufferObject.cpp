@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include <cassert>
+
 namespace ape
 {
 
@@ -28,6 +30,8 @@ VertexBufferObject::VertexBufferObject()
 auto VertexBufferObject::bind() const
     -> void
 {
+    assert(isValid());
+
     auto const id = resource.get();
 
     glBindBuffer(GL_ARRAY_BUFFER, id);

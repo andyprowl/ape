@@ -2,8 +2,9 @@
 
 #include <Engine/BodySelector.hpp>
 #include <Engine/CameraSelector.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
+#include <Engine/ShapeArrayObjectRenderer.hpp>
 #include <Engine/StandardShaderProgram.hpp>
+#include <Engine/WireframeShaderProgram.hpp>
 
 #include <Scene/Camera.hpp>
 #include <Scene/Scene.hpp>
@@ -27,15 +28,15 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
-    RenderingContext const & renderingContext,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
+    ShapeRenderer const & shapeRenderer,
     StandardShaderProgram & standardShader,
     WireframeShaderProgram & pickingShader,
     glm::vec3 const & backgroundColor)
-    : renderingContext{renderingContext}
-    , cameraSelector{&cameraSelector}
+    : cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
+    , shapeRenderer{&shapeRenderer}
     , standardShader{&standardShader}
     , pickingShader{&pickingShader}
     , backgroundColor{backgroundColor}
@@ -124,14 +125,7 @@ auto SceneRenderer::drawBodies(Camera const & camera) const
     {
         return;
     }
-    
-
-    //drawBodiesWithPickingShader(camera, selectedBodies);
-
-
-    //drawBodiesWithStandardShader(camera, selectedBodies);
-
-    
+        
     glStencilFunc(GL_ALWAYS, 1, 0xff);
 
     glStencilMask(0xff);
@@ -148,7 +142,6 @@ auto SceneRenderer::drawBodies(Camera const & camera) const
     
     glStencilMask(0xff);
     
-
     arrayObject.unbind();
 }
 
@@ -216,7 +209,9 @@ auto SceneRenderer::drawMeshWithStandardShader(Mesh const & mesh) const
         material.specularMap->bind(1);
     }
 
-    mesh.getShape().draw(renderingContext);
+    auto const & shape = mesh.getShape();
+    
+    shapeRenderer->render(shape);
 }
 
 auto SceneRenderer::drawBodiesWithPickingShader(
@@ -246,7 +241,9 @@ auto SceneRenderer::drawBodiesWithPickingShader(
 
             for (auto const mesh : part.getModel().getMeshes())
             {
-                mesh->getShape().draw(renderingContext);
+                auto const & shape = mesh->getShape();
+                
+                shapeRenderer->render(shape);
             }
         }
     }

@@ -4,8 +4,6 @@
 #include <Engine/TimeIntervalTracker.hpp>
 #include <Engine/Window.hpp>
 
-#include <Asset/RenderingContext.hpp>
-
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 
