@@ -13,6 +13,9 @@ public:
 
     explicit Texture(TextureDescriptor descriptor);
 
+    auto getId() const
+        -> GpuResource::Id;
+
     auto bind(int unit) const
         -> void;
 

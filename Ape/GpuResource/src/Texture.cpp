@@ -114,7 +114,7 @@ auto setTextureImageData(TextureDescriptor const & descriptor)
 auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
     -> GpuResource
 {
-    auto textureId = unsigned int{};
+    auto textureId = GpuResource::Id{};
 
     glGenTextures(1, &textureId);
 
@@ -126,7 +126,7 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    return GpuResource{textureId, [] (unsigned int id) { glDeleteTextures(1, &id); }};
+    return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }
 
 } // unnamed namespace
@@ -134,6 +134,12 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 Texture::Texture(TextureDescriptor descriptor)
     : resource{makeOpenGLTextureObject(descriptor)}
 {
+}
+
+auto Texture::getId() const
+    -> GpuResource::Id
+{
+    return resource.get();
 }
 
 auto Texture::bind(int const unit) const

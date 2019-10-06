@@ -36,7 +36,7 @@ public:
 public:
 
     auto getId() const
-        -> unsigned int;
+        -> GpuResource::Id;
 
     auto compile(std::string const & newSourceCode)
         -> void;

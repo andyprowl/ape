@@ -30,6 +30,8 @@ public:
 
     using Base = std::unique_ptr<IdType, UniqueResourceDeleter<IdType>>;
 
+    using Id = IdType;
+
 public:
 
     using Base::Base;

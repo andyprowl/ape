@@ -1,9 +1,13 @@
 #pragma once
 
 #include <GpuResource/BufferObject.hpp>
+#include <GpuResource/FrameBufferAttachment.hpp>
 
 namespace ape
 {
+
+class RenderBufferObject;
+class Texture;
 
 class FrameBufferObject : public BufferObject
 {
@@ -24,6 +28,12 @@ public:
 
     auto isComplete(bool bind = true) const
         -> bool;
+
+    auto attach(Texture const & texture, FrameBufferAttachment attachment)
+        -> void;
+
+    auto attach(RenderBufferObject const & renderBuffer, FrameBufferAttachment attachment)
+        -> void;
 
 };
 

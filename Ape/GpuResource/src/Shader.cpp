@@ -73,7 +73,7 @@ auto checkShaderCompilationOutcome(int const shaderId)
 } // unnamed namespace
 
 auto Shader::getId() const
-    -> unsigned int
+    -> GpuResource::Id
 {
     return resource.get();
 }

@@ -13,11 +13,11 @@ namespace
 auto createArrayObjectResource()
     -> GpuResource
 {
-    auto id = 0u;
+    auto id = GpuResource::Id{};
 
     glGenVertexArrays(1, &id);
 
-    return GpuResource{id, [] (unsigned int const id) { glDeleteVertexArrays(1, &id); }};
+    return GpuResource{id, [] (GpuResource::Id const id) { glDeleteVertexArrays(1, &id); }};
 }
 
 } // unnamed namespace

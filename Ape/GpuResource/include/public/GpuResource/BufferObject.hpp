@@ -8,17 +8,25 @@ namespace ape
 class BufferObject
 {
 
-protected:
-    
-    explicit BufferObject(GpuResource resource)
-        : resource{std::move(resource)}
+public:
+
+    auto getId() const
+        -> GpuResource::Id
     {
+        return resource.get();
     }
 
     auto isValid() const
         -> bool
     {
-        return (resource.get() != 0);
+        return (getId() != 0);
+    }
+
+protected:
+    
+    explicit BufferObject(GpuResource resource)
+        : resource{std::move(resource)}
+    {
     }
 
 protected:

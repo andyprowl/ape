@@ -13,11 +13,11 @@ namespace
 auto createElementBufferResource()
     -> GpuResource
 {
-    auto id = 0u;
+    auto id = GpuResource::Id{};
 
     glGenBuffers(1, &id);
 
-    return GpuResource{id, [] (unsigned int const id) { glDeleteBuffers(1, &id); }};
+    return GpuResource{id, [] (GpuResource::Id const id) { glDeleteBuffers(1, &id); }};
 }
 
 } // unnamed namespace
