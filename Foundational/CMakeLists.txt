@@ -4,6 +4,8 @@ add_subdirectory(CompilerSupport)
 
 add_subdirectory(Mathematics)
 
+add_subdirectory(Meta)
+
 add_subdirectory(Range)
 
 add_subdirectory(Signal)

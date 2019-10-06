@@ -1,10 +1,11 @@
 #pragma once
 
-#include <Model/Counted.hpp>
 #include <Model/Vertex.hpp>
 
 #include <GpuResource/ElementBufferObject.hpp>
 #include <GpuResource/VertexBufferObject.hpp>
+
+#include <Meta/Counted.hpp>
 
 namespace ape
 {

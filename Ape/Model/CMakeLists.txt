@@ -5,7 +5,8 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
-    Ape::GpuResource)
+    Ape::GpuResource
+    Foundational::Meta)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
