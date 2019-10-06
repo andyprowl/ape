@@ -69,9 +69,9 @@ auto MeshLoader::importShape(aiMesh const & mesh) const
 }
 
 auto MeshLoader::importVertices(aiMesh const & mesh) const
-    -> std::vector<Vertex>
+    -> std::vector<ShapeVertex>
 {
-    auto vertices = std::vector<Vertex>{};
+    auto vertices = std::vector<ShapeVertex>{};
 
     for (auto i = 0u; i < mesh.mNumVertices; ++i)
     {

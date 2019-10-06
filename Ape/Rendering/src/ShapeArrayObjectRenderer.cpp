@@ -1,6 +1,7 @@
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
 
 #include <Model/Shape.hpp>
+#include <Model/VertexLayout.hpp>
 
 #include <Range/Insertion.hpp>
 
@@ -19,7 +20,7 @@ auto setupRenderingState(Shape const & shape)
 {
     shape.getVertexBufferObject().bind();
 
-    sendVertexLayoutToGpu();
+    sendVertexLayoutToGpu<ShapeVertex>();
 
     shape.getElementBufferObject().bind();
 }

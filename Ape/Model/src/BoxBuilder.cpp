@@ -1,6 +1,6 @@
 #include <Model/BoxBuilder.hpp>
 
-#include <Model/Vertex.hpp>
+#include <Model/ShapeVertex.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -44,7 +44,7 @@ class StatefulBuilder
 
     using Position = BoxBuilder::Position;
 
-    using Face = std::array<Vertex, 4u>;
+    using Face = std::array<ShapeVertex, 4u>;
 
     static int const numOfFaces = 6;
 
@@ -159,7 +159,7 @@ private:
 
     Position center;
 
-    std::vector<Vertex> vertices;
+    std::vector<ShapeVertex> vertices;
 
     std::vector<unsigned int> indices;
 

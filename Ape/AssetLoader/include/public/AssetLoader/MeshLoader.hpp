@@ -12,7 +12,7 @@ namespace ape
 
 class AssetRepository;
 class Shape;
-class Vertex;
+class ShapeVertex;
 
 class MeshLoader
 {
@@ -33,7 +33,7 @@ private:
         -> Shape const &;
 
     auto importVertices(aiMesh const & mesh) const
-        -> std::vector<Vertex>;
+        -> std::vector<ShapeVertex>;
 
     auto importTextureCoordinates(aiMesh const & mesh, int vertexIndex) const
         -> glm::vec2;

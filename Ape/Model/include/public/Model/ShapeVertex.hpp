@@ -6,12 +6,12 @@
 namespace ape
 {
 
-class Vertex
+class ShapeVertex
 {
 
 public:
 
-    Vertex(
+    ShapeVertex(
         glm::vec3 const & position,
         glm::vec3 const & normal,
         glm::vec2 const & textureCoordinates)
@@ -30,8 +30,5 @@ public:
     glm::vec2 textureCoordinates;
 
 };
-
-auto sendVertexLayoutToGpu()
-    -> void;
 
 } // namespace ape

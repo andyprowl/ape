@@ -1,5 +1,7 @@
 #include <Model/Shape.hpp>
 
+#include <Model/VertexLayout.hpp>
+
 #include <GpuResource/VertexArrayObject.hpp>
 
 #include <glad/glad.h>
@@ -10,18 +12,18 @@ namespace ape
 namespace
 {
 
-auto makeVertexBufferObject(std::vector<Vertex> const & vertices)
+auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
     -> VertexBufferObject
 {
     auto vbo = VertexBufferObject{};
 
     vbo.bind();
 
-    auto const vertexBufferSize = vertices.size() * sizeof(Vertex);
+    auto const vertexBufferSize = vertices.size() * sizeof(ShapeVertex);
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    sendVertexLayoutToGpu();
+    sendVertexLayoutToGpu<ShapeVertex>();
 
     return vbo;
 }
@@ -44,7 +46,7 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
 
 } // unnamed namespace
 
-Shape::Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices)
+Shape::Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices)
     : bufferObjects{makeVertices(vertices, indices)}
     , numOfVertices{static_cast<int>(indices.size())}
 {
@@ -69,7 +71,7 @@ auto Shape::getNumOfVertices() const
 }
 
 auto Shape::makeVertices(
-    std::vector<Vertex> const & vertices,
+    std::vector<ShapeVertex> const & vertices,
     std::vector<unsigned int> const & indices) const
     -> BufferObjects
 {

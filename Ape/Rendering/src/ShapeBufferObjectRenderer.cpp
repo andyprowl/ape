@@ -1,6 +1,7 @@
 #include <Rendering/ShapeBufferObjectRenderer.hpp>
 
 #include <Model/Shape.hpp>
+#include <Model/VertexLayout.hpp>
 
 #include <glad/glad.h>
 
@@ -12,7 +13,7 @@ auto ShapeBufferObjectRenderer::render(Shape const & shape) const
 {
     shape.getVertexBufferObject().bind();
 
-    sendVertexLayoutToGpu();
+    sendVertexLayoutToGpu<ShapeVertex>();
 
     shape.getElementBufferObject().bind();
 

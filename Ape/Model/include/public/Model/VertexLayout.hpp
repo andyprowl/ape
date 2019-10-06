@@ -74,4 +74,9 @@ auto sendVertexLayoutToGpu(VertexLayout<NumOfComponents> components)
     detail::sendVertexLayoutToGpu(components, std::make_integer_sequence<int, NumOfComponents>{});
 }
 
+// To be specialized individually for concrete vertex types.
+template<typename VertexType>
+auto sendVertexLayoutToGpu()
+    -> void;
+
 } // namespace ape

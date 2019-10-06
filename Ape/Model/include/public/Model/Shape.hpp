@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Model/Vertex.hpp>
+#include <Model/ShapeVertex.hpp>
 
 #include <GpuResource/ElementBufferObject.hpp>
 #include <GpuResource/VertexBufferObject.hpp>
@@ -17,7 +17,7 @@ class Shape : public Counted<Shape>
 
 public:
 
-    Shape(std::vector<Vertex> const & vertices, std::vector<unsigned int> const & indices);
+    Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices);
 
     auto getVertexBufferObject() const 
         -> const VertexBufferObject &;
@@ -44,7 +44,7 @@ private:
 private:
 
     auto makeVertices(
-        std::vector<Vertex> const & vertices,
+        std::vector<ShapeVertex> const & vertices,
         std::vector<unsigned int> const & indices) const
         -> BufferObjects;
 
