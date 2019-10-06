@@ -1,7 +1,6 @@
 #include <GpuResource/FrameBufferObject.hpp>
 
 #include <GpuResource/RenderBufferObject.hpp>
-#include <GpuResource/ScopedBinder.hpp>
 #include <GpuResource/Texture.hpp>
 
 #include <glad/glad.h>
@@ -63,21 +62,6 @@ auto createFrameBufferResource()
     return GpuResource{id, [] (GpuResource::Id const id) { glDeleteFramebuffers(1, &id); }};
 }
 
-auto makeConditionalBinder(FrameBufferObject const & object, bool const bind)
-    -> ScopedBinder<FrameBufferObject const>
-{
-    if (bind)
-    {
-        return ScopedBinder{object};
-    }
-    else
-    {
-        assert(object.isBound());
-
-        return ScopedBinder<FrameBufferObject const>{};
-    }
-}
-
 } // unnamed namespace
 
 FrameBufferObject::FrameBufferObject()
@@ -113,11 +97,9 @@ auto FrameBufferObject::isBound() const
     return (resource.get() == static_cast<unsigned int>(boundBufferId));
 }
 
-auto FrameBufferObject::isComplete(bool const bind) const
+auto FrameBufferObject::isComplete() const
     -> bool
 {
-    auto const binder = makeConditionalBinder(*this, bind);
-
     auto const status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     return (status == GL_FRAMEBUFFER_COMPLETE);
@@ -147,6 +129,18 @@ auto FrameBufferObject::attach(
     auto const mipmapLevel = 0;
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, glAttachment, GL_RENDERBUFFER, bufferId);
+}
+
+auto FrameBufferObject::resetReadTarget()
+    -> void
+{
+    glReadBuffer(GL_NONE);
+}
+
+auto FrameBufferObject::resetDrawTarget()
+    -> void
+{
+    glDrawBuffer(GL_NONE);
 }
 
 } // namespace ape

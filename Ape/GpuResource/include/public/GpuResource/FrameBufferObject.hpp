@@ -26,13 +26,19 @@ public:
     auto isBound() const
         -> bool;
 
-    auto isComplete(bool bind = true) const
+    auto isComplete() const
         -> bool;
 
     auto attach(Texture const & texture, FrameBufferAttachment attachment)
         -> void;
 
     auto attach(RenderBufferObject const & renderBuffer, FrameBufferAttachment attachment)
+        -> void;
+
+    auto resetReadTarget()
+        -> void;
+
+    auto resetDrawTarget()
         -> void;
 
 };
