@@ -6,6 +6,8 @@ add_subdirectory(GlfwEngine)
 
 add_subdirectory(GpuResource)
 
+add_subdirectory(Initialization)
+
 add_subdirectory(InputHandling)
 
 add_subdirectory(Model)

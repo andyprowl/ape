@@ -14,6 +14,7 @@ AddExecutable(${PROJECT_NAME})
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
+    Ape::Initialization
     Ape::QtEngine
     Application::TestScene)
 

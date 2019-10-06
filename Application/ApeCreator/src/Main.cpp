@@ -8,8 +8,6 @@
 #include <QtEngine/QtEngine.hpp>
 #include <QtEngine/QtWindow.hpp>
 
-#include <UpdateHandling/OpenGLLoader.hpp>
-
 #include <Rendering/SceneRenderer.hpp>
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
@@ -160,16 +158,13 @@ int main(int argc, char *argv[])
 
     window.resize(screenSize.width(), screenSize.height());
 
-    window.show();
-
     window.registerQtWindow(sceneView1);
 
     window.registerQtWindow(sceneView2);
 
     window.registerQtWindow(sceneView3);
 
-    // The OpenGL context has been created after window.show() was called
-    auto const loader = ape::OpenGLLoader{true, true};
+    window.show();
 
     auto const sharing = QOpenGLContext::areSharing(sceneView1.context(), sceneView2.context());
 

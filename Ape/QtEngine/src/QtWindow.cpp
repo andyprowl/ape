@@ -3,6 +3,8 @@
 #include <InputHandling/Keyboard.hpp>
 #include <InputHandling/StandardInputHandler.hpp>
 
+#include <Initialization/Initialization.hpp>
+
 #include <QResizeEvent>
 #include <QTimer>
 
@@ -243,6 +245,8 @@ auto QtWindow::initializeGL()
     initializeOpenGLFunctions();
 
     isOpenGLInitialized = true;
+
+    ape::initialize();
 }
 
 // virtual (from QOpenGLWidget)

@@ -1,8 +1,9 @@
 #include <GlfwEngine/GLFWGateway.hpp>
 
+#include "GLFW.hpp"
 #include "GLFWInitializer.hpp"
 
-#include "GLFW.hpp"
+#include <Initialization/Initialization.hpp>
 
 namespace ape
 {
@@ -19,6 +20,8 @@ public:
 
         window.makeCurrent();
 
+        ape::initialize();
+
         return window;
     }
 
@@ -28,6 +31,8 @@ public:
         auto window = GLFWWindow{title, size};
 
         window.makeCurrent();
+
+        ape::initialize();
 
         return window;
     }

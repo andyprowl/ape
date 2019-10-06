@@ -7,8 +7,6 @@
 #include <GlfwEngine/GLFWEngine.hpp>
 #include <GlfwEngine/GLFWGateway.hpp>
 
-#include <UpdateHandling/OpenGLLoader.hpp>
-
 #include <Rendering/SceneRenderer.hpp>
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Rendering/ShapeBufferObjectRenderer.hpp>
@@ -25,7 +23,6 @@ public:
 
     Impl()
         : window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
-        , loader{true, true}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
         , standardShader{}
@@ -61,8 +58,6 @@ private:
     ape::GLFWGateway gateway;
 
     ape::GLFWWindow window;
-
-    ape::OpenGLLoader loader;
 
     SampleAssetCollection assets;
 

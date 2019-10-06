@@ -11,4 +11,5 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
     3rdParty::glfw
+    Ape::Initialization
     Foundational::Time)

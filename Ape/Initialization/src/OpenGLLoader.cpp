@@ -1,4 +1,4 @@
-#include <UpdateHandling/OpenGLLoader.hpp>
+#include <Initialization/OpenGLLoader.hpp>
 
 #include <glad/glad.h>
 
