@@ -2,12 +2,11 @@
 
 #include <AssetLoader/AssetLoader.hpp>
 
-#include <Engine/BoxBuilder.hpp>
-#include <Engine/NormalDirection.hpp>
+#include <Model/BoxBuilder.hpp>
 
-#include <Asset/Material.hpp>
-#include <Asset/Mesh.hpp>
-#include <Asset/Shape.hpp>
+#include <Model/Material.hpp>
+#include <Model/Mesh.hpp>
+#include <Model/Shape.hpp>
 
 #include <GpuResource/TextureReader.hpp>
 
@@ -293,10 +292,47 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
     return assets.textures.emplace_back(std::move(texture));
 }
 
-auto resolveModelFilepath(std::string filename)
+auto resolveModelFilepath(std::filesystem::path relativePath)
     -> std::filesystem::path
 {
-    return std::filesystem::path{resourceFolder} / "models" / std::move(filename);
+    return std::filesystem::path{resourceFolder} / "models" / std::move(relativePath);
+}
+
+auto collectShapes(ape::AssetRepository & repository, SampleAssetCollection & collection)
+    -> void
+{
+    collection.shapes.reserve(collection.shapes.size() + repository.shapes.size());
+
+    for (auto & shape : repository.shapes)
+    {
+        collection.shapes.push_back(&shape);
+    }
+}
+
+auto createSimpleAssets(SampleAssetCollection & collection)
+    -> void
+{
+    auto builder = StatefulAssetBuilder{};
+
+    collection.generalAssets = builder.build();
+
+    collectShapes(collection.generalAssets, collection);
+}
+
+auto loadAssets(
+    std::filesystem::path const & path,
+    std::string modelName,
+    ape::AssetRepository & destination,
+    SampleAssetCollection & collection)
+    -> void
+{
+    auto const loader = ape::AssetLoader{};
+
+    auto const nanosuiteFilepath = resolveModelFilepath(path);
+
+    destination = loader.load(nanosuiteFilepath, modelName);
+
+    collectShapes(destination, collection);
 }
 
 } // unnamed namespace
@@ -306,31 +342,17 @@ auto SampleAssetBuilder::build() const
 {
     auto collection = SampleAssetCollection{};
 
-    auto builder = StatefulAssetBuilder{};
+    createSimpleAssets(collection);
 
-    collection.generalAssets = builder.build();
+    loadAssets("Nanosuit/nanosuit.obj", "Nanosuit", collection.nanosuitAssets, collection);
 
-    auto const loader = ape::AssetLoader{};
+    loadAssets("Dragon/Dragon.obj", "Dragon", collection.dragonAssets, collection);
 
-    auto const nanosuiteFilepath = resolveModelFilepath("Nanosuit/nanosuit.obj");
+    loadAssets("Spaceship/Spaceship.obj", "Spaceship", collection.spaceshipAssets, collection);
 
-    collection.nanosuitAssets = loader.load(nanosuiteFilepath, "Nanosuit");
+    loadAssets("Dyno/Apatosaurus.obj", "Dyno", collection.dynoAssets, collection);
 
-    auto const dragonFilepath = resolveModelFilepath("Dragon/Dragon.obj");
-
-    collection.dragonAssets = loader.load(dragonFilepath, "Dragon");
-
-    auto const spaceshipFilepath = resolveModelFilepath("Spaceship/Spaceship.obj");
-
-    collection.spaceshipAssets = loader.load(spaceshipFilepath, "Spaceship");
-
-    auto const dynoFilepath = resolveModelFilepath("Dyno/Apatosaurus.obj");
-
-    collection.dynoAssets = loader.load(dynoFilepath, "Dyno");
-
-    auto const castleFilepath = resolveModelFilepath("Castle/Castle.obj");
-
-    collection.castleAssets = loader.load(castleFilepath, "Castle");
+    loadAssets("Castle/Castle.obj", "Castle", collection.castleAssets, collection);
 
     return collection;
 }

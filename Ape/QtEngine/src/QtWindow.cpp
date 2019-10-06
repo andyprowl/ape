@@ -1,10 +1,7 @@
 #include <QtEngine/QtWindow.hpp>
 
-#include <Engine/CameraSelector.hpp>
-#include <Engine/Keyboard.hpp>
-#include <Engine/SceneRenderer.hpp>
-#include <Engine/StandardInputHandler.hpp>
-#include <Engine/StandardShaderProgram.hpp>
+#include <InputHandling/Keyboard.hpp>
+#include <InputHandling/StandardInputHandler.hpp>
 
 #include <QResizeEvent>
 #include <QTimer>

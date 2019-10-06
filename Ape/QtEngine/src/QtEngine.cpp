@@ -1,13 +1,15 @@
 #include <QtEngine/QtEngine.hpp>
 
-#include <Engine/CameraSelector.hpp>
-#include <Engine/InputHandler.hpp>
-#include <Engine/SceneRenderer.hpp>
-#include <Engine/Stopwatch.hpp>
-#include <Engine/TimeIntervalTracker.hpp>
-#include <Engine/Window.hpp>
+#include <InputHandling/InputHandler.hpp>
+#include <InputHandling/Window.hpp>
 
+#include <Rendering/SceneRenderer.hpp>
+
+#include <Scene/CameraSelector.hpp>
 #include <Scene/Scene.hpp>
+
+#include <Time/Stopwatch.hpp>
+#include <Time/TimeIntervalTracker.hpp>
 
 #include <glad/glad.h>
 

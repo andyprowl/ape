@@ -1,5 +1,7 @@
 #pragma once
 
+#include <AssetLoader/AssetRepository.hpp>
+
 #include <filesystem>
 #include <stdexcept>
 #include <string>
@@ -9,7 +11,6 @@ struct aiScene;
 namespace ape
 {
 
-class AssetRepository;
 class TextureCache;
 
 class CouldNotLoadAssets : public std::logic_error

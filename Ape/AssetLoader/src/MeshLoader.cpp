@@ -1,6 +1,6 @@
 #include <AssetLoader/MeshLoader.hpp>
 
-#include <Asset/AssetRepository.hpp>
+#include <AssetLoader/AssetRepository.hpp>
 
 #include <assimp/scene.h>
 

@@ -1,8 +1,7 @@
 #include <AssetLoader/MaterialLoader.hpp>
 
+#include <AssetLoader/AssetRepository.hpp>
 #include <AssetLoader/TextureCache.hpp>
-
-#include <Asset/AssetRepository.hpp>
 
 #include <assimp/scene.h>
 

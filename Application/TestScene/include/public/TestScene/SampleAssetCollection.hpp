@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Asset/AssetRepository.hpp>
+#include <AssetLoader/AssetRepository.hpp>
 
 class SampleAssetCollection
 {
@@ -18,5 +18,7 @@ public:
     ape::AssetRepository dynoAssets;
 
     ape::AssetRepository castleAssets;
+
+    std::vector<ape::Shape *> shapes;
 
 };

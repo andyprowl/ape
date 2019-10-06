@@ -7,14 +7,16 @@
 #include <GlfwEngine/GLFWEngine.hpp>
 #include <GlfwEngine/GLFWGateway.hpp>
 
-#include <Engine/BodySelector.hpp>
-#include <Engine/CameraSelector.hpp>
-#include <Engine/OpenGLLoader.hpp>
-#include <Engine/SceneRenderer.hpp>
-#include <Engine/ShapeArrayObjectRenderer.hpp>
-#include <Engine/ShapeBufferObjectRenderer.hpp>
-#include <Engine/StandardShaderProgram.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
+#include <UpdateHandling/OpenGLLoader.hpp>
+
+#include <Rendering/SceneRenderer.hpp>
+#include <Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Rendering/StandardShaderProgram.hpp>
+#include <Rendering/WireframeShaderProgram.hpp>
+
+#include <Scene/BodySelector.hpp>
+#include <Scene/CameraSelector.hpp>
 
 class Application::Impl
 {
@@ -30,13 +32,7 @@ public:
         , pickingShader{}
         , cameraSelector{scene}
         , bodyPicker{scene}
-        , shapeArrayObjectRenderer{{
-            &assets.castleAssets,
-            &assets.dragonAssets,
-            &assets.dynoAssets,
-            &assets.generalAssets,
-            &assets.nanosuitAssets,
-            &assets.spaceshipAssets}}
+        , shapeArrayObjectRenderer{assets.shapes}
         , sceneRenderer{
             cameraSelector,
             bodyPicker,
@@ -45,7 +41,7 @@ public:
             standardShader,
             pickingShader,
             {0.0f, 0.0f, 0.0f}}
-        , inputHandler{window, cameraSelector, bodyPicker, standardShader, pickingShader, scene}
+        , inputHandler{window, cameraSelector, bodyPicker, standardShader, sceneRenderer, scene}
         , GLFWEngine{window, sceneRenderer, inputHandler}
     {
     }

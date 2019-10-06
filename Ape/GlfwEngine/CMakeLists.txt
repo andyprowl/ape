@@ -4,9 +4,11 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    Ape::Engine)
+    Ape::InputHandling
+    Ape::Rendering)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
-    3rdParty::glfw)
+    3rdParty::glfw
+    Foundational::Time)

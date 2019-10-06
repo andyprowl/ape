@@ -8,13 +8,15 @@
 #include <QtEngine/QtEngine.hpp>
 #include <QtEngine/QtWindow.hpp>
 
-#include <Engine/BodySelector.hpp>
-#include <Engine/CameraSelector.hpp>
-#include <Engine/OpenGLLoader.hpp>
-#include <Engine/SceneRenderer.hpp>
-#include <Engine/ShapeArrayObjectRenderer.hpp>
-#include <Engine/StandardShaderProgram.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
+#include <UpdateHandling/OpenGLLoader.hpp>
+
+#include <Rendering/SceneRenderer.hpp>
+#include <Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Rendering/StandardShaderProgram.hpp>
+#include <Rendering/WireframeShaderProgram.hpp>
+
+#include <Scene/BodySelector.hpp>
+#include <Scene/CameraSelector.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>
@@ -191,25 +193,11 @@ int main(int argc, char *argv[])
 
     auto selector1 = ape::CameraSelector{scene};
 
-    auto inputHandler1 = SampleInputHandler{
-        sceneView1,
-        selector1,
-        picker,
-        standardShader,
-        wireframeShader,
-        scene};
-
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
     sceneView1.makeCurrent();
 
-    auto const shapeRenderer1 = ape::ShapeArrayObjectRenderer{{
-        &assets.castleAssets,
-        &assets.dragonAssets,
-        &assets.dynoAssets,
-        &assets.generalAssets,
-        &assets.nanosuitAssets,
-        &assets.spaceshipAssets}};
+    auto const shapeRenderer1 = ape::ShapeArrayObjectRenderer{assets.shapes};
 
     auto renderer1 = ape::SceneRenderer{
         selector1,
@@ -218,6 +206,14 @@ int main(int argc, char *argv[])
         standardShader,
         wireframeShader,
         backgroundColor};
+
+    auto inputHandler1 = SampleInputHandler{
+        sceneView1,
+        selector1,
+        picker,
+        standardShader,
+        renderer1,
+        scene};
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
 
@@ -229,25 +225,11 @@ int main(int argc, char *argv[])
 
     auto selector2 = ape::CameraSelector{scene};
 
-    auto inputHandler2 = SampleInputHandler{
-        sceneView2,
-        selector2,
-        picker,
-        standardShader,
-        wireframeShader,
-        scene};
-
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
     sceneView2.makeCurrent();
 
-    auto const shapeRenderer2 = ape::ShapeArrayObjectRenderer{{
-        &assets.castleAssets,
-        &assets.dragonAssets,
-        &assets.dynoAssets,
-        &assets.generalAssets,
-        &assets.nanosuitAssets,
-        &assets.spaceshipAssets}};
+    auto const shapeRenderer2 = ape::ShapeArrayObjectRenderer{assets.shapes};
 
     auto renderer2 = ape::SceneRenderer{
         selector2,
@@ -256,6 +238,14 @@ int main(int argc, char *argv[])
         standardShader,
         wireframeShader,
         backgroundColor};
+
+    auto inputHandler2 = SampleInputHandler{
+        sceneView2,
+        selector2,
+        picker,
+        standardShader,
+        renderer2,
+        scene};
 
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
 
@@ -269,25 +259,11 @@ int main(int argc, char *argv[])
 
     auto selector3 = ape::CameraSelector{scene};
 
-    auto inputHandler3 = SampleInputHandler{
-        sceneView3,
-        selector3,
-        picker,
-        standardShader,
-        wireframeShader,
-        scene};
-
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
     sceneView3.makeCurrent();
 
-    auto const shapeRenderer3 = ape::ShapeArrayObjectRenderer{{
-        &assets.castleAssets,
-        &assets.dragonAssets,
-        &assets.dynoAssets,
-        &assets.generalAssets,
-        &assets.nanosuitAssets,
-        &assets.spaceshipAssets}};
+    auto const shapeRenderer3 = ape::ShapeArrayObjectRenderer{assets.shapes};
 
     auto renderer3 = ape::SceneRenderer{
         selector3,
@@ -296,6 +272,14 @@ int main(int argc, char *argv[])
         standardShader,
         wireframeShader,
         backgroundColor};
+
+    auto inputHandler3 = SampleInputHandler{
+        sceneView3,
+        selector3,
+        picker,
+        standardShader,
+        renderer3,
+        scene};
 
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
 

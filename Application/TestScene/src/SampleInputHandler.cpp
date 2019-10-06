@@ -2,11 +2,13 @@
 
 #include <TestScene/SampleScene.hpp>
 
-#include <Engine/BodySelector.hpp>
-#include <Engine/CameraSelector.hpp>
-#include <Engine/StandardShaderProgram.hpp>
-#include <Engine/Window.hpp>
-#include <Engine/WireframeShaderProgram.hpp>
+#include <InputHandling/Window.hpp>
+
+#include <Rendering/SceneRenderer.hpp>
+#include <Rendering/StandardShaderProgram.hpp>
+
+#include <Scene/BodySelector.hpp>
+#include <Scene/CameraSelector.hpp>
 
 #include <CompilerSupport/CompilerWarnings.hpp>
 
@@ -55,12 +57,12 @@ SampleInputHandler::SampleInputHandler(
     ape::CameraSelector & cameraSelector,
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
-    ape::WireframeShaderProgram & wireframeShader,
+    ape::SceneRenderer & sceneRenderer,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
-    , standardShader{&standardShader}
-    , wireframeShader{&wireframeShader}
     , bodyPicker{&bodyPicker}
+    , standardShader{&standardShader}
+    , sceneRenderer{&sceneRenderer}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -101,11 +103,11 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     }
     else if ((key == ape::Key::keyQ) && (modifier == ape::KeyModifier::control))
     {
-        increaseWireframeLineWidth(0.01f);
+        increaseOutlineWidth(0.01f);
     }
     else if ((key == ape::Key::keyE) && (modifier == ape::KeyModifier::control))
     {
-        increaseWireframeLineWidth(-0.01f);
+        increaseOutlineWidth(-0.01f);
     }
     else if (key == ape::Key::keyEscape)
     {
@@ -219,10 +221,14 @@ auto SampleInputHandler::pickObjects() const
     bodyPicker->selectBody(*scene.lamps[0]);
 }
 
-auto SampleInputHandler::increaseWireframeLineWidth(float amount) const
+auto SampleInputHandler::increaseOutlineWidth(float amount) const
     -> void
 {
-    auto const newWidth = wireframeShader->lineWidth.get() + amount;
+    auto const outliningStyle = sceneRenderer->getOutliningStyle();
 
-    wireframeShader->lineWidth = ape::clamp(newWidth, 0.0f, 0.1f);
+    auto const newWidth = ape::clamp(outliningStyle.width + amount, 0.0f, 0.1f);
+
+    auto const newStyle = ape::LineStyle{newWidth, outliningStyle.color};
+
+    sceneRenderer->setOutliningStyle(newStyle);
 }

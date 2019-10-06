@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Engine/CameraManipulator.hpp>
-#include <Engine/StandardInputHandler.hpp>
+#include <InputHandling/CameraManipulator.hpp>
+#include <InputHandling/StandardInputHandler.hpp>
 
 #include <vector>
 
@@ -14,6 +14,7 @@ enum class KeyModifier;
 
 class BodySelector;
 class CameraSelector;
+class SceneRenderer;
 class StandardShaderProgram;
 class Window;
 class WireframeShaderProgram;
@@ -32,7 +33,7 @@ public:
         ape::CameraSelector & cameraSelector,
         ape::BodySelector & bodyPicker,
         ape::StandardShaderProgram & standardShader,
-        ape::WireframeShaderProgram & wireframeShader,
+        ape::SceneRenderer & sceneRenderer,
         SampleScene & scene);
 
     auto getScene() const
@@ -69,15 +70,15 @@ private:
     auto pickObjects() const
         -> void;
 
-    auto increaseWireframeLineWidth(float amount) const
+    auto increaseOutlineWidth(float amount) const
         -> void;
 
 private:
 
+    ape::BodySelector * bodyPicker;
+
     ape::StandardShaderProgram * standardShader;
 
-    ape::WireframeShaderProgram * wireframeShader;
-
-    ape::BodySelector * bodyPicker;
+    ape::SceneRenderer * sceneRenderer;
 
 };

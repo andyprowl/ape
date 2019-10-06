@@ -1,11 +1,10 @@
 #include <AssetLoader/AssetLoader.hpp>
 
+#include <AssetLoader/AssetRepository.hpp>
 #include <AssetLoader/MaterialLoader.hpp>
 #include <AssetLoader/MeshLoader.hpp>
 #include <AssetLoader/ModelPartImporter.hpp>
 #include <AssetLoader/TextureCache.hpp>
-
-#include <Asset/AssetRepository.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

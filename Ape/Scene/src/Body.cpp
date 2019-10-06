@@ -1,6 +1,6 @@
 #include <Scene/Body.hpp>
 
-#include <Asset/Model.hpp>
+#include <Model/Model.hpp>
 
 namespace ape
 {

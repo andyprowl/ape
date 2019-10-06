@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Engine/Stopwatch.hpp>
-#include <Engine/TimeIntervalTracker.hpp>
-#include <Engine/Window.hpp>
+#include <InputHandling/Window.hpp>
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>

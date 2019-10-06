@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Engine/BodyPointLightSynchronizer.hpp>
-#include <Engine/CameraSpotlightSynchronizer.hpp>
+#include <UpdateHandling/BodyPointLightSynchronizer.hpp>
+#include <UpdateHandling/CameraSpotlightSynchronizer.hpp>
 
 #include <Scene/Scene.hpp>
 

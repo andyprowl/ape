@@ -13,5 +13,7 @@ set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 AddPublicDependencies(
     ${PROJECT_NAME}
     Ape::AssetLoader
-    Ape::Engine
+    Ape::InputHandling
+    Ape::Rendering
+    Ape::UpdateHandling
     Foundational::CompilerSupport)
