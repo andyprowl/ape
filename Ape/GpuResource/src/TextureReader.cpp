@@ -61,7 +61,7 @@ auto readTextureDescriptor(std::filesystem::path const & path)
 
     auto format = determineFormat(numOfChannels);
 
-    return {size, format, reinterpret_cast<std::byte *>(bytes)};
+    return {size, format, PixelType::unsignedByte, reinterpret_cast<std::byte *>(bytes)};
 }
 
 } // unnamed namespace

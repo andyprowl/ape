@@ -10,6 +10,8 @@ enum class TextureFormat
     redGreenOnly,
     redGreenBlue,
     redGreenBlueAlpha,
+    depthOnly,
+    depthAndStencil
 };
 
 } // namespace ape

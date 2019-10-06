@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GpuResource/PixelType.hpp>
 #include <GpuResource/TextureFormat.hpp>
 
 #include <Mathematics/Size.hpp>
@@ -16,9 +17,14 @@ class TextureDescriptor
 
 public:
 
-    TextureDescriptor(Size<int> const size, TextureFormat format, std::byte * bytes)
+    TextureDescriptor(
+        Size<int> const size,
+        TextureFormat format,
+        PixelType const pixelType,
+        std::byte * bytes)
         : size{size}
         , format{format}
+        , pixelType{pixelType}
         , bytes{std::move(bytes)}
     {
     }
@@ -28,6 +34,8 @@ public:
     Size<int> size;
 
     TextureFormat format;
+
+    PixelType pixelType;
 
     std::byte * bytes;
 

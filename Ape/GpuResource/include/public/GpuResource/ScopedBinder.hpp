@@ -6,6 +6,11 @@ class ScopedBinder
 
 public:
 
+    ScopedBinder()
+        : bindable{nullptr}
+    {
+    }
+
     explicit ScopedBinder(Bindable & bindable)
         : bindable{&bindable}
     {

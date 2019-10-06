@@ -25,7 +25,7 @@ public:
 
 public:
 
-    GLFWGateway();
+    GLFWGateway(int majorVersion, int minorVersion);
 
     GLFWGateway(GLFWGateway && rhs) noexcept;
 

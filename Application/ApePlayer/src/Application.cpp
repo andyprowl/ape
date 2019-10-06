@@ -22,7 +22,8 @@ class Application::Impl
 public:
 
     Impl()
-        : window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
+        : gateway{4, 5}
+        , window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
         , assets{createSampleAssets()}
         , scene{createSampleScene(assets)}
         , standardShader{}

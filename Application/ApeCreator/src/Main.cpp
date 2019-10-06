@@ -67,7 +67,7 @@ auto makeQtWindow(QWidget & parent)
 
     auto format = QSurfaceFormat{};
 
-    format.setVersion(4, 3);
+    format.setVersion(4, 5);
 
     widget->setFormat(format);
 

@@ -10,7 +10,7 @@ class Texture
 {
 
 public:
-    
+
     explicit Texture(TextureDescriptor descriptor);
 
     auto bind(int unit) const

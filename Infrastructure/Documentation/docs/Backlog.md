@@ -1,3 +1,8 @@
+ - Implement shadow mapping
+ - Implement normal visualization
+ - Implement post-processing techniques (e.g. blurring)
+ - (Re-)implement glowing based on view position and normal
+ - Implement gamma correction
  - Consider renaming the Ape package to Engine
  - Add the <Package/...> prefix to include folders
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts

@@ -8,7 +8,7 @@ class GLFWInitializer
 
 public:
 
-    GLFWInitializer();
+    GLFWInitializer(int majorVersion, int minorVersion);
 
     GLFWInitializer(GLFWInitializer const & rhs) = delete;
 

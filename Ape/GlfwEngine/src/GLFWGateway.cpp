@@ -13,6 +13,11 @@ class GLFWGateway::Impl
 
 public:
 
+    Impl(int const majorVersion, int const minorVersion)
+        : glfwInitializer{majorVersion, minorVersion}
+    {
+    }
+
     auto createWindow(std::string const & title, CreateAsFullscreen)
         -> GLFWWindow
     {
@@ -43,8 +48,8 @@ private:
 
 };
 
-GLFWGateway::GLFWGateway()
-    : impl{std::make_unique<Impl>()}
+GLFWGateway::GLFWGateway(int const majorVersion, int const minorVersion)
+    : impl{std::make_unique<Impl>(majorVersion, minorVersion)}
 {
 }
 

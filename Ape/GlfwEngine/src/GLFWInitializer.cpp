@@ -8,14 +8,14 @@ namespace ape
 namespace
 {
 
-auto initGLFW()
+auto initGLFW(int const majorVersion, int const minorVersion)
     -> void
 {
     glfwInit();
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, majorVersion);
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minorVersion);
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -24,10 +24,10 @@ auto initGLFW()
 
 } // unnamed namespace
 
-GLFWInitializer::GLFWInitializer()
+GLFWInitializer::GLFWInitializer(int const majorVersion, int const minorVersion)
     : isInitialized{true}
 {
-    initGLFW();
+    initGLFW(majorVersion, minorVersion);
 }
 
 GLFWInitializer::GLFWInitializer(GLFWInitializer && rhs) noexcept
