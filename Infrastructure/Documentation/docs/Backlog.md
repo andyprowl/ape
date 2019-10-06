@@ -1,5 +1,3 @@
- - Move to generic utility projects:
-  - Model/Counted
  - Add the <Package/...> prefix to include folders
  - Consider renaming the Ape package to Engine
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
