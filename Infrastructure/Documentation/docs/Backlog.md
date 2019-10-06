@@ -1,5 +1,5 @@
- - Add the <Package/...> prefix to include folders
  - Consider renaming the Ape package to Engine
+ - Add the <Package/...> prefix to include folders
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator
  - Introduce different namespaces for packages (not just "ape")
