@@ -20,7 +20,7 @@ namespace ape
 namespace
 {
 
-auto const depthMapSize = Size<int>{1000, 500};
+auto const depthMapSize = Size<int>{1'024, 1'024};
 
 auto makeDepthMap()
     -> Texture
@@ -81,14 +81,18 @@ auto DepthBodyRenderer::render(BodyRange const & bodies, Camera const & lightVie
     {
         renderBody(*body, lightTransformation);
     }
-
-    glCullFace(GL_BACK);
 }
 
 auto DepthBodyRenderer::getDepthMap() const
     -> Texture const &
 {
     return depthMap;
+}
+
+auto DepthBodyRenderer::getDepthMapSize() const
+    -> Size<int>
+{
+    return depthMapSize;
 }
 
 auto DepthBodyRenderer::renderBody(

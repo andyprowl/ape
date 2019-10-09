@@ -30,6 +30,9 @@ public:
     auto getDepthMap() const
         -> Texture const &;
 
+    auto getDepthMapSize() const
+        -> Size<int>;
+
 private:
 
     auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const

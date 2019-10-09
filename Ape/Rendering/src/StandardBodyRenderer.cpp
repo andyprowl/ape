@@ -35,13 +35,16 @@ auto StandardBodyRenderer::render(
 {
     auto const & light = lighting.spot.front();
 
+    auto const depthMapSize = depthMapRenderer.getDepthMapSize();
+
+    auto const aspectRatio = depthMapSize.width / static_cast<float>(depthMapSize.height);
+
     auto const lightView = Camera{
         light.position,
         light.direction,
         {0.0f, 1.0f, 0.0f},
-        //light.cutoff.outer,
-        glm::radians(45.0f),
-        2.0};
+        light.cutoff.outer * 2.0f,
+        aspectRatio};
 
     depthMapRenderer.render(bodies, lightView);
 

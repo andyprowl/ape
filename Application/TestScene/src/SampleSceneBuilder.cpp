@@ -247,7 +247,6 @@ auto StatefulSceneBuilder::getContainerPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        /*
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.5f, -3.0f},
         {2.0f, 5.0f, -15.0f},
@@ -258,8 +257,7 @@ auto StatefulSceneBuilder::getContainerPositions() const
         {1.3f, -1.0f, -2.5f},
         {1.5f, 2.0f, -2.5f},
         {1.5f, 0.2f, -1.5f},
-        {-1.3f, 1.0f, -1.5f}
-        */};
+        {-1.3f, 1.0f, -1.5f}};
 }
 
 auto StatefulSceneBuilder::createLamps()
