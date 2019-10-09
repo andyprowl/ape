@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Rendering/DepthBodyRenderer.hpp>
+#include <Rendering/Viewport.hpp>
+
 #include <Scene/BodyRange.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -10,6 +13,7 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
+class DepthShaderProgram;
 class Lighting;
 class Mesh;
 class ShapeRenderer;
@@ -21,22 +25,42 @@ class StandardBodyRenderer
 
 public:
 
-    StandardBodyRenderer(StandardShaderProgram & shader, ShapeRenderer const & shapeRenderer);
+    StandardBodyRenderer(
+        StandardShaderProgram & shader,
+        DepthShaderProgram & depthShader,
+        ShapeRenderer const & shapeRenderer);
 
-    // This function gets invoked once before the frame rendering starts.
-    auto prepare(Camera const & camera, Lighting const & lighting) const
+    auto render(
+        BodyRange const & bodies,
+        Camera const & camera,
+        Lighting const & lighting) const
         -> void;
 
-    // This function may be invoked more than once during the same frame rendering.
-    auto render(BodyRange const & bodies, Camera const & camera) const
+    auto setViewport(Viewport const & newViewport)
         -> void;
 
 private:
 
-    auto renderBody(Body const & body, glm::mat4 const & transformation) const
+    auto renderDepthMap(BodyRange const & bodies, Camera const & lightView) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
+    auto renderRegularScene(
+        BodyRange const & bodies,
+        Camera const & camera,
+        Lighting const & lighting,
+        Camera const & lightView) const
+        -> void;
+
+    auto renderBody(
+        Body const & body,
+        glm::mat4 const & cameraTransformation,
+        glm::mat4 const & lightTransformation) const
+        -> void;
+
+    auto renderBodyPart(
+        BodyPart const & part,
+        glm::mat4 const & cameraTransformation,
+        glm::mat4 const & lightTransformation) const
         -> void;
 
     auto renderMesh(Mesh const & mesh) const
@@ -46,7 +70,11 @@ private:
 
     StandardShaderProgram * shader;
 
+    DepthBodyRenderer depthMapRenderer;
+
     ShapeRenderer const * shapeRenderer;
+
+    Viewport viewport;
 
 };
 

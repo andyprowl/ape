@@ -11,74 +11,100 @@ namespace ape
 namespace
 {
 
-auto clearStencilBuffer()
+auto const stencilReferenceValue = 1;
+
+auto disableWritingToStencilBuffer()
     -> void
 {
     glStencilMask(0xff);
+}
+
+auto clearStencilBuffer()
+    -> void
+{
+    disableWritingToStencilBuffer();
 
     glClear(GL_STENCIL_BUFFER_BIT);
+}
+
+auto restoreDefaultStencilState()
+    -> void
+{
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
+
+    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 }
 
 } // unnamed namespace
 
 OutlinedBodyRenderer::OutlinedBodyRenderer(
-    StandardBodyRenderer const & standardRenderer,
-    WireframeBodyRenderer const & wireframeRenderer)
-    : standardRenderer{&standardRenderer}
-    , wireframeRenderer{&wireframeRenderer}
+    StandardBodyRenderer standardRenderer,
+    WireframeBodyRenderer wireframeRenderer)
+    : standardRenderer{std::move(standardRenderer)}
+    , wireframeRenderer{std::move(wireframeRenderer)}
 {
+}
+
+auto OutlinedBodyRenderer::getOutliningStyle() const
+    -> LineStyle
+{
+    return wireframeRenderer.getLineStyle();
+}
+
+auto OutlinedBodyRenderer::setOutliningStyle(LineStyle const & newStyle)
+    -> void
+{
+    wireframeRenderer.setLineStyle(newStyle);
+}
+
+auto OutlinedBodyRenderer::setViewport(Viewport const & newViewport)
+    -> void
+{
+    standardRenderer.setViewport(newViewport);
 }
 
 auto OutlinedBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
-    LineStyle const & outlineStyle) const
+    Lighting const & lighting) const
     -> void
 {
-    performStandardRenderingAndFillStencilBuffer(bodies, camera);
+    performStandardRenderingAndFillStencilBuffer(bodies, camera, lighting);
 
-    performWireframeRenderingWhereStencilBuffferIsNotFilled(bodies, camera, outlineStyle);
+    performWireframeRenderingWhereStencilBuffferIsNotFilled(bodies, camera);
 
     restoreDefaultStencilState();
 }
 
 auto OutlinedBodyRenderer::performStandardRenderingAndFillStencilBuffer(
     BodyRange const & bodies,
-    Camera const & camera) const
+    Camera const & camera,
+    Lighting const & lighting) const
     -> void
 {
     clearStencilBuffer();
 
-    // The stencil test always passes.
-    glStencilFunc(GL_ALWAYS, 1, 0xff);
+    // Make the stencil test always pass. At the same time, set the reference value.
+    glStencilFunc(GL_ALWAYS, stencilReferenceValue, 0xff);
 
-    // When depth (and stencil) tests pass, replace the current stencil value with 1 (which is the
-    // reference value specified when calling glStencilFunc()).
+    // When depth (and stencil) tests pass, replace the current stencil value with the reference
+    // value specified when calling glStencilFunc().
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    standardRenderer->render(bodies, camera);
+    standardRenderer.render(bodies, camera, lighting);
 }
 
 auto OutlinedBodyRenderer::performWireframeRenderingWhereStencilBuffferIsNotFilled(
     BodyRange const & bodies,
-    Camera const & camera,
-    LineStyle const & outlineStyle) const
+    Camera const & camera) const
     -> void
 {
     // The stencil test passes if the value is not 1 (pixels *not* drawn in the previous call).
-    glStencilFunc(GL_NOTEQUAL, 1, 0xff);
+    glStencilFunc(GL_NOTEQUAL, stencilReferenceValue, 0xff);
 
-    glStencilMask(0x00);
+    disableWritingToStencilBuffer();
     
-    wireframeRenderer->render(bodies, camera, outlineStyle);
-}
-
-auto OutlinedBodyRenderer::restoreDefaultStencilState() const
-    -> void
-{
-    glStencilFunc(GL_ALWAYS, 0, 0xff);
-
-    glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+    wireframeRenderer.render(bodies, camera);
 }
 
 } // namespace ape

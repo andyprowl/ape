@@ -9,6 +9,8 @@ struct Vertex
 
     vec2 textureCoords;
 
+    vec4 lightSystemPosition;
+
 };
 
 struct Camera
@@ -41,6 +43,8 @@ uniform Transform transform;
 
 uniform Camera camera;
 
+uniform mat4 lightTransformation;
+
 void main()
 {
     gl_Position = transform.camera * vec4(positionAttribute, 1.0);
@@ -50,4 +54,6 @@ void main()
     vertex.normal = normalize(transform.normal * normalAttribute);
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
+
+    vertex.lightSystemPosition = lightTransformation * vec4(positionAttribute, 1.0);
 }

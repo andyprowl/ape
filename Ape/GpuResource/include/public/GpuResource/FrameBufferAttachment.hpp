@@ -11,7 +11,7 @@ enum class FrameBufferAttachment
     color0
 };
 
-auto getColorAttachmentCode(int const index)
+inline auto getColorAttachmentCode(int const index)
     -> FrameBufferAttachment
 {
     auto const base = static_cast<int>(FrameBufferAttachment::color0);

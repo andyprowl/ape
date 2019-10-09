@@ -21,6 +21,8 @@ public:
 
     Uniform<Lighting> lighting;
 
+    Uniform<glm::mat4> lightTransformation;
+
     Uniform<glm::mat4> modelTransformation;
 
     Uniform<glm::mat4> cameraTransformation;

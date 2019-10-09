@@ -1,6 +1,7 @@
 #pragma once
 
 #include <UpdateHandling/BodyPointLightSynchronizer.hpp>
+#include <UpdateHandling/BodySpotLightSynchronizer.hpp>
 #include <UpdateHandling/CameraSpotlightSynchronizer.hpp>
 
 #include <Scene/Scene.hpp>
@@ -16,6 +17,8 @@ public:
 
     std::vector<ape::Body *> lamps;
 
+    std::vector<ape::Body *> flashlights;
+
     ape::SpotLight * playerFlashlight = nullptr;
 
     ape::Body * rotatingContainer = nullptr;
@@ -28,8 +31,10 @@ public:
 
     ape::Body * castle = nullptr;
 
-    std::vector<ape::CameraSpotlightSynchronizer> spotLightSynchronizers;
+    std::vector<ape::CameraSpotlightSynchronizer> cameraSpotLightSynchronizers;
 
-    std::vector<ape::BodyPointLightSynchronizer> bodyLightSynchronizers;
+    std::vector<ape::BodyPointLightSynchronizer> bodyPointLightSynchronizers;
+
+    std::vector<ape::BodySpotLightSynchronizer> bodySpotLightSynchronizers;
 
 };

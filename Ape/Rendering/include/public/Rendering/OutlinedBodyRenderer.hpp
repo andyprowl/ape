@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Rendering/LineStyle.hpp>
+#include <Rendering/StandardBodyRenderer.hpp>
+#include <Rendering/WireframeBodyRenderer.hpp>
 
 #include <Scene/BodyRange.hpp>
 
@@ -9,8 +10,7 @@ namespace ape
 
 class Body;
 class Camera;
-class StandardBodyRenderer;
-class WireframeBodyRenderer;
+class Lighting;
 
 class OutlinedBodyRenderer
 {
@@ -18,36 +18,39 @@ class OutlinedBodyRenderer
 public:
 
     OutlinedBodyRenderer(
-        StandardBodyRenderer const & standardRenderer,
-        WireframeBodyRenderer const & wireframeRenderer);
+        StandardBodyRenderer standardRenderer,
+        WireframeBodyRenderer wireframeRenderer);
+    
+    auto getOutliningStyle() const
+        -> LineStyle;
 
-    auto render(
-        BodyRange const & bodies,
-        Camera const & camera,
-        LineStyle const & outlineStyle) const
+    auto setOutliningStyle(LineStyle const & newStyle)
+        -> void;
+
+    auto setViewport(Viewport const & newViewport)
+        -> void;
+
+    auto render(BodyRange const & bodies, Camera const & camera, Lighting const & lighting) const
         -> void;
 
 private:
 
     auto performStandardRenderingAndFillStencilBuffer(
         BodyRange const & bodies,
-        Camera const & camera) const
+        Camera const & camera,
+        Lighting const & lighting) const
         -> void;
 
     auto performWireframeRenderingWhereStencilBuffferIsNotFilled(
         BodyRange const & bodies,
-        Camera const & camera,
-        LineStyle const & outlineStyle) const
-        -> void;
-
-    auto restoreDefaultStencilState() const
+        Camera const & camera) const
         -> void;
 
 private:
 
-    StandardBodyRenderer const * standardRenderer;
+    StandardBodyRenderer standardRenderer;
     
-    WireframeBodyRenderer const * wireframeRenderer;
+    WireframeBodyRenderer wireframeRenderer;
 
 };
 

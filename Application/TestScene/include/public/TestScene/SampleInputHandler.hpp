@@ -14,7 +14,7 @@ enum class KeyModifier;
 
 class BodySelector;
 class CameraSelector;
-class SceneRenderer;
+class OutlinedBodyRenderer;
 class StandardShaderProgram;
 class Window;
 class WireframeShaderProgram;
@@ -33,7 +33,7 @@ public:
         ape::CameraSelector & cameraSelector,
         ape::BodySelector & bodyPicker,
         ape::StandardShaderProgram & standardShader,
-        ape::SceneRenderer & sceneRenderer,
+        ape::OutlinedBodyRenderer & outlinedBodyRenderer,
         SampleScene & scene);
 
     auto getScene() const
@@ -79,6 +79,6 @@ private:
 
     ape::StandardShaderProgram * standardShader;
 
-    ape::SceneRenderer * sceneRenderer;
+    ape::OutlinedBodyRenderer * outlinedBodyRenderer;
 
 };

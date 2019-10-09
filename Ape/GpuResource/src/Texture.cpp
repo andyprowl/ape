@@ -12,6 +12,8 @@ namespace
 {
 
 auto const textureFormatMap = std::unordered_map<TextureFormat, GLenum>{
+    {TextureFormat::depthOnly, GL_DEPTH_COMPONENT},
+    {TextureFormat::depthAndStencil, GL_DEPTH_STENCIL},
     {TextureFormat::redOnly, GL_RED},
     {TextureFormat::redGreenOnly, GL_RG},
     {TextureFormat::redGreenBlue, GL_RGB},

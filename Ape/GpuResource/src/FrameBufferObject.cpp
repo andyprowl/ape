@@ -76,13 +76,13 @@ auto FrameBufferObject::bind() const
 
     auto const id = resource.get();
 
-    glBindBuffer(GL_FRAMEBUFFER, id);
+    glBindFramebuffer(GL_FRAMEBUFFER, id);
 }
 
 auto FrameBufferObject::unbind() const
     -> void
 {
-    glBindBuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 auto FrameBufferObject::isBound() const

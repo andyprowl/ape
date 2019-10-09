@@ -9,6 +9,8 @@ struct Vertex
 
     vec2 textureCoords;
 
+    vec4 lightSystemPosition;
+
 };
 
 struct Camera
@@ -133,7 +135,33 @@ uniform Material material;
 
 uniform Lighting lighting;
 
+layout(binding = 2) uniform sampler2D depthMap;
+
 uniform bool useBlinnPhongModel;
+
+float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
+{    
+    return 
+        1.0 / 
+        (attenuation.constant + 
+         attenuation.linear * sourceDistance +
+         attenuation.quadratic * (sourceDistance * sourceDistance));
+}
+
+float calculateShadow()
+{
+    vec3 lightProjectionPosition = vertex.lightSystemPosition.xyz / vertex.lightSystemPosition.w;
+
+    vec3 depthMapPosition = lightProjectionPosition * 0.5 + 0.5;
+
+    float closestDepth = texture(depthMap, depthMapPosition.xy).r;
+
+    float currentDepth = depthMapPosition.z;
+
+    float bias = 0.0005;
+    
+    return ((currentDepth - bias) > closestDepth) ? 1.0 : 0.0;
+}
 
 vec3 computeAmbientLight(LightColor color)
 {
@@ -196,11 +224,7 @@ vec3 computePointLight(PointLight light)
 
     float sourceDistance = length(light.position - vertex.position);
 
-    float attenuation = 
-        1.0 / 
-        (light.attenuation.constant + 
-         light.attenuation.linear * sourceDistance +
-         light.attenuation.quadratic * (sourceDistance * sourceDistance));
+    float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
     return attenuation * (ambientLight + diffuseLight + specularLight);
 }
@@ -240,11 +264,7 @@ vec3 computeSpotLight(SpotLight light)
 
     float sourceDistance = length(light.position - vertex.position);
 
-    float attenuation = 
-        1.0 / 
-        (light.attenuation.constant + 
-         light.attenuation.linear * sourceDistance +
-         light.attenuation.quadratic * (sourceDistance * sourceDistance));
+    float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
     return attenuation * intensity * (ambientLight + diffuseLight + specularLight);
 }
@@ -259,7 +279,16 @@ vec3 computeSpotLighting()
 
         if (light.isTurnedOn)
         {
-            color += computeSpotLight(light);
+            vec3 contribution = computeSpotLight(light);
+
+            if (i == 0)
+            {
+                float shadow = calculateShadow();
+
+                contribution = (1.0 - shadow) * contribution;
+            }
+
+            color += contribution;
         }
     }
 

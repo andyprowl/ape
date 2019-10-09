@@ -40,7 +40,7 @@ private:
     auto createLamps()
         -> void;
 
-    auto getLampPositions() const
+    auto getPointLampPositions() const
         -> std::vector<glm::vec3>;
 
     auto createFlashlights()
@@ -235,15 +235,19 @@ auto StatefulSceneBuilder::createContainers()
         addBody(translation * rotation, model);
     }
 
-    scene.rotatingContainer = &scene.getBody(numOfBodies);
+    if (positions.size() >= 2u)
+    {
+        scene.rotatingContainer = &scene.getBody(numOfBodies);
 
-    scene.scalingContainer = &scene.getBody(numOfBodies + 1);
+        scene.scalingContainer = &scene.getBody(numOfBodies + 1);
+    }
 }
 
 auto StatefulSceneBuilder::getContainerPositions() const
     -> std::vector<glm::vec3>
 {
     return {
+        /*
         {0.0f, 0.0f, 0.0f},
         {0.0f, 0.5f, -3.0f},
         {2.0f, 5.0f, -15.0f},
@@ -254,7 +258,8 @@ auto StatefulSceneBuilder::getContainerPositions() const
         {1.3f, -1.0f, -2.5f},
         {1.5f, 2.0f, -2.5f},
         {1.5f, 0.2f, -1.5f},
-        {-1.3f, 1.0f, -1.5f}};
+        {-1.3f, 1.0f, -1.5f}
+        */};
 }
 
 auto StatefulSceneBuilder::createLamps()
@@ -262,7 +267,7 @@ auto StatefulSceneBuilder::createLamps()
 {
     auto const & model = assets->generalAssets.models[3];
 
-    auto const positions = getLampPositions();
+    auto const positions = getPointLampPositions();
 
     for (auto const & position : positions)
     {
@@ -274,7 +279,7 @@ auto StatefulSceneBuilder::createLamps()
     }
 }
 
-auto StatefulSceneBuilder::getLampPositions() const
+auto StatefulSceneBuilder::getPointLampPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -297,7 +302,9 @@ auto StatefulSceneBuilder::createFlashlights()
 
         auto const rotation = computeFlashlightRotation(position);
 
-        createFlashlight(translation * rotation, model);
+        auto & flashlight = createFlashlight(translation * rotation, model);
+
+        scene.flashlights.push_back(&flashlight);
     }
 }
 
@@ -324,9 +331,7 @@ auto StatefulSceneBuilder::getFlashlightPositions() const
 auto StatefulSceneBuilder::computeFlashlightRotation(glm::vec3 const & position)
     -> glm::mat4
 {
-    auto const translation = glm::translate(glm::mat4{1.0f}, position);
-
-    auto const base = glm::normalize(glm::vec3{position.x, 0.0f, 0.0f});
+    auto const base = glm::normalize(glm::vec3{1.0f, 0.0f, 0.0f});
 
     auto const direction = glm::normalize(position);
 
@@ -525,7 +530,7 @@ auto StatefulSceneBuilder::createLighting()
 auto StatefulSceneBuilder::createPointLights()
     -> void
 {
-    auto const positions = getLampPositions();
+    auto const positions = getPointLampPositions();
 
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
@@ -566,7 +571,7 @@ auto StatefulSceneBuilder::createSpotLights()
     {
         auto const position = positions[i];
 
-        createSpotLight(position, -position, colors[i]); 
+        createSpotLight(position, glm::normalize(-position), colors[i]); 
     }
 
     auto & light = createSpotLight({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, colors.back()); 
@@ -650,13 +655,23 @@ auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model 
 auto StatefulSceneBuilder::createSynchronizers()
     -> void
 {
-    scene.spotLightSynchronizers.emplace_back(
+    scene.cameraSpotLightSynchronizers.emplace_back(
         scene.getCameras().front(),
         *scene.playerFlashlight);
 
-    scene.bodyLightSynchronizers.emplace_back(
-        *scene.lamps.front(),
-        scene.getLighting().point.front());
+    for (auto i = 0u; i< scene.lamps.size(); ++i)
+    {
+        scene.bodyPointLightSynchronizers.emplace_back(
+            *scene.lamps[i],
+            scene.getLighting().point[i]);
+    }
+
+    for (auto i = 0u; i< scene.flashlights.size(); ++i)
+    {
+        scene.bodySpotLightSynchronizers.emplace_back(
+            *scene.flashlights[i],
+            scene.getLighting().spot[i]);
+    }
 }
 
 } // unnamed namespace

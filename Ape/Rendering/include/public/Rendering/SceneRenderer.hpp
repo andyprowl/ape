@@ -3,11 +3,14 @@
 #include <Rendering/CameraUniform.hpp>
 #include <Rendering/LightingUniform.hpp>
 #include <Rendering/OutlinedBodyRenderer.hpp>
+#include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardBodyRenderer.hpp>
+#include <Rendering/Viewport.hpp>
 #include <Rendering/WireframeBodyRenderer.hpp>
 
 #include <GpuResource/VertexArrayObject.hpp>
 
+#include <memory>
 #include <stdexcept>
 
 namespace ape
@@ -19,9 +22,6 @@ class BodySelector;
 class Camera;
 class CameraSelector;
 class Scene;
-class ShapeRenderer;
-class StandardShaderProgram;
-class WireframeShaderProgram;
 
 class SceneRenderer
 {
@@ -29,11 +29,12 @@ class SceneRenderer
 public:
 
     SceneRenderer(
+        std::unique_ptr<ShapeRenderer> shapeRenderer,
+        StandardBodyRenderer standardBodyRenderer,
+        WireframeBodyRenderer wireframeBodyRenderer,
+        OutlinedBodyRenderer outlinedBodyRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
-        ShapeRenderer const & shapeRenderer,
-        StandardShaderProgram & standardShader,
-        WireframeShaderProgram & wireframeShader,
         glm::vec3 const & backgroundColor);
 
     auto render()
@@ -44,17 +45,11 @@ public:
 
     auto setCameraSelector(CameraSelector const & newSelector)
         -> void;
+    
+    auto getViewport() const
+        -> Viewport;
 
-    auto getOutliningStyle() const
-        -> LineStyle;
-
-    auto setOutliningStyle(LineStyle const & newStyle)
-        -> void;
-
-    auto getWireframeStyle() const
-        -> LineStyle;
-
-    auto setWireframeStyle(LineStyle const & newStyle)
+    auto setViewport(Viewport const & newViewport)
         -> void;
 
 private:
@@ -65,23 +60,18 @@ private:
     auto clear() const
         -> void;
 
-    auto prepareBodyRenderers()
-        -> void;
-
     auto renderBodies() const
         -> void;
 
-    auto renderNonPickedBodies(Camera const & camera) const
+    auto renderNonPickedBodies(Camera const & camera, Lighting const & lighting) const
         -> void;
 
-    auto renderPickedBodies(Camera const & camera) const
+    auto renderPickedBodies(Camera const & camera, Lighting const & lighting) const
         -> void;
 
 private:
 
-    CameraSelector const * cameraSelector;
-
-    BodySelector const * pickedBodySelector;
+    std::unique_ptr<ShapeRenderer> shapeRenderer;
 
     StandardBodyRenderer standardBodyRenderer;
 
@@ -89,9 +79,11 @@ private:
 
     OutlinedBodyRenderer outlinedBodyRenderer;
 
-    LineStyle wireframeStyle;
+    CameraSelector const * cameraSelector;
 
-    LineStyle outliningStyle;
+    BodySelector const * pickedBodySelector;
+
+    Viewport viewport;
 
     glm::vec3 backgroundColor;
 

@@ -4,7 +4,7 @@
 
 #include <InputHandling/Window.hpp>
 
-#include <Rendering/SceneRenderer.hpp>
+#include <Rendering/OutlinedBodyRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
 #include <Scene/BodySelector.hpp>
@@ -50,6 +50,12 @@ auto rotateBodyAroundWorldY(ape::Body & body, float const radians)
     ape::setTransformation(body, newTransformation);
 }
 
+auto getFunctionKey(int const i)
+    -> ape::Key
+{
+    return static_cast<ape::Key>(static_cast<int>(ape::Key::keyF1) + i);
+}
+
 } // unnamed namespace
 
 SampleInputHandler::SampleInputHandler(
@@ -57,12 +63,12 @@ SampleInputHandler::SampleInputHandler(
     ape::CameraSelector & cameraSelector,
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
-    ape::SceneRenderer & sceneRenderer,
+    ape::OutlinedBodyRenderer & outlinedBodyRenderer,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
-    , sceneRenderer{&sceneRenderer}
+    , outlinedBodyRenderer{&outlinedBodyRenderer}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -164,19 +170,32 @@ auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) con
 auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) const
     -> void
 {
-    auto & lampBody = *getScene().lamps.front();
-
     auto const & window = getWindow();
 
     auto const rotationDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (window.isKeyPressed(ape::Key::keyO))
+    for (auto i = 0; i <= 9; ++i)
     {
-        rotateBodyAroundWorldY(lampBody, +rotationDelta);
-    }
-    else if (window.isKeyPressed(ape::Key::keyI))
-    {
-        rotateBodyAroundWorldY(lampBody, -rotationDelta);
+        auto const keyCode = static_cast<ape::Key>(static_cast<int>(ape::Key::keyF1) + i);
+
+        if (window.isKeyPressed(ape::Key::keyLeftShift))
+        {
+            auto const & lampBodies = getScene().lamps;
+
+            if (i < static_cast<int>(lampBodies.size()) && window.isKeyPressed(getFunctionKey(i)))
+            {
+                rotateBodyAroundWorldY(*lampBodies[i], +rotationDelta);
+            }
+        }
+        else
+        {
+            auto const & lampBodies = getScene().flashlights;
+
+            if (i < static_cast<int>(lampBodies.size()) && window.isKeyPressed(getFunctionKey(i)))
+            {
+                rotateBodyAroundWorldY(*lampBodies[i], +rotationDelta);
+            }
+        }
     }
 }
 
@@ -218,17 +237,17 @@ auto SampleInputHandler::pickObjects() const
 
     bodyPicker->selectBody(*scene.nanosuit);
 
-    bodyPicker->selectBody(*scene.lamps[0]);
+    bodyPicker->selectBody(*scene.lamps.front());
 }
 
 auto SampleInputHandler::increaseOutlineWidth(float amount) const
     -> void
 {
-    auto const outliningStyle = sceneRenderer->getOutliningStyle();
+    auto const outliningStyle = outlinedBodyRenderer->getOutliningStyle();
 
     auto const newWidth = ape::clamp(outliningStyle.width + amount, 0.0f, 0.1f);
 
     auto const newStyle = ape::LineStyle{newWidth, outliningStyle.color};
 
-    sceneRenderer->setOutliningStyle(newStyle);
+    outlinedBodyRenderer->setOutliningStyle(newStyle);
 }

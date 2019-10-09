@@ -21,12 +21,20 @@ class WireframeBodyRenderer
 
 public:
 
-    WireframeBodyRenderer(WireframeShaderProgram & shader, ShapeRenderer const & shapeRenderer);
+    WireframeBodyRenderer(
+        WireframeShaderProgram & shader,
+        ShapeRenderer const & shapeRenderer,
+        LineStyle const & lineStyle);
+
+    auto getLineStyle() const
+        -> LineStyle;
+
+    auto setLineStyle(LineStyle const & newStyle)
+        -> void;
 
     auto render(
         BodyRange const & bodies,
-        Camera const & camera,
-        LineStyle const & lineStyle) const
+        Camera const & camera) const
         -> void;
 
 private:
@@ -45,6 +53,8 @@ private:
     WireframeShaderProgram * shader;
 
     ShapeRenderer const * shapeRenderer;
+
+    LineStyle lineStyle;
 
 };
 

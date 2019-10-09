@@ -15,17 +15,27 @@ namespace ape
 
 WireframeBodyRenderer::WireframeBodyRenderer(
     WireframeShaderProgram & shader,
-    ShapeRenderer const & shapeRenderer)
+    ShapeRenderer const & shapeRenderer,
+    LineStyle const & lineStyle)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , lineStyle{lineStyle}
 {
 }
 
+auto WireframeBodyRenderer::getLineStyle() const
+    -> LineStyle
+{
+    return lineStyle;
+}
 
-auto WireframeBodyRenderer::render(
-    BodyRange const & bodies,
-    Camera const & camera,
-    LineStyle const & lineStyle) const
+auto WireframeBodyRenderer::setLineStyle(LineStyle const & newStyle)
+    -> void
+{
+    lineStyle = newStyle;
+}
+
+auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & camera) const
     -> void
 {
     shader->use();
@@ -42,7 +52,9 @@ auto WireframeBodyRenderer::render(
     }
 }
 
-auto WireframeBodyRenderer::renderBody(Body const & body, glm::mat4 const & transformation) const
+auto WireframeBodyRenderer::renderBody(
+    Body const & body,
+    glm::mat4 const & transformation) const
     -> void
 {
     for (auto const & part : body.getParts())

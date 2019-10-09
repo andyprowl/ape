@@ -24,6 +24,7 @@ StandardShaderProgram::StandardShaderProgram()
     : ShaderProgram{buildStandardShader()}
     , camera{*this, "camera"}
     , lighting{*this, "lighting"}
+    , lightTransformation{*this, "lightTransformation"}
     , modelTransformation{*this, "transform.model"}
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}

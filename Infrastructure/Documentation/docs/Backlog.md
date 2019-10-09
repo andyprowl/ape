@@ -1,4 +1,5 @@
  - Implement shadow mapping
+ - callers of glViewport should do so through the Window object
  - Implement normal visualization
  - Implement post-processing techniques (e.g. blurring)
  - (Re-)implement glowing based on view position and normal

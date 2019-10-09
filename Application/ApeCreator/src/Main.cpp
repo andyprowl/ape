@@ -227,11 +227,11 @@ int main(int argc, char *argv[])
     auto const shapeRenderer2 = ape::ShapeArrayObjectRenderer{assets.shapes};
 
     auto renderer2 = ape::SceneRenderer{
-        selector2,
-        picker,
         shapeRenderer2,
         standardShader,
         wireframeShader,
+        selector2,
+        picker,
         backgroundColor};
 
     auto inputHandler2 = SampleInputHandler{

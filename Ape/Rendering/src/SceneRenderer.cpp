@@ -1,9 +1,5 @@
 #include <Rendering/SceneRenderer.hpp>
 
-#include <Rendering/ShapeArrayObjectRenderer.hpp>
-#include <Rendering/StandardShaderProgram.hpp>
-#include <Rendering/WireframeShaderProgram.hpp>
-
 #include <Scene/BodySelector.hpp>
 #include <Scene/Camera.hpp>
 #include <Scene/CameraSelector.hpp>
@@ -24,19 +20,20 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
+    std::unique_ptr<ShapeRenderer> shapeRenderer,
+    StandardBodyRenderer standardBodyRenderer,
+    WireframeBodyRenderer wireframeBodyRenderer,
+    OutlinedBodyRenderer outlinedBodyRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
-    ShapeRenderer const & shapeRenderer,
-    StandardShaderProgram & standardShader,
-    WireframeShaderProgram & wireframeShader,
     glm::vec3 const & backgroundColor)
-    : cameraSelector{&cameraSelector}
+    : shapeRenderer{std::move(shapeRenderer)}
+    , standardBodyRenderer{std::move(standardBodyRenderer)}
+    , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
+    , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
+    , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
-    , standardBodyRenderer{standardShader, shapeRenderer}
-    , wireframeBodyRenderer{wireframeShader, shapeRenderer}
-    , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
-    , wireframeStyle{0.01f, {1.0f, 0.2f, 0.2f}}
-    , outliningStyle{0.05f, {0.2f, 0.2f, 1.0f}}
+    , viewport{{0, 0}, {0, 0}}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
@@ -57,8 +54,6 @@ auto SceneRenderer::render()
     {
         return;
     }
-    
-    prepareBodyRenderers();
 
     renderBodies();
 }
@@ -75,38 +70,34 @@ auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
     cameraSelector = &newSelector;
 }
 
-auto SceneRenderer::getOutliningStyle() const
-    -> LineStyle
+auto SceneRenderer::getViewport() const
+    -> Viewport
 {
-    return outliningStyle;
+    return viewport;
 }
 
-auto SceneRenderer::setOutliningStyle(LineStyle const & newStyle)
+auto SceneRenderer::setViewport(Viewport const & newViewport)
     -> void
 {
-    outliningStyle = newStyle;
-}
+    viewport = newViewport;
 
-auto SceneRenderer::getWireframeStyle() const
-    -> LineStyle
-{
-    return wireframeStyle;
-}
+    standardBodyRenderer.setViewport(viewport);
 
-auto SceneRenderer::setWireframeStyle(LineStyle const & newStyle)
-    -> void
-{
-    wireframeStyle = newStyle;
+    outlinedBodyRenderer.setViewport(viewport);
 }
 
 auto SceneRenderer::clear() const
     -> void
 {
+    glCullFace(GL_BACK);
+
     glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
 }
 
 auto SceneRenderer::hasActiveCamera() const
@@ -115,18 +106,6 @@ auto SceneRenderer::hasActiveCamera() const
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     return (activeCamera != nullptr);
-}
-
-auto SceneRenderer::prepareBodyRenderers()
-    -> void
-{
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    assert(activeCamera != nullptr);
-
-    auto const & lighting = cameraSelector->getScene().getLighting();
-
-    standardBodyRenderer.prepare(*activeCamera, lighting);
 }
 
 auto SceneRenderer::renderBodies() const
@@ -138,12 +117,14 @@ auto SceneRenderer::renderBodies() const
 
     assert(activeCamera != nullptr);
 
-    renderNonPickedBodies(*activeCamera);
+    auto const & lighting = cameraSelector->getScene().getLighting();
 
-    renderPickedBodies(*activeCamera);
+    renderNonPickedBodies(*activeCamera, lighting);
+
+    renderPickedBodies(*activeCamera, lighting);
 }
 
-auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
+auto SceneRenderer::renderNonPickedBodies(Camera const & camera, Lighting const & lighting) const
     -> void
 {
     auto const nonSelectedBodies = pickedBodySelector->getNonSelectedBodies();
@@ -153,10 +134,10 @@ auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
         return;
     }
 
-    standardBodyRenderer.render(nonSelectedBodies, camera);
+    standardBodyRenderer.render(nonSelectedBodies, camera, lighting);
 }
 
-auto SceneRenderer::renderPickedBodies(Camera const & camera) const
+auto SceneRenderer::renderPickedBodies(Camera const & camera, Lighting const & lighting) const
     -> void
 {
     auto const selectedBodies = pickedBodySelector->getSelectedBodies();
@@ -166,7 +147,9 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
         return;
     }
 
-    outlinedBodyRenderer.render(selectedBodies, camera, outliningStyle);
+    outlinedBodyRenderer.render(selectedBodies, camera, lighting);
+
+    standardBodyRenderer.render(selectedBodies, camera, lighting);
 }
 
 auto getCamera(SceneRenderer const & renderer)

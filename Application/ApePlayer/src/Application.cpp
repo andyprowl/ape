@@ -7,10 +7,14 @@
 #include <GlfwEngine/GLFWEngine.hpp>
 #include <GlfwEngine/GLFWGateway.hpp>
 
+#include <Rendering/DepthShaderProgram.hpp>
+#include <Rendering/OutlinedBodyRenderer.hpp>
 #include <Rendering/SceneRenderer.hpp>
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Rendering/StandardBodyRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
+#include <Rendering/WireframeBodyRenderer.hpp>
 #include <Rendering/WireframeShaderProgram.hpp>
 
 #include <Scene/BodySelector.hpp>
@@ -20,29 +24,6 @@ class Application::Impl
 {
 
 public:
-
-    Impl()
-        : gateway{4, 5}
-        , window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
-        , assets{createSampleAssets()}
-        , scene{createSampleScene(assets)}
-        , standardShader{}
-        , pickingShader{}
-        , cameraSelector{scene}
-        , bodyPicker{scene}
-        , shapeArrayObjectRenderer{assets.shapes}
-        , sceneRenderer{
-            cameraSelector,
-            bodyPicker,
-            shapeArrayObjectRenderer,
-            //shapeBufferObjectRenderer,
-            standardShader,
-            pickingShader,
-            {0.0f, 0.0f, 0.0f}}
-        , inputHandler{window, cameraSelector, bodyPicker, standardShader, sceneRenderer, scene}
-        , GLFWEngine{window, sceneRenderer, inputHandler}
-    {
-    }
 
     auto run()
         -> void
@@ -56,31 +37,61 @@ public:
 
 private:
 
-    ape::GLFWGateway gateway;
+    ape::GLFWGateway gateway{4, 5};
 
-    ape::GLFWWindow window;
+    ape::GLFWWindow window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})};
 
-    SampleAssetCollection assets;
+    SampleAssetCollection assets{createSampleAssets()};
 
-    SampleScene scene;
+    SampleScene scene{createSampleScene(assets)};
 
     ape::StandardShaderProgram standardShader;
 
-    ape::WireframeShaderProgram pickingShader;
+    ape::DepthShaderProgram depthShader;
 
-    ape::CameraSelector cameraSelector;
+    ape::WireframeShaderProgram wireframeShader;
 
-    ape::BodySelector bodyPicker;
+    std::unique_ptr<ape::ShapeArrayObjectRenderer> shapeRenderer{
+        std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes)};
 
-    ape::ShapeArrayObjectRenderer shapeArrayObjectRenderer;
+    //std::unique_ptr<ape::ShapeBufferObjectRenderer> shapeRenderer{
+    //  std::make_unique<ape::ShapeBufferObjectRenderer>()};
 
-    ape::ShapeBufferObjectRenderer shapeBufferObjectRenderer;
+    ape::StandardBodyRenderer standardBodyRenderer{standardShader, depthShader, *shapeRenderer};
 
-    ape::SceneRenderer sceneRenderer;
+    ape::LineStyle wireframeStyle = ape::LineStyle{0.05f, {0.2f, 0.2f, 1.0f}};
 
-    SampleInputHandler inputHandler;
+    ape::WireframeBodyRenderer wireframeBodyRenderer{
+        wireframeShader,
+        *shapeRenderer,
+        wireframeStyle};
 
-    ape::GLFWEngine GLFWEngine;
+    ape::OutlinedBodyRenderer outlinedBodyRenderer{
+        {standardShader, depthShader, *shapeRenderer},
+        {wireframeShader, *shapeRenderer, wireframeStyle}};
+
+    ape::CameraSelector cameraSelector{scene};
+
+    ape::BodySelector bodyPicker{scene};
+
+    ape::SceneRenderer sceneRenderer{
+        std::move(shapeRenderer),
+        std::move(standardBodyRenderer),
+        std::move(wireframeBodyRenderer),
+        std::move(outlinedBodyRenderer),
+        cameraSelector,
+        bodyPicker,
+        {0.0f, 0.0f, 0.0f}};
+
+    SampleInputHandler inputHandler{
+        window,
+        cameraSelector,
+        bodyPicker,
+        standardShader,
+        outlinedBodyRenderer,
+        scene};
+
+    ape::GLFWEngine GLFWEngine{window, sceneRenderer, inputHandler};
 
 };
 

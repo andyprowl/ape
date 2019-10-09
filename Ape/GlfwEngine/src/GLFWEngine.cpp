@@ -95,7 +95,7 @@ private:
             return;
         }
 
-        glViewport(0, 0, size.width, size.height);
+        renderer->setViewport({{0, 0}, size});
 
         auto const aspectRatio = window->getAspectRatio();
 
