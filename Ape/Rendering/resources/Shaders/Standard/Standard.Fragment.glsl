@@ -148,7 +148,7 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
          attenuation.quadratic * (sourceDistance * sourceDistance));
 }
 
-float calculateShadow()
+float calculateShadow(SpotLight light)
 {
     vec3 lightProjectionPosition = vertex.lightSystemPosition.xyz / vertex.lightSystemPosition.w;
 
@@ -158,7 +158,7 @@ float calculateShadow()
 
     float currentDepth = depthMapPosition.z;
 
-    float bias = 0.0005;
+    float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, light.direction))), 0.000005);
     
     return ((currentDepth - bias) > closestDepth) ? 1.0 : 0.0;
 }
@@ -283,7 +283,7 @@ vec3 computeSpotLighting()
 
             if (i == 0)
             {
-                float shadow = calculateShadow();
+                float shadow = calculateShadow(light);
 
                 contribution = (1.0 - shadow) * contribution;
             }

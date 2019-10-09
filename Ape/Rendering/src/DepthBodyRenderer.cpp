@@ -20,7 +20,7 @@ namespace ape
 namespace
 {
 
-auto const depthMapSize = Size<int>{2000, 1000};
+auto const depthMapSize = Size<int>{1000, 500};
 
 auto makeDepthMap()
     -> Texture
