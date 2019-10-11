@@ -34,7 +34,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        Texture const & depthMap,
+        DepthMap const & depthMap,
         Camera const & lightView) const
         -> void;
 
@@ -44,7 +44,7 @@ private:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        Texture const & depthMap,
+        DepthMap const & depthMap,
         Camera const & lightView) const
         -> void;
 

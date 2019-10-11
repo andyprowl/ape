@@ -13,12 +13,12 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
+class DepthMap;
 class Lighting;
 class Mesh;
 class ShapeRenderer;
 class Rendering;
 class StandardShaderProgram;
-class Texture;
 
 class StandardBodyRenderer
 {
@@ -31,7 +31,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        Texture const & depthMap,
+        DepthMap const & depthMap,
         Camera const & lightView) const
         -> void;
 

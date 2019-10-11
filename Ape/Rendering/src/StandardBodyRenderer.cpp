@@ -1,5 +1,6 @@
 #include <Rendering/StandardBodyRenderer.hpp>
 
+#include <Rendering/DepthMap.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
@@ -31,7 +32,7 @@ auto StandardBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
     Lighting const & lighting,
-    Texture const & depthMap,
+    DepthMap const & depthMap,
     Camera const & lightView) const
     -> void
 {
@@ -43,7 +44,8 @@ auto StandardBodyRenderer::render(
 
     shader->lighting.set(lighting);
 
-    depthMap.bind(2);
+    // TODO: Hardcoding #2 is not correct. Texture unit should be determined in some other way.
+    depthMap.getTexture().bind(2);
 
     auto const & cameraTransformation = camera.getTransformation();
 

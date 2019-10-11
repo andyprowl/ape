@@ -1,9 +1,8 @@
 #pragma once
 
-#include <Scene/BodyRange.hpp>
+#include <Rendering/DepthMap.hpp>
 
-#include <GpuResource/FrameBufferObject.hpp>
-#include <GpuResource/Texture.hpp>
+#include <Scene/BodyRange.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -35,7 +34,7 @@ public:
         -> void;
 
     auto getDepthMap() const
-        -> Texture const &;
+        -> DepthMap const &;
 
     auto getDepthMapSize() const
         -> Size<int>;
@@ -61,9 +60,7 @@ private:
 
     ShapeRenderer const * shapeRenderer;
 
-    Texture depthMap;
-
-    FrameBufferObject depthFrameBuffer;
+    DepthMap depthMap;
 
 };
 

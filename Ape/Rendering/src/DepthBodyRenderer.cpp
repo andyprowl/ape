@@ -22,36 +22,6 @@ namespace
 
 auto const depthMapSize = Size<int>{1'024, 1'024};
 
-auto makeDepthMap()
-    -> Texture
-{
-    auto const descriptor = TextureDescriptor{
-        depthMapSize,
-        TextureFormat::depthOnly,
-        PixelType::floatingPoint,
-        nullptr};
-
-    return Texture{descriptor};
-}
-
-auto makeDepthFrameBuffer(Texture & depthMap)
-    -> FrameBufferObject
-{
-    auto frameBuffer = FrameBufferObject{};
-
-    auto const binder = ScopedBinder{frameBuffer};
-
-    frameBuffer.attach(depthMap, FrameBufferAttachment::depth);
-
-    frameBuffer.resetDrawTarget();
-
-    frameBuffer.resetReadTarget();
-
-    assert(frameBuffer.isComplete());
-
-    return frameBuffer;
-}
-
 auto asReference(Body const & body)
     -> Body const &
 {
@@ -71,8 +41,7 @@ DepthBodyRenderer::DepthBodyRenderer(
     ShapeRenderer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
-    , depthMap{makeDepthMap()}
-    , depthFrameBuffer{makeDepthFrameBuffer(depthMap)}
+    , depthMap{depthMapSize}
 {
 }
 
@@ -89,7 +58,7 @@ auto DepthBodyRenderer::render(BodyContainerView const & bodies, Camera const & 
 }
 
 auto DepthBodyRenderer::getDepthMap() const
-    -> Texture const &
+    -> DepthMap const &
 {
     return depthMap;
 }
@@ -97,7 +66,7 @@ auto DepthBodyRenderer::getDepthMap() const
 auto DepthBodyRenderer::getDepthMapSize() const
     -> Size<int>
 {
-    return depthMapSize;
+    return depthMap.getSize();
 }
 
 template<typename Range>
@@ -106,9 +75,11 @@ auto DepthBodyRenderer::renderBodies(Range const & bodies, Camera const & lightV
 {
     shader->use();
 
-    auto const binder = ScopedBinder{depthFrameBuffer};
+    auto const binder = ScopedBinder{depthMap.getFrameBuffer()};
 
-    glViewport(0, 0, depthMapSize.width, depthMapSize.height);
+    auto const mapSize = depthMap.getSize();
+
+    glViewport(0, 0, mapSize.width, mapSize.height);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

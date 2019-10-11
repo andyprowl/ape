@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Rendering/CameraUniform.hpp>
+#include <Rendering/DepthMapping.hpp>
 #include <Rendering/DepthBodyRenderer.hpp>
 #include <Rendering/LightingUniform.hpp>
 #include <Rendering/LightingView.hpp>
@@ -95,6 +96,8 @@ private:
     Viewport viewport;
 
     LightingView lightingView;
+
+    DepthMapping depthMapping;
 
     glm::vec3 backgroundColor;
 

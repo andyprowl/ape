@@ -67,7 +67,7 @@ auto OutlinedBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
     Lighting const & lighting,
-    Texture const & depthMap,
+    DepthMap const & depthMap,
     Camera const & lightView) const
     -> void
 {
@@ -82,7 +82,7 @@ auto OutlinedBodyRenderer::performStandardRenderingAndFillStencilBuffer(
     BodyRange const & bodies,
     Camera const & camera,
     Lighting const & lighting,
-    Texture const & depthMap,
+    DepthMap const & depthMap,
     Camera const & lightView) const
     -> void
 {
