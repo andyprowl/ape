@@ -18,9 +18,11 @@ auto SpotLightOrientator::receive(glm::mat4 const & transformation)
 {
     auto const inv = glm::inverse(transformation);
 
-    light->position = glm::vec3{inv[3]};
+    auto const newPosition = glm::vec3{inv[3]};
 
-    light->direction = -glm::vec3{inv[2]};
+    auto const newDirection = -glm::vec3{inv[2]};
+
+    light->setPlacement(newPosition, newDirection);
 }
 
 } // namespace ape

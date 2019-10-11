@@ -26,9 +26,11 @@ auto BodySpotLightSynchronizer::registerTransformationChangeEventHandler(
         {
             auto const & transformation = part.getGlobalTransformation();
 
-            target.position = glm::vec3{transformation[3]};
+            auto const newPosition = glm::vec3{transformation[3]};
 
-            target.direction = -glm::vec3{transformation[0]};
+            auto const newDirection = -glm::vec3{transformation[0]};
+
+            target.setPlacement(newPosition, newDirection);
         }
     });
 }

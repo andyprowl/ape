@@ -52,6 +52,18 @@ auto makeDepthFrameBuffer(Texture & depthMap)
     return frameBuffer;
 }
 
+auto asReference(Body const & body)
+    -> Body const &
+{
+    return body;
+}
+
+auto asReference(Body * const body)
+    -> Body const &
+{
+    return *body;
+}
+
 } // unnamed namespace
 
 DepthBodyRenderer::DepthBodyRenderer(
@@ -67,20 +79,13 @@ DepthBodyRenderer::DepthBodyRenderer(
 auto DepthBodyRenderer::render(BodyRange const & bodies, Camera const & lightView) const
     -> void
 {
-    shader->use();
+    renderBodies(bodies, lightView);
+}
 
-    auto const binder = ScopedBinder{depthFrameBuffer};
-
-    glViewport(0, 0, depthMapSize.width, depthMapSize.height);
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-
-    auto const & lightTransformation = lightView.getTransformation();
-
-    for (auto const body : bodies)
-    {
-        renderBody(*body, lightTransformation);
-    }
+auto DepthBodyRenderer::render(BodyContainerView const & bodies, Camera const & lightView) const
+    -> void
+{
+    renderBodies(bodies, lightView);
 }
 
 auto DepthBodyRenderer::getDepthMap() const
@@ -93,6 +98,26 @@ auto DepthBodyRenderer::getDepthMapSize() const
     -> Size<int>
 {
     return depthMapSize;
+}
+
+template<typename Range>
+auto DepthBodyRenderer::renderBodies(Range const & bodies, Camera const & lightView) const
+    -> void
+{
+    shader->use();
+
+    auto const binder = ScopedBinder{depthFrameBuffer};
+
+    glViewport(0, 0, depthMapSize.width, depthMapSize.height);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    auto const & lightTransformation = lightView.getTransformation();
+
+    for (auto const & body : bodies)
+    {
+        renderBody(asReference(body), lightTransformation);
+    }
 }
 
 auto DepthBodyRenderer::renderBody(

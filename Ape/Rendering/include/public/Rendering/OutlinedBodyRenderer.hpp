@@ -30,7 +30,12 @@ public:
     auto setViewport(Viewport const & newViewport)
         -> void;
 
-    auto render(BodyRange const & bodies, Camera const & camera, Lighting const & lighting) const
+    auto render(
+        BodyRange const & bodies,
+        Camera const & camera,
+        Lighting const & lighting,
+        Texture const & depthMap,
+        Camera const & lightView) const
         -> void;
 
 private:
@@ -38,7 +43,9 @@ private:
     auto performStandardRenderingAndFillStencilBuffer(
         BodyRange const & bodies,
         Camera const & camera,
-        Lighting const & lighting) const
+        Lighting const & lighting,
+        Texture const & depthMap,
+        Camera const & lightView) const
         -> void;
 
     auto performWireframeRenderingWhereStencilBuffferIsNotFilled(

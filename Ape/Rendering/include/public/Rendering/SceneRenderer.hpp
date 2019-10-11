@@ -1,7 +1,9 @@
 #pragma once
 
 #include <Rendering/CameraUniform.hpp>
+#include <Rendering/DepthBodyRenderer.hpp>
 #include <Rendering/LightingUniform.hpp>
+#include <Rendering/LightingView.hpp>
 #include <Rendering/OutlinedBodyRenderer.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardBodyRenderer.hpp>
@@ -30,11 +32,13 @@ public:
 
     SceneRenderer(
         std::unique_ptr<ShapeRenderer> shapeRenderer,
+        DepthBodyRenderer depthBodyRenderer,
         StandardBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
+        Viewport const & viewport,
         glm::vec3 const & backgroundColor);
 
     auto render()
@@ -63,15 +67,20 @@ private:
     auto renderBodies() const
         -> void;
 
-    auto renderNonPickedBodies(Camera const & camera, Lighting const & lighting) const
+    auto renderDepthMap(Camera const & ligthView) const
         -> void;
 
-    auto renderPickedBodies(Camera const & camera, Lighting const & lighting) const
+    auto renderNonPickedBodies(Camera const & camera, Camera const & lightView) const
+        -> void;
+
+    auto renderPickedBodies(Camera const & camera, Camera const & lightView) const
         -> void;
 
 private:
 
     std::unique_ptr<ShapeRenderer> shapeRenderer;
+
+    DepthBodyRenderer depthBodyRenderer;
 
     StandardBodyRenderer standardBodyRenderer;
 
@@ -84,6 +93,8 @@ private:
     BodySelector const * pickedBodySelector;
 
     Viewport viewport;
+
+    LightingView lightingView;
 
     glm::vec3 backgroundColor;
 

@@ -22,9 +22,16 @@ class DepthBodyRenderer
 
 public:
 
+    using BodyContainerView = ContainerView<std::vector<Body>>;
+
+public:
+
     DepthBodyRenderer(DepthShaderProgram & shader, ShapeRenderer const & shapeRenderer);
 
     auto render(BodyRange const & bodies, Camera const & lightView) const
+        -> void;
+
+    auto render(BodyContainerView const & bodies, Camera const & lightView) const
         -> void;
 
     auto getDepthMap() const
@@ -34,6 +41,10 @@ public:
         -> Size<int>;
 
 private:
+
+    template<typename Range>
+    auto renderBodies(Range const & bodies, Camera const & lightView) const
+        -> void;
 
     auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const
         -> void;

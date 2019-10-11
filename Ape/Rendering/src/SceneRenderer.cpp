@@ -21,19 +21,23 @@ namespace ape
 
 SceneRenderer::SceneRenderer(
     std::unique_ptr<ShapeRenderer> shapeRenderer,
+    DepthBodyRenderer depthBodyRenderer,
     StandardBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
+    Viewport const & viewport,
     glm::vec3 const & backgroundColor)
     : shapeRenderer{std::move(shapeRenderer)}
+    , depthBodyRenderer{std::move(depthBodyRenderer)}
     , standardBodyRenderer{std::move(standardBodyRenderer)}
     , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
-    , viewport{{0, 0}, {0, 0}}
+    , viewport{viewport}
+    , lightingView{cameraSelector.getScene().getLighting(), viewport.size}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
@@ -84,6 +88,8 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     standardBodyRenderer.setViewport(viewport);
 
     outlinedBodyRenderer.setViewport(viewport);
+
+    lightingView.setViewSize(viewport.size);
 }
 
 auto SceneRenderer::clear() const
@@ -117,14 +123,26 @@ auto SceneRenderer::renderBodies() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lighting = cameraSelector->getScene().getLighting();
+    auto const & lightView = lightingView.getSpotView().at(0);
 
-    renderNonPickedBodies(*activeCamera, lighting);
+    renderDepthMap(lightView);
 
-    renderPickedBodies(*activeCamera, lighting);
+    renderNonPickedBodies(*activeCamera, lightView);
+
+    renderPickedBodies(*activeCamera, lightView);
 }
 
-auto SceneRenderer::renderNonPickedBodies(Camera const & camera, Lighting const & lighting) const
+auto SceneRenderer::renderDepthMap(Camera const & ligthView) const
+    -> void
+{
+    auto const & bodies = cameraSelector->getScene().getBodies();
+
+    depthBodyRenderer.render(bodies, ligthView);
+}
+
+auto SceneRenderer::renderNonPickedBodies(
+    Camera const & camera,
+    Camera const & lightView) const
     -> void
 {
     auto const nonSelectedBodies = pickedBodySelector->getNonSelectedBodies();
@@ -134,10 +152,16 @@ auto SceneRenderer::renderNonPickedBodies(Camera const & camera, Lighting const 
         return;
     }
 
-    standardBodyRenderer.render(nonSelectedBodies, camera, lighting);
+    auto const & lighting = cameraSelector->getScene().getLighting();
+
+    auto const & depthMap = depthBodyRenderer.getDepthMap();
+
+    standardBodyRenderer.render(nonSelectedBodies, camera, lighting, depthMap, lightView);
 }
 
-auto SceneRenderer::renderPickedBodies(Camera const & camera, Lighting const & lighting) const
+auto SceneRenderer::renderPickedBodies(
+    Camera const & camera,
+    Camera const & lightView) const
     -> void
 {
     auto const selectedBodies = pickedBodySelector->getSelectedBodies();
@@ -147,9 +171,13 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera, Lighting const & l
         return;
     }
 
-    outlinedBodyRenderer.render(selectedBodies, camera, lighting);
+    auto const & lighting = cameraSelector->getScene().getLighting();
 
-    standardBodyRenderer.render(selectedBodies, camera, lighting);
+    auto const & depthMap = depthBodyRenderer.getDepthMap();
+
+    outlinedBodyRenderer.render(selectedBodies, camera, lighting, depthMap, lightView);
+
+    standardBodyRenderer.render(selectedBodies, camera, lighting, depthMap, lightView);
 }
 
 auto getCamera(SceneRenderer const & renderer)

@@ -57,7 +57,9 @@ private:
     //std::unique_ptr<ape::ShapeBufferObjectRenderer> shapeRenderer{
     //  std::make_unique<ape::ShapeBufferObjectRenderer>()};
 
-    ape::StandardBodyRenderer standardBodyRenderer{standardShader, depthShader, *shapeRenderer};
+    ape::DepthBodyRenderer depthBodyRenderer{depthShader, *shapeRenderer};
+
+    ape::StandardBodyRenderer standardBodyRenderer{standardShader, *shapeRenderer};
 
     ape::LineStyle wireframeStyle = ape::LineStyle{0.05f, {0.2f, 0.2f, 1.0f}};
 
@@ -66,9 +68,7 @@ private:
         *shapeRenderer,
         wireframeStyle};
 
-    ape::OutlinedBodyRenderer outlinedBodyRenderer{
-        {standardShader, depthShader, *shapeRenderer},
-        {wireframeShader, *shapeRenderer, wireframeStyle}};
+    ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
 
     ape::CameraSelector cameraSelector{scene};
 
@@ -76,11 +76,13 @@ private:
 
     ape::SceneRenderer sceneRenderer{
         std::move(shapeRenderer),
+        std::move(depthBodyRenderer),
         std::move(standardBodyRenderer),
         std::move(wireframeBodyRenderer),
         std::move(outlinedBodyRenderer),
         cameraSelector,
         bodyPicker,
+        ape::Viewport{{0, 0}, window.getSize()},
         {0.0f, 0.0f, 0.0f}};
 
     SampleInputHandler inputHandler{

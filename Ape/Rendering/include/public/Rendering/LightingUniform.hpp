@@ -199,17 +199,17 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        position = light.position;
+        position = light.getPosition();
 
-        direction = light.direction;
+        direction = light.getDirection();
 
-        innerCutoffCosine = glm::cos(light.cutoff.inner);
+        innerCutoffCosine = glm::cos(light.getCutoff().inner);
 
-        outerCutoffCosine = glm::cos(light.cutoff.outer);
+        outerCutoffCosine = glm::cos(light.getCutoff().outer);
 
         color = light.color;
 
-        attenuation = light.attenuation;
+        attenuation = light.getAttenuation();
 
         isTurnedOn = light.isTurnedOn;
     }

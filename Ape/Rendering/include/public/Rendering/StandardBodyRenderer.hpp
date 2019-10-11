@@ -13,43 +13,32 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
-class DepthShaderProgram;
 class Lighting;
 class Mesh;
 class ShapeRenderer;
 class Rendering;
 class StandardShaderProgram;
+class Texture;
 
 class StandardBodyRenderer
 {
 
 public:
 
-    StandardBodyRenderer(
-        StandardShaderProgram & shader,
-        DepthShaderProgram & depthShader,
-        ShapeRenderer const & shapeRenderer);
+    StandardBodyRenderer(StandardShaderProgram & shader, ShapeRenderer const & shapeRenderer);
 
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
-        Lighting const & lighting) const
+        Lighting const & lighting,
+        Texture const & depthMap,
+        Camera const & lightView) const
         -> void;
 
     auto setViewport(Viewport const & newViewport)
         -> void;
 
 private:
-
-    auto renderDepthMap(BodyRange const & bodies, Camera const & lightView) const
-        -> void;
-
-    auto renderRegularScene(
-        BodyRange const & bodies,
-        Camera const & camera,
-        Lighting const & lighting,
-        Camera const & lightView) const
-        -> void;
 
     auto renderBody(
         Body const & body,
@@ -69,8 +58,6 @@ private:
 private:
 
     StandardShaderProgram * shader;
-
-    DepthBodyRenderer depthMapRenderer;
 
     ShapeRenderer const * shapeRenderer;
 
