@@ -12,37 +12,32 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
+class DepthMapping;
+class DepthShaderProgram;
+class LightingView;
 class Mesh;
 class ShapeRenderer;
-class DepthShaderProgram;
 
 class DepthBodyRenderer
 {
 
 public:
 
-    using BodyContainerView = ContainerView<std::vector<Body>>;
+    using BodySetView = ContainerView<std::vector<Body>>;
 
 public:
 
     DepthBodyRenderer(DepthShaderProgram & shader, ShapeRenderer const & shapeRenderer);
 
-    auto render(BodyRange const & bodies, Camera const & lightView) const
+    auto render(
+        BodySetView const & bodies,
+        LightingView const & lightingView,
+        DepthMapping & target) const
         -> void;
-
-    auto render(BodyContainerView const & bodies, Camera const & lightView) const
-        -> void;
-
-    auto getDepthMap() const
-        -> DepthMap const &;
-
-    auto getDepthMapSize() const
-        -> Size<int>;
 
 private:
 
-    template<typename Range>
-    auto renderBodies(Range const & bodies, Camera const & lightView) const
+    auto render(BodySetView const & bodies, Camera const & lightView, DepthMap & target) const
         -> void;
 
     auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const
@@ -59,8 +54,6 @@ private:
     DepthShaderProgram * shader;
 
     ShapeRenderer const * shapeRenderer;
-
-    DepthMap depthMap;
 
 };
 

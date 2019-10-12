@@ -13,11 +13,10 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
-class DepthMap;
 class Lighting;
 class Mesh;
+class ShadowMapping;
 class ShapeRenderer;
-class Rendering;
 class StandardShaderProgram;
 
 class StandardBodyRenderer
@@ -31,8 +30,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        DepthMap const & depthMap,
-        Camera const & lightView) const
+        ShadowMapping const & shadowMapping) const
         -> void;
 
     auto setViewport(Viewport const & newViewport)

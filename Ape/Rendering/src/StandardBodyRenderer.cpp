@@ -1,6 +1,6 @@
 #include <Rendering/StandardBodyRenderer.hpp>
 
-#include <Rendering/DepthMap.hpp>
+#include <Rendering/ShadowMapping.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
@@ -32,8 +32,7 @@ auto StandardBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
     Lighting const & lighting,
-    DepthMap const & depthMap,
-    Camera const & lightView) const
+    ShadowMapping const & shadowMapping) const
     -> void
 {
     glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
@@ -45,7 +44,9 @@ auto StandardBodyRenderer::render(
     shader->lighting.set(lighting);
 
     // TODO: Hardcoding #2 is not correct. Texture unit should be determined in some other way.
-    depthMap.getTexture().bind(2);
+    shadowMapping.depthMapping.getSpotMapping()[0].getTexture().bind(2);
+
+    auto const & lightView = shadowMapping.lightingView.getSpotView()[0];
 
     auto const & cameraTransformation = camera.getTransformation();
 

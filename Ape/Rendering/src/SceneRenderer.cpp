@@ -37,7 +37,7 @@ SceneRenderer::SceneRenderer(
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
     , viewport{viewport}
-    , lightingView{cameraSelector.getScene().getLighting(), viewport.size}
+    , shadowMapping{makeShadowMapping()}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
@@ -54,12 +54,20 @@ auto SceneRenderer::render()
 {
     clear();
 
-    if (!hasActiveCamera())
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    if (activeCamera == nullptr)
     {
         return;
     }
 
-    renderBodies();
+    auto const arrayObjectBinder = ScopedBinder{arrayObject};
+
+    renderDepthMapping();
+
+    renderNonPickedBodies(*activeCamera);
+
+    renderPickedBodies(*activeCamera);
 }
 
 auto SceneRenderer::getCameraSelector() const
@@ -89,7 +97,7 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 
     outlinedBodyRenderer.setViewport(viewport);
 
-    lightingView.setViewSize(viewport.size);
+    shadowMapping.lightingView.setViewSize(viewport.size);
 }
 
 auto SceneRenderer::clear() const
@@ -106,6 +114,16 @@ auto SceneRenderer::clear() const
     glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
 }
 
+auto SceneRenderer::makeShadowMapping() const
+    -> ShadowMapping
+{
+    auto const & lighting = cameraSelector->getScene().getLighting();
+
+    auto const depthMapSize = Size<int>{1024, 1024};
+
+    return ShadowMapping{lighting, depthMapSize};
+}
+
 auto SceneRenderer::hasActiveCamera() const
     -> bool
 {
@@ -114,35 +132,15 @@ auto SceneRenderer::hasActiveCamera() const
     return (activeCamera != nullptr);
 }
 
-auto SceneRenderer::renderBodies() const
-    -> void
-{
-    auto const arrayObjectBinder = ScopedBinder{arrayObject};
-
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    assert(activeCamera != nullptr);
-
-    auto const & lightView = lightingView.getSpotView().at(0);
-
-    renderDepthMap(lightView);
-
-    renderNonPickedBodies(*activeCamera, lightView);
-
-    renderPickedBodies(*activeCamera, lightView);
-}
-
-auto SceneRenderer::renderDepthMap(Camera const & ligthView) const
+auto SceneRenderer::renderDepthMapping()
     -> void
 {
     auto const & bodies = cameraSelector->getScene().getBodies();
 
-    depthBodyRenderer.render(bodies, ligthView);
+    depthBodyRenderer.render(bodies, shadowMapping.lightingView, shadowMapping.depthMapping);
 }
 
-auto SceneRenderer::renderNonPickedBodies(
-    Camera const & camera,
-    Camera const & lightView) const
+auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
     -> void
 {
     auto const nonSelectedBodies = pickedBodySelector->getNonSelectedBodies();
@@ -154,14 +152,10 @@ auto SceneRenderer::renderNonPickedBodies(
 
     auto const & lighting = cameraSelector->getScene().getLighting();
 
-    auto const & depthMap = depthBodyRenderer.getDepthMap();
-
-    standardBodyRenderer.render(nonSelectedBodies, camera, lighting, depthMap, lightView);
+    standardBodyRenderer.render(nonSelectedBodies, camera, lighting, shadowMapping);
 }
 
-auto SceneRenderer::renderPickedBodies(
-    Camera const & camera,
-    Camera const & lightView) const
+auto SceneRenderer::renderPickedBodies(Camera const & camera) const
     -> void
 {
     auto const selectedBodies = pickedBodySelector->getSelectedBodies();
@@ -173,11 +167,9 @@ auto SceneRenderer::renderPickedBodies(
 
     auto const & lighting = cameraSelector->getScene().getLighting();
 
-    auto const & depthMap = depthBodyRenderer.getDepthMap();
+    outlinedBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
 
-    outlinedBodyRenderer.render(selectedBodies, camera, lighting, depthMap, lightView);
-
-    standardBodyRenderer.render(selectedBodies, camera, lighting, depthMap, lightView);
+    standardBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
 }
 
 auto getCamera(SceneRenderer const & renderer)

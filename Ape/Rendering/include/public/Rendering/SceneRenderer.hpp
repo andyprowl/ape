@@ -1,11 +1,10 @@
 #pragma once
 
 #include <Rendering/CameraUniform.hpp>
-#include <Rendering/DepthMapping.hpp>
 #include <Rendering/DepthBodyRenderer.hpp>
 #include <Rendering/LightingUniform.hpp>
-#include <Rendering/LightingView.hpp>
 #include <Rendering/OutlinedBodyRenderer.hpp>
+#include <Rendering/ShadowMapping.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardBodyRenderer.hpp>
 #include <Rendering/Viewport.hpp>
@@ -59,22 +58,22 @@ public:
 
 private:
 
+    auto makeShadowMapping() const
+        -> ShadowMapping;
+
     auto hasActiveCamera() const
         -> bool;
 
     auto clear() const
         -> void;
 
-    auto renderBodies() const
+    auto renderDepthMapping()
         -> void;
 
-    auto renderDepthMap(Camera const & ligthView) const
+    auto renderNonPickedBodies(Camera const & camera) const
         -> void;
 
-    auto renderNonPickedBodies(Camera const & camera, Camera const & lightView) const
-        -> void;
-
-    auto renderPickedBodies(Camera const & camera, Camera const & lightView) const
+    auto renderPickedBodies(Camera const & camera) const
         -> void;
 
 private:
@@ -95,9 +94,7 @@ private:
 
     Viewport viewport;
 
-    LightingView lightingView;
-
-    DepthMapping depthMapping;
+    ShadowMapping shadowMapping;
 
     glm::vec3 backgroundColor;
 

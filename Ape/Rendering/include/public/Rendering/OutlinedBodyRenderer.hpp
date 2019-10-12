@@ -11,6 +11,7 @@ namespace ape
 class Body;
 class Camera;
 class Lighting;
+class ShadowMapping;
 
 class OutlinedBodyRenderer
 {
@@ -34,8 +35,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        DepthMap const & depthMap,
-        Camera const & lightView) const
+        ShadowMapping const & shadowMapping) const
         -> void;
 
 private:
@@ -44,8 +44,7 @@ private:
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
-        DepthMap const & depthMap,
-        Camera const & lightView) const
+        ShadowMapping const & shadowMapping) const
         -> void;
 
     auto performWireframeRenderingWhereStencilBuffferIsNotFilled(

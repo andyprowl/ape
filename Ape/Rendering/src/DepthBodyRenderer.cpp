@@ -1,6 +1,8 @@
 #include <Rendering/DepthBodyRenderer.hpp>
 
+#include <Rendering/DepthMapping.hpp>
 #include <Rendering/DepthShaderProgram.hpp>
+#include <Rendering/LightingView.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 
 #include <Scene/Body.hpp>
@@ -19,8 +21,6 @@ namespace ape
 
 namespace
 {
-
-auto const depthMapSize = Size<int>{1'024, 1'024};
 
 auto asReference(Body const & body)
     -> Body const &
@@ -41,43 +41,40 @@ DepthBodyRenderer::DepthBodyRenderer(
     ShapeRenderer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
-    , depthMap{depthMapSize}
 {
 }
 
-auto DepthBodyRenderer::render(BodyRange const & bodies, Camera const & lightView) const
-    -> void
-{
-    renderBodies(bodies, lightView);
-}
-
-auto DepthBodyRenderer::render(BodyContainerView const & bodies, Camera const & lightView) const
-    -> void
-{
-    renderBodies(bodies, lightView);
-}
-
-auto DepthBodyRenderer::getDepthMap() const
-    -> DepthMap const &
-{
-    return depthMap;
-}
-
-auto DepthBodyRenderer::getDepthMapSize() const
-    -> Size<int>
-{
-    return depthMap.getSize();
-}
-
-template<typename Range>
-auto DepthBodyRenderer::renderBodies(Range const & bodies, Camera const & lightView) const
+auto DepthBodyRenderer::render(
+    BodySetView const & bodies,
+    LightingView const & lightingView,
+    DepthMapping & target) const
     -> void
 {
     shader->use();
 
-    auto const binder = ScopedBinder{depthMap.getFrameBuffer()};
+    auto const & spotLightingView = lightingView.getSpotView();
 
-    auto const mapSize = depthMap.getSize();
+    auto & spotDepthMapping = target.getSpotMapping();
+
+    for (auto i = 0u; i < spotLightingView.size(); ++i)
+    {
+        auto const & spotView = spotLightingView[i];
+
+        auto & depthMap = spotDepthMapping[i];
+
+        render(bodies, spotView, depthMap);
+    }
+}
+
+auto DepthBodyRenderer::render(
+    BodySetView const & bodies,
+    Camera const & lightView,
+    DepthMap & target) const
+    -> void
+{
+    auto const binder = ScopedBinder{target.getFrameBuffer()};
+
+    auto const mapSize = target.getSize();
 
     glViewport(0, 0, mapSize.width, mapSize.height);
 
