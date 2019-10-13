@@ -1,7 +1,10 @@
 #pragma once
 
 #include <Rendering/CameraUniform.hpp>
+#include <Rendering/DepthMappingUniform.hpp>
 #include <Rendering/LightingUniform.hpp>
+#include <Rendering/LightingViewUniform.hpp>
+#include <Rendering/MaterialUniform.hpp>
 
 #include <GpuResource/ShaderProgram.hpp>
 
@@ -17,21 +20,21 @@ public:
 
 public:
 
-    Uniform<Camera> camera;
-
-    Uniform<Lighting> lighting;
-
-    Uniform<glm::mat4> lightTransformation;
-
     Uniform<glm::mat4> modelTransformation;
 
     Uniform<glm::mat4> cameraTransformation;
 
     Uniform<glm::mat3> normalTransformation;
 
-    Uniform<glm::vec3> materialAmbient;
+    Uniform<Camera> camera;
 
-    Uniform<float> materialShininess;
+    Uniform<Lighting> lighting;
+
+    Uniform<LightingView> lightingView;
+
+    Uniform<DepthMapping> depthMapping;
+
+    Uniform<Material> material;
 
     Uniform<bool> useBlinnPhongModel;
 

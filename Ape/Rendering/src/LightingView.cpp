@@ -1,5 +1,6 @@
 #include <Rendering/LightingView.hpp>
 
+#include <Scene/Camera.hpp>
 #include <Scene/Lighting.hpp>
 
 #include <Range/Transform.hpp>
@@ -11,7 +12,7 @@ namespace
 {
 
 auto makeSpotView(SpotLight const & light, Size<int> const & viewSize)
-    -> Camera
+    -> glm::mat4
 {
     auto const aspectRatio = viewSize.width / static_cast<float>(viewSize.height);
 
@@ -19,11 +20,18 @@ auto makeSpotView(SpotLight const & light, Size<int> const & viewSize)
 
     auto const viewUp = glm::vec3{0.0f, 1.0f, 0.0f};
 
-    return {light.getPosition(), light.getDirection(), viewUp, fieldOfView, aspectRatio};
+    auto const camera = Camera{
+        light.getPosition(),
+        light.getDirection(),
+        viewUp,
+        fieldOfView,
+        aspectRatio};
+
+    return camera.getTransformation();
 }
 
 auto makeSpotView(Lighting const & lighting, Size<int> const & viewSize)
-    -> std::vector<Camera>
+    -> std::vector<glm::mat4>
 {
     return transform(lighting.spot, [&viewSize] (SpotLight const & light)
     {
@@ -42,19 +50,19 @@ LightingView::LightingView(Lighting const & lighting, Size<int> const & viewSize
 }
 
 auto LightingView::getDirectionalView() const
-    -> std::vector<Camera> const &
+    -> std::vector<glm::mat4> const &
 {
     return directionalView;
 }
 
 auto LightingView::getSpotView() const
-    -> std::vector<Camera> const &
+    -> std::vector<glm::mat4> const &
 {
     return spotView;
 }
 
 auto LightingView::getPointView() const
-    -> std::vector<Camera> const &
+    -> std::vector<glm::mat4> const &
 {
     return pointView;
 }

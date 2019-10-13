@@ -37,7 +37,10 @@ public:
 
 private:
 
-    auto render(BodySetView const & bodies, Camera const & lightView, DepthMap & target) const
+    auto render(
+        BodySetView const & bodies,
+        glm::mat4 const & lightTransformation,
+        DepthMap & target) const
         -> void;
 
     auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const

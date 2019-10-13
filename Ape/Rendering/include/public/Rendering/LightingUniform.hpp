@@ -3,6 +3,7 @@
 #include <Scene/Lighting.hpp>
 
 #include <GpuResource/ShaderProgram.hpp>
+#include <GpuResource/VectorUniform.hpp>
 
 namespace ape
 {
@@ -300,7 +301,7 @@ public:
 
 public:
 
-    Uniform(ShaderProgram & program, std::string prefix)
+    Uniform(ShaderProgram & program, std::string const & prefix)
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, prefix + ".directional"}
@@ -333,11 +334,11 @@ public:
 
 public:
 
-    Uniform<std::vector<PointLightUniform>> point;
+    SizedVectorUniform<PointLightUniform> point;
 
-    Uniform<std::vector<SpotLightUniform>> spot;
+    SizedVectorUniform<SpotLightUniform> spot;
 
-    Uniform<std::vector<DirectionalLightUniform>> directional;
+    SizedVectorUniform<DirectionalLightUniform> directional;
 
 };
 

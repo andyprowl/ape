@@ -13,8 +13,12 @@ class CouldNotCompileShader : public std::logic_error
 
 public:
 
-    explicit CouldNotCompileShader(std::string message)
-        : logic_error{"Failed to compile vertex shader: " + std::move(message)}
+    CouldNotCompileShader(std::string compilerMessage, std::string type)
+        : logic_error{
+            "Failed to compile " +
+            std::move(type) +
+            " shader: " +
+            std::move(compilerMessage)}
     {
     }
 

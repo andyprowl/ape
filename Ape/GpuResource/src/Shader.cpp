@@ -20,6 +20,11 @@ auto const shaderTypeMap = std::unordered_map<Shader::Type, GLenum>{
     {Shader::Type::geometry, GL_GEOMETRY_SHADER},
     {Shader::Type::fragment, GL_FRAGMENT_SHADER}};
 
+auto const shaderTypeFormatMap = std::unordered_map<Shader::Type, std::string>{
+    {Shader::Type::vertex, "vertex"},
+    {Shader::Type::geometry, "geometry"},
+    {Shader::Type::fragment, "fragment"}};
+
 auto convertToOpenGLShaderType(Shader::Type const type)
     -> GLenum
 {
@@ -51,7 +56,7 @@ auto convertFromOpenGLShaderType(GLenum const type)
     return Shader::Type::unknown;
 }
 
-auto checkShaderCompilationOutcome(int const shaderId)
+auto checkShaderCompilationOutcome(int const shaderId, Shader::Type const shaderType)
     -> void
 {
     auto success = int{};
@@ -67,7 +72,7 @@ auto checkShaderCompilationOutcome(int const shaderId)
 
     glGetShaderInfoLog(shaderId, sizeof(infoLog), nullptr, infoLog.data());
 
-    throw CouldNotCompileShader{infoLog.data()};
+    throw CouldNotCompileShader{infoLog.data(), shaderTypeFormatMap.at(shaderType)};
 }
 
 } // unnamed namespace
@@ -89,7 +94,7 @@ auto Shader::compile(std::string const & sourceCode)
 
     glCompileShader(id);
 
-    checkShaderCompilationOutcome(id);
+    checkShaderCompilationOutcome(id, getType());
 
     assert(getSourceCode() == sourceCode);
 }

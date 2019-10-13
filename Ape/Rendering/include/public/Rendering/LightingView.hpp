@@ -1,8 +1,10 @@
 #pragma once
 
-#include <Scene/Camera.hpp>
-
 #include <Mathematics/Size.hpp>
+
+#include <Signal/ScopedSignalConnection.hpp>
+
+#include <glm/mat4x4.hpp>
 
 #include <vector>
 
@@ -20,13 +22,13 @@ public:
     LightingView(Lighting const & lighting, Size<int> const & viewSize);
 
     auto getDirectionalView() const
-        -> std::vector<Camera> const &;
+        -> std::vector<glm::mat4> const &;
 
     auto getSpotView() const
-        -> std::vector<Camera> const &;
+        -> std::vector<glm::mat4> const &;
 
     auto getPointView() const
-        -> std::vector<Camera> const &;
+        -> std::vector<glm::mat4> const &;
 
     auto setViewSize(Size<int> const & newViewSize)
         -> void;
@@ -48,11 +50,11 @@ private:
 
     Size<int> viewSize;
 
-    std::vector<Camera> directionalView;
+    std::vector<glm::mat4> directionalView;
 
-    std::vector<Camera> spotView;
+    std::vector<glm::mat4> spotView;
 
-    std::vector<Camera> pointView;
+    std::vector<glm::mat4> pointView;
 
     std::vector<ScopedSignalConnection> lightChangeHandlerConnections;
 

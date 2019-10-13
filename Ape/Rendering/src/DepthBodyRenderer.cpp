@@ -68,7 +68,7 @@ auto DepthBodyRenderer::render(
 
 auto DepthBodyRenderer::render(
     BodySetView const & bodies,
-    Camera const & lightView,
+    glm::mat4 const & lightTransformation,
     DepthMap & target) const
     -> void
 {
@@ -79,8 +79,6 @@ auto DepthBodyRenderer::render(
     glViewport(0, 0, mapSize.width, mapSize.height);
 
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    auto const & lightTransformation = lightView.getTransformation();
 
     for (auto const & body : bodies)
     {

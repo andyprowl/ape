@@ -22,21 +22,16 @@ auto buildStandardShader()
 
 StandardShaderProgram::StandardShaderProgram()
     : ShaderProgram{buildStandardShader()}
-    , camera{*this, "camera"}
-    , lighting{*this, "lighting"}
-    , lightTransformation{*this, "lightTransformation"}
     , modelTransformation{*this, "transform.model"}
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}
-    , materialAmbient{*this, "material.ambient"}
-    , materialShininess{*this, "material.shininess"}
+    , camera{*this, "camera"}
+    , lighting{*this, "lighting"}
+    , lightingView{*this, "lightingView"}
+    , depthMapping{*this, "depthMapping", 2}
+    , material{*this, "material", 0, 1}
     , useBlinnPhongModel{*this, "useBlinnPhongModel", true}
 {
-    use();
-
-    getUniform<int>("material.diffuse") = 0;
-
-    getUniform<int>("material.specular") = 1;
 }
 
 } // namespace ape

@@ -1,5 +1,16 @@
 #version 450 core
 
+// IMPORTANT:
+// By convention, we call the uniform that contains the size of a uniform array UA as UAArraySize,
+// so for example the size of the "point" array is held in a uniform named pointArraySize.
+// The CPU side of the software relies on this naming convention.
+
+#define MAX_NUM_OF_POINT_LIGHTS 8
+
+#define MAX_NUM_OF_SPOT_LIGHTS 8
+
+#define MAX_NUM_OF_DIRECTIONAL_LIGHTS 8
+
 struct Vertex
 {
 
@@ -9,7 +20,16 @@ struct Vertex
 
     vec2 textureCoords;
 
-    vec4 lightSystemPosition;
+};
+
+struct Transform
+{
+
+    mat4 model;
+
+    mat4 camera;
+
+    mat3 normal;
 
 };
 
@@ -101,16 +121,6 @@ struct DirectionalLight
 struct Lighting
 {
 
-    // By convention we call the uniform that contains the size of a uniform array UA as
-    // UAArraySize, so for example the size of the "point" array is held in a uniform named
-    // pointArraySize.
-
-    #define MAX_NUM_OF_POINT_LIGHTS 8
-
-    #define MAX_NUM_OF_SPOT_LIGHTS 8
-
-    #define MAX_NUM_OF_DIRECTIONAL_LIGHTS 8
-
     PointLight point[MAX_NUM_OF_POINT_LIGHTS];
 
     int pointArraySize;
@@ -125,7 +135,42 @@ struct Lighting
 
 };
 
+struct LightingView
+{
+
+    //mat4 point[MAX_NUM_OF_POINT_LIGHTS];
+
+    mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
+
+    //mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+
+};
+
+struct DepthMapping
+{
+
+    //sampler2D point[MAX_NUM_OF_POINT_LIGHTS];
+
+    sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
+
+    //sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+
+};
+
+struct LightSpacePositioning
+{
+
+    //vec4 point[MAX_NUM_OF_POINT_LIGHTS];
+
+    vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
+
+    //vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+
+};
+
 in Vertex vertex;
+
+in LightSpacePositioning lightSpacePositioning;
 
 out vec4 fragmentColor;
 
@@ -135,7 +180,9 @@ uniform Material material;
 
 uniform Lighting lighting;
 
-layout(binding = 2) uniform sampler2D depthMap;
+uniform LightingView lightingView;
+
+uniform DepthMapping depthMapping;
 
 uniform bool useBlinnPhongModel;
 
@@ -148,9 +195,9 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
          attenuation.quadratic * (sourceDistance * sourceDistance));
 }
 
-float calculateShadow(SpotLight light)
+float calculateShadowFactor(SpotLight light, vec4 lightSpacePosition, sampler2D depthMap)
 {
-    vec3 lightProjectionPosition = vertex.lightSystemPosition.xyz / vertex.lightSystemPosition.w;
+    vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
     vec3 depthMapPosition = lightProjectionPosition * 0.5 + 0.5;
 
@@ -160,7 +207,7 @@ float calculateShadow(SpotLight light)
 
     float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, light.direction))), 0.000005);
     
-    return ((currentDepth - bias) > closestDepth) ? 1.0 : 0.0;
+    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }
 
 vec3 computeAmbientLight(LightColor color)
@@ -277,18 +324,20 @@ vec3 computeSpotLighting()
     {
         SpotLight light = lighting.spot[i];
 
-        if (light.isTurnedOn)
+        if (!light.isTurnedOn)
+        {
+            continue;
+        }
+
+        vec4 lightSpacePosition = lightSpacePositioning.spot[i];
+
+        float shadow = calculateShadowFactor(light, lightSpacePosition, depthMapping.spot[i]);
+
+        if (shadow > 0.0)
         {
             vec3 contribution = computeSpotLight(light);
 
-            if (i == 0)
-            {
-                float shadow = calculateShadow(light);
-
-                contribution = (1.0 - shadow) * contribution;
-            }
-
-            color += contribution;
+            color += shadow * contribution;
         }
     }
 

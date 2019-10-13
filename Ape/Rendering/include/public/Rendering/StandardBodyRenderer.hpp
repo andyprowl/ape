@@ -38,16 +38,24 @@ public:
 
 private:
 
-    auto renderBody(
-        Body const & body,
-        glm::mat4 const & cameraTransformation,
-        glm::mat4 const & lightTransformation) const
+    auto setupViewport() const
         -> void;
 
-    auto renderBodyPart(
+    auto setupInvariantUniforms(
+        Camera const & camera,
+        Lighting const & lighting,
+        ShadowMapping const & shadowMapping) const
+        -> void;
+
+    auto renderBody(Body const & body, glm::mat4 const & cameraTransformation) const
+        -> void;
+
+    auto renderBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
+        -> void;
+
+    auto setupBodyPartUniforms(
         BodyPart const & part,
-        glm::mat4 const & cameraTransformation,
-        glm::mat4 const & lightTransformation) const
+        glm::mat4 const & cameraTransformation) const
         -> void;
 
     auto renderMesh(Mesh const & mesh) const

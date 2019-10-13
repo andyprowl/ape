@@ -35,26 +35,17 @@ auto StandardBodyRenderer::render(
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
-
     shader->use();
 
-    shader->camera.set(camera);
+    setupViewport();
 
-    shader->lighting.set(lighting);
-
-    // TODO: Hardcoding #2 is not correct. Texture unit should be determined in some other way.
-    shadowMapping.depthMapping.getSpotMapping()[0].getTexture().bind(2);
-
-    auto const & lightView = shadowMapping.lightingView.getSpotView()[0];
+    setupInvariantUniforms(camera, lighting, shadowMapping);
 
     auto const & cameraTransformation = camera.getTransformation();
 
-    auto const & lightTransformation = lightView.getTransformation();
-
     for (auto const body : bodies)
     {
-        renderBody(*body, cameraTransformation, lightTransformation);
+        renderBody(*body, cameraTransformation);
     }
 }
 
@@ -64,22 +55,54 @@ auto StandardBodyRenderer::setViewport(Viewport const & newViewport)
     viewport = newViewport;
 }
 
+auto StandardBodyRenderer::setupViewport() const
+    -> void
+{
+    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
+}
+
+auto StandardBodyRenderer::setupInvariantUniforms(
+    Camera const & camera,
+    Lighting const & lighting,
+    ShadowMapping const & shadowMapping) const
+    -> void
+{
+    shader->camera.set(camera);
+
+    shader->lighting.set(lighting);
+
+    shader->lightingView.set(shadowMapping.lightingView);
+
+    shader->depthMapping.set(shadowMapping.depthMapping);
+}
+
 auto StandardBodyRenderer::renderBody(
     Body const & body,
-    glm::mat4 const & cameraTransformation,
-    glm::mat4 const & lightTransformation) const
+    glm::mat4 const & cameraTransformation) const
     -> void
 {
     for (auto const & part : body.getParts())
     {
-        renderBodyPart(part, cameraTransformation, lightTransformation);
+        renderBodyPart(part, cameraTransformation);
     }
 }
 
 auto StandardBodyRenderer::renderBodyPart(
     BodyPart const & part,
-    glm::mat4 const & cameraTransformation,
-    glm::mat4 const & lightTransformation) const
+    glm::mat4 const & cameraTransformation) const
+    -> void
+{
+    setupBodyPartUniforms(part, cameraTransformation);
+
+    for (auto const mesh : part.getModel().getMeshes())
+    {
+        renderMesh(*mesh);
+    }
+}
+
+auto StandardBodyRenderer::setupBodyPartUniforms(
+    BodyPart const & part,
+    glm::mat4 const & cameraTransformation) const
     -> void
 {
     auto const & modelTransformation = part.getGlobalTransformation();
@@ -89,13 +112,6 @@ auto StandardBodyRenderer::renderBodyPart(
     shader->cameraTransformation = cameraTransformation * modelTransformation;
 
     shader->normalTransformation = part.getGlobalNormalTransformation();
-
-    shader->lightTransformation = lightTransformation * modelTransformation;
-
-    for (auto const mesh : part.getModel().getMeshes())
-    {
-        renderMesh(*mesh);
-    }
 }
 
 auto StandardBodyRenderer::renderMesh(Mesh const & mesh) const
@@ -103,19 +119,7 @@ auto StandardBodyRenderer::renderMesh(Mesh const & mesh) const
 {
     auto const & material = mesh.getMaterial();
 
-    shader->materialAmbient = material.ambient;
-
-    shader->materialShininess = material.shininess;
-
-    if (material.diffuseMap)
-    {
-        material.diffuseMap->bind(0);
-    }
-    
-    if (material.specularMap)
-    {
-        material.specularMap->bind(1);
-    }
+    shader->material = material;
 
     auto const & shape = mesh.getShape();
     
