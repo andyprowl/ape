@@ -50,19 +50,26 @@ auto DepthBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
-    shader->use();
+    auto const shaderBinder = ScopedBinder{*shader};
 
-    auto const & spotLightingView = lightingView.getSpotView();
+    render(bodies, lightingView.getSpotView(), target.getSpotMapping());
 
-    auto & spotDepthMapping = target.getSpotMapping();
+    render(bodies, lightingView.getDirectionalView(), target.getDirectionalMapping());
+}
 
-    for (auto i = 0u; i < spotLightingView.size(); ++i)
+auto DepthBodyRenderer::render(
+    BodySetView const & bodies,
+    std::vector<glm::mat4> const & lightViews,
+    std::vector<DepthMap> & depthMaps) const
+    -> void
+{
+    for (auto i = 0u; i < lightViews.size(); ++i)
     {
-        auto const & spotView = spotLightingView[i];
+        auto const & lightView = lightViews[i];
 
-        auto & depthMap = spotDepthMapping[i];
+        auto & depthMap = depthMaps[i];
 
-        render(bodies, spotView, depthMap);
+        render(bodies, lightView, depthMap);
     }
 }
 

@@ -103,7 +103,12 @@ private:
 
         for (auto & camera : scene.getCameras())
         {
-            camera.setAspectRatio(aspectRatio);
+            auto const perspective = camera.getProjection().tryAs<PerspectiveProjection>();
+
+            if (perspective != nullptr)
+            {
+                perspective->setAspectRatio(aspectRatio);
+            }
         }
     }
 

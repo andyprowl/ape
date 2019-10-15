@@ -10,17 +10,6 @@
 namespace ape
 {
 
-namespace
-{
-
-auto toggle(bool & b)
-    -> void
-{
-    b = !b;
-}
-
-} // unnamed namespace
-
 StandardInputHandler::StandardInputHandler(
     Window & handledWindow,
     CameraSelector & cameraSelector,
@@ -217,7 +206,7 @@ auto StandardInputHandler::togglePointLight(int const index) const
         return;
     }
 
-    toggle(lighting.point[index].isTurnedOn);
+    lighting.point[index].toggle();
 }
 
 auto StandardInputHandler::toggleSpotLight(int const index) const
@@ -232,7 +221,7 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
         return;
     }
 
-    toggle(lighting.spot[index].isTurnedOn);
+    lighting.spot[index].toggle();
 }
 
 auto StandardInputHandler::toggleDirectionalLight(int const index) const
@@ -247,7 +236,7 @@ auto StandardInputHandler::toggleDirectionalLight(int const index) const
         return;
     }
 
-    toggle(lighting.directional[index].isTurnedOn);
+    lighting.directional[index].toggle();
 }
 
 auto StandardInputHandler::switchToCamera(int const index)

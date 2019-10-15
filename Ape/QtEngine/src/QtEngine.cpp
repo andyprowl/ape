@@ -86,9 +86,16 @@ private:
             return;
         }
 
+        auto perspective = camera->getProjection().tryAs<PerspectiveProjection>();
+
+        if (perspective == nullptr)
+        {
+            return;
+        }
+
         auto const aspectRatio = static_cast<float>(size.width) / size.height;
 
-        camera->setAspectRatio(aspectRatio);
+        perspective->setAspectRatio(aspectRatio);
     }
 
 private:

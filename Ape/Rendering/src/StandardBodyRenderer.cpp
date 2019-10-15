@@ -12,6 +12,7 @@
 #include <Model/Mesh.hpp>
 #include <Model/ModelPart.hpp>
 
+#include <GpuResource/ScopedBinder.hpp>
 #include <GpuResource/Texture.hpp>
 
 #include <glad/glad.h>
@@ -35,7 +36,7 @@ auto StandardBodyRenderer::render(
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    shader->use();
+    auto const shaderBinder = ScopedBinder{*shader};
 
     setupViewport();
 

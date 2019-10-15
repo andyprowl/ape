@@ -142,7 +142,7 @@ struct LightingView
 
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -153,7 +153,7 @@ struct DepthMapping
 
     sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -164,7 +164,7 @@ struct LightSpacePositioning
 
     vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -195,7 +195,7 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
          attenuation.quadratic * (sourceDistance * sourceDistance));
 }
 
-float calculateShadowFactor(SpotLight light, vec4 lightSpacePosition, sampler2D depthMap)
+float calculateShadowFactor(vec3 lightDirection, vec4 lightSpacePosition, sampler2D depthMap)
 {
     vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
@@ -205,7 +205,7 @@ float calculateShadowFactor(SpotLight light, vec4 lightSpacePosition, sampler2D 
 
     float currentDepth = depthMapPosition.z;
 
-    float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, light.direction))), 0.000005);
+    float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
     
     return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }
@@ -331,7 +331,10 @@ vec3 computeSpotLighting()
 
         vec4 lightSpacePosition = lightSpacePositioning.spot[i];
 
-        float shadow = calculateShadowFactor(light, lightSpacePosition, depthMapping.spot[i]);
+        float shadow = calculateShadowFactor(
+            light.direction,
+            lightSpacePosition,
+            depthMapping.spot[i]);
 
         if (shadow > 0.0)
         {
@@ -365,9 +368,23 @@ vec3 computeDirectionalLighting()
     {
         DirectionalLight light = lighting.directional[i];
 
-        if (light.isTurnedOn)
+        if (!light.isTurnedOn)
         {
-            color += computeDirectionalLight(light);
+            continue;
+        }
+
+        vec4 lightSpacePosition = lightSpacePositioning.directional[i];
+
+        float shadow = calculateShadowFactor(
+            light.direction,
+            lightSpacePosition,
+            depthMapping.directional[i]);
+
+        if (shadow > 0.0)
+        {
+            vec3 contribution = computeDirectionalLight(light);
+
+            color += shadow * contribution;
         }
     }
 

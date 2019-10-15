@@ -136,13 +136,13 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        position = light.position;
+        position = light.getPosition();
 
-        color = light.color;
+        color = light.getColor();
 
-        attenuation = light.attenuation;
+        attenuation = light.getAttenuation();
 
-        isTurnedOn = light.isTurnedOn;
+        isTurnedOn = light.isTurnedOn();
     }
 
     auto operator = (ValueType const & light)
@@ -208,11 +208,11 @@ public:
 
         outerCutoffCosine = glm::cos(light.getCutoff().outer);
 
-        color = light.color;
+        color = light.getColor();
 
         attenuation = light.getAttenuation();
 
-        isTurnedOn = light.isTurnedOn;
+        isTurnedOn = light.isTurnedOn();
     }
 
     auto operator = (ValueType const & light)
@@ -266,11 +266,11 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        direction = light.direction;
+        direction = light.getDirection();
 
-        color = light.color;
+        color = light.getColor();
 
-        isTurnedOn = light.isTurnedOn;
+        isTurnedOn = light.isTurnedOn();
     }
 
     auto operator = (ValueType const & light)

@@ -38,7 +38,7 @@ auto getInitialAngles(CameraSelector const & selector)
         return {0.0, 0.0, 0.0};
     }
 
-    auto const direction = activeCamera->getDirection();
+    auto const direction = activeCamera->getView().getDirection();
 
     const auto pitch = asin(direction.y);
 
@@ -146,19 +146,26 @@ auto CameraSightMouseDriver::moveBy(Camera & camera, Offset<float> const & angul
 
     auto const newDirection = computeDirection(angles);
 
-    camera.setDirection(newDirection);
+    camera.getView().setDirection(newDirection);
 }
 
 auto CameraSightMouseDriver::zoomBy(Camera & camera, float const factor) const
     -> void
 {
-    auto const currentFieldOfView = glm::degrees(camera.getFieldOfView());
+    auto perspective = camera.getProjection().tryAs<PerspectiveProjection>();
+
+    if (perspective == nullptr)
+    {
+        return;
+    }
+
+    auto const currentFieldOfView = glm::degrees(perspective->getFieldOfView());
 
     auto const newFieldOfView = currentFieldOfView - factor;
 
     auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
 
-    camera.setFieldOfView(glm::radians(clampedFieldOfView));
+    perspective->setFieldOfView(glm::radians(clampedFieldOfView));
 }
 
 } // namespace ape

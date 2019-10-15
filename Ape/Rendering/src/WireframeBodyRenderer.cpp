@@ -1,5 +1,6 @@
 #include <Rendering/WireframeBodyRenderer.hpp>
 
+#include <Rendering/LineStyleProvider.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/WireframeShaderProgram.hpp>
 
@@ -10,39 +11,27 @@
 #include <Model/Mesh.hpp>
 #include <Model/ModelPart.hpp>
 
+#include <GpuResource/ScopedBinder.hpp>
+
 namespace ape
 {
 
 WireframeBodyRenderer::WireframeBodyRenderer(
     WireframeShaderProgram & shader,
     ShapeRenderer const & shapeRenderer,
-    LineStyle const & lineStyle)
+    LineStyleProvider const & styleProvider)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
-    , lineStyle{lineStyle}
+    , styleProvider{&styleProvider}
 {
-}
-
-auto WireframeBodyRenderer::getLineStyle() const
-    -> LineStyle
-{
-    return lineStyle;
-}
-
-auto WireframeBodyRenderer::setLineStyle(LineStyle const & newStyle)
-    -> void
-{
-    lineStyle = newStyle;
 }
 
 auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & camera) const
     -> void
 {
-    shader->use();
+    auto const shaderBinder = ScopedBinder{*shader};
 
-    shader->lineColor = lineStyle.color;
-
-    shader->lineWidth = lineStyle.width;
+    setupLineStyleUniforms();
 
     auto const & cameraTransformation = camera.getTransformation();
 
@@ -50,6 +39,16 @@ auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & came
     {
         renderBody(*body, cameraTransformation);
     }
+}
+
+auto WireframeBodyRenderer::setupLineStyleUniforms() const
+    -> void
+{
+    auto const & lineStyle = styleProvider->getStyle();
+
+    shader->lineColor = lineStyle.color;
+
+    shader->lineWidth = lineStyle.width;
 }
 
 auto WireframeBodyRenderer::renderBody(

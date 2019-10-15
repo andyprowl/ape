@@ -21,12 +21,6 @@ public:
     OutlinedBodyRenderer(
         StandardBodyRenderer standardRenderer,
         WireframeBodyRenderer wireframeRenderer);
-    
-    auto getOutliningStyle() const
-        -> LineStyle;
-
-    auto setOutliningStyle(LineStyle const & newStyle)
-        -> void;
 
     auto setViewport(Viewport const & newViewport)
         -> void;

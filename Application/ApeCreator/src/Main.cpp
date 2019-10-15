@@ -8,8 +8,11 @@
 #include <QtEngine/QtEngine.hpp>
 #include <QtEngine/QtWindow.hpp>
 
+#include <Rendering/DepthShaderProgram.hpp>
+#include <Rendering/LineStyleProvider.hpp>
 #include <Rendering/SceneRenderer.hpp>
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Rendering/ShapeBufferObjectRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 #include <Rendering/WireframeShaderProgram.hpp>
 
@@ -178,9 +181,13 @@ int main(int argc, char *argv[])
 
     auto standardShader = ape::StandardShaderProgram{};
 
+    auto depthShader = ape::DepthShaderProgram{};
+
     auto wireframeShader = ape::WireframeShaderProgram{};
 
     auto picker = ape::BodySelector{scene};
+
+    auto wireframeStyleProvider = ape::LineStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
 
     auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
     
@@ -192,14 +199,31 @@ int main(int argc, char *argv[])
     // corresponding rendering context!
     sceneView1.makeCurrent();
 
-    auto const shapeRenderer1 = ape::ShapeArrayObjectRenderer{assets.shapes};
+    //auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
+    auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectRenderer>();
+
+    auto depthBodyRenderer1 = ape::DepthBodyRenderer{depthShader, *shapeRenderer1};
+
+    auto standardBodyRenderer1 = ape::StandardBodyRenderer{standardShader, *shapeRenderer1};
+
+    auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
+        wireframeShader,
+        *shapeRenderer1,
+        wireframeStyleProvider};
+
+    auto outlinedBodyRenderer1 = ape::OutlinedBodyRenderer{
+        standardBodyRenderer1,
+        wireframeBodyRenderer1};
 
     auto renderer1 = ape::SceneRenderer{
+        std::move(shapeRenderer1),
+        std::move(depthBodyRenderer1),
+        std::move(standardBodyRenderer1),
+        std::move(wireframeBodyRenderer1),
+        std::move(outlinedBodyRenderer1),
         selector1,
         picker,
-        shapeRenderer1,
-        standardShader,
-        wireframeShader,
+        ape::Viewport{{0, 0}, sceneView1.getSize()},
         backgroundColor};
 
     auto inputHandler1 = SampleInputHandler{
@@ -207,7 +231,7 @@ int main(int argc, char *argv[])
         selector1,
         picker,
         standardShader,
-        renderer1,
+        wireframeStyleProvider,
         scene};
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
@@ -215,7 +239,7 @@ int main(int argc, char *argv[])
     sceneView1.engage(renderer1);
 
     engine1.start();
-
+    /*
     /// ---
 
     auto selector2 = ape::CameraSelector{scene};
@@ -224,14 +248,30 @@ int main(int argc, char *argv[])
     // corresponding rendering context!
     sceneView2.makeCurrent();
 
-    auto const shapeRenderer2 = ape::ShapeArrayObjectRenderer{assets.shapes};
+    auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
+
+    auto depthBodyRenderer2 = ape::DepthBodyRenderer{depthShader, *shapeRenderer2};
+
+    auto standardBodyRenderer2 = ape::StandardBodyRenderer{standardShader, *shapeRenderer2};
+
+    auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
+        wireframeShader,
+        *shapeRenderer2,
+        wireframeStyleProvider};
+
+    auto outlinedBodyRenderer2 = ape::OutlinedBodyRenderer{
+        standardBodyRenderer2,
+        wireframeBodyRenderer2};
 
     auto renderer2 = ape::SceneRenderer{
-        shapeRenderer2,
-        standardShader,
-        wireframeShader,
+        std::move(shapeRenderer2),
+        std::move(depthBodyRenderer2),
+        std::move(standardBodyRenderer2),
+        std::move(wireframeBodyRenderer2),
+        std::move(outlinedBodyRenderer2),
         selector2,
         picker,
+        ape::Viewport{{0, 0}, sceneView2.getSize()},
         backgroundColor};
 
     auto inputHandler2 = SampleInputHandler{
@@ -239,7 +279,7 @@ int main(int argc, char *argv[])
         selector2,
         picker,
         standardShader,
-        renderer2,
+        wireframeStyleProvider,
         scene};
 
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
@@ -257,15 +297,31 @@ int main(int argc, char *argv[])
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
     sceneView3.makeCurrent();
+     
+    auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
 
-    auto const shapeRenderer3 = ape::ShapeArrayObjectRenderer{assets.shapes};
+    auto depthBodyRenderer3 = ape::DepthBodyRenderer{depthShader, *shapeRenderer3};
+
+    auto standardBodyRenderer3 = ape::StandardBodyRenderer{standardShader, *shapeRenderer3};
+
+    auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
+        wireframeShader,
+        *shapeRenderer3,
+        wireframeStyleProvider};
+
+    auto outlinedBodyRenderer3 = ape::OutlinedBodyRenderer{
+        standardBodyRenderer3,
+        wireframeBodyRenderer3};
 
     auto renderer3 = ape::SceneRenderer{
+        std::move(shapeRenderer3),
+        std::move(depthBodyRenderer3),
+        std::move(standardBodyRenderer3),
+        std::move(wireframeBodyRenderer3),
+        std::move(outlinedBodyRenderer3),
         selector3,
         picker,
-        shapeRenderer3,
-        standardShader,
-        wireframeShader,
+        ape::Viewport{{0, 0}, sceneView3.getSize()},
         backgroundColor};
 
     auto inputHandler3 = SampleInputHandler{
@@ -273,7 +329,7 @@ int main(int argc, char *argv[])
         selector3,
         picker,
         standardShader,
-        renderer3,
+        wireframeStyleProvider,
         scene};
 
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
@@ -283,7 +339,7 @@ int main(int argc, char *argv[])
     sceneView3.engage(renderer3);
 
     engine3.start();
-
+    */
     // ---
 
     return app.exec();

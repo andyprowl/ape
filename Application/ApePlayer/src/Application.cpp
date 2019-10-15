@@ -8,6 +8,7 @@
 #include <GlfwEngine/GLFWGateway.hpp>
 
 #include <Rendering/DepthShaderProgram.hpp>
+#include <Rendering/LineStyleProvider.hpp>
 #include <Rendering/OutlinedBodyRenderer.hpp>
 #include <Rendering/SceneRenderer.hpp>
 #include <Rendering/ShapeArrayObjectRenderer.hpp>
@@ -61,12 +62,12 @@ private:
 
     ape::StandardBodyRenderer standardBodyRenderer{standardShader, *shapeRenderer};
 
-    ape::LineStyle wireframeStyle = ape::LineStyle{0.05f, {0.2f, 0.2f, 1.0f}};
+    ape::LineStyleProvider wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
 
     ape::WireframeBodyRenderer wireframeBodyRenderer{
         wireframeShader,
         *shapeRenderer,
-        wireframeStyle};
+        wireframeStyleProvider};
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
 
@@ -90,7 +91,7 @@ private:
         cameraSelector,
         bodyPicker,
         standardShader,
-        outlinedBodyRenderer,
+        wireframeStyleProvider,
         scene};
 
     ape::GLFWEngine GLFWEngine{window, sceneRenderer, inputHandler};

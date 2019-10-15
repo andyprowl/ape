@@ -32,9 +32,9 @@ public:
 
     Uniform<LightingView> lightingView;
 
-    Uniform<DepthMapping> depthMapping;
-
     Uniform<Material> material;
+
+    Uniform<DepthMapping> depthMapping;
 
     Uniform<bool> useBlinnPhongModel;
 

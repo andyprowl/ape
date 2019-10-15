@@ -169,7 +169,8 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
 
     outlinedBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
 
-    standardBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
+    // TODO: Is this necessary?
+    // standardBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
 }
 
 auto getCamera(SceneRenderer const & renderer)

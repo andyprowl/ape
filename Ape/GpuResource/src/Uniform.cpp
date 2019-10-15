@@ -1,5 +1,6 @@
 #include <GpuResource/Uniform.hpp>
 
+#include <GpuResource/ScopedBinder.hpp>
 #include <GpuResource/ShaderProgram.hpp>
 
 #include <CompilerSupport/CompilerWarnings.hpp>
@@ -34,8 +35,7 @@ BasicUniform<T>::BasicUniform(
     T const & value)
     : BasicUniform<T>{program, name}
 {
-
-    program.use();
+    auto const shaderBinder = ScopedBinder{program};
 
     set(value);
 }

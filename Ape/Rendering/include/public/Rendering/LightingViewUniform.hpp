@@ -23,7 +23,7 @@ public:
     Uniform(ShaderProgram & program, std::string const & prefix)
         //: point{program, prefix + ".point"}
         : spot{program, prefix + ".spot"}
-        //, directional{program, prefix + ".directional"}
+        , directional{program, prefix + ".directional"}
     {
     }
 
@@ -34,7 +34,7 @@ public:
 
         spot = lighting.getSpotView();
 
-        //directional = lighting.getDirectionalView();
+        directional = lighting.getDirectionalView();
     }
 
     auto operator = (ValueType const & light)
@@ -51,7 +51,7 @@ public:
 
     UnsizedVectorUniform<Uniform<glm::mat4>> spot;
 
-    //UnsizedVectorUniform<Uniform<glm::mat4>> directional;
+    UnsizedVectorUniform<Uniform<glm::mat4>> directional;
 
 };
 

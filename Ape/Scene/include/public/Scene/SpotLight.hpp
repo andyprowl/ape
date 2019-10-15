@@ -69,10 +69,6 @@ public:
     auto setPlacement(glm::vec3 const & newPosition, glm::vec3 const & newDirection)
         -> void;
 
-public:
-
-    mutable Signal<auto () -> void> onLightChanged;
-
 private:
 
     glm::vec3 position;

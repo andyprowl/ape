@@ -10,10 +10,11 @@ namespace ape
 namespace
 {
 
-auto makeSpotDepthMapping(Lighting const & lighting, Size<int> const & mapSize)
+template<typename LightContainer>
+auto makeDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
     -> std::vector<DepthMap>
 {
-    return transform(lighting.spot, [&mapSize] (auto const & ...)
+    return transform(lights, [&mapSize] (auto const & ...)
     {
         return DepthMap{mapSize};
     });
@@ -24,20 +25,22 @@ auto makeSpotDepthMapping(Lighting const & lighting, Size<int> const & mapSize)
 DepthMapping::DepthMapping(Lighting const & lighting, Size<int> const & mapSize)
     : lighting{&lighting}
     , mapSize{mapSize}
-    , spotMapping{makeSpotDepthMapping(lighting, mapSize)}
+    , pointMapping{makeDepthMapping(lighting.point, mapSize)}
+    , spotMapping{makeDepthMapping(lighting.spot, mapSize)}
+    , directionalMapping{makeDepthMapping(lighting.directional, mapSize)}
 {
 }
 
-auto DepthMapping::getDirectionalMapping()
+auto DepthMapping::getPointMapping()
     -> std::vector<DepthMap> &
 {
-    return directionalMapping;
+    return pointMapping;
 }
 
-auto DepthMapping::getDirectionalMapping() const
+auto DepthMapping::getPointMapping() const
     -> std::vector<DepthMap> const &
 {
-    return directionalMapping;
+    return pointMapping;
 }
 
 auto DepthMapping::getSpotMapping()
@@ -52,16 +55,16 @@ auto DepthMapping::getSpotMapping() const
     return spotMapping;
 }
 
-auto DepthMapping::getPointMapping()
+auto DepthMapping::getDirectionalMapping()
     -> std::vector<DepthMap> &
 {
-    return pointMapping;
+    return directionalMapping;
 }
 
-auto DepthMapping::getPointMapping() const
+auto DepthMapping::getDirectionalMapping() const
     -> std::vector<DepthMap> const &
 {
-    return pointMapping;
+    return directionalMapping;
 }
 
 } // namespace ape

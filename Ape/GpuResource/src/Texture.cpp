@@ -23,6 +23,10 @@ auto const pixelTypeMap = std::unordered_map<PixelType, GLenum>{
     {PixelType::unsignedByte, GL_UNSIGNED_BYTE},
     {PixelType::floatingPoint, GL_FLOAT}};
 
+auto const textureWrapping = std::unordered_map<TextureWrapping, GLint>{
+    {TextureWrapping::repeat, GL_REPEAT},
+    {TextureWrapping::clampToEdge, GL_CLAMP_TO_EDGE}};
+
 auto convertToOpenGLFormat(TextureFormat const format)
     -> GLenum
 {
@@ -85,12 +89,29 @@ auto convertFromOpenGLPixelType(GLenum const type)
     return PixelType::unknown;
 }
 
-auto setDefaultTextureOptions()
+auto convertToOpenGLTextureWrapping(TextureWrapping const wrapping)
+    -> GLint
+{
+    auto const it = textureWrapping.find(wrapping);
+
+    if (it == std::cend(textureWrapping))
+    {
+        assert(false);
+
+        return 0;
+    }
+
+    return it->second;
+}
+
+auto setTextureWrapping(TextureDescriptor const & descriptor)
     -> void
 {
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    auto const wrappingMode = convertToOpenGLTextureWrapping(descriptor.wrapping);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingMode);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingMode);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
@@ -122,7 +143,7 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    setDefaultTextureOptions();
+    setTextureWrapping(descriptor);
 
     setTextureImageData(descriptor);
 

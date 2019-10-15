@@ -55,7 +55,7 @@ ShaderProgram::ShaderProgram(
     link();
 }
 
-auto ShaderProgram::use() const
+auto ShaderProgram::bind() const
     -> void
 {
     auto const id = resource.get();
@@ -63,6 +63,12 @@ auto ShaderProgram::use() const
     glUseProgram(id);
 
     assert(glGetError() == GL_NO_ERROR);
+}
+
+auto ShaderProgram::unbind() const
+    -> void
+{
+    glUseProgram(0);
 }
 
 auto ShaderProgram::getVertexShader() const

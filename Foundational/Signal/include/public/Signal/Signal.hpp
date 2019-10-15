@@ -3,11 +3,18 @@
 #include <Signal/ScopedSignalConnection.hpp>
 
 #include <functional>
+#include <memory>
 #include <unordered_map>
 
 namespace ape
 {
 
+/*
+IMPORTANT: Signals are movable, but move-assignment will invalidate all existing connections to the
+assigned-to signal. Also, connections to moved-from signals are invalid.
+Invalidated ScopedConnection objects should be detached (by calling the detach() member function)
+before being destroyed. Failing to do so will result in undefined behavior at destruction.
+*/
 template<typename S>
 class Signal
 {
@@ -20,6 +27,22 @@ public:
 
 public:
 
+    Signal() = default;
+
+    Signal(Signal const & rhs) = delete;
+
+    // IMPORTANT: See the class description. Notice: NOT noexcept.
+    Signal(Signal && rhs) = default;
+
+    auto operator = (Signal const & rhs)
+        -> Signal & = delete;
+
+    // IMPORTANT: See the class description. Notice: NOT noexcept.
+    auto operator = (Signal && rhs)
+        -> Signal & = default;
+
+    ~Signal() = default;
+
     auto registerHandler(Handler handler)
         -> ScopedSignalConnection
     {
@@ -27,7 +50,7 @@ public:
 
         registrations.emplace(cookie, std::move(handler));
 
-        return ScopedSignalConnection{[=]
+        return ScopedSignalConnection{[this, cookie]
         { 
             return unregisterHandler(cookie);
         }};

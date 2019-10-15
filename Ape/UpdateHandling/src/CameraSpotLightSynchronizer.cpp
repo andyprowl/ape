@@ -29,9 +29,11 @@ auto CameraSpotlightSynchronizer::registerViewChangeEventHandler(
 auto CameraSpotlightSynchronizer::synchronize(Camera const & camera, SpotLight & light) const
     -> void
 {
-    auto const newPosition = camera.getPosition();
+    auto & view = camera.getView();
 
-    auto const newDirection = camera.getDirection();
+    auto const newPosition = view.getPosition();
+
+    auto const newDirection = view.getDirection();
 
     light.setPlacement(newPosition, newDirection);
 }

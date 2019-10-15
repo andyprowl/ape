@@ -2,6 +2,7 @@
 
 #include <Rendering/DepthMapping.hpp>
 
+#include <GpuResource/ScopedBinder.hpp>
 #include <GpuResource/ShaderProgram.hpp>
 #include <GpuResource/TextureUniform.hpp>
 #include <GpuResource/VectorUniform.hpp>
@@ -27,7 +28,7 @@ public:
         int const firstDepthMapUnit)
         //: point{program, prefix + ".point"}
         : spot{program, prefix + ".spot"}
-        //, directional{program, prefix + ".directional"}
+        , directional{program, prefix + ".directional"}
         , maxNumOfLightsPerType{8}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
@@ -41,7 +42,7 @@ public:
 
         setSpotMapping(mapping);
 
-        //setDirectionalMapping(mapping);
+        setDirectionalMapping(mapping);
     }
     
     auto operator = (ValueType const & mapping)
@@ -58,14 +59,14 @@ public:
 
     UnsizedVectorUniform<Uniform<Texture>> spot;
 
-    //UnsizedVectorUniform<Uniform<Texture>> directional;
+    UnsizedVectorUniform<Uniform<Texture>> directional;
 
 private:
 
     auto bindSamplers(ShaderProgram & program)
         -> void
     {
-        program.use();
+        auto const shaderBinder = ScopedBinder{program};
 
         auto index = firstDepthMapUnit;
 
@@ -80,22 +81,18 @@ private:
         {
             spot[i].bind(index++);
         }
-    
-        /*
+
         for (auto i = 0; i < maxNumOfLightsPerType; ++i)
         {
             directional[i].bind(index++);
         }
-        */
     }
 
     /*
     auto setPointMapping(DepthMapping const & mapping)
         -> void
     {
-        auto const baseIndex = firstDepthMapUnit;
-
-        setTextures(mapping.getPointMapping(), point, baseIndex);
+        setTextures(mapping.getPointMapping(), point);
     }
     */
 
@@ -104,16 +101,12 @@ private:
     {
         setTextures(mapping.getSpotMapping(), spot);
     }
-    
-    /*
+
     auto setDirectionalMapping(DepthMapping const & mapping)
         -> void
     {
-        auto const baseIndex = firstDepthMapUnit + (maxNumOfLightsPerType * 2);
-
-        setTextures(mapping.getDirectionalMapping(), directional, baseIndex);
+        setTextures(mapping.getDirectionalMapping(), directional);
     }
-    */
 
     auto setTextures(
         std::vector<DepthMap> const & source,

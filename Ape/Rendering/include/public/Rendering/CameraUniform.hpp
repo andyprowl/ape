@@ -21,7 +21,7 @@ public:
     auto set(const Camera & camera)
         -> void
     {
-        cameraPosition = camera.getPosition();
+        cameraPosition = camera.getView().getPosition();
     }
 
 public:

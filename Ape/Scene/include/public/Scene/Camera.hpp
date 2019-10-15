@@ -1,69 +1,67 @@
 #pragma once
 
+#include <Scene/CameraProjection.hpp>
+#include <Scene/CameraView.hpp>
+
 #include <Signal/Signal.hpp>
 
 #include <glm/mat4x4.hpp>
 
-#include <vector>
-
 namespace ape
 {
-
-class Mesh;
-class ShaderProgram;
-class Scene;
 
 class Camera
 {
 
 public:
 
-    using TransformEventSignature = auto (glm::mat4 const & t) -> void;
+    using TransformEventSignature = auto (glm::mat4 const & transformation) -> void;
 
 public:
 
     Camera(
-        glm::vec3 const & position,
-        glm::vec3 const & direction,
-        glm::vec3 const & up,
-        float fieldOfView,
-        float aspectRatio);
+        CameraView::Placement const & placement,
+        OrthographicProjection::Frustum const & frustum);
+
+    Camera(
+        CameraView::Placement const & placement,
+        PerspectiveProjection::Frustum const & frustum);
+
+    Camera(Camera const & rhs) = delete;
+
+    Camera(Camera && rhs) noexcept;
+
+    auto operator = (Camera const & rhs) noexcept
+        -> Camera & = delete;
+
+    auto operator = (Camera && rhs) noexcept
+        -> Camera &;
+
+    ~Camera() = default;
+
+    auto getView()
+        -> CameraView &;
 
     auto getView() const
-        -> glm::mat4;
+        -> CameraView const &;
+
+    auto setView(CameraView::Placement const & placement)
+        -> void;
+
+    auto getProjection()
+        -> CameraProjection &;
 
     auto getProjection() const
-        -> glm::mat4;
+        -> CameraProjection const &;
+
+    auto setProjection(OrthographicProjection::Frustum const & frustum)
+        -> void;
+
+    auto setProjection(PerspectiveProjection::Frustum const & frustum)
+        -> void;
 
     auto getTransformation() const
-        -> glm::mat4;
-
-    auto getPosition() const
-        -> glm::vec3;
-
-    auto setPosition(glm::vec3 const & newPosition)
-        -> void;
-
-    auto getDirection() const
-        -> glm::vec3;
-
-    auto setDirection(glm::vec3 const & newDirection)
-        -> void;
-
-    auto getUp() const
-        -> glm::vec3;
-
-    auto getFieldOfView() const
-        -> float;
-
-    auto setFieldOfView(float newFieldOfView)
-        -> void;
-
-    auto getAspectRatio() const
-        -> float;
-
-    auto setAspectRatio(float newAspectRatio)
-        -> void;
+        -> glm::mat4 const &;
 
 public:
 
@@ -75,33 +73,36 @@ public:
 
 private:
 
-    auto makeView() const
-        -> glm::mat4;
+    friend class CameraView;
 
-    auto makeProjection() const
-        -> glm::mat4;
+    friend class OrthographicProjection;
 
-    auto setViewAndFireEvent(glm::mat4 const & newView)
+    friend class PerspectiveProjection;
+
+private:
+
+    Camera(CameraView const & view, CameraProjection const & projection);
+
+    auto updateTransformationAfterViewChanged()
         -> void;
 
-    auto setProjectionAndFireEvent(glm::mat4 const & newProjection)
+    auto updateTransformationAfterViewChanged(glm::mat4 const & newView)
+        -> void;
+
+    auto updateTransformationAfterProjectionChanged()
+        -> void;
+
+    auto updateTransformationAfterProjectionChanged(glm::mat4 const & newProjection)
+        -> void;
+
+    auto setAsParentOfComponents()
         -> void;
 
 private:
 
-    glm::vec3 position;
+    CameraView view;
 
-    glm::vec3 direction;
-
-    glm::vec3 up;
-
-    float fieldOfView;
-
-    float aspectRatio;
-
-    glm::mat4 view;
-
-    glm::mat4 projection;
+    CameraProjection projection;
 
     glm::mat4 transformation;
 

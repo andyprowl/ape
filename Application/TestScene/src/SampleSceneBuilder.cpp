@@ -470,6 +470,8 @@ auto StatefulSceneBuilder::createCameras()
 auto StatefulSceneBuilder::createFrontCamera()
      -> ape::Camera &
 {
+    using Frustum = ape::PerspectiveProjection::Frustum;
+
     auto const position = glm::vec3{0.0f, 0.0f, 3.0f};
 
     auto const direction = glm::vec3{0.0f, 0.0f, -1.0f};
@@ -480,12 +482,18 @@ auto StatefulSceneBuilder::createFrontCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
+    auto const placement = ape::CameraView::Placement{position, direction, up};
+
+    auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
+
+    return scene.addCamera({placement, frustum});
 }
 
 auto StatefulSceneBuilder::createBackCamera()
      -> ape::Camera &
 {
+    using Frustum = ape::PerspectiveProjection::Frustum;
+
     auto const position = glm::vec3{0.0f, 0.0f, -3.0f};
 
     auto const direction = glm::vec3{0.0f, 0.0f, 1.0f};
@@ -496,12 +504,18 @@ auto StatefulSceneBuilder::createBackCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
+    auto const placement = ape::CameraView::Placement{position, direction, up};
+
+    auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
+
+    return scene.addCamera({placement, frustum});
 }
 
 auto StatefulSceneBuilder::createRightCamera()
      -> ape::Camera &
 {
+    using Frustum = ape::PerspectiveProjection::Frustum;
+
     auto const position = glm::vec3{5.0f, 0.0f, 0.0f};
 
     auto const direction = glm::vec3{-1.0f, 0.0f, 0.0f};
@@ -512,7 +526,11 @@ auto StatefulSceneBuilder::createRightCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    return scene.addCamera({position, direction, up, fieldOfView, aspectRatio});
+    auto const placement = ape::CameraView::Placement{position, direction, up};
+
+    auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
+
+    return scene.addCamera({placement, frustum});
 }
 
 auto StatefulSceneBuilder::createLighting()
@@ -623,7 +641,7 @@ auto StatefulSceneBuilder::createDirectionalLights()
 auto StatefulSceneBuilder::getDirectionalLightDirections()
     -> std::vector<glm::vec3>
 {
-    return {{0.0f, -1.0f, 0.0f}};
+    return {glm::normalize(glm::vec3{0.0f, -1.0f, -1.0f})};
 }
 
 auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
@@ -631,7 +649,7 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction)
 {
     auto const ambient = glm::vec3{0.0f, 0.0f, 0.0f};
 
-    auto const diffuse = glm::vec3{0.4f, 0.4f, 0.4f};
+    auto const diffuse = glm::vec3{0.3f, 0.3f, 0.3f};
 
     auto const specular = glm::vec3{0.2f, 0.2f, 0.2f};
 

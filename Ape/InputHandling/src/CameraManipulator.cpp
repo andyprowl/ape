@@ -16,29 +16,33 @@ namespace
 auto moveCameraAlongDirection(Camera & camera, float const magnitude)
     -> void
 {
-    auto const position = camera.getPosition();
+    auto & view = camera.getView();
 
-    auto const direction = camera.getDirection();
+    auto const position = view.getPosition();
+
+    auto const direction = view.getDirection();
 
     auto const newPosition = position + (direction * magnitude);
 
-    camera.setPosition(newPosition);
+    view.setPosition(newPosition);
 }
 
 auto moveCameraSideways(Camera & camera, float const magnitude)
     -> void
 {
-    auto const position = camera.getPosition();
+    auto & view = camera.getView();
 
-    auto const direction = camera.getDirection();
+    auto const position = view.getPosition();
 
-    auto const up = camera.getUp();
+    auto const direction = view.getDirection();
+
+    auto const up = view.getUp();
 
     auto const movementDirection = glm::cross(direction, up);
 
     auto const newPosition = position + (movementDirection * magnitude);
 
-    camera.setPosition(newPosition);
+    view.setPosition(newPosition);
 }
 
 } // unnamed namespace

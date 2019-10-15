@@ -28,8 +28,8 @@ StandardShaderProgram::StandardShaderProgram()
     , camera{*this, "camera"}
     , lighting{*this, "lighting"}
     , lightingView{*this, "lightingView"}
-    , depthMapping{*this, "depthMapping", 2}
     , material{*this, "material", 0, 1}
+    , depthMapping{*this, "depthMapping", 2}
     , useBlinnPhongModel{*this, "useBlinnPhongModel", true}
 {
 }

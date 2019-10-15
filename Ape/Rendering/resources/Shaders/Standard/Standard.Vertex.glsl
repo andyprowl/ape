@@ -142,7 +142,7 @@ struct LightingView
 
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -153,7 +153,7 @@ struct DepthMapping
 
     sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -164,7 +164,7 @@ struct LightSpacePositioning
 
     vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    //vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -203,5 +203,10 @@ void main()
     for (int i = 0; i < lighting.spotArraySize; ++i)
     {
         lightSpacePositioning.spot[i] = lightingView.spot[i] * modelPosition;
+    }
+
+    for (int i = 0; i < lighting.directionalArraySize; ++i)
+    {
+        lightSpacePositioning.directional[i] = lightingView.directional[i] * modelPosition;
     }
 }

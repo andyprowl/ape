@@ -4,7 +4,7 @@
 
 #include <InputHandling/Window.hpp>
 
-#include <Rendering/OutlinedBodyRenderer.hpp>
+#include <Rendering/LineStyleProvider.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
 #include <Scene/BodySelector.hpp>
@@ -63,12 +63,12 @@ SampleInputHandler::SampleInputHandler(
     ape::CameraSelector & cameraSelector,
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
-    ape::OutlinedBodyRenderer & outlinedBodyRenderer,
+    ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused SampleScene & scene)
     : StandardInputHandler{window, cameraSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
-    , outlinedBodyRenderer{&outlinedBodyRenderer}
+    , outlineStyleProvider{&outlineStyleProvider}
 {
     assert(&scene == &cameraSelector.getScene());
 }
@@ -202,7 +202,7 @@ auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) 
 auto SampleInputHandler::toggleBlinnPhongModel() const
     -> void
 {
-    standardShader->use();
+    standardShader->bind();
 
     standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
 }
@@ -243,11 +243,11 @@ auto SampleInputHandler::pickObjects() const
 auto SampleInputHandler::increaseOutlineWidth(float amount) const
     -> void
 {
-    auto const outliningStyle = outlinedBodyRenderer->getOutliningStyle();
+    auto const outliningStyle = outlineStyleProvider->getStyle();
 
     auto const newWidth = ape::clamp(outliningStyle.width + amount, 0.0f, 0.1f);
 
     auto const newStyle = ape::LineStyle{newWidth, outliningStyle.color};
 
-    outlinedBodyRenderer->setOutliningStyle(newStyle);
+    outlineStyleProvider->setStyle(newStyle);
 }

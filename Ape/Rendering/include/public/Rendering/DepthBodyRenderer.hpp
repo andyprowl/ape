@@ -6,6 +6,8 @@
 
 #include <glm/mat4x4.hpp>
 
+#include <vector>
+
 namespace ape
 {
 
@@ -36,6 +38,12 @@ public:
         -> void;
 
 private:
+
+    auto render(
+        BodySetView const & bodies,
+        std::vector<glm::mat4> const & lightViews,
+        std::vector<DepthMap> & depthMaps) const
+        -> void;
 
     auto render(
         BodySetView const & bodies,

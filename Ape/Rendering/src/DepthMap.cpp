@@ -17,6 +17,7 @@ auto makeDepthMapTexture(Size<int> const & size)
         size,
         TextureFormat::depthOnly,
         PixelType::floatingPoint,
+        TextureWrapping::clampToEdge,
         nullptr};
 
     return Texture{descriptor};

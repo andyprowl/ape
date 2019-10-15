@@ -12,6 +12,7 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
+class LineStyleProvider;
 class Mesh;
 class ShapeRenderer;
 class WireframeShaderProgram;
@@ -24,13 +25,7 @@ public:
     WireframeBodyRenderer(
         WireframeShaderProgram & shader,
         ShapeRenderer const & shapeRenderer,
-        LineStyle const & lineStyle);
-
-    auto getLineStyle() const
-        -> LineStyle;
-
-    auto setLineStyle(LineStyle const & newStyle)
-        -> void;
+        LineStyleProvider const & styleProvider);
 
     auto render(
         BodyRange const & bodies,
@@ -38,6 +33,9 @@ public:
         -> void;
 
 private:
+
+    auto setupLineStyleUniforms() const
+        -> void;
 
     auto renderBody(Body const & body, glm::mat4 const & transformation) const
         -> void;
@@ -53,8 +51,8 @@ private:
     WireframeShaderProgram * shader;
 
     ShapeRenderer const * shapeRenderer;
-
-    LineStyle lineStyle;
+    
+    LineStyleProvider const * styleProvider;
 
 };
 

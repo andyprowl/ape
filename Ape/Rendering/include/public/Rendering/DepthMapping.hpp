@@ -16,10 +16,10 @@ public:
 
     DepthMapping(Lighting const & lighting, Size<int> const & mapSize);
 
-    auto getDirectionalMapping()
+    auto getPointMapping()
         -> std::vector<DepthMap> &;
 
-    auto getDirectionalMapping() const
+    auto getPointMapping() const
         -> std::vector<DepthMap> const &;
 
     auto getSpotMapping() const
@@ -28,10 +28,10 @@ public:
     auto getSpotMapping()
         -> std::vector<DepthMap> &;
 
-    auto getPointMapping()
+    auto getDirectionalMapping()
         -> std::vector<DepthMap> &;
 
-    auto getPointMapping() const
+    auto getDirectionalMapping() const
         -> std::vector<DepthMap> const &;
 
 private:

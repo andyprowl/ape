@@ -6,164 +6,144 @@ namespace ape
 {
 
 Camera::Camera(
-    glm::vec3 const & position,
-    glm::vec3 const & direction,
-    glm::vec3 const & up,
-    float const fieldOfView,
-    float const aspectRatio)
-    : position{position}
-    , direction{normalize(direction)}
-    , up{glm::normalize(up)}
-    , fieldOfView{fieldOfView}
-    , aspectRatio{aspectRatio}
-    , view{makeView()}
-    , projection{makeProjection()}
-    , transformation{projection * view}
+    CameraView::Placement const & placement,
+    OrthographicProjection::Frustum const & frustum)
+    : Camera{CameraView{placement, *this}, CameraProjection{frustum, *this}}
 {
 }
 
-auto Camera::getView() const
-    -> glm::mat4
+Camera::Camera(
+    CameraView::Placement const & placement,
+    PerspectiveProjection::Frustum const & frustum)
+    : Camera{CameraView{placement, *this}, CameraProjection{frustum, *this}}
+{
+}
+
+Camera::Camera(Camera && rhs) noexcept
+    : view{std::move(rhs.view)}
+    , projection{std::move(rhs.projection)}
+    , transformation{rhs.transformation}
+{
+    setAsParentOfComponents();
+}
+
+auto Camera::operator = (Camera && rhs) noexcept
+    -> Camera &
+{
+    view = std::move(rhs.view);
+    
+    projection = std::move(rhs.projection);
+    
+    transformation = rhs.transformation;
+
+    setAsParentOfComponents();
+
+    return *this;
+}
+
+auto Camera::getView()
+    -> CameraView &
 {
     return view;
 }
 
-auto Camera::getProjection() const
-    -> glm::mat4
+auto Camera::getView() const
+    -> CameraView const &
+{
+    return view;
+}
+
+auto Camera::setView(CameraView::Placement const & placement)
+    -> void
+{
+    view = CameraView{placement, *this};
+
+    updateTransformationAfterViewChanged();
+}
+
+auto Camera::getProjection()
+    -> CameraProjection &
 {
     return projection;
 }
 
+auto Camera::getProjection() const
+    -> CameraProjection const &
+{
+    return projection;
+}
+
+auto Camera::setProjection(OrthographicProjection::Frustum const & frustum)
+    -> void
+{
+    projection = frustum;
+
+    updateTransformationAfterProjectionChanged();
+}
+
+auto Camera::setProjection(PerspectiveProjection::Frustum const & frustum)
+    -> void
+{
+    projection = frustum;
+
+    updateTransformationAfterProjectionChanged();
+}
+
 auto Camera::getTransformation() const
-    -> glm::mat4
+    -> glm::mat4 const &
 {
     return transformation;
 }
 
-auto Camera::getPosition() const
-    -> glm::vec3
+Camera::Camera(CameraView const & view, CameraProjection const & projection)
+    : view{view}
+    , projection{projection}
+    , transformation{projection.getTransformation() * view.getTransformation()}
 {
-    return position;
 }
 
-auto Camera::setPosition(glm::vec3 const & newPosition)
+auto Camera::updateTransformationAfterViewChanged()
     -> void
 {
-    if (position == newPosition)
-    {
-        return;
-    }
+    auto const & viewTransformation = view.getTransformation();
 
-    auto const offset = newPosition - position;
-
-    position = newPosition;
-
-    setViewAndFireEvent(glm::translate(view, -offset));
+    updateTransformationAfterViewChanged(viewTransformation);
 }
 
-auto Camera::getDirection() const
-    -> glm::vec3
-{
-    return direction;
-}
-
-auto Camera::setDirection(glm::vec3 const & newDirection)
+auto Camera::updateTransformationAfterViewChanged(glm::mat4 const & newView)
     -> void
 {
-    auto const normalizedDirection = glm::normalize(newDirection);
+    transformation = projection.getTransformation() * newView;
 
-    if (direction == normalizedDirection)
-    {
-        return;
-    }
+    onViewChanged.fire(newView);
 
-    direction = normalizedDirection;
-
-    auto const right = glm::normalize(glm::cross(direction, glm::vec3{0.0, 1.0, 0.0}));
-    
-    up = glm::cross(right, direction);
-    
-    setViewAndFireEvent(makeView());
+    onTransformationChanged.fire(transformation);
 }
 
-auto Camera::getUp() const
-    -> glm::vec3
-{
-    return up;
-}
-
-auto Camera::getFieldOfView() const
-    -> float
-{
-    return fieldOfView;
-}
-
-auto Camera::setFieldOfView(float const newFieldOfView)
+auto Camera::updateTransformationAfterProjectionChanged()
     -> void
 {
-    if (fieldOfView == newFieldOfView)
-    {
-        return;
-    }
+    auto const & projectionTransformation = projection.getTransformation();
 
-    fieldOfView = newFieldOfView;
-
-    setProjectionAndFireEvent(makeProjection());
+    updateTransformationAfterProjectionChanged(projectionTransformation);
 }
 
-auto Camera::getAspectRatio() const
-    -> float
-{
-    return aspectRatio;
-}
-
-auto Camera::setAspectRatio(float const newAspectRatio)
+auto Camera::updateTransformationAfterProjectionChanged(glm::mat4 const & newProjection)
     -> void
 {
-    if (aspectRatio == newAspectRatio)
-    {
-        return;
-    }
+    transformation = newProjection * view.getTransformation();
 
-    aspectRatio = newAspectRatio;
+    onProjectionChanged.fire(newProjection);
 
-    setProjectionAndFireEvent(makeProjection());
+    onTransformationChanged.fire(transformation);
 }
 
-auto Camera::makeView() const
-    -> glm::mat4
-{
-    return glm::lookAt(position, position + direction, up);
-}
-
-auto Camera::makeProjection() const
-    -> glm::mat4
-{
-    return glm::perspective(fieldOfView, aspectRatio, 0.1f, 100.0f);
-}
-
-auto Camera::setViewAndFireEvent(glm::mat4 const & newView)
+auto Camera::setAsParentOfComponents()
     -> void
 {
-    view = newView;
+    view.setParent(*this);
 
-    transformation = projection * view;
-
-    onViewChanged.fire(view);
-
-    onTransformationChanged.fire(view);
-}
-
-auto Camera::setProjectionAndFireEvent(glm::mat4 const & newProjection)
-    -> void
-{
-    projection = newProjection;
-
-    transformation = projection * view;
-
-    onProjectionChanged.fire(view);
-
-    onTransformationChanged.fire(view);
+    projection.setParent(*this);
 }
 
 } // namespace ape

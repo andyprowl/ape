@@ -12,4 +12,5 @@ AddPublicDependencies(
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
-    3rdParty::Glad)
+    3rdParty::Glad
+    Foundational::CompilerSupport)

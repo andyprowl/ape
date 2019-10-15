@@ -23,7 +23,7 @@ auto BodyPointLightSynchronizer::registerPositionChangeEventHandler(
     {
         if (isRoot(part))
         {
-            target.position = getPosition(source);
+            target.setPosition(getPosition(source));
         }
     });
 }

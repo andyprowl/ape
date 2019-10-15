@@ -45,18 +45,6 @@ OutlinedBodyRenderer::OutlinedBodyRenderer(
 {
 }
 
-auto OutlinedBodyRenderer::getOutliningStyle() const
-    -> LineStyle
-{
-    return wireframeRenderer.getLineStyle();
-}
-
-auto OutlinedBodyRenderer::setOutliningStyle(LineStyle const & newStyle)
-    -> void
-{
-    wireframeRenderer.setLineStyle(newStyle);
-}
-
 auto OutlinedBodyRenderer::setViewport(Viewport const & newViewport)
     -> void
 {

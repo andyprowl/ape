@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Signal/Signal.hpp>
+
 #include <glm/vec3.hpp>
 
 namespace ape
@@ -39,17 +41,35 @@ public:
 
 public:
 
-    Light(Color const & color, bool const isTurnedOn)
-        : color{color}
-        , isTurnedOn{isTurnedOn}
-    {
-    }
+    Light(Color const & color, bool isTurnedOn);
+
+    auto getColor() const
+        -> Color;
+
+    auto setColor(Color newColor)
+        -> void;
+
+    auto isTurnedOn() const
+        -> bool;
+
+    auto turnOn()
+        -> void;
+
+    auto turnOff()
+        -> void;
+
+    auto toggle()
+        -> void;
 
 public:
 
+    mutable Signal<auto () -> void> onLightChanged;
+
+private:
+
     Color color;
 
-    bool isTurnedOn;
+    bool isOn;
 
 };
 

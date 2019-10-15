@@ -50,7 +50,10 @@ public:
         std::optional<GeometryShader> geometryShader,
         FragmentShader fragmentShader);
 
-    auto use() const
+    auto bind() const
+        -> void;
+
+    auto unbind() const
         -> void;
 
     template<typename T>

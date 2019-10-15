@@ -11,6 +11,7 @@
 namespace ape
 {
 
+class DirectionalLight;
 class Lighting;
 class SpotLight;
 
@@ -35,13 +36,20 @@ public:
 
 private:
 
-    auto registerForLightChangeNotifications()
+    auto registerForSpotLightChangeNotifications()
         -> std::vector<ScopedSignalConnection>;
 
-    auto registerForLightChangeNotifications(SpotLight const & light)
+    auto registerForDirectionalLightChangeNotifications()
+        -> std::vector<ScopedSignalConnection>;
+
+    template<typename LightType>
+    auto registerForLightChangeNotifications(LightType const & light)
         -> ScopedSignalConnection;
 
     auto udpateLightView(SpotLight const & light)
+        -> void;
+
+    auto udpateLightView(DirectionalLight const & light)
         -> void;
 
 private:
@@ -50,13 +58,15 @@ private:
 
     Size<int> viewSize;
 
-    std::vector<glm::mat4> directionalView;
+    std::vector<glm::mat4> pointView;
 
     std::vector<glm::mat4> spotView;
 
-    std::vector<glm::mat4> pointView;
+    std::vector<glm::mat4> directionalView;
 
-    std::vector<ScopedSignalConnection> lightChangeHandlerConnections;
+    std::vector<ScopedSignalConnection> spotLightChangeHandlerConnections;
+
+    std::vector<ScopedSignalConnection> directionalLightChangeHandlerConnections;
 
 };
 

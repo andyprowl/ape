@@ -41,6 +41,21 @@ auto determineFormat(int const numOfChannels)
     }
 }
 
+auto makeTextureDescriptor(
+    Size<int> const & size,
+    TextureFormat const format,
+    stbi_uc * const imageBytes)
+    -> TextureDescriptor
+{
+    auto const bytes = reinterpret_cast<std::byte *>(imageBytes);
+
+    auto const wrapping = TextureWrapping::repeat;
+
+    auto const pixelType = PixelType::unsignedByte;
+
+    return {size, format, pixelType, wrapping, bytes};
+}
+
 auto readTextureDescriptor(std::filesystem::path const & path)
     -> TextureDescriptor
 {
@@ -61,7 +76,7 @@ auto readTextureDescriptor(std::filesystem::path const & path)
 
     auto format = determineFormat(numOfChannels);
 
-    return {size, format, PixelType::unsignedByte, reinterpret_cast<std::byte *>(bytes)};
+    return makeTextureDescriptor(size, format, bytes);
 }
 
 } // unnamed namespace

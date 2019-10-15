@@ -1,4 +1,11 @@
  - Implement shadow mapping
+  - Do not draw shadow map for lights that are turned off
+  - Fix (and understand!) resolution problem with directional lights
+  - SampleInputHandler currently
+  - Fix ApeCreator and rename it to ApeStudio
+  - Make sure picking still works
+  - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
+    application, not the VS plugin)
  - callers of glViewport should do so through the Window object
  - Implement normal visualization
  - Implement post-processing techniques (e.g. blurring)
