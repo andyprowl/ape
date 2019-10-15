@@ -73,6 +73,8 @@ private:
         return window->onResize.registerHandler([this] (Size<int> const & newSize)
         {
             updateSelectedCameraAspectRatio(newSize);
+
+            setViewport(newSize);
         });
     }
 
@@ -96,6 +98,14 @@ private:
         auto const aspectRatio = static_cast<float>(size.width) / size.height;
 
         perspective->setAspectRatio(aspectRatio);
+    }
+
+    auto setViewport(Size<int> const & size)
+        -> void
+    {
+        auto const origin = Position{0, 0};
+
+        renderer->setViewport({origin, size});
     }
 
 private:

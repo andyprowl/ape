@@ -198,9 +198,9 @@ int main(int argc, char *argv[])
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context!
     sceneView1.makeCurrent();
-
-    //auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
-    auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectRenderer>();
+    
+    auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
+    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectRenderer>();
 
     auto depthBodyRenderer1 = ape::DepthBodyRenderer{depthShader, *shapeRenderer1};
 
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
     sceneView1.engage(renderer1);
 
     engine1.start();
-    /*
+    
     /// ---
 
     auto selector2 = ape::CameraSelector{scene};
@@ -289,9 +289,9 @@ int main(int argc, char *argv[])
     sceneView2.engage(renderer2);
 
     engine2.start();
-
+    
     /// ---
-
+    
     auto selector3 = ape::CameraSelector{scene};
 
     // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
@@ -339,7 +339,7 @@ int main(int argc, char *argv[])
     sceneView3.engage(renderer3);
 
     engine3.start();
-    */
+    
     // ---
 
     return app.exec();
