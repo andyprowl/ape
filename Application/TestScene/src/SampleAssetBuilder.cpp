@@ -1,14 +1,11 @@
-#include <TestScene/SampleAssetBuilder.hpp>
+#include <Application/TestScene/SampleAssetBuilder.hpp>
 
-#include <AssetLoader/AssetLoader.hpp>
-
-#include <Model/BoxBuilder.hpp>
-
-#include <Model/Material.hpp>
-#include <Model/Mesh.hpp>
-#include <Model/Shape.hpp>
-
-#include <GpuResource/TextureReader.hpp>
+#include <Ape/AssetLoader/AssetLoader.hpp>
+#include <Ape/GpuResource/TextureReader.hpp>
+#include <Ape/Model/BoxBuilder.hpp>
+#include <Ape/Model/Material.hpp>
+#include <Ape/Model/Mesh.hpp>
+#include <Ape/Model/Shape.hpp>
 
 namespace
 {

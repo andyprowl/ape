@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Meta/LogicalPredicates.hpp>
+#include <Foundational/Meta/LogicalPredicates.hpp>
 
 namespace ape
 {

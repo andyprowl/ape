@@ -1,7 +1,7 @@
 #pragma once
 
-#include <UpdateHandling/CameraViewSensor.hpp>
-#include <UpdateHandling/SpotLightOrientator.hpp>
+#include <Ape/UpdateHandling/CameraViewSensor.hpp>
+#include <Ape/UpdateHandling/SpotLightOrientator.hpp>
 
 namespace ape
 {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Scene/BodyRange.hpp>
+#include <Ape/Scene/BodyRange.hpp>
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <stdexcept>
 #include <string>

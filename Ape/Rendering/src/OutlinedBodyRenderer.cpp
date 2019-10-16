@@ -1,7 +1,7 @@
-#include <Rendering/OutlinedBodyRenderer.hpp>
+#include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 
-#include <Rendering/StandardBodyRenderer.hpp>
-#include <Rendering/WireframeBodyRenderer.hpp>
+#include <Ape/Rendering/StandardBodyRenderer.hpp>
+#include <Ape/Rendering/WireframeBodyRenderer.hpp>
 
 #include <glad/glad.h>
 

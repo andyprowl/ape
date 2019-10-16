@@ -1,10 +1,10 @@
 #pragma once
 
-#include <GpuResource/PixelType.hpp>
-#include <GpuResource/TextureFormat.hpp>
-#include <GpuResource/TextureWrapping.hpp>
+#include <Ape/GpuResource/PixelType.hpp>
+#include <Ape/GpuResource/TextureFormat.hpp>
+#include <Ape/GpuResource/TextureWrapping.hpp>
 
-#include <Mathematics/Size.hpp>
+#include <Foundational/Mathematics/Size.hpp>
 
 #include <cstddef>
 #include <stdexcept>

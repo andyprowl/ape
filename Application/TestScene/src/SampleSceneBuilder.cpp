@@ -1,8 +1,8 @@
-#include <TestScene/SampleSceneBuilder.hpp>
+#include <Application/TestScene/SampleSceneBuilder.hpp>
 
-#include <TestScene/SampleAssetBuilder.hpp>
+#include <Application/TestScene/SampleAssetBuilder.hpp>
 
-#include <Model/BoxBuilder.hpp>
+#include <Ape/Model/BoxBuilder.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>

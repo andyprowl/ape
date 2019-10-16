@@ -1,10 +1,9 @@
 #pragma once
 
-#include <Scene/BodyPart.hpp>
+#include <Ape/Scene/BodyPart.hpp>
 
-#include <Range/ContainerView.hpp>
-
-#include <Signal/Signal.hpp>
+#include <Foundational/Range/ContainerView.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <string>
 #include <vector>

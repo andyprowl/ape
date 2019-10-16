@@ -7,7 +7,6 @@
  - Implement normal visualization through geometry shaders
  - (Re-)implement glowing based on view position and normal
  - Implement gamma correction
- - Add the <Package/...> prefix to include folders
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator
  - Introduce different namespaces for packages (not just "ape")

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Rendering/LineStyle.hpp>
+#include <Ape/Rendering/LineStyle.hpp>
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 namespace ape
 {

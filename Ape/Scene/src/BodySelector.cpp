@@ -1,9 +1,9 @@
-#include <Scene/BodySelector.hpp>
+#include <Ape/Scene/BodySelector.hpp>
 
-#include <Scene/Scene.hpp>
+#include <Ape/Scene/Scene.hpp>
 
-#include <Range/Removal.hpp>
-#include <Range/Transform.hpp>
+#include <Foundational/Range/Removal.hpp>
+#include <Foundational/Range/Transform.hpp>
 
 #include <algorithm>
 #include <optional>

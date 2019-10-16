@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Scene/Attenuation.hpp>
-#include <Scene/Light.hpp>
+#include <Ape/Scene/Attenuation.hpp>
+#include <Ape/Scene/Light.hpp>
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 namespace ape
 {

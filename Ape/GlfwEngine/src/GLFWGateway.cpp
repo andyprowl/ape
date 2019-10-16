@@ -1,9 +1,9 @@
-#include <GlfwEngine/GLFWGateway.hpp>
+#include <Ape/GlfwEngine/GLFWGateway.hpp>
 
 #include "GLFW.hpp"
 #include "GLFWInitializer.hpp"
 
-#include <Initialization/Initialization.hpp>
+#include <Ape/Initialization/Initialization.hpp>
 
 namespace ape
 {

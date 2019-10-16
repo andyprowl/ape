@@ -1,4 +1,4 @@
-#include <GpuResource/VertexBufferObject.hpp>
+#include <Ape/GpuResource/VertexBufferObject.hpp>
 
 #include <glad/glad.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Rendering/DepthMapping.hpp>
-#include <Rendering/LightingView.hpp>
+#include <Ape/Rendering/DepthMapping.hpp>
+#include <Ape/Rendering/LightingView.hpp>
 
 namespace ape
 {

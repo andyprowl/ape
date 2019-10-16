@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
 
 namespace ape
 {

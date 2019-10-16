@@ -1,4 +1,4 @@
-#include <Scene/PointLight.hpp>
+#include <Ape/Scene/PointLight.hpp>
 
 namespace ape
 {

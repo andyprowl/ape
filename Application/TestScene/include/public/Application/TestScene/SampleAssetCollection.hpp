@@ -1,6 +1,6 @@
 #pragma once
 
-#include <AssetLoader/AssetRepository.hpp>
+#include <Ape/AssetLoader/AssetRepository.hpp>
 
 class SampleAssetCollection
 {

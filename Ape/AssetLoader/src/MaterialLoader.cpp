@@ -1,7 +1,7 @@
-#include <AssetLoader/MaterialLoader.hpp>
+#include <Ape/AssetLoader/MaterialLoader.hpp>
 
-#include <AssetLoader/AssetRepository.hpp>
-#include <AssetLoader/TextureCache.hpp>
+#include <Ape/AssetLoader/AssetRepository.hpp>
+#include <Ape/AssetLoader/TextureCache.hpp>
 
 #include <assimp/scene.h>
 

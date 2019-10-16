@@ -1,25 +1,23 @@
 #include "Application.hpp"
 
-#include <TestScene/SampleAssetBuilder.hpp>
-#include <TestScene/SampleInputHandler.hpp>
-#include <TestScene/SampleSceneBuilder.hpp>
+#include <Application/TestScene/SampleAssetBuilder.hpp>
+#include <Application/TestScene/SampleInputHandler.hpp>
+#include <Application/TestScene/SampleSceneBuilder.hpp>
 
-#include <GlfwEngine/GLFWEngine.hpp>
-#include <GlfwEngine/GLFWGateway.hpp>
-
-#include <Rendering/DepthShaderProgram.hpp>
-#include <Rendering/LineStyleProvider.hpp>
-#include <Rendering/OutlinedBodyRenderer.hpp>
-#include <Rendering/SceneRenderer.hpp>
-#include <Rendering/ShapeArrayObjectRenderer.hpp>
-#include <Rendering/ShapeBufferObjectRenderer.hpp>
-#include <Rendering/StandardBodyRenderer.hpp>
-#include <Rendering/StandardShaderProgram.hpp>
-#include <Rendering/WireframeBodyRenderer.hpp>
-#include <Rendering/WireframeShaderProgram.hpp>
-
-#include <Scene/BodySelector.hpp>
-#include <Scene/CameraSelector.hpp>
+#include <Ape/GlfwEngine/GLFWEngine.hpp>
+#include <Ape/GlfwEngine/GLFWGateway.hpp>
+#include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/OutlinedBodyRenderer.hpp>
+#include <Ape/Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Ape/Rendering/StandardBodyRenderer.hpp>
+#include <Ape/Rendering/StandardShaderProgram.hpp>
+#include <Ape/Rendering/WireframeBodyRenderer.hpp>
+#include <Ape/Rendering/WireframeShaderProgram.hpp>
+#include <Ape/Scene/BodySelector.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
 
 class Application::Impl
 {

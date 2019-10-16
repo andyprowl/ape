@@ -1,19 +1,17 @@
-#include <Rendering/DepthBodyRenderer.hpp>
+#include <Ape/Rendering/DepthBodyRenderer.hpp>
 
-#include <Rendering/DepthMapping.hpp>
-#include <Rendering/DepthShaderProgram.hpp>
-#include <Rendering/LightingView.hpp>
-#include <Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/DepthMapping.hpp>
+#include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-
-#include <Scene/Body.hpp>
-#include <Scene/BodyPart.hpp>
-#include <Scene/Camera.hpp>
-#include <Scene/Lighting.hpp>
-
-#include <Model/Mesh.hpp>
-#include <Model/ModelPart.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/Model/Mesh.hpp>
+#include <Ape/Model/ModelPart.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/BodyPart.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/Lighting.hpp>
 
 #include <glad/glad.h>
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Rendering/LineStyle.hpp>
+#include <Ape/Rendering/LineStyle.hpp>
 
-#include <Scene/BodyRange.hpp>
+#include <Ape/Scene/BodyRange.hpp>
 
 #include <glm/mat4x4.hpp>
 

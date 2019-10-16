@@ -1,8 +1,8 @@
-#include <Scene/OrthographicProjection.hpp>
+#include <Ape/Scene/OrthographicProjection.hpp>
 
-#include <Scene/Camera.hpp>
+#include <Ape/Scene/Camera.hpp>
 
-#include <CompilerSupport/CompilerWarnings.hpp>
+#include <Foundational/CompilerSupport/CompilerWarnings.hpp>
 
 disableCompilerWarnings()
 #include <glm/gtc/matrix_transform.hpp>

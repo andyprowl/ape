@@ -1,6 +1,6 @@
-#include <UpdateHandling/CameraViewSensor.hpp>
+#include <Ape/UpdateHandling/CameraViewSensor.hpp>
 
-#include <Scene/Camera.hpp>
+#include <Ape/Scene/Camera.hpp>
 
 namespace ape
 {

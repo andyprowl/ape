@@ -1,6 +1,6 @@
-#include <Rendering/WireframeShaderProgram.hpp>
+#include <Ape/Rendering/WireframeShaderProgram.hpp>
 
-#include <GpuResource/ShaderBuilder.hpp>
+#include <Ape/GpuResource/ShaderBuilder.hpp>
 
 namespace ape
 {

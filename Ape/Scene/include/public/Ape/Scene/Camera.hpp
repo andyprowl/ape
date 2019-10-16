@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Scene/CameraProjection.hpp>
-#include <Scene/CameraView.hpp>
+#include <Ape/Scene/CameraProjection.hpp>
+#include <Ape/Scene/CameraView.hpp>
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <glm/mat4x4.hpp>
 

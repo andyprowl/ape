@@ -1,6 +1,6 @@
-#include <Scene/CameraView.hpp>
+#include <Ape/Scene/CameraView.hpp>
 
-#include <Scene/Camera.hpp>
+#include <Ape/Scene/Camera.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

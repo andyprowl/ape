@@ -1,9 +1,9 @@
-#include <Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 
-#include <Model/Shape.hpp>
-#include <Model/VertexLayout.hpp>
+#include <Ape/Model/Shape.hpp>
+#include <Ape/Model/VertexLayout.hpp>
 
-#include <Range/Insertion.hpp>
+#include <Foundational/Range/Insertion.hpp>
 
 #include <glad/glad.h>
 

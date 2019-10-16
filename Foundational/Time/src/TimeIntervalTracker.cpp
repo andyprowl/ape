@@ -1,6 +1,6 @@
-#include <Time/TimeIntervalTracker.hpp>
+#include <Foundational/Time/TimeIntervalTracker.hpp>
 
-#include <Time/Stopwatch.hpp>
+#include <Foundational/Time/Stopwatch.hpp>
 
 namespace ape
 {

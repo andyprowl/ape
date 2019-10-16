@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/GpuResource.hpp>
+#include <Ape/GpuResource/GpuResource.hpp>
 
 #include <stdexcept>
 #include <string>

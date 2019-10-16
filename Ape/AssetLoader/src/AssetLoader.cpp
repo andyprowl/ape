@@ -1,10 +1,10 @@
-#include <AssetLoader/AssetLoader.hpp>
+#include <Ape/AssetLoader/AssetLoader.hpp>
 
-#include <AssetLoader/AssetRepository.hpp>
-#include <AssetLoader/MaterialLoader.hpp>
-#include <AssetLoader/MeshLoader.hpp>
-#include <AssetLoader/ModelPartImporter.hpp>
-#include <AssetLoader/TextureCache.hpp>
+#include <Ape/AssetLoader/AssetRepository.hpp>
+#include <Ape/AssetLoader/MaterialLoader.hpp>
+#include <Ape/AssetLoader/MeshLoader.hpp>
+#include <Ape/AssetLoader/ModelPartImporter.hpp>
+#include <Ape/AssetLoader/TextureCache.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

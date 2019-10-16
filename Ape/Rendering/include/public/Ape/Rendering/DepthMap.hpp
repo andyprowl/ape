@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GpuResource/FrameBufferObject.hpp>
-#include <GpuResource/Texture.hpp>
+#include <Ape/GpuResource/FrameBufferObject.hpp>
+#include <Ape/GpuResource/Texture.hpp>
 
 namespace ape
 {

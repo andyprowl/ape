@@ -1,6 +1,6 @@
-#include <Initialization/Initialization.hpp>
+#include <Ape/Initialization/Initialization.hpp>
 
-#include <Initialization/OpenGLLoader.hpp>
+#include <Ape/Initialization/OpenGLLoader.hpp>
 
 namespace ape
 {

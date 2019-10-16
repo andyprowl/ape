@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GpuResource/ShaderProgram.hpp>
-#include <GpuResource/VectorUniform.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/VectorUniform.hpp>
 
-#include <Scene/Lighting.hpp>
+#include <Ape/Scene/Lighting.hpp>
 
 namespace ape
 {

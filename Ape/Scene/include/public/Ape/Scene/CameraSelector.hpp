@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <optional>
 #include <stdexcept>

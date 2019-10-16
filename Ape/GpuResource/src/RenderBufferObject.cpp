@@ -1,6 +1,6 @@
-#include <GpuResource/RenderBufferObject.hpp>
+#include <Ape/GpuResource/RenderBufferObject.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
 
 #include <glad/glad.h>
 

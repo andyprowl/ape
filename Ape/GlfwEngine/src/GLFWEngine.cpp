@@ -1,18 +1,14 @@
-#include <GlfwEngine/GLFWEngine.hpp>
+#include <Ape/GlfwEngine/GLFWEngine.hpp>
 
-#include <Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/SceneRenderer.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/UpdateHandling/InputHandler.hpp>
+#include <Ape/Windowing/Window.hpp>
 
-#include <Scene/Scene.hpp>
-
-#include <UpdateHandling/InputHandler.hpp>
-
-#include <Windowing/Window.hpp>
-
-#include <Signal/ScopedSignalConnection.hpp>
-
-#include <Time/FrequencyTracker.hpp>
-#include <Time/Stopwatch.hpp>
-#include <Time/TimeIntervalTracker.hpp>
+#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Foundational/Time/FrequencyTracker.hpp>
+#include <Foundational/Time/Stopwatch.hpp>
+#include <Foundational/Time/TimeIntervalTracker.hpp>
 
 #include "GLFW.hpp"
 

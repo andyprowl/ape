@@ -1,23 +1,21 @@
 #include "MainWindow.hpp"
 #include "TableModel.hpp"
 
-#include <TestScene/SampleAssetBuilder.hpp>
-#include <TestScene/SampleInputHandler.hpp>
-#include <TestScene/SampleSceneBuilder.hpp>
+#include <Application/TestScene/SampleAssetBuilder.hpp>
+#include <Application/TestScene/SampleInputHandler.hpp>
+#include <Application/TestScene/SampleSceneBuilder.hpp>
 
-#include <QtEngine/QtEngine.hpp>
-#include <QtEngine/QtWindow.hpp>
-
-#include <Rendering/DepthShaderProgram.hpp>
-#include <Rendering/LineStyleProvider.hpp>
-#include <Rendering/SceneRenderer.hpp>
-#include <Rendering/ShapeArrayObjectRenderer.hpp>
-#include <Rendering/ShapeBufferObjectRenderer.hpp>
-#include <Rendering/StandardShaderProgram.hpp>
-#include <Rendering/WireframeShaderProgram.hpp>
-
-#include <Scene/BodySelector.hpp>
-#include <Scene/CameraSelector.hpp>
+#include <Ape/QtEngine/QtEngine.hpp>
+#include <Ape/QtEngine/QtWindow.hpp>
+#include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
+#include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Ape/Rendering/StandardShaderProgram.hpp>
+#include <Ape/Rendering/WireframeShaderProgram.hpp>
+#include <Ape/Scene/BodySelector.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>

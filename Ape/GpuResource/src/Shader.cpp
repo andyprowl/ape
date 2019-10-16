@@ -1,7 +1,6 @@
-#include <GpuResource/Shader.hpp>
+#include <Ape/GpuResource/Shader.hpp>
 
-
-#include <GpuResource/ShaderReader.hpp>
+#include <Ape/GpuResource/ShaderReader.hpp>
 
 #include <glad/glad.h>
 

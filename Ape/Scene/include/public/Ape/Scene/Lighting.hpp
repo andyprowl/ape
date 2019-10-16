@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Scene/DirectionalLight.hpp>
-#include <Scene/PointLight.hpp>
-#include <Scene/SpotLight.hpp>
+#include <Ape/Scene/DirectionalLight.hpp>
+#include <Ape/Scene/PointLight.hpp>
+#include <Ape/Scene/SpotLight.hpp>
 
 #include <vector>
 

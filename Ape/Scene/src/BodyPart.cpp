@@ -1,8 +1,8 @@
-#include <Scene/BodyPart.hpp>
+#include <Ape/Scene/BodyPart.hpp>
 
-#include <Scene/Body.hpp>
+#include <Ape/Scene/Body.hpp>
 
-#include <Model/ModelPart.hpp>
+#include <Ape/Model/ModelPart.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

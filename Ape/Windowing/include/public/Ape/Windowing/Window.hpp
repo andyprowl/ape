@@ -1,12 +1,11 @@
 #pragma once
 
-#include <Windowing/Keyboard.hpp>
+#include <Ape/Windowing/Keyboard.hpp>
 
-#include <Mathematics/Offset.hpp>
-#include <Mathematics/Position.hpp>
-#include <Mathematics/Size.hpp>
-
-#include <Signal/Signal.hpp>
+#include <Foundational/Mathematics/Offset.hpp>
+#include <Foundational/Mathematics/Position.hpp>
+#include <Foundational/Mathematics/Size.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <stdexcept>
 #include <string>

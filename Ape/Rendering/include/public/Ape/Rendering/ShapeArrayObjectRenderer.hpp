@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
 
-#include <GpuResource/VertexArrayObject.hpp>
+#include <Ape/GpuResource/VertexArrayObject.hpp>
 
 #include <vector>
 

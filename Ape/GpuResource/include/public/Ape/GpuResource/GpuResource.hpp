@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/UniqueResource.hpp>
+#include <Ape/GpuResource/UniqueResource.hpp>
 
 namespace ape
 {

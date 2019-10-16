@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightingView.hpp>
 
-#include <GpuResource/ShaderProgram.hpp>
-#include <GpuResource/VectorUniform.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/VectorUniform.hpp>
 
 #include <vector>
 

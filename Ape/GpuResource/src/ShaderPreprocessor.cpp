@@ -1,6 +1,6 @@
-#include <GpuResource/ShaderPreprocessor.hpp>
+#include <Ape/GpuResource/ShaderPreprocessor.hpp>
 
-#include <GpuResource/ShaderReader.hpp>
+#include <Ape/GpuResource/ShaderReader.hpp>
 
 namespace ape
 {

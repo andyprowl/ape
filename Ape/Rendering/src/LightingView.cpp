@@ -1,9 +1,9 @@
-#include <Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightingView.hpp>
 
-#include <Scene/Camera.hpp>
-#include <Scene/Lighting.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/Lighting.hpp>
 
-#include <Range/Transform.hpp>
+#include <Foundational/Range/Transform.hpp>
 
 namespace ape
 {

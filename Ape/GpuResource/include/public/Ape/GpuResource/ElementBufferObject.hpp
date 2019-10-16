@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/BufferObject.hpp>
+#include <Ape/GpuResource/BufferObject.hpp>
 
 namespace ape
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Signal/ScopedSignalConnection.hpp>
+#include <Foundational/Signal/ScopedSignalConnection.hpp>
 
 #include <functional>
 #include <memory>

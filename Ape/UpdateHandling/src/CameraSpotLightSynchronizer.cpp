@@ -1,7 +1,7 @@
-#include <UpdateHandling/CameraSpotlightSynchronizer.hpp>
+#include <Ape/UpdateHandling/CameraSpotlightSynchronizer.hpp>
 
-#include <Scene/Camera.hpp>
-#include <Scene/SpotLight.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/SpotLight.hpp>
 
 #include <glm/mat4x4.hpp>
 

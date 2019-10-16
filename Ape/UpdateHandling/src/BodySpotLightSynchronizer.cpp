@@ -1,8 +1,8 @@
-#include <UpdateHandling/BodySpotLightSynchronizer.hpp>
+#include <Ape/UpdateHandling/BodySpotLightSynchronizer.hpp>
 
-#include <Scene/Body.hpp>
-#include <Scene/BodyPart.hpp>
-#include <Scene/SpotLight.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/BodyPart.hpp>
+#include <Ape/Scene/SpotLight.hpp>
 
 #include <glm/mat4x4.hpp>
 

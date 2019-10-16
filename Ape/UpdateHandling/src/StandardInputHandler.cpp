@@ -1,11 +1,10 @@
-#include <UpdateHandling/StandardInputHandler.hpp>
+#include <Ape/UpdateHandling/StandardInputHandler.hpp>
 
-#include <Windowing/Window.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/Windowing/Window.hpp>
 
-#include <Scene/CameraSelector.hpp>
-#include <Scene/Scene.hpp>
-
-#include <Mathematics/Position.hpp>
+#include <Foundational/Mathematics/Position.hpp>
 
 namespace ape
 {

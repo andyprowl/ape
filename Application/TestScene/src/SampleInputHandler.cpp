@@ -1,18 +1,15 @@
-#include <TestScene/SampleInputHandler.hpp>
+#include <Application/TestScene/SampleInputHandler.hpp>
 
-#include <TestScene/SampleScene.hpp>
+#include <Application/TestScene/SampleScene.hpp>
 
-#include <Rendering/LineStyleProvider.hpp>
-#include <Rendering/StandardShaderProgram.hpp>
+#include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/StandardShaderProgram.hpp>
+#include <Ape/Scene/BodySelector.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Windowing/Window.hpp>
 
-#include <Scene/BodySelector.hpp>
-#include <Scene/CameraSelector.hpp>
-
-#include <Windowing/Window.hpp>
-
-#include <CompilerSupport/CompilerWarnings.hpp>
-
-#include <Mathematics/Math.hpp>
+#include <Foundational/CompilerSupport/CompilerWarnings.hpp>
+#include <Foundational/Mathematics/Math.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>

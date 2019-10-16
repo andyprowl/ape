@@ -1,7 +1,7 @@
-#include <Time/FrequencyTracker.hpp>
+#include <Foundational/Time/FrequencyTracker.hpp>
 
-#include <Time/Stopwatch.hpp>
-#include <Time/TimeIntervalTracker.hpp>
+#include <Foundational/Time/Stopwatch.hpp>
+#include <Foundational/Time/TimeIntervalTracker.hpp>
 
 #include <iostream>
 

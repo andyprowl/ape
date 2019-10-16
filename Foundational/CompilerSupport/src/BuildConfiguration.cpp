@@ -1,4 +1,4 @@
-#include <CompilerSupport/BuildConfiguration.h>
+#include <Foundational/CompilerSupport/BuildConfiguration.h>
 
 #define makeResolvedStringLiteral(CONFIG) #CONFIG
 

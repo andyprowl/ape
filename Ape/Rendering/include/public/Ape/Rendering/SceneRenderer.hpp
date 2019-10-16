@@ -1,16 +1,16 @@
 #pragma once
 
-#include <Rendering/CameraUniform.hpp>
-#include <Rendering/DepthBodyRenderer.hpp>
-#include <Rendering/LightingUniform.hpp>
-#include <Rendering/OutlinedBodyRenderer.hpp>
-#include <Rendering/ShadowMapping.hpp>
-#include <Rendering/ShapeRenderer.hpp>
-#include <Rendering/StandardBodyRenderer.hpp>
-#include <Rendering/Viewport.hpp>
-#include <Rendering/WireframeBodyRenderer.hpp>
+#include <Ape/Rendering/CameraUniform.hpp>
+#include <Ape/Rendering/DepthBodyRenderer.hpp>
+#include <Ape/Rendering/LightingUniform.hpp>
+#include <Ape/Rendering/OutlinedBodyRenderer.hpp>
+#include <Ape/Rendering/ShadowMapping.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/StandardBodyRenderer.hpp>
+#include <Ape/Rendering/Viewport.hpp>
+#include <Ape/Rendering/WireframeBodyRenderer.hpp>
 
-#include <GpuResource/VertexArrayObject.hpp>
+#include <Ape/GpuResource/VertexArrayObject.hpp>
 
 #include <memory>
 #include <stdexcept>

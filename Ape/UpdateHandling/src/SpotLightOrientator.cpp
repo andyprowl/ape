@@ -1,6 +1,6 @@
-#include <UpdateHandling/SpotLightOrientator.hpp>
+#include <Ape/UpdateHandling/SpotLightOrientator.hpp>
 
-#include <Scene/SpotLight.hpp>
+#include <Ape/Scene/SpotLight.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

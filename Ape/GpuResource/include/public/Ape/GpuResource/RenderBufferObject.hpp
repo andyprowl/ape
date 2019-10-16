@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GpuResource/BufferObject.hpp>
+#include <Ape/GpuResource/BufferObject.hpp>
 
-#include <Mathematics/Size.hpp>
+#include <Foundational/Mathematics/Size.hpp>
 
 namespace ape
 {

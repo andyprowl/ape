@@ -1,17 +1,15 @@
-#include <Rendering/WireframeBodyRenderer.hpp>
+#include <Ape/Rendering/WireframeBodyRenderer.hpp>
 
-#include <Rendering/LineStyleProvider.hpp>
-#include <Rendering/ShapeRenderer.hpp>
-#include <Rendering/WireframeShaderProgram.hpp>
+#include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/WireframeShaderProgram.hpp>
 
-#include <Model/Mesh.hpp>
-#include <Model/ModelPart.hpp>
-
-#include <Scene/Body.hpp>
-#include <Scene/BodyPart.hpp>
-#include <Scene/Camera.hpp>
-
-#include <GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/Model/Mesh.hpp>
+#include <Ape/Model/ModelPart.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/BodyPart.hpp>
+#include <Ape/Scene/Camera.hpp>
 
 namespace ape
 {

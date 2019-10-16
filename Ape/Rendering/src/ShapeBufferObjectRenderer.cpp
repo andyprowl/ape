@@ -1,7 +1,7 @@
-#include <Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
 
-#include <Model/Shape.hpp>
-#include <Model/VertexLayout.hpp>
+#include <Ape/Model/Shape.hpp>
+#include <Ape/Model/VertexLayout.hpp>
 
 #include <glad/glad.h>
 

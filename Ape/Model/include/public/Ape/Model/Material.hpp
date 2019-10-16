@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/Texture.hpp>
+#include <Ape/GpuResource/Texture.hpp>
 
 #include <glm/vec3.hpp>
 

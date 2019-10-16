@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/OrthographicProjection.hpp>
-#include <Scene/PerspectiveProjection.hpp>
+#include <Ape/Scene/OrthographicProjection.hpp>
+#include <Ape/Scene/PerspectiveProjection.hpp>
 
 #include <variant>
 

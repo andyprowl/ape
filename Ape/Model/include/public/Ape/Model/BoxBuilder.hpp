@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Model/NormalDirection.hpp>
-#include <Model/Shape.hpp>
+#include <Ape/Model/NormalDirection.hpp>
+#include <Ape/Model/Shape.hpp>
 
 namespace ape
 {

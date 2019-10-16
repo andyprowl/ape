@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Scene/Attenuation.hpp>
-#include <Scene/Light.hpp>
+#include <Ape/Scene/Attenuation.hpp>
+#include <Ape/Scene/Light.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

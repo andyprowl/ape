@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GpuResource/Uniform.hpp>
+#include <Ape/GpuResource/Uniform.hpp>
 
-#include <Scene/Camera.hpp>
+#include <Ape/Scene/Camera.hpp>
 
 namespace ape
 {

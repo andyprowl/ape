@@ -1,6 +1,6 @@
-#include <UpdateHandling/MovementTracker.hpp>
+#include <Ape/UpdateHandling/MovementTracker.hpp>
 
-#include <Windowing/Window.hpp>
+#include <Ape/Windowing/Window.hpp>
 
 namespace ape
 {

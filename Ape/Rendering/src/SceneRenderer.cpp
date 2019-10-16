@@ -1,17 +1,14 @@
-#include <Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/SceneRenderer.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-
-#include <Model/Material.hpp>
-#include <Model/ModelPart.hpp>
-#include <Model/Shape.hpp>
-
-#include <Scene/BodySelector.hpp>
-#include <Scene/Camera.hpp>
-#include <Scene/CameraSelector.hpp>
-#include <Scene/Scene.hpp>
-
-#include <Windowing/Window.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/Model/Material.hpp>
+#include <Ape/Model/ModelPart.hpp>
+#include <Ape/Model/Shape.hpp>
+#include <Ape/Scene/BodySelector.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/Windowing/Window.hpp>
 
 #include <glad/glad.h>
 

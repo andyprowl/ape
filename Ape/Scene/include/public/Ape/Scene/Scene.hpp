@@ -1,12 +1,11 @@
 #pragma once
 
-#include <Scene/Body.hpp>
-#include <Scene/Camera.hpp>
-#include <Scene/Lighting.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/Lighting.hpp>
 
-#include <Range/ContainerView.hpp>
-
-#include <Signal/Signal.hpp>
+#include <Foundational/Range/ContainerView.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 #include <vector>
 

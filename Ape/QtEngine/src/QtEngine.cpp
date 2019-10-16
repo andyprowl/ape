@@ -1,16 +1,13 @@
-#include <QtEngine/QtEngine.hpp>
+#include <Ape/QtEngine/QtEngine.hpp>
 
-#include <Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/SceneRenderer.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/UpdateHandling/InputHandler.hpp>
+#include <Ape/Windowing/Window.hpp>
 
-#include <Scene/CameraSelector.hpp>
-#include <Scene/Scene.hpp>
-
-#include <UpdateHandling/InputHandler.hpp>
-
-#include <Windowing/Window.hpp>
-
-#include <Time/Stopwatch.hpp>
-#include <Time/TimeIntervalTracker.hpp>
+#include <Foundational/Time/Stopwatch.hpp>
+#include <Foundational/Time/TimeIntervalTracker.hpp>
 
 #include <glad/glad.h>
 

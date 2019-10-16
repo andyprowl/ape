@@ -1,4 +1,4 @@
-#include <GpuResource/VertexArrayObject.hpp>
+#include <Ape/GpuResource/VertexArrayObject.hpp>
 
 #include <glad/glad.h>
 

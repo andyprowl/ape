@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Rendering/DepthBodyRenderer.hpp>
-#include <Rendering/Viewport.hpp>
+#include <Ape/Rendering/DepthBodyRenderer.hpp>
+#include <Ape/Rendering/Viewport.hpp>
 
-#include <Scene/BodyRange.hpp>
+#include <Ape/Scene/BodyRange.hpp>
 
 #include <glm/mat4x4.hpp>
 

@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Mathematics/Position.hpp>
-#include <Mathematics/Size.hpp>
+#include <Foundational/Mathematics/Position.hpp>
+#include <Foundational/Mathematics/Size.hpp>
 
 namespace ape
 {

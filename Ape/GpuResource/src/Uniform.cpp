@@ -1,9 +1,9 @@
-#include <GpuResource/Uniform.hpp>
+#include <Ape/GpuResource/Uniform.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-#include <GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
 
-#include <CompilerSupport/CompilerWarnings.hpp>
+#include <Foundational/CompilerSupport/CompilerWarnings.hpp>
 
 #include <glad/glad.h>
 

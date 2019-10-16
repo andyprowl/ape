@@ -1,4 +1,4 @@
-#include <GpuResource/ElementBufferObject.hpp>
+#include <Ape/GpuResource/ElementBufferObject.hpp>
 
 #include <glad/glad.h>
 

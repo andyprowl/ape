@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Rendering/CameraUniform.hpp>
-#include <Rendering/DepthMappingUniform.hpp>
-#include <Rendering/LightingUniform.hpp>
-#include <Rendering/LightingViewUniform.hpp>
-#include <Rendering/MaterialUniform.hpp>
+#include <Ape/Rendering/CameraUniform.hpp>
+#include <Ape/Rendering/DepthMappingUniform.hpp>
+#include <Ape/Rendering/LightingUniform.hpp>
+#include <Ape/Rendering/LightingViewUniform.hpp>
+#include <Ape/Rendering/MaterialUniform.hpp>
 
-#include <GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
 
 namespace ape
 {

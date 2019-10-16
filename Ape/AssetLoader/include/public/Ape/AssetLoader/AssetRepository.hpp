@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Model/Material.hpp>
-#include <Model/Mesh.hpp>
-#include <Model/Model.hpp>
-#include <Model/Shape.hpp>
+#include <Ape/Model/Material.hpp>
+#include <Ape/Model/Mesh.hpp>
+#include <Ape/Model/Model.hpp>
+#include <Ape/Model/Shape.hpp>
 
-#include <GpuResource/Texture.hpp>
+#include <Ape/GpuResource/Texture.hpp>
 
 #include <memory>
 #include <vector>

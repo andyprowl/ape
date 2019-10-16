@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Rendering/DepthMap.hpp>
+#include <Ape/Rendering/DepthMap.hpp>
 
-#include <Scene/BodyRange.hpp>
+#include <Ape/Scene/BodyRange.hpp>
 
 #include <glm/mat4x4.hpp>
 

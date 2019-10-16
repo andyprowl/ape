@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Model/VertexComponent.hpp>
+#include <Ape/Model/VertexComponent.hpp>
 
-#include <Meta/HomogenousVariadics.hpp>
+#include <Foundational/Meta/HomogenousVariadics.hpp>
 
 #include <array>
 #include <initializer_list>

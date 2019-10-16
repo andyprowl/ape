@@ -1,19 +1,17 @@
-#include <Rendering/StandardBodyRenderer.hpp>
+#include <Ape/Rendering/StandardBodyRenderer.hpp>
 
-#include <Rendering/ShadowMapping.hpp>
-#include <Rendering/ShapeRenderer.hpp>
-#include <Rendering/StandardShaderProgram.hpp>
+#include <Ape/Rendering/ShadowMapping.hpp>
+#include <Ape/Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/StandardShaderProgram.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-#include <GpuResource/Texture.hpp>
-
-#include <Model/Material.hpp>
-#include <Model/Mesh.hpp>
-#include <Model/ModelPart.hpp>
-
-#include <Scene/Body.hpp>
-#include <Scene/BodyPart.hpp>
-#include <Scene/Camera.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/Texture.hpp>
+#include <Ape/Model/Material.hpp>
+#include <Ape/Model/Mesh.hpp>
+#include <Ape/Model/ModelPart.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/BodyPart.hpp>
+#include <Ape/Scene/Camera.hpp>
 
 #include <glad/glad.h>
 

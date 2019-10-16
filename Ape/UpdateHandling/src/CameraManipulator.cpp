@@ -1,9 +1,8 @@
-#include <UpdateHandling/CameraManipulator.hpp>
+#include <Ape/UpdateHandling/CameraManipulator.hpp>
 
-#include <Windowing/Window.hpp>
-
-#include <Scene/CameraSelector.hpp>
-#include <Scene/Scene.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/Windowing/Window.hpp>
 
 #include <glm/trigonometric.hpp>
 

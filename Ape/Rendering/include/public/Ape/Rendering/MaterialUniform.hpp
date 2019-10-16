@@ -1,9 +1,9 @@
 #pragma once
 
-#include <GpuResource/ShaderProgram.hpp>
-#include <GpuResource/TextureUniform.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/TextureUniform.hpp>
 
-#include <Model/Material.hpp>
+#include <Ape/Model/Material.hpp>
 
 namespace ape
 {

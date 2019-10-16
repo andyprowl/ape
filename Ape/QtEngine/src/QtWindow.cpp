@@ -1,10 +1,8 @@
-#include <QtEngine/QtWindow.hpp>
+#include <Ape/QtEngine/QtWindow.hpp>
 
-#include <Initialization/Initialization.hpp>
-
-#include <UpdateHandling/StandardInputHandler.hpp>
-
-#include <Windowing/Keyboard.hpp>
+#include <Ape/Initialization/Initialization.hpp>
+#include <Ape/UpdateHandling/StandardInputHandler.hpp>
+#include <Ape/Windowing/Keyboard.hpp>
 
 #include <QResizeEvent>
 #include <QTimer>

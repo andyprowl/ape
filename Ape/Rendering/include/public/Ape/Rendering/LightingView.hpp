@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Mathematics/Size.hpp>
+#include <Foundational/Mathematics/Size.hpp>
 
-#include <Signal/ScopedSignalConnection.hpp>
+#include <Foundational/Signal/ScopedSignalConnection.hpp>
 
 #include <glm/mat4x4.hpp>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Windowing/Key.hpp>
-#include <Windowing/KeyAction.hpp>
-#include <Windowing/KeyModifier.hpp>
-#include <Windowing/KeyStatus.hpp>
+#include <Ape/Windowing/Key.hpp>
+#include <Ape/Windowing/KeyAction.hpp>
+#include <Ape/Windowing/KeyModifier.hpp>
+#include <Ape/Windowing/KeyStatus.hpp>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <TestScene/SampleScene.hpp>
+#include <Application/TestScene/SampleScene.hpp>
 
 class SampleAssetCollection;
 

@@ -1,6 +1,6 @@
-#include <Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/DepthShaderProgram.hpp>
 
-#include <GpuResource/ShaderBuilder.hpp>
+#include <Ape/GpuResource/ShaderBuilder.hpp>
 
 namespace ape
 {

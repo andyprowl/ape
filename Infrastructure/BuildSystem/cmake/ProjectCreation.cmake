@@ -31,8 +31,8 @@ function(
 
     FindFilesRecursively(
         ${PUBLIC_HEADER_FILES}
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/${CURRENT_PACKAGE}/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/${CURRENT_PACKAGE}/*.hpp")
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.hpp")
 
     FindFilesRecursively(
         ${PRIVATE_HEADER_FILES}

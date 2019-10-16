@@ -1,8 +1,8 @@
 #pragma once
 
-#include <GpuResource/ShaderPreprocessor.hpp>
-#include <GpuResource/ShaderProgram.hpp>
-#include <GpuResource/ShaderReader.hpp>
+#include <Ape/GpuResource/ShaderPreprocessor.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/ShaderReader.hpp>
 
 #include <filesystem>
 #include <vector>

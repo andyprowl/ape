@@ -1,10 +1,10 @@
 #pragma once
 
-#include <GpuResource/FragmentShader.hpp>
-#include <GpuResource/GeometryShader.hpp>
-#include <GpuResource/GpuResource.hpp>
-#include <GpuResource/Uniform.hpp>
-#include <GpuResource/VertexShader.hpp>
+#include <Ape/GpuResource/FragmentShader.hpp>
+#include <Ape/GpuResource/GeometryShader.hpp>
+#include <Ape/GpuResource/GpuResource.hpp>
+#include <Ape/GpuResource/Uniform.hpp>
+#include <Ape/GpuResource/VertexShader.hpp>
 
 #include <optional>
 #include <stdexcept>

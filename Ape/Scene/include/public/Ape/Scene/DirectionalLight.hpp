@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Scene/Light.hpp>
+#include <Ape/Scene/Light.hpp>
 
-#include <Signal/Signal.hpp>
+#include <Foundational/Signal/Signal.hpp>
 
 namespace ape
 {

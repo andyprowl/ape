@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/TextureReader.hpp>
+#include <Ape/GpuResource/TextureReader.hpp>
 
 #include <glm/vec4.hpp>
 

@@ -1,7 +1,7 @@
-#include <GpuResource/FrameBufferObject.hpp>
+#include <Ape/GpuResource/FrameBufferObject.hpp>
 
-#include <GpuResource/RenderBufferObject.hpp>
-#include <GpuResource/Texture.hpp>
+#include <Ape/GpuResource/RenderBufferObject.hpp>
+#include <Ape/GpuResource/Texture.hpp>
 
 #include <glad/glad.h>
 

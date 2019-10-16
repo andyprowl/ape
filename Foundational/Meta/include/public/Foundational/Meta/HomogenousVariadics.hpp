@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Meta/EnableIf.hpp>
-#include <Meta/TypeListPredicates.hpp>
+#include <Foundational/Meta/EnableIf.hpp>
+#include <Foundational/Meta/TypeListPredicates.hpp>
 
 #define variadicListOf(T, Ts) \
     typename... Ts, EnableIf<allTypesEqual<T, Ts...>> * = nullptr

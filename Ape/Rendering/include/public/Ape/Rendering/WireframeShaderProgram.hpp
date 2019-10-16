@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>

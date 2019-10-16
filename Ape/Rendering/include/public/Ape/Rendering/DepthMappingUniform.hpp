@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Rendering/DepthMapping.hpp>
+#include <Ape/Rendering/DepthMapping.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-#include <GpuResource/ShaderProgram.hpp>
-#include <GpuResource/TextureUniform.hpp>
-#include <GpuResource/VectorUniform.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/ShaderProgram.hpp>
+#include <Ape/GpuResource/TextureUniform.hpp>
+#include <Ape/GpuResource/VectorUniform.hpp>
 
 #include <vector>
 

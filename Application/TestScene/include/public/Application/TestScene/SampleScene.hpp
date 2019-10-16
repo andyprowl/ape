@@ -1,10 +1,9 @@
 #pragma once
 
-#include <UpdateHandling/BodyPointLightSynchronizer.hpp>
-#include <UpdateHandling/BodySpotLightSynchronizer.hpp>
-#include <UpdateHandling/CameraSpotlightSynchronizer.hpp>
-
-#include <Scene/Scene.hpp>
+#include <Ape/Scene/Scene.hpp>
+#include <Ape/UpdateHandling/BodyPointLightSynchronizer.hpp>
+#include <Ape/UpdateHandling/BodySpotLightSynchronizer.hpp>
+#include <Ape/UpdateHandling/CameraSpotlightSynchronizer.hpp>
 
 #include <vector>
 

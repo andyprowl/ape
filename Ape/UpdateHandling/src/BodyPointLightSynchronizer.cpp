@@ -1,7 +1,7 @@
-#include <UpdateHandling/BodyPointLightSynchronizer.hpp>
+#include <Ape/UpdateHandling/BodyPointLightSynchronizer.hpp>
 
-#include <Scene/Body.hpp>
-#include <Scene/PointLight.hpp>
+#include <Ape/Scene/Body.hpp>
+#include <Ape/Scene/PointLight.hpp>
 
 #include <glm/mat4x4.hpp>
 

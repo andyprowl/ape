@@ -1,8 +1,7 @@
-#include <AssetLoader/ModelPartImporter.hpp>
+#include <Ape/AssetLoader/ModelPartImporter.hpp>
 
-#include <AssetLoader/AssetLoader.hpp>
-
-#include <AssetLoader/AssetRepository.hpp>
+#include <Ape/AssetLoader/AssetLoader.hpp>
+#include <Ape/AssetLoader/AssetRepository.hpp>
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>

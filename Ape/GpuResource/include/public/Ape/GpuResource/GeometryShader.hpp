@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/Shader.hpp>
+#include <Ape/GpuResource/Shader.hpp>
 
 namespace ape
 {

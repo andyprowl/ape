@@ -1,6 +1,6 @@
-#include <Rendering/DepthMap.hpp>
+#include <Ape/Rendering/DepthMap.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/ScopedBinder.hpp>
 
 #include <cassert>
 

@@ -1,14 +1,13 @@
-#include <UpdateHandling/CameraSightMouseDriver.hpp>
+#include <Ape/UpdateHandling/CameraSightMouseDriver.hpp>
 
-#include <UpdateHandling/MovementTracker.hpp>
+#include <Ape/UpdateHandling/MovementTracker.hpp>
 
-#include <Scene/Camera.hpp>
-#include <Scene/CameraSelector.hpp>
+#include <Ape/Scene/Camera.hpp>
+#include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Windowing/Window.hpp>
 
-#include <Windowing/Window.hpp>
-
-#include <Mathematics/Math.hpp>
-#include <Mathematics/Offset.hpp>
+#include <Foundational/Mathematics/Math.hpp>
+#include <Foundational/Mathematics/Offset.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 

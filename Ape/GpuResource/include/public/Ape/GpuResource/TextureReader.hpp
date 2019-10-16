@@ -1,7 +1,7 @@
 #pragma once
 
-#include <GpuResource/FileFinder.hpp>
-#include <GpuResource/Texture.hpp>
+#include <Ape/GpuResource/FileFinder.hpp>
+#include <Ape/GpuResource/Texture.hpp>
 
 #include <filesystem>
 #include <stdexcept>

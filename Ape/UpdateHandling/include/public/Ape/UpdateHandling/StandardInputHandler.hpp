@@ -1,9 +1,9 @@
 #pragma once
 
-#include <UpdateHandling/CameraManipulator.hpp>
-#include <UpdateHandling/InputHandler.hpp>
+#include <Ape/UpdateHandling/CameraManipulator.hpp>
+#include <Ape/UpdateHandling/InputHandler.hpp>
 
-#include <Signal/ScopedSignalConnection.hpp>
+#include <Foundational/Signal/ScopedSignalConnection.hpp>
 
 #include <memory>
 

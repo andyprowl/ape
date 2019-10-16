@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GpuResource/Uniform.hpp>
+#include <Ape/GpuResource/Uniform.hpp>
 
 namespace ape::detail
 {
