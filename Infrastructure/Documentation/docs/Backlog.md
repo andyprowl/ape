@@ -1,6 +1,9 @@
  - Implement post-processing techniques (e.g. blurring)
   - Implement rendering to texture
+ - Add support for cube textures
+ - Implement skybox
  - Implement shadow mapping
+  - Implement point light shadows
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
  - callers of glViewport should do so through the Window object

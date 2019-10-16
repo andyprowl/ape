@@ -21,8 +21,9 @@ auto makeVector(aiVector3D const & v)
 auto makeCoordinateVector(aiVector3D const & v)
     -> glm::vec2
 {
-    // TODO: Inverting the X coordinate necessary to get the correct result, but should not be
-    // needed! There might be a mistake somewhere else.
+    // ATTENTION:
+    // Inverting the X coordinate necessary to get the correct result, but should not be needed!
+    // There might be a mistake somewhere else.
     return {-v.x, v.y};
 }
 
