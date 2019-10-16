@@ -31,8 +31,8 @@ function(
 
     FindFilesRecursively(
         ${PUBLIC_HEADER_FILES}
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/*.hpp")
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/${CURRENT_PACKAGE}/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/public/${CURRENT_PACKAGE}/*.hpp")
 
     FindFilesRecursively(
         ${PRIVATE_HEADER_FILES}
@@ -78,9 +78,9 @@ function(
     CreateSourceGroup("cmake" "CMake Files" "${CMAKE_FILES}")
 
     CreateSourceGroup("docs" "Documentation Files" "${DOC_FILES}")
-        
+
     CreateSourceGroup("include/public" "Header Files/Public" "${PUBLIC_HEADER_FILES}")
-        
+
     CreateSourceGroup("include/private" "Header Files/Private" "${PRIVATE_HEADER_FILES}")
 
     CreateSourceGroup("src" "Source Files" "${IMPLEMENTATION_FILES}")

@@ -1,13 +1,12 @@
+ - Implement post-processing techniques (e.g. blurring)
+  - Implement rendering to texture
  - Implement shadow mapping
-  - Fix (and understand!) resolution problem with directional lights
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
  - callers of glViewport should do so through the Window object
- - Implement normal visualization
- - Implement post-processing techniques (e.g. blurring)
+ - Implement normal visualization through geometry shaders
  - (Re-)implement glowing based on view position and normal
  - Implement gamma correction
- - Consider renaming the Ape package to Engine
  - Add the <Package/...> prefix to include folders
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator
