@@ -223,6 +223,7 @@ int main(int argc, char *argv[])
         std::move(outlinedBodyRenderer1),
         selector1,
         picker,
+        sceneView1,
         ape::Viewport{{0, 0}, sceneView1.getSize()},
         backgroundColor};
 
@@ -235,8 +236,6 @@ int main(int argc, char *argv[])
         scene};
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
-
-    sceneView1.engage(renderer1);
 
     engine1.start();
     
@@ -271,6 +270,7 @@ int main(int argc, char *argv[])
         std::move(outlinedBodyRenderer2),
         selector2,
         picker,
+        sceneView2,
         ape::Viewport{{0, 0}, sceneView2.getSize()},
         backgroundColor};
 
@@ -285,8 +285,6 @@ int main(int argc, char *argv[])
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
 
     selector2.activateNextCamera();
-
-    sceneView2.engage(renderer2);
 
     engine2.start();
     
@@ -321,6 +319,7 @@ int main(int argc, char *argv[])
         std::move(outlinedBodyRenderer3),
         selector3,
         picker,
+        sceneView3,
         ape::Viewport{{0, 0}, sceneView3.getSize()},
         backgroundColor};
 
@@ -335,8 +334,6 @@ int main(int argc, char *argv[])
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
 
     selector3.activatePreviousCamera();
-
-    sceneView3.engage(renderer3);
 
     engine3.start();
     

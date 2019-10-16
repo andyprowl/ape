@@ -8,8 +8,6 @@ add_subdirectory(GpuResource)
 
 add_subdirectory(Initialization)
 
-add_subdirectory(InputHandling)
-
 add_subdirectory(Model)
 
 add_subdirectory(QtEngine)
@@ -19,3 +17,5 @@ add_subdirectory(Rendering)
 add_subdirectory(Scene)
 
 add_subdirectory(UpdateHandling)
+
+add_subdirectory(Windowing)

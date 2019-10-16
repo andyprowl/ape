@@ -1,10 +1,11 @@
-#include <InputHandling/CameraSightMouseDriver.hpp>
+#include <UpdateHandling/CameraSightMouseDriver.hpp>
 
-#include <InputHandling/MovementTracker.hpp>
-#include <InputHandling/Window.hpp>
+#include <UpdateHandling/MovementTracker.hpp>
 
 #include <Scene/Camera.hpp>
 #include <Scene/CameraSelector.hpp>
+
+#include <Windowing/Window.hpp>
 
 #include <Mathematics/Math.hpp>
 #include <Mathematics/Offset.hpp>

@@ -1,6 +1,6 @@
-#include <InputHandling/StandardInputHandler.hpp>
+#include <UpdateHandling/StandardInputHandler.hpp>
 
-#include <InputHandling/Window.hpp>
+#include <Windowing/Window.hpp>
 
 #include <Scene/CameraSelector.hpp>
 #include <Scene/Scene.hpp>

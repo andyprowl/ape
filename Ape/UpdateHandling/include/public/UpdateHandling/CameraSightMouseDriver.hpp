@@ -1,7 +1,7 @@
 #pragma once
 
-#include <InputHandling/MovementTracker.hpp>
-#include <InputHandling/TaitBryanAngles.hpp>
+#include <UpdateHandling/MovementTracker.hpp>
+#include <UpdateHandling/TaitBryanAngles.hpp>
 
 #include <Mathematics/Offset.hpp>
 #include <Mathematics/Position.hpp>

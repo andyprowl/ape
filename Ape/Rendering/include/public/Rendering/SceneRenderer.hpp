@@ -24,6 +24,7 @@ class BodySelector;
 class Camera;
 class CameraSelector;
 class Scene;
+class Window;
 
 class SceneRenderer
 {
@@ -38,6 +39,7 @@ public:
         OutlinedBodyRenderer outlinedBodyRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
+        Window & surface,
         Viewport const & viewport,
         glm::vec3 const & backgroundColor);
 
@@ -70,6 +72,9 @@ private:
     auto renderDepthMapping()
         -> void;
 
+    auto renderSceneBodies()
+        -> void;
+
     auto renderNonPickedBodies(Camera const & camera) const
         -> void;
 
@@ -91,6 +96,8 @@ private:
     CameraSelector const * cameraSelector;
 
     BodySelector const * pickedBodySelector;
+
+    Window * surface;
 
     Viewport viewport;
 

@@ -4,12 +4,12 @@
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/WireframeShaderProgram.hpp>
 
+#include <Model/Mesh.hpp>
+#include <Model/ModelPart.hpp>
+
 #include <Scene/Body.hpp>
 #include <Scene/BodyPart.hpp>
 #include <Scene/Camera.hpp>
-
-#include <Model/Mesh.hpp>
-#include <Model/ModelPart.hpp>
 
 #include <GpuResource/ScopedBinder.hpp>
 

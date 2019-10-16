@@ -2,13 +2,13 @@
 
 #include <TestScene/SampleScene.hpp>
 
-#include <InputHandling/Window.hpp>
-
 #include <Rendering/LineStyleProvider.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
 #include <Scene/BodySelector.hpp>
 #include <Scene/CameraSelector.hpp>
+
+#include <Windowing/Window.hpp>
 
 #include <CompilerSupport/CompilerWarnings.hpp>
 

@@ -5,11 +5,12 @@
 #include <Rendering/LightingView.hpp>
 #include <Rendering/ShapeRenderer.hpp>
 
+#include <GpuResource/ScopedBinder.hpp>
+
 #include <Scene/Body.hpp>
 #include <Scene/BodyPart.hpp>
 #include <Scene/Camera.hpp>
-
-#include <GpuResource/ScopedBinder.hpp>
+#include <Scene/Lighting.hpp>
 
 #include <Model/Mesh.hpp>
 #include <Model/ModelPart.hpp>
@@ -52,19 +53,28 @@ auto DepthBodyRenderer::render(
 {
     auto const shaderBinder = ScopedBinder{*shader};
 
-    render(bodies, lightingView.getSpotView(), target.getSpotMapping());
+    auto const & lighting = lightingView.getLighting();
 
-    render(bodies, lightingView.getDirectionalView(), target.getDirectionalMapping());
+    render(bodies, lighting.spot, lightingView.getSpotView(), target.getSpotMapping());
+
+    render(bodies, lighting.directional, lightingView.getDirectionalView(), target.getDirectionalMapping());
 }
 
+template<typename LightType>
 auto DepthBodyRenderer::render(
     BodySetView const & bodies,
+    std::vector<LightType> const & lights,
     std::vector<glm::mat4> const & lightViews,
     std::vector<DepthMap> & depthMaps) const
     -> void
 {
-    for (auto i = 0u; i < lightViews.size(); ++i)
+    for (auto i = 0u; i < lights.size(); ++i)
     {
+        if (!lights[i].isTurnedOn())
+        {
+            continue;
+        }
+
         auto const & lightView = lightViews[i];
 
         auto & depthMap = depthMaps[i];

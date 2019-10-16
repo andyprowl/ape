@@ -1,15 +1,17 @@
 #include <Rendering/SceneRenderer.hpp>
 
-#include <Scene/BodySelector.hpp>
-#include <Scene/Camera.hpp>
-#include <Scene/CameraSelector.hpp>
-#include <Scene/Scene.hpp>
+#include <GpuResource/ScopedBinder.hpp>
 
 #include <Model/Material.hpp>
 #include <Model/ModelPart.hpp>
 #include <Model/Shape.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
+#include <Scene/BodySelector.hpp>
+#include <Scene/Camera.hpp>
+#include <Scene/CameraSelector.hpp>
+#include <Scene/Scene.hpp>
+
+#include <Windowing/Window.hpp>
 
 #include <glad/glad.h>
 
@@ -27,6 +29,7 @@ SceneRenderer::SceneRenderer(
     OutlinedBodyRenderer outlinedBodyRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
+    Window & surface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
     : shapeRenderer{std::move(shapeRenderer)}
@@ -36,6 +39,7 @@ SceneRenderer::SceneRenderer(
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
+    , surface{&surface}
     , viewport{viewport}
     , shadowMapping{makeShadowMapping()}
     , backgroundColor{backgroundColor}
@@ -53,10 +57,8 @@ auto SceneRenderer::render()
     -> void
 {
     clear();
-
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    if (activeCamera == nullptr)
+    
+    if (!hasActiveCamera())
     {
         return;
     }
@@ -65,9 +67,7 @@ auto SceneRenderer::render()
 
     renderDepthMapping();
 
-    renderNonPickedBodies(*activeCamera);
-
-    renderPickedBodies(*activeCamera);
+    renderSceneBodies();
 }
 
 auto SceneRenderer::getCameraSelector() const
@@ -138,6 +138,20 @@ auto SceneRenderer::renderDepthMapping()
     auto const & bodies = cameraSelector->getScene().getBodies();
 
     depthBodyRenderer.render(bodies, shadowMapping.lightingView, shadowMapping.depthMapping);
+}
+
+auto SceneRenderer::renderSceneBodies()
+    -> void
+{
+    surface->makeCurrent();
+
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    assert(activeCamera != nullptr);
+
+    renderNonPickedBodies(*activeCamera);
+
+    renderPickedBodies(*activeCamera);
 }
 
 auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const

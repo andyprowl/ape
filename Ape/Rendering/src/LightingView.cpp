@@ -77,6 +77,12 @@ LightingView::LightingView(Lighting const & lighting, Size<int> const & viewSize
 {
 }
 
+auto LightingView::getLighting() const
+    -> Lighting const &
+{
+    return *lighting;
+}
+
 auto LightingView::getDirectionalView() const
     -> std::vector<glm::mat4> const &
 {

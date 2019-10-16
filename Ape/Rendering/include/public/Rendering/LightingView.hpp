@@ -21,6 +21,9 @@ class LightingView
 public:
 
     LightingView(Lighting const & lighting, Size<int> const & viewSize);
+    
+    auto getLighting() const
+        -> Lighting const &;
 
     auto getDirectionalView() const
         -> std::vector<glm::mat4> const &;

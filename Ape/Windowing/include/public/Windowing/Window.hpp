@@ -1,6 +1,6 @@
 #pragma once
 
-#include <InputHandling/Keyboard.hpp>
+#include <Windowing/Keyboard.hpp>
 
 #include <Mathematics/Offset.hpp>
 #include <Mathematics/Position.hpp>
@@ -8,11 +8,8 @@
 
 #include <Signal/Signal.hpp>
 
-#include <functional>
 #include <stdexcept>
 #include <string>
-
-struct GLFWwindow;
 
 namespace ape
 {

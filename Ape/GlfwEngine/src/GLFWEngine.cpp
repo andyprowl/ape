@@ -1,11 +1,12 @@
 #include <GlfwEngine/GLFWEngine.hpp>
 
-#include <InputHandling/InputHandler.hpp>
-#include <InputHandling/Window.hpp>
-
 #include <Rendering/SceneRenderer.hpp>
 
 #include <Scene/Scene.hpp>
+
+#include <UpdateHandling/InputHandler.hpp>
+
+#include <Windowing/Window.hpp>
 
 #include <Signal/ScopedSignalConnection.hpp>
 

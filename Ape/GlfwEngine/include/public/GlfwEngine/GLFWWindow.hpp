@@ -1,6 +1,6 @@
 #pragma once
 
-#include <InputHandling/Window.hpp>
+#include <Windowing/Window.hpp>
 
 struct GLFWwindow;
 

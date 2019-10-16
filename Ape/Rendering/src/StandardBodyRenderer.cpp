@@ -4,16 +4,16 @@
 #include <Rendering/ShapeRenderer.hpp>
 #include <Rendering/StandardShaderProgram.hpp>
 
-#include <Scene/Body.hpp>
-#include <Scene/BodyPart.hpp>
-#include <Scene/Camera.hpp>
+#include <GpuResource/ScopedBinder.hpp>
+#include <GpuResource/Texture.hpp>
 
 #include <Model/Material.hpp>
 #include <Model/Mesh.hpp>
 #include <Model/ModelPart.hpp>
 
-#include <GpuResource/ScopedBinder.hpp>
-#include <GpuResource/Texture.hpp>
+#include <Scene/Body.hpp>
+#include <Scene/BodyPart.hpp>
+#include <Scene/Camera.hpp>
 
 #include <glad/glad.h>
 

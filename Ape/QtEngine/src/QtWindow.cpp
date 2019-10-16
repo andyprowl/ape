@@ -1,9 +1,10 @@
 #include <QtEngine/QtWindow.hpp>
 
-#include <InputHandling/Keyboard.hpp>
-#include <InputHandling/StandardInputHandler.hpp>
-
 #include <Initialization/Initialization.hpp>
+
+#include <UpdateHandling/StandardInputHandler.hpp>
+
+#include <Windowing/Keyboard.hpp>
 
 #include <QResizeEvent>
 #include <QTimer>
@@ -96,7 +97,6 @@ auto getKey(QKeyEvent & e)
 
 QtWindow::QtWindow(QWidget * const parent)
     : QOpenGLWidget{parent}
-    , renderer{nullptr}
     , isMouseGrabbed{false}
     , isWindowClosing{false}
     , isOpenGLInitialized{false}
@@ -111,12 +111,6 @@ QtWindow::~QtWindow()
     // Do all resource releasing here
 
     doneCurrent();
-}
-
-auto QtWindow::engage(SceneRenderer & r)
-    -> void
-{
-    renderer = &r;
 }
 
 // virtual (from Window)

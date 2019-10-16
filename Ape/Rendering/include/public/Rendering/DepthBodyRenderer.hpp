@@ -39,8 +39,10 @@ public:
 
 private:
 
+    template<typename LightType>
     auto render(
         BodySetView const & bodies,
+        std::vector<LightType> const & lights,
         std::vector<glm::mat4> const & lightViews,
         std::vector<DepthMap> & depthMaps) const
         -> void;

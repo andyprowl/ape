@@ -1,11 +1,5 @@
  - Implement shadow mapping
-  - Do not draw shadow map for lights that are turned off
   - Fix (and understand!) resolution problem with directional lights
-  - SampleInputHandler currently
-  - Fix ApeCreator and rename it to ApeStudio
-   - If renderDepthMapping() is commented out, Qt windows are rendered correctly
-   - Probably need to restore the current device's target (which is not the default device!) by
-     calling makeCurrent() somehow. This means the renderer needs a reference to the window.
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
  - callers of glViewport should do so through the Window object

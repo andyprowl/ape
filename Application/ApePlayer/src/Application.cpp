@@ -33,7 +33,7 @@ public:
 
         inputHandler.getCameraManipulator().activate();
 
-        GLFWEngine.start();
+        engine.start();
     }
 
 private:
@@ -83,6 +83,7 @@ private:
         std::move(outlinedBodyRenderer),
         cameraSelector,
         bodyPicker,
+        window,
         ape::Viewport{{0, 0}, window.getSize()},
         {0.0f, 0.0f, 0.0f}};
 
@@ -94,7 +95,7 @@ private:
         wireframeStyleProvider,
         scene};
 
-    ape::GLFWEngine GLFWEngine{window, sceneRenderer, inputHandler};
+    ape::GLFWEngine engine{window, sceneRenderer, inputHandler};
 
 };
 

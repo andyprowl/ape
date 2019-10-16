@@ -1,20 +1,9 @@
 #pragma once
 
-#include <InputHandling/Window.hpp>
+#include <Windowing/Window.hpp>
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
-
-namespace ape
-{
-
-class CameraSelector;
-class InputHandler;
-class Scene;
-class SceneRenderer;
-class StandardShaderProgram;
-
-} // namespace ape
 
 namespace ape::qt
 {
@@ -41,9 +30,6 @@ public:
     explicit QtWindow(QWidget * parent = nullptr);
 
     ~QtWindow();
-
-    auto engage(SceneRenderer & renderer)
-        -> void;
 
     // virtual (from Window)
     auto getAspectRatio() const
@@ -153,8 +139,6 @@ private:
         -> void;
 
 private:
-
-    SceneRenderer * renderer;
 
     std::vector<ape::KeyStatus> keyStatus;
 

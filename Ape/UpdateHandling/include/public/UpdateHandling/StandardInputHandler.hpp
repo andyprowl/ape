@@ -1,7 +1,7 @@
 #pragma once
 
-#include <InputHandling/CameraManipulator.hpp>
-#include <InputHandling/InputHandler.hpp>
+#include <UpdateHandling/CameraManipulator.hpp>
+#include <UpdateHandling/InputHandler.hpp>
 
 #include <Signal/ScopedSignalConnection.hpp>
 

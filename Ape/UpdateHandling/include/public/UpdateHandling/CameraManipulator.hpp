@@ -1,7 +1,6 @@
 #pragma once
 
-#include <InputHandling/CameraSightMouseDriver.hpp>
-#include <InputHandling/Keyboard.hpp>
+#include <UpdateHandling/CameraSightMouseDriver.hpp>
 
 #include <chrono>
 #include <optional>

@@ -14,8 +14,8 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    Ape::InputHandling
     Ape::Rendering
+    Ape::Windowing
     3rdParty::Glad
     3rdParty::Qt5::Core
     3rdParty::Qt5::OpenGL
@@ -25,6 +25,7 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     opengl32
     Ape::Initialization
+    Ape::UpdateHandling
     Foundational::Time)
 
 file(GLOB MOC_FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/mocs_compilation.cpp")
