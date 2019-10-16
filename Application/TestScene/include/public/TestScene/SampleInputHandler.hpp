@@ -64,6 +64,9 @@ private:
     auto toggleBlinnPhongModel() const
         -> void;
 
+    auto togglePercentageCloserFiltering() const
+        -> void;
+
     auto togglePickedObjects() const
         -> void;
 

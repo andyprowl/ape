@@ -38,6 +38,8 @@ public:
 
     Uniform<bool> useBlinnPhongModel;
 
+    Uniform<bool> usePercentageCloserFiltering;
+
 };
 
 } // namespace ape

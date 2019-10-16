@@ -31,6 +31,7 @@ StandardShaderProgram::StandardShaderProgram()
     , material{*this, "material", 0, 1}
     , depthMapping{*this, "depthMapping", 2}
     , useBlinnPhongModel{*this, "useBlinnPhongModel", true}
+    , usePercentageCloserFiltering{*this, "usePercentageCloserFiltering", false}
 {
 }
 

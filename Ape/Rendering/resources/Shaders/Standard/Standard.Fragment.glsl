@@ -186,6 +186,8 @@ uniform DepthMapping depthMapping;
 
 uniform bool useBlinnPhongModel;
 
+uniform bool usePercentageCloserFiltering;
+
 float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
 {    
     return 
@@ -195,19 +197,57 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
          attenuation.quadratic * (sourceDistance * sourceDistance));
 }
 
+float sampleShadowWithPercentageCloserFiltering(
+    vec3 depthMapPosition,
+    sampler2D depthMap,
+    float bias)
+{
+    float currentDepth = depthMapPosition.z;
+
+    vec2 texelSize = 1.0 / textureSize(depthMap, 0);
+
+    float shadow = 0.0;
+
+    for (int x = -1; x <= 1; ++x)
+    {
+        for (int y = -1; y <= 1; ++y)
+        {
+            float pcfDepth = texture(depthMap, depthMapPosition.xy + vec2(x, y) * texelSize).r;
+
+            shadow += ((currentDepth - bias) > pcfDepth) ? 0.0 : 1.0;
+        }
+    }
+
+    shadow /= 9.0;
+
+    return shadow;
+}
+
+float sampleSingleShadowValue(vec3 depthMapPosition, sampler2D depthMap, float bias)
+{
+    float closestDepth = texture(depthMap, depthMapPosition.xy).r;
+
+    float currentDepth = depthMapPosition.z;
+    
+    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
+}
+
 float calculateShadowFactor(vec3 lightDirection, vec4 lightSpacePosition, sampler2D depthMap)
 {
     vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
     vec3 depthMapPosition = lightProjectionPosition * 0.5 + 0.5;
 
-    float closestDepth = texture(depthMap, depthMapPosition.xy).r;
-
-    float currentDepth = depthMapPosition.z;
-
     float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
-    
-    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
+
+    if (usePercentageCloserFiltering)
+    {
+        return sampleShadowWithPercentageCloserFiltering(depthMapPosition, depthMap, bias);
+    }
+    else
+    {
+        return sampleSingleShadowValue(depthMapPosition, depthMap, bias);
+    }
 }
 
 vec3 computeAmbientLight(LightColor color)

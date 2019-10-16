@@ -103,6 +103,10 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     {
         toggleBlinnPhongModel();
     }
+    else if ((key == ape::Key::keyF) && (modifier == ape::KeyModifier::none))
+    {
+        togglePercentageCloserFiltering();
+    }
     else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
     {
         togglePickedObjects();
@@ -205,6 +209,14 @@ auto SampleInputHandler::toggleBlinnPhongModel() const
     standardShader->bind();
 
     standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
+}
+
+auto SampleInputHandler::togglePercentageCloserFiltering() const
+    -> void
+{
+    standardShader->bind();
+
+    standardShader->usePercentageCloserFiltering = !standardShader->usePercentageCloserFiltering;
 }
 
 auto SampleInputHandler::togglePickedObjects() const

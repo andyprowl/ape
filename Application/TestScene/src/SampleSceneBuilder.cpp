@@ -322,7 +322,7 @@ auto StatefulSceneBuilder::getFlashlightPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {2.4f, 1.0f, 2.0f},
+        {2.5f, 1.0f, 3.0f},
         {-2.5f, 1.5f, 2.5f}};
 }
 
