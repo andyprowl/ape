@@ -1,7 +1,7 @@
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
 
+#include <Ape/GpuResource/VertexLayout.hpp>
 #include <Ape/Model/Shape.hpp>
-#include <Ape/Model/VertexLayout.hpp>
 
 #include <glad/glad.h>
 
@@ -13,9 +13,9 @@ auto ShapeBufferObjectRenderer::render(Shape const & shape) const
 {
     shape.getVertexBufferObject().bind();
 
-    sendVertexLayoutToGpu<ShapeVertex>();
-
     shape.getElementBufferObject().bind();
+
+    sendVertexLayoutToGpu<ShapeVertex>();
 
     auto const numOfVertices = shape.getNumOfVertices();
 

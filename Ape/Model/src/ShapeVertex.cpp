@@ -1,6 +1,6 @@
 #include <Ape/Model/ShapeVertex.hpp>
 
-#include <Ape/Model/VertexLayout.hpp>
+#include <Ape/GpuResource/VertexLayout.hpp>
 
 namespace ape
 {

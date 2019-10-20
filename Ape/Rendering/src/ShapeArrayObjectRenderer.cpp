@@ -1,7 +1,7 @@
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 
+#include <Ape/GpuResource/VertexLayout.hpp>
 #include <Ape/Model/Shape.hpp>
-#include <Ape/Model/VertexLayout.hpp>
 
 #include <Foundational/Range/Insertion.hpp>
 
@@ -20,9 +20,9 @@ auto setupRenderingState(Shape const & shape)
 {
     shape.getVertexBufferObject().bind();
 
-    sendVertexLayoutToGpu<ShapeVertex>();
-
     shape.getElementBufferObject().bind();
+
+    sendVertexLayoutToGpu<ShapeVertex>();
 }
 
 } // unnamed namespace

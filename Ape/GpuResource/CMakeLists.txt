@@ -4,7 +4,8 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    Foundational::Mathematics)
+    Foundational::Mathematics
+    Foundational::Meta)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}

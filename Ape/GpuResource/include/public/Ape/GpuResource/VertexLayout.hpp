@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Model/VertexComponent.hpp>
+#include <Ape/GpuResource/VertexComponent.hpp>
 
 #include <Foundational/Meta/HomogenousVariadics.hpp>
 

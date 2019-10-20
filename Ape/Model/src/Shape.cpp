@@ -1,8 +1,7 @@
 #include <Ape/Model/Shape.hpp>
 
-#include <Ape/Model/VertexLayout.hpp>
-
 #include <Ape/GpuResource/VertexArrayObject.hpp>
+#include <Ape/GpuResource/VertexLayout.hpp>
 
 #include <glad/glad.h>
 
