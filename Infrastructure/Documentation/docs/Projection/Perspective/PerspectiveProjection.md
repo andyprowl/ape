@@ -17,6 +17,7 @@ The tutorial is organized into the following sections:
 - [Depth component](#DepthComponent)
 - [Depth precision](#DepthPrecision)
 - [Summary](#Summary)
+- [Related links](#RelatedLinks)
 
 <br/>
 
@@ -27,8 +28,10 @@ The tutorial is organized into the following sections:
 distant objects appear smaller than closer objects of the same size, and parallel lines approach
 each other as they extend far away from the observer:
 
-<div style="text-align:center">
+<div style="text-align:center; font-size:4pt">
     <img width="60%" src="Images/Photos/Railroad.jpg" />
+    <br/>
+    <a href="https://fspy.io/basics/">(source)</a>
 </div>
 
 <br>
@@ -466,6 +469,7 @@ coordinates.
 This transformation consists of a trivial offsetting and scaling operation; however, since it is
 not very closely related to the projection process, it will not be discussed here.
 
+<a name="RelatedLinks"></a>
 ### Related links
 
 - [OpenGL Projection Matrix](http://www.songho.ca/opengl/gl_projectionmatrix.html)
