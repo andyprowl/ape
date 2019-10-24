@@ -19,7 +19,7 @@ The tutorial is organized into the following sections:
 - [Summary](#Summary)
 - [Related links](#RelatedLinks)
 
-<br/>
+<hr/>
 
 <a name="Introduction"></a>
 ### Introduction
