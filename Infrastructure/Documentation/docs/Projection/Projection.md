@@ -6,3 +6,6 @@ coordinate system) into 2D points in *screen space* (i.e. points whose coordinat
 the screen's coordinate system).
 This process is fundamental for rendering 3D-looking graphics on 2D surfaces like computer
 monitors.
+
+- [Perspective projection](Perspective/PerspectiveProjection.md)
+- [Orthogonal projection](Orthogonal/OrthogonalProjection.md)
