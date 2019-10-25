@@ -1,5 +1,6 @@
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 
+#include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/GpuResource/VertexLayout.hpp>
 #include <Ape/Model/Shape.hpp>
 
@@ -62,18 +63,24 @@ auto ShapeArrayObjectRenderer::setupArrayObjectsForShapes(
     std::vector<VertexArrayObject> & destination) const
     -> void
 {
-    for (auto const & shape : shapes)
+    for (auto const shape : shapes)
     {
         auto const id = shape->getInstanceIndex();
 
         auto & arrayObject = destination[id];
 
-        arrayObject.bind();
-
-        setupRenderingState(*shape);
-
-        arrayObject.unbind();
+        setupArrayObjectForShape(*shape, arrayObject);
     }
+}
+
+auto ShapeArrayObjectRenderer::setupArrayObjectForShape(
+    Shape const & shape,
+    VertexArrayObject & destination) const
+    -> void
+{
+    auto const binder = ScopedBinder{destination};
+
+    setupRenderingState(shape);
 }
 
 auto ShapeArrayObjectRenderer::getArrayObjectForShape(Shape const & shape) const

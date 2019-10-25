@@ -36,6 +36,11 @@ private:
         std::vector<VertexArrayObject> & destination) const
         -> void;
 
+    auto setupArrayObjectForShape(
+        Shape const & shape,
+        VertexArrayObject & destination) const
+        -> void;
+
     auto getArrayObjectForShape(Shape const & shape) const
         -> const VertexArrayObject &;
 

@@ -3,6 +3,7 @@
 #include <Ape/Model/ShapeVertex.hpp>
 
 #include <Ape/GpuResource/ElementBufferObject.hpp>
+#include <Ape/GpuResource/VertexArrayObject.hpp>
 #include <Ape/GpuResource/VertexBufferObject.hpp>
 
 #include <Foundational/Meta/Counted.hpp>
@@ -17,8 +18,11 @@ public:
 
     FlatQuad();
 
-    auto getVertexBufferObject() const 
+    auto getVertexBuffer() const 
         -> const VertexBufferObject &;
+
+    auto getArrayObject() const 
+        -> const VertexArrayObject &;
 
     auto getNumOfVertices() const
         -> int;
@@ -29,8 +33,10 @@ private:
         -> VertexBufferObject;
 
 private:
-    
+
     VertexBufferObject vertexBuffer;
+
+    VertexArrayObject arrayObject;
 
 };
 

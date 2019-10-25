@@ -2,6 +2,7 @@
 
 #include <Ape/Rendering/FlatQuadVertex.hpp>
 
+#include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/GpuResource/VertexArrayObject.hpp>
 #include <Ape/GpuResource/VertexLayout.hpp>
 
@@ -29,33 +30,36 @@ auto makeVertexBufferObject(std::vector<FlatQuadVertex> const & vertices)
     return vbo;
 }
 
-auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
-    -> ElementBufferObject
+auto makeArrayObject(VertexBufferObject const & vertexBuffer)
+    -> VertexArrayObject
 {
-    auto ebo = ElementBufferObject{};
+    auto arrayObject = VertexArrayObject{};
 
-    ebo.bind();
+    auto const binder = ScopedBinder{arrayObject};
 
-    glBufferData(
-        GL_ELEMENT_ARRAY_BUFFER,
-        indices.size() * sizeof(unsigned int),
-        indices.data(),
-        GL_STATIC_DRAW);
+    vertexBuffer.bind();
 
-    return ebo;
+    return arrayObject;
 }
 
 } // unnamed namespace
 
 FlatQuad::FlatQuad()
     : vertexBuffer{makeVertices()}
+    , arrayObject{makeArrayObject(vertexBuffer)}
 {
 }
 
-auto FlatQuad::getVertexBufferObject() const 
+auto FlatQuad::getVertexBuffer() const 
     -> const VertexBufferObject &
 {
     return vertexBuffer;
+}
+
+auto FlatQuad::getArrayObject() const 
+    -> const VertexArrayObject &
+{
+    return arrayObject;
 }
 
 auto FlatQuad::getNumOfVertices() const
