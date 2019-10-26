@@ -28,7 +28,7 @@ auto makeDepthMapFrameBuffer(Texture & depthMapTexture)
 {
     auto frameBuffer = FrameBufferObject{};
 
-    auto const binder = ScopedBinder{frameBuffer};
+    auto const binder = bind(frameBuffer);
 
     frameBuffer.attach(depthMapTexture, FrameBufferAttachment::depth);
 

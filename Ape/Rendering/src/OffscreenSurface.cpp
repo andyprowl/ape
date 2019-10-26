@@ -15,8 +15,8 @@ auto makeColorBuffer(Size<int> const & size)
 {
     auto const descriptor = TextureDescriptor{
         size,
-        TextureFormat::depthOnly,
-        PixelType::floatingPoint,
+        TextureFormat::redGreenBlue,
+        PixelType::unsignedByte,
         TextureWrapping::clampToEdge,
         nullptr};
 
@@ -34,10 +34,10 @@ auto makeFrameBufferForTarget(Texture & colorBuffer, RenderBufferObject & depthA
 {
     auto frameBuffer = FrameBufferObject{};
 
-    auto const binder = ScopedBinder{frameBuffer};
+    auto const binder = bind(frameBuffer);
 
     frameBuffer.attach(colorBuffer, FrameBufferAttachment::color0);
-
+    
     frameBuffer.attach(depthAndStencilBuffer, FrameBufferAttachment::depthAndStencil);
 
     assert(frameBuffer.isComplete());

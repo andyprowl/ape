@@ -35,7 +35,7 @@ BasicUniform<T>::BasicUniform(
     T const & value)
     : BasicUniform<T>{program, name}
 {
-    auto const shaderBinder = ScopedBinder{program};
+    auto const shaderBinder = bind(program);
 
     set(value);
 }

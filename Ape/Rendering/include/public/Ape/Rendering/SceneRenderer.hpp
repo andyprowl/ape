@@ -2,7 +2,9 @@
 
 #include <Ape/Rendering/CameraUniform.hpp>
 #include <Ape/Rendering/DepthBodyRenderer.hpp>
+#include <Ape/Rendering/FlatTextureRenderer.hpp>
 #include <Ape/Rendering/LightingUniform.hpp>
+#include <Ape/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/ShadowMapping.hpp>
 #include <Ape/Rendering/ShapeRenderer.hpp>
@@ -37,9 +39,10 @@ public:
         StandardBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
+        FlatTextureRenderer flatTextureRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
-        Window & surface,
+        Window & screenSurface,
         Viewport const & viewport,
         glm::vec3 const & backgroundColor);
 
@@ -63,22 +66,34 @@ private:
     auto makeShadowMapping() const
         -> ShadowMapping;
 
+    auto setupDrawingMode() const
+        -> void;
+
+    auto setupViewport() const
+        -> void;
+
     auto hasActiveCamera() const
         -> bool;
 
-    auto clear() const
+    auto renderSceneToOffscreenSurface()
         -> void;
 
     auto renderDepthMapping()
         -> void;
 
-    auto renderSceneBodies()
+    auto renderSceneBodiesToOffscreenSurface()
+        -> void;
+
+    auto clearTargetBuffers()
         -> void;
 
     auto renderNonPickedBodies(Camera const & camera) const
         -> void;
 
     auto renderPickedBodies(Camera const & camera) const
+        -> void;
+
+    auto renderOffscreenSurfaceToScreen() const
         -> void;
 
 private:
@@ -93,15 +108,19 @@ private:
 
     OutlinedBodyRenderer outlinedBodyRenderer;
 
+    FlatTextureRenderer flatTextureRenderer;
+
     CameraSelector const * cameraSelector;
 
     BodySelector const * pickedBodySelector;
 
-    Window * surface;
+    Window * screenSurface;
 
     Viewport viewport;
 
     ShadowMapping shadowMapping;
+
+    OffscreenSurface offscreenSurface;
 
     glm::vec3 backgroundColor;
 

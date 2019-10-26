@@ -66,7 +66,7 @@ private:
     auto bindSamplers(ShaderProgram & program)
         -> void
     {
-        auto const shaderBinder = ScopedBinder{program};
+        auto const shaderBinder = bind(program);
 
         auto index = firstDepthMapUnit;
 

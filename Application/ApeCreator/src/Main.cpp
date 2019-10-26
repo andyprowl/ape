@@ -8,6 +8,7 @@
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/FlatQuadShaderProgram.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
@@ -183,6 +184,8 @@ int main(int argc, char *argv[])
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
+    auto flatQuadShader = ape::FlatQuadShaderProgram{};
+
     auto picker = ape::BodySelector{scene};
 
     auto wireframeStyleProvider = ape::LineStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
@@ -193,8 +196,9 @@ int main(int argc, char *argv[])
 
     auto selector1 = ape::CameraSelector{scene};
 
-    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
-    // corresponding rendering context!
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
+    // must be created in the corresponding renderer context.
     sceneView1.makeCurrent();
     
     auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
@@ -213,12 +217,15 @@ int main(int argc, char *argv[])
         standardBodyRenderer1,
         wireframeBodyRenderer1};
 
+    auto flatTextureRenderer1 = ape::FlatTextureRenderer{flatQuadShader};
+
     auto renderer1 = ape::SceneRenderer{
         std::move(shapeRenderer1),
         std::move(depthBodyRenderer1),
         std::move(standardBodyRenderer1),
         std::move(wireframeBodyRenderer1),
         std::move(outlinedBodyRenderer1),
+        std::move(flatTextureRenderer1),
         selector1,
         picker,
         sceneView1,
@@ -241,8 +248,9 @@ int main(int argc, char *argv[])
 
     auto selector2 = ape::CameraSelector{scene};
 
-    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
-    // corresponding rendering context!
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
+    // must be created in the corresponding renderer context.
     sceneView2.makeCurrent();
 
     auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
@@ -260,12 +268,15 @@ int main(int argc, char *argv[])
         standardBodyRenderer2,
         wireframeBodyRenderer2};
 
+    auto flatTextureRenderer2 = ape::FlatTextureRenderer{flatQuadShader};
+
     auto renderer2 = ape::SceneRenderer{
         std::move(shapeRenderer2),
         std::move(depthBodyRenderer2),
         std::move(standardBodyRenderer2),
         std::move(wireframeBodyRenderer2),
         std::move(outlinedBodyRenderer2),
+        std::move(flatTextureRenderer2),
         selector2,
         picker,
         sceneView2,
@@ -290,8 +301,9 @@ int main(int argc, char *argv[])
     
     auto selector3 = ape::CameraSelector{scene};
 
-    // Important: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
-    // corresponding rendering context!
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
+    // must be created in the corresponding renderer context.
     sceneView3.makeCurrent();
      
     auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
@@ -309,12 +321,15 @@ int main(int argc, char *argv[])
         standardBodyRenderer3,
         wireframeBodyRenderer3};
 
+    auto flatTextureRenderer3 = ape::FlatTextureRenderer{flatQuadShader};
+
     auto renderer3 = ape::SceneRenderer{
         std::move(shapeRenderer3),
         std::move(depthBodyRenderer3),
         std::move(standardBodyRenderer3),
         std::move(wireframeBodyRenderer3),
         std::move(outlinedBodyRenderer3),
+        std::move(flatTextureRenderer3),
         selector3,
         picker,
         sceneView3,

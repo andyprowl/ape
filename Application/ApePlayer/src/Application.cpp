@@ -7,6 +7,7 @@
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/FlatQuadShaderProgram.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
@@ -50,6 +51,8 @@ private:
 
     ape::WireframeShaderProgram wireframeShader;
 
+    ape::FlatQuadShaderProgram flatQuadShader;
+
     std::unique_ptr<ape::ShapeArrayObjectRenderer> shapeRenderer{
         std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes)};
 
@@ -69,6 +72,8 @@ private:
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
 
+    ape::FlatTextureRenderer flatTextureRenderer{flatQuadShader};
+
     ape::CameraSelector cameraSelector{scene};
 
     ape::BodySelector bodyPicker{scene};
@@ -79,6 +84,7 @@ private:
         std::move(standardBodyRenderer),
         std::move(wireframeBodyRenderer),
         std::move(outlinedBodyRenderer),
+        std::move(flatTextureRenderer),
         cameraSelector,
         bodyPicker,
         window,

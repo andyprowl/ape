@@ -37,19 +37,19 @@ auto RenderBufferObject::bind() const
 
     auto const id = resource.get();
 
-    glBindBuffer(GL_RENDERBUFFER, id);
+    glBindRenderbuffer(GL_RENDERBUFFER, id);
 }
 
 auto RenderBufferObject::unbind() const
     -> void
 {
-    glBindBuffer(GL_RENDERBUFFER, 0);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
 auto RenderBufferObject::setStorage(Size<int> const size)
     -> void
 {
-    auto const binder = ScopedBinder{*this};
+    auto const binder = ape::bind(*this);
 
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.width, size.height);
 }

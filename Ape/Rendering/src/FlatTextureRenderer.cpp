@@ -18,7 +18,7 @@ FlatTextureRenderer::FlatTextureRenderer(FlatQuadShaderProgram & shader)
 auto FlatTextureRenderer::render(Texture const & texture) const
     -> void
 {
-    auto const shaderBinder = ScopedBinder{*shader};
+    auto const shaderBinder = bind(*shader);
 
     shader->source = texture;
 
@@ -32,11 +32,11 @@ auto FlatTextureRenderer::render(Texture const & texture) const
 auto FlatTextureRenderer::drawQuad() const
     -> void
 {
-    auto const arrayObjectBinder = ScopedBinder{planeShape.getArrayObject()};
+    auto const arrayObjectBinder = bind(planeShape.getArrayObject());
 
     auto const numOfVertices = planeShape.getNumOfVertices();
 
-    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, numOfVertices);
 }
 
 } // namespace ape

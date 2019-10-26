@@ -27,7 +27,7 @@ WireframeBodyRenderer::WireframeBodyRenderer(
 auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & camera) const
     -> void
 {
-    auto const shaderBinder = ScopedBinder{*shader};
+    auto const shaderBinder = bind(*shader);
 
     setupLineStyleUniforms();
 

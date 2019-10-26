@@ -19,7 +19,7 @@ auto makeVertexBufferObject(std::vector<FlatQuadVertex> const & vertices)
 {
     auto vbo = VertexBufferObject{};
 
-    vbo.bind();
+    auto const binder = bind(vbo);
 
     auto const vertexBufferSize = vertices.size() * sizeof(FlatQuadVertex);
 
@@ -35,9 +35,11 @@ auto makeArrayObject(VertexBufferObject const & vertexBuffer)
 {
     auto arrayObject = VertexArrayObject{};
 
-    auto const binder = ScopedBinder{arrayObject};
+    auto const binder = bind(arrayObject);
 
     vertexBuffer.bind();
+
+    sendVertexLayoutToGpu<FlatQuadVertex>();
 
     return arrayObject;
 }
@@ -73,7 +75,7 @@ auto FlatQuad::makeVertices() const
 {
     auto vao = VertexArrayObject{};
 
-    vao.bind();
+    auto const binder = bind(vao);
 
     auto const vertices = std::vector<FlatQuadVertex>{
         {{-1.0f, +1.0f}, {+0.0f, +1.0f}},
@@ -83,11 +85,7 @@ auto FlatQuad::makeVertices() const
         {{+1.0f, -1.0f}, {+1.0f, +0.0f}},
         {{+1.0f, +1.0f}, {+1.0f, +1.0f}}};
 
-    auto vbo = makeVertexBufferObject(vertices);
-
-    vao.unbind();
-
-    return vbo;
+    return makeVertexBufferObject(vertices);
 }
 
 } // namespace ape

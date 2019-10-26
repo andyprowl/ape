@@ -24,9 +24,10 @@ SceneRenderer::SceneRenderer(
     StandardBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
+    FlatTextureRenderer flatTextureRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
-    Window & surface,
+    Window & screenSurface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
     : shapeRenderer{std::move(shapeRenderer)}
@@ -34,11 +35,13 @@ SceneRenderer::SceneRenderer(
     , standardBodyRenderer{std::move(standardBodyRenderer)}
     , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
+    , flatTextureRenderer{std::move(flatTextureRenderer)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
-    , surface{&surface}
+    , screenSurface{&screenSurface}
     , viewport{viewport}
     , shadowMapping{makeShadowMapping()}
+    , offscreenSurface{screenSurface.getSize()}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
@@ -53,18 +56,16 @@ SceneRenderer::SceneRenderer(
 auto SceneRenderer::render()
     -> void
 {
-    clear();
-    
-    if (!hasActiveCamera())
+    setupDrawingMode();
+
+    setupViewport();
+
+    if (hasActiveCamera())
     {
-        return;
+        renderSceneToOffscreenSurface();
     }
 
-    auto const arrayObjectBinder = ScopedBinder{arrayObject};
-
-    renderDepthMapping();
-
-    renderSceneBodies();
+    renderOffscreenSurfaceToScreen();
 }
 
 auto SceneRenderer::getCameraSelector() const
@@ -97,20 +98,6 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     shadowMapping.lightingView.setViewSize(viewport.size);
 }
 
-auto SceneRenderer::clear() const
-    -> void
-{
-    glCullFace(GL_BACK);
-
-    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
-
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
-}
-
 auto SceneRenderer::makeShadowMapping() const
     -> ShadowMapping
 {
@@ -121,12 +108,37 @@ auto SceneRenderer::makeShadowMapping() const
     return ShadowMapping{lighting, depthMapSize};
 }
 
+auto SceneRenderer::setupDrawingMode() const
+    -> void
+{
+    glCullFace(GL_BACK);
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+auto SceneRenderer::setupViewport() const
+    -> void
+{
+    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
+}
+
 auto SceneRenderer::hasActiveCamera() const
     -> bool
 {
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     return (activeCamera != nullptr);
+}
+
+auto SceneRenderer::renderSceneToOffscreenSurface()
+    -> void
+{
+    with(arrayObject, [this]
+    {
+        renderDepthMapping();
+
+        renderSceneBodiesToOffscreenSurface();
+    });
 }
 
 auto SceneRenderer::renderDepthMapping()
@@ -137,18 +149,31 @@ auto SceneRenderer::renderDepthMapping()
     depthBodyRenderer.render(bodies, shadowMapping.lightingView, shadowMapping.depthMapping);
 }
 
-auto SceneRenderer::renderSceneBodies()
+auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
     -> void
 {
-    surface->makeCurrent();
+    auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
+
+    clearTargetBuffers();
 
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);
 
+    // IMPORTANT: non-picked bodies must be drawn before picked bodies in order for outlining to
+    // work correctly due to the way the stencil buffer is used.
+
     renderNonPickedBodies(*activeCamera);
 
     renderPickedBodies(*activeCamera);
+}
+
+auto SceneRenderer::clearTargetBuffers()
+    -> void
+{
+    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
@@ -179,6 +204,16 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
     auto const & lighting = cameraSelector->getScene().getLighting();
 
     outlinedBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
+}
+
+auto SceneRenderer::renderOffscreenSurfaceToScreen() const
+    -> void
+{
+    screenSurface->makeCurrent();
+
+    auto const & texture = offscreenSurface.getColorBuffer();
+
+    flatTextureRenderer.render(texture);
 }
 
 auto getCamera(SceneRenderer const & renderer)

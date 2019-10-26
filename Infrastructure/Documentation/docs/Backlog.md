@@ -1,5 +1,6 @@
  - Implement post-processing techniques (e.g. blurring)
   - Implement rendering to texture
+  - Update size of offscreen surface when window size changes
  - Add support for cube textures
  - Implement skybox
  - Implement shadow mapping

@@ -78,7 +78,7 @@ auto ShapeArrayObjectRenderer::setupArrayObjectForShape(
     VertexArrayObject & destination) const
     -> void
 {
-    auto const binder = ScopedBinder{destination};
+    auto const binder = bind(destination);
 
     setupRenderingState(shape);
 }

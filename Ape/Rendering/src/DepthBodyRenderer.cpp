@@ -49,7 +49,7 @@ auto DepthBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
-    auto const shaderBinder = ScopedBinder{*shader};
+    auto const shaderBinder = bind(*shader);
 
     auto const & lighting = lightingView.getLighting();
 
@@ -87,7 +87,7 @@ auto DepthBodyRenderer::render(
     DepthMap & target) const
     -> void
 {
-    auto const binder = ScopedBinder{target.getFrameBuffer()};
+    auto const binder = bind(target.getFrameBuffer());
 
     auto const mapSize = target.getSize();
 

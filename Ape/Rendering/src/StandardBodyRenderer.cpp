@@ -34,7 +34,7 @@ auto StandardBodyRenderer::render(
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    auto const shaderBinder = ScopedBinder{*shader};
+    auto const shaderBinder = bind(*shader);
 
     setupViewport();
 

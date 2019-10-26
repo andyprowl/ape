@@ -14,7 +14,7 @@ template<typename LightContainer>
 auto makeDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
     -> std::vector<DepthMap>
 {
-    return transform(lights, [&mapSize] (auto const & ...)
+    return transform(lights, [&mapSize] (auto const & /*light*/)
     {
         return DepthMap{mapSize};
     });
