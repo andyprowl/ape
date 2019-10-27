@@ -23,7 +23,7 @@ namespace ape::detail
 {
 
 template<typename T>
-BasicUniform<T>::BasicUniform(ShaderProgram & program, std::string const & name)
+BasicUniform<T>::BasicUniform(ShaderProgram & program, std::string_view name)
     : BasicUniform{program.getUniform<T>(name)}
 {
 }
@@ -31,7 +31,7 @@ BasicUniform<T>::BasicUniform(ShaderProgram & program, std::string const & name)
 template<typename T>
 BasicUniform<T>::BasicUniform(
     ShaderProgram & program,
-    std::string const & name,
+    std::string_view name,
     T const & value)
     : BasicUniform<T>{program, name}
 {

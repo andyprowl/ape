@@ -108,16 +108,16 @@ auto ShaderProgram::link()
     checkShaderLinkingOutcome(id);
 }
 
-auto ShaderProgram::getUniformLocation(std::string const & name) const
+auto ShaderProgram::getUniformLocation(std::string_view name) const
     -> int
 {
     auto const id = resource.get();
 
-    auto const location = glGetUniformLocation(id, name.c_str());
+    auto const location = glGetUniformLocation(id, name.data());
 
     if (location < 0)
     {
-        throw UniformNotFound{name};
+        throw UniformNotFound{std::string{name}};
     }
 
     return location;

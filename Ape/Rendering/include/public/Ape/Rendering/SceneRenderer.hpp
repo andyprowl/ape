@@ -2,7 +2,7 @@
 
 #include <Ape/Rendering/CameraUniform.hpp>
 #include <Ape/Rendering/DepthBodyRenderer.hpp>
-#include <Ape/Rendering/FlatTextureRenderer.hpp>
+#include <Ape/Rendering/EffectRenderer.hpp>
 #include <Ape/Rendering/LightingUniform.hpp>
 #include <Ape/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
@@ -39,7 +39,7 @@ public:
         StandardBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
-        FlatTextureRenderer flatTextureRenderer,
+        EffectRenderer flatTextureRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
         Window & screenSurface,
@@ -108,7 +108,7 @@ private:
 
     OutlinedBodyRenderer outlinedBodyRenderer;
 
-    FlatTextureRenderer flatTextureRenderer;
+    EffectRenderer flatTextureRenderer;
 
     CameraSelector const * cameraSelector;
 

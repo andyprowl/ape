@@ -13,5 +13,6 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
+    Ape::Rendering
     Ape::Windowing
     Foundational::CompilerSupport)

@@ -86,10 +86,10 @@ auto onFocusChange(GLFWwindow * const handle, int const status)
     }
 }
 
-auto makeRegularGLFWWindow(std::string const & title, Size<int> const & size)
+auto makeRegularGLFWWindow(std::string_view title, Size<int> const & size)
     -> GLFWwindow &
 {
-    auto const w = glfwCreateWindow(size.width, size.height, title.c_str(), nullptr, nullptr);
+    auto const w = glfwCreateWindow(size.width, size.height, title.data(), nullptr, nullptr);
 
     if (w == nullptr)
     {
@@ -99,7 +99,7 @@ auto makeRegularGLFWWindow(std::string const & title, Size<int> const & size)
     return *w;
 }
 
-auto makeFullScreenGLFWWindow(std::string const & title)
+auto makeFullScreenGLFWWindow(std::string_view title)
     -> GLFWwindow &
 {
     auto const monitor = glfwGetPrimaryMonitor();
@@ -114,7 +114,7 @@ auto makeFullScreenGLFWWindow(std::string const & title)
 
     glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
 
-    auto const w = glfwCreateWindow(mode->width, mode->height, title.c_str(), monitor, nullptr);
+    auto const w = glfwCreateWindow(mode->width, mode->height, title.data(), monitor, nullptr);
 
     if (w == nullptr)
     {
@@ -126,12 +126,12 @@ auto makeFullScreenGLFWWindow(std::string const & title)
 
 } // unnamed namespace
 
-GLFWWindow::GLFWWindow(std::string const & title, CreateAsFullscreen const)
+GLFWWindow::GLFWWindow(std::string_view title, CreateAsFullscreen const)
     : GLFWWindow{makeFullScreenGLFWWindow(title), true}
 {
 }
 
-GLFWWindow::GLFWWindow(std::string const & title, Size<int> const & size)
+GLFWWindow::GLFWWindow(std::string_view title, Size<int> const & size)
     : GLFWWindow{makeRegularGLFWWindow(title, size), false}
 {
 }

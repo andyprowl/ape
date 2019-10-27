@@ -15,9 +15,9 @@ public:
 
 public:
 
-    VectorUniform(ShaderProgram & program, std::string const & prefix)
+    VectorUniform(ShaderProgram & program, std::string prefix)
         : program{&program}
-        , prefix{prefix}
+        , prefix{std::move(prefix)}
     {
     }
 
@@ -122,9 +122,9 @@ public:
 
 public:
 
-    SizedVectorUniform(ShaderProgram & program, std::string const & prefix)
+    SizedVectorUniform(ShaderProgram & program, std::string prefix)
         : BaseUniform{program, prefix}
-        , arraySize{program, prefix + "ArraySize"}
+        , arraySize{program, std::move(prefix) + "ArraySize"}
     {
     }
 

@@ -1,6 +1,8 @@
  - Implement post-processing techniques (e.g. blurring)
-  - Implement rendering to texture
   - Update size of offscreen surface when window size changes
+  - Make sure everything works in Qt as well
+ - Let shader programs have names
+ - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
  - Add support for cube textures
  - Implement skybox
  - Implement shadow mapping

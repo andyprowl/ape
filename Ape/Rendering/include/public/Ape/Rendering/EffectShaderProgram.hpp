@@ -3,15 +3,17 @@
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/TextureUniform.hpp>
 
+#include <string>
+
 namespace ape
 {
 
-class FlatQuadShaderProgram : public ShaderProgram
+class EffectShaderProgram : public ShaderProgram
 {
 
 public:
 
-    FlatQuadShaderProgram();
+    explicit EffectShaderProgram(std::string fragmentShaderFileName);
 
 public:
 

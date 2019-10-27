@@ -58,11 +58,12 @@ auto getFunctionKey(int const i)
 SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
+    ape::EffectSelector & effectSelector,
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused SampleScene & scene)
-    : StandardInputHandler{window, cameraSelector}
+    : StandardInputHandler{window, cameraSelector, effectSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
     , outlineStyleProvider{&outlineStyleProvider}

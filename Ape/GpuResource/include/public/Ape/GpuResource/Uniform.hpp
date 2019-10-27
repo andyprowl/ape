@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace ape
@@ -23,9 +23,9 @@ public:
 
 public:
 
-    BasicUniform(ShaderProgram & program, std::string const & name);
+    BasicUniform(ShaderProgram & program, std::string_view name);
 
-    BasicUniform(ShaderProgram & program, std::string const & name, T const & value);
+    BasicUniform(ShaderProgram & program, std::string_view name, T const & value);
 
     auto get() const
         -> T;

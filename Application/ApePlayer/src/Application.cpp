@@ -7,7 +7,8 @@
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
-#include <Ape/Rendering/FlatQuadShaderProgram.hpp>
+#include <Ape/Rendering/EffectCollectionReader.hpp>
+#include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
@@ -24,6 +25,11 @@ class Application::Impl
 {
 
 public:
+
+    Impl()
+    {
+        effectSelector.activatePreviousEffect();
+    }
 
     auto run()
         -> void
@@ -51,7 +57,9 @@ private:
 
     ape::WireframeShaderProgram wireframeShader;
 
-    ape::FlatQuadShaderProgram flatQuadShader;
+    ape::EffectCollection effectCollection{ape::EffectCollectionReader{}.read()};
+
+    ape::EffectSelector effectSelector{effectCollection};
 
     std::unique_ptr<ape::ShapeArrayObjectRenderer> shapeRenderer{
         std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes)};
@@ -72,7 +80,7 @@ private:
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
 
-    ape::FlatTextureRenderer flatTextureRenderer{flatQuadShader};
+    ape::EffectRenderer flatTextureRenderer{effectSelector};
 
     ape::CameraSelector cameraSelector{scene};
 
@@ -94,6 +102,7 @@ private:
     SampleInputHandler inputHandler{
         window,
         cameraSelector,
+        effectSelector,
         bodyPicker,
         standardShader,
         wireframeStyleProvider,

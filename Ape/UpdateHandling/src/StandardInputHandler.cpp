@@ -1,5 +1,6 @@
 #include <Ape/UpdateHandling/StandardInputHandler.hpp>
 
+#include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Scene/Scene.hpp>
 #include <Ape/Windowing/Window.hpp>
@@ -12,9 +13,11 @@ namespace ape
 StandardInputHandler::StandardInputHandler(
     Window & handledWindow,
     CameraSelector & cameraSelector,
+    EffectSelector & effectSelector,
     float const manipulatorSensitivity)
     : handledWindow{&handledWindow}
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
+    , effectSelector{&effectSelector}
     , keyPressHandlerConnection{registerKeyboardHandlerConnection()}
     , mouseWheelHandlerConnection{registerMouseWheelHandlerConnection()}
     , focusAcquiredHandlerConnection{registerFocusAcquiredHandlerConnection()}
@@ -56,6 +59,8 @@ auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     processLightToggling(key, modifier);
 
     processCameraSwitching(key, modifier);
+
+    processEffectSwitching(key, modifier);
 }
 
 // virtual
@@ -190,6 +195,26 @@ auto StandardInputHandler::processCameraSwitching(
     if (modifier == ape::KeyModifier::control)
     {
         switchToCamera(index);
+    }
+}
+
+auto StandardInputHandler::processEffectSwitching(
+    ape::Key const key,
+    ape::KeyModifier const modifier)
+    -> void
+{
+    if (key != ape::Key::keyE)
+    {
+        return;
+    }
+
+    if (modifier == ape::KeyModifier::shift)
+    {
+        effectSelector->activateNextEffect();
+    }
+    else
+    {
+        effectSelector->activatePreviousEffect();
     }
 }
 

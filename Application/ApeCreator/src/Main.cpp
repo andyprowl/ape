@@ -8,7 +8,8 @@
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
-#include <Ape/Rendering/FlatQuadShaderProgram.hpp>
+#include <Ape/Rendering/EffectCollectionReader.hpp>
+#include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
@@ -184,7 +185,7 @@ int main(int argc, char *argv[])
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
-    auto flatQuadShader = ape::FlatQuadShaderProgram{};
+    auto effectCollection = ape::EffectCollectionReader{}.read();
 
     auto picker = ape::BodySelector{scene};
 
@@ -194,7 +195,7 @@ int main(int argc, char *argv[])
     
     /// ---
 
-    auto selector1 = ape::CameraSelector{scene};
+    auto cameraSelector1 = ape::CameraSelector{scene};
 
     // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
@@ -217,7 +218,9 @@ int main(int argc, char *argv[])
         standardBodyRenderer1,
         wireframeBodyRenderer1};
 
-    auto flatTextureRenderer1 = ape::FlatTextureRenderer{flatQuadShader};
+    auto effectSelector1 = ape::EffectSelector{effectCollection};
+
+    auto flatTextureRenderer1 = ape::EffectRenderer{effectSelector1};
 
     auto renderer1 = ape::SceneRenderer{
         std::move(shapeRenderer1),
@@ -226,7 +229,7 @@ int main(int argc, char *argv[])
         std::move(wireframeBodyRenderer1),
         std::move(outlinedBodyRenderer1),
         std::move(flatTextureRenderer1),
-        selector1,
+        cameraSelector1,
         picker,
         sceneView1,
         ape::Viewport{{0, 0}, sceneView1.getSize()},
@@ -234,7 +237,8 @@ int main(int argc, char *argv[])
 
     auto inputHandler1 = SampleInputHandler{
         sceneView1,
-        selector1,
+        cameraSelector1,
+        effectSelector1,
         picker,
         standardShader,
         wireframeStyleProvider,
@@ -246,7 +250,7 @@ int main(int argc, char *argv[])
     
     /// ---
 
-    auto selector2 = ape::CameraSelector{scene};
+    auto cameraSelector2 = ape::CameraSelector{scene};
 
     // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
@@ -267,8 +271,10 @@ int main(int argc, char *argv[])
     auto outlinedBodyRenderer2 = ape::OutlinedBodyRenderer{
         standardBodyRenderer2,
         wireframeBodyRenderer2};
+    
+    auto effectSelector2 = ape::EffectSelector{effectCollection};
 
-    auto flatTextureRenderer2 = ape::FlatTextureRenderer{flatQuadShader};
+    auto flatTextureRenderer2 = ape::EffectRenderer{effectSelector2};
 
     auto renderer2 = ape::SceneRenderer{
         std::move(shapeRenderer2),
@@ -277,7 +283,7 @@ int main(int argc, char *argv[])
         std::move(wireframeBodyRenderer2),
         std::move(outlinedBodyRenderer2),
         std::move(flatTextureRenderer2),
-        selector2,
+        cameraSelector2,
         picker,
         sceneView2,
         ape::Viewport{{0, 0}, sceneView2.getSize()},
@@ -285,7 +291,8 @@ int main(int argc, char *argv[])
 
     auto inputHandler2 = SampleInputHandler{
         sceneView2,
-        selector2,
+        cameraSelector2,
+        effectSelector2,
         picker,
         standardShader,
         wireframeStyleProvider,
@@ -293,13 +300,15 @@ int main(int argc, char *argv[])
 
     auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
 
-    selector2.activateNextCamera();
+    effectSelector2.activateNextEffect();
+
+    cameraSelector2.activateNextCamera();
 
     engine2.start();
     
     /// ---
     
-    auto selector3 = ape::CameraSelector{scene};
+    auto cameraSelector3 = ape::CameraSelector{scene};
 
     // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
@@ -321,7 +330,9 @@ int main(int argc, char *argv[])
         standardBodyRenderer3,
         wireframeBodyRenderer3};
 
-    auto flatTextureRenderer3 = ape::FlatTextureRenderer{flatQuadShader};
+    auto effectSelector3 = ape::EffectSelector{effectCollection};
+
+    auto flatTextureRenderer3 = ape::EffectRenderer{effectSelector3};
 
     auto renderer3 = ape::SceneRenderer{
         std::move(shapeRenderer3),
@@ -330,7 +341,7 @@ int main(int argc, char *argv[])
         std::move(wireframeBodyRenderer3),
         std::move(outlinedBodyRenderer3),
         std::move(flatTextureRenderer3),
-        selector3,
+        cameraSelector3,
         picker,
         sceneView3,
         ape::Viewport{{0, 0}, sceneView3.getSize()},
@@ -338,7 +349,8 @@ int main(int argc, char *argv[])
 
     auto inputHandler3 = SampleInputHandler{
         sceneView3,
-        selector3,
+        cameraSelector3,
+        effectSelector3,
         picker,
         standardShader,
         wireframeStyleProvider,
@@ -346,7 +358,9 @@ int main(int argc, char *argv[])
 
     auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
 
-    selector3.activatePreviousCamera();
+    effectSelector3.activatePreviousEffect();
+
+    cameraSelector3.activatePreviousCamera();
 
     engine3.start();
     

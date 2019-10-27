@@ -82,7 +82,7 @@ auto Shader::getId() const
     return resource.get();
 }
 
-auto Shader::compile(std::string const & sourceCode)
+auto Shader::compile(std::string_view sourceCode)
     -> void
 {
     auto const id = resource.get();
@@ -132,7 +132,7 @@ auto Shader::release()
     return resource.release();
 }
 
-Shader::Shader(Type const type, std::string const & sourceCode)
+Shader::Shader(Type const type, std::string_view sourceCode)
     : resource{createShaderResource(type)}
 {
     compile(sourceCode);

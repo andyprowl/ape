@@ -3,7 +3,8 @@
 #include <Ape/GlfwEngine/GLFWWindow.hpp>
 
 #include <memory>
- 
+#include <string_view>
+
 namespace ape
 {
 
@@ -34,10 +35,10 @@ public:
 
     ~GLFWGateway();
 
-    auto createWindow(std::string const & title, CreateAsFullscreen)
+    auto createWindow(std::string_view title, CreateAsFullscreen)
         -> GLFWWindow;
 
-    auto createWindow(std::string const & title, Size<int> const & size)
+    auto createWindow(std::string_view title, Size<int> const & size)
         -> GLFWWindow;
 
 private:

@@ -94,7 +94,7 @@ auto Body::operator = (Body && rhs) noexcept
 }
 
 auto Body::getName() const
-    -> std::string const &
+    -> std::string_view
 {
     return name;
 }

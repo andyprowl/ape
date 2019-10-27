@@ -18,7 +18,7 @@ public:
     {
     }
 
-    auto createWindow(std::string const & title, CreateAsFullscreen)
+    auto createWindow(std::string_view title, CreateAsFullscreen)
         -> GLFWWindow
     {
         auto window = GLFWWindow{title, GLFWWindow::CreateAsFullscreen{}};
@@ -30,7 +30,7 @@ public:
         return window;
     }
 
-    auto createWindow(std::string const & title, Size<int> const & size)
+    auto createWindow(std::string_view title, Size<int> const & size)
         -> GLFWWindow
     {
         auto window = GLFWWindow{title, size};
@@ -60,13 +60,13 @@ auto GLFWGateway::operator = (GLFWGateway && rhs) noexcept
 
 GLFWGateway::~GLFWGateway() = default;
 
-auto GLFWGateway::createWindow(std::string const & title, CreateAsFullscreen)
+auto GLFWGateway::createWindow(std::string_view title, CreateAsFullscreen)
     -> GLFWWindow
 {
     return impl->createWindow(title, CreateAsFullscreen{});
 }
 
-auto GLFWGateway::createWindow(std::string const & title, Size<int> const & size)
+auto GLFWGateway::createWindow(std::string_view title, Size<int> const & size)
     -> GLFWWindow
 {
     return impl->createWindow(title, size);

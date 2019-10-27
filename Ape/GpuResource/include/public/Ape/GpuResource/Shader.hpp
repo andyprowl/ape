@@ -4,6 +4,7 @@
 
 #include <stdexcept>
 #include <string>
+#include <string_view>
 
 namespace ape
 {
@@ -42,7 +43,7 @@ public:
     auto getId() const
         -> GpuResource::Id;
 
-    auto compile(std::string const & newSourceCode)
+    auto compile(std::string_view newSourceCode)
         -> void;
 
     auto getSourceCode() const
@@ -56,7 +57,7 @@ public:
 
 protected:
 
-    explicit Shader(Type type, std::string const & sourceCode);
+    explicit Shader(Type type, std::string_view sourceCode);
 
 private:
 

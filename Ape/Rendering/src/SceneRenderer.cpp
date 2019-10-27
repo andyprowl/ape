@@ -24,7 +24,7 @@ SceneRenderer::SceneRenderer(
     StandardBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
-    FlatTextureRenderer flatTextureRenderer,
+    EffectRenderer flatTextureRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
     Window & screenSurface,

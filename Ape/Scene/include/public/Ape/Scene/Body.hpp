@@ -6,6 +6,7 @@
 #include <Foundational/Signal/Signal.hpp>
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace ape
@@ -34,7 +35,7 @@ public:
     ~Body() = default;
 
     auto getName() const
-        -> std::string const &;
+        -> std::string_view;
 
     auto getModel() const
         -> Model const &;

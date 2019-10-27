@@ -3,6 +3,8 @@
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/Texture.hpp>
 
+#include <string_view>
+
 namespace ape
 {
 
@@ -16,13 +18,13 @@ public:
 
 public:
  
-    Uniform(ShaderProgram & program, std::string const & name)
+    Uniform(ShaderProgram & program, std::string_view name)
         : textureUnit{-1}
         , sampler{program, name}
     {
     }
 
-    Uniform(ShaderProgram & program, std::string const & name, int const textureUnit)
+    Uniform(ShaderProgram & program, std::string_view name, int const textureUnit)
         : textureUnit{textureUnit}
         , sampler{program, name, textureUnit}
     {

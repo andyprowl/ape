@@ -14,6 +14,7 @@ enum class Key;
 enum class KeyModifier;
 
 class CameraSelector;
+class EffectSelector;
 class Scene;
 class Window;
 
@@ -25,6 +26,7 @@ public:
     StandardInputHandler(
         Window & window,
         CameraSelector & cameraSelector,
+        EffectSelector & effectSelector,
         float manipulatorSensitivity = 0.1f);
 
     auto getWindow() const
@@ -80,6 +82,9 @@ private:
     auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier)
         -> void;
 
+    auto processEffectSwitching(ape::Key key, ape::KeyModifier modifier)
+        -> void;
+
     auto togglePointLight(int index) const
         -> void;
 
@@ -97,6 +102,8 @@ private:
     Window * handledWindow;
 
     CameraManipulator cameraManipulator;
+
+    EffectSelector * effectSelector;
 
     ScopedSignalConnection keyPressHandlerConnection;
 

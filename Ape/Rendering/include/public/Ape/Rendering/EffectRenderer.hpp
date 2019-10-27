@@ -5,27 +5,31 @@
 namespace ape
 {
 
-class FlatQuadShaderProgram;
+class EffectSelector;
+class EffectShaderProgram;
 class Texture;
 
-class FlatTextureRenderer
+class EffectRenderer
 {
 
 public:
 
-    explicit FlatTextureRenderer(FlatQuadShaderProgram & shader);
+    explicit EffectRenderer(EffectSelector & selector);
 
     auto render(Texture const & texture) const
         -> void;
 
 private:
 
+    auto renderWithEffect(Texture const & texture, EffectShaderProgram & effect) const
+        -> void;
+
     auto drawQuad() const
         -> void;
 
 private:
 
-    FlatQuadShaderProgram * shader;
+    EffectSelector * selector;
 
     FlatQuad planeShape;
 

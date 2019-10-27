@@ -5,8 +5,7 @@
 namespace ape
 {
 
-// [[nodiscard]]
-class ScopedSignalConnection
+class [[nodiscard]] ScopedSignalConnection
 {
     
 public:

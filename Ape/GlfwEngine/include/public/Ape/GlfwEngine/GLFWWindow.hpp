@@ -2,6 +2,8 @@
 
 #include <Ape/Windowing/Window.hpp>
 
+#include <string_view>
+
 struct GLFWwindow;
 
 namespace ape
@@ -23,9 +25,9 @@ public:
 
 public:
 
-    GLFWWindow(std::string const & title, CreateAsFullscreen);
+    GLFWWindow(std::string_view title, CreateAsFullscreen);
 
-    GLFWWindow(std::string const & title, Size<int> const & size);
+    GLFWWindow(std::string_view title, Size<int> const & size);
 
     GLFWWindow(GLFWWindow const & rhs) = delete;
 

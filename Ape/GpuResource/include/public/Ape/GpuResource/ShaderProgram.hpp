@@ -8,7 +8,7 @@
 
 #include <optional>
 #include <stdexcept>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace ape
@@ -57,7 +57,7 @@ public:
         -> void;
 
     template<typename T>
-    auto getUniform(std::string const & name) const
+    auto getUniform(std::string_view name) const
         -> Uniform<T>
     {
         auto const id = resource.get();
@@ -81,7 +81,7 @@ private:
     auto link()
         -> void;
 
-    auto getUniformLocation(std::string const & name) const
+    auto getUniformLocation(std::string_view name) const
         -> int;
 
 private:

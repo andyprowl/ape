@@ -10,8 +10,8 @@ namespace
 
 auto const includeDirective = std::string{"#include"};
 
-auto extractIncludedFileName(std::string const & content, std::size_t const directiveStartIndex)
-    -> std::string
+auto extractIncludedFileName(std::string_view content, std::size_t const directiveStartIndex)
+    -> std::string_view
 {
     auto const includeKeywordEnd = directiveStartIndex + includeDirective.length();
 

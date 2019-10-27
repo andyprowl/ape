@@ -13,8 +13,8 @@ class Uniform<Camera>
 
 public:
 
-    Uniform(ShaderProgram & program, std::string const & prefix)
-        : cameraPosition{program, prefix + ".position"}
+    Uniform(ShaderProgram & program, std::string prefix)
+        : cameraPosition{program, std::move(prefix) + ".position"}
     {
     }
 

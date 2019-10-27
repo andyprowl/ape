@@ -7,6 +7,7 @@
 #include <Ape/GpuResource/TextureUniform.hpp>
 #include <Ape/GpuResource/VectorUniform.hpp>
 
+#include <string>
 #include <vector>
 
 namespace ape
@@ -24,11 +25,11 @@ public:
 
     Uniform(
         ShaderProgram & program,
-        std::string const & prefix,
+        std::string prefix,
         int const firstDepthMapUnit)
         //: point{program, prefix + ".point"}
         : spot{program, prefix + ".spot"}
-        , directional{program, prefix + ".directional"}
+        , directional{program, std::move(prefix) + ".directional"}
         , maxNumOfLightsPerType{8}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
