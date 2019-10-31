@@ -24,10 +24,10 @@ SceneRenderer::SceneRenderer(
     StandardBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
-    EffectRenderer flatTextureRenderer,
+    EffectRenderer effectRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
-    Window & screenSurface,
+    Window & targetSurface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
     : shapeRenderer{std::move(shapeRenderer)}
@@ -35,13 +35,13 @@ SceneRenderer::SceneRenderer(
     , standardBodyRenderer{std::move(standardBodyRenderer)}
     , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
-    , flatTextureRenderer{std::move(flatTextureRenderer)}
+    , effectRenderer{std::move(effectRenderer)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
-    , screenSurface{&screenSurface}
+    , targetSurface{&targetSurface}
     , viewport{viewport}
     , shadowMapping{makeShadowMapping()}
-    , offscreenSurface{screenSurface.getSize()}
+    , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
 {
     glEnable(GL_DEPTH_TEST);
@@ -94,6 +94,12 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     standardBodyRenderer.setViewport(viewport);
 
     outlinedBodyRenderer.setViewport(viewport);
+
+    wireframeBodyRenderer.setViewport(viewport);
+
+    effectRenderer.setViewport(viewport);
+
+    offscreenSurface.setSize(viewport.size);
 
     shadowMapping.lightingView.setViewSize(viewport.size);
 }
@@ -209,11 +215,11 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     -> void
 {
-    screenSurface->makeCurrent();
+    targetSurface->makeCurrent();
 
     auto const & texture = offscreenSurface.getColorBuffer();
 
-    flatTextureRenderer.render(texture);
+    effectRenderer.render(texture);
 }
 
 auto getCamera(SceneRenderer const & renderer)

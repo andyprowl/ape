@@ -27,6 +27,12 @@ StandardBodyRenderer::StandardBodyRenderer(
 {
 }
 
+auto StandardBodyRenderer::setViewport(Viewport const & newViewport)
+    -> void
+{
+    viewport = newViewport;
+}
+
 auto StandardBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
@@ -46,12 +52,6 @@ auto StandardBodyRenderer::render(
     {
         renderBody(*body, cameraTransformation);
     }
-}
-
-auto StandardBodyRenderer::setViewport(Viewport const & newViewport)
-    -> void
-{
-    viewport = newViewport;
 }
 
 auto StandardBodyRenderer::setupViewport() const

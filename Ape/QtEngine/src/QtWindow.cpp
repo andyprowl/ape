@@ -1,6 +1,6 @@
 #include <Ape/QtEngine/QtWindow.hpp>
 
-#include <Ape/Initialization/Initialization.hpp>
+#include <Ape/Initialization/OpenGLLoader.hpp>
 #include <Ape/UpdateHandling/StandardInputHandler.hpp>
 #include <Ape/Windowing/Keyboard.hpp>
 
@@ -93,13 +93,14 @@ auto getKey(QKeyEvent & e)
 
 } // unnamed namespace
 
-QtWindow::QtWindow(QWidget * const parent)
-    : QOpenGLWidget{parent}
-    , isMouseGrabbed{false}
-    , isWindowClosing{false}
-    , isOpenGLInitialized{false}
+QtWindow::QtWindow(OpenGLLoader & openGLLoader)
+    : QtWindow{openGLLoader, nullptr}
 {
-    keyStatus.resize(static_cast<std::size_t>(ape::Key::last) + 1, ape::KeyStatus::released);
+}
+
+QtWindow::QtWindow(OpenGLLoader & openGLLoader, QWidget & parent)
+    : QtWindow{openGLLoader, &parent}
+{
 }
 
 QtWindow::~QtWindow()
@@ -236,9 +237,7 @@ auto QtWindow::initializeGL()
 {
     initializeOpenGLFunctions();
 
-    isOpenGLInitialized = true;
-
-    ape::initialize();
+    openGLLoader->loadFunctions();
 }
 
 // virtual (from QOpenGLWidget)
@@ -261,20 +260,6 @@ auto QtWindow::focusOutEvent(QFocusEvent * const)
     -> void
 {
     onFocusLost.fire();
-}
-
-// virtual (from QOpenGLWidget)
-auto QtWindow::resizeEvent(QResizeEvent * const e)
-    -> void
-{
-    if (!isOpenGLInitialized)
-    {
-        return;
-    }
-
-    auto const newSize = e->size();
-
-    onResize.fire(Size<int>{newSize.width(), newSize.height()});
 }
 
 // virtual (from QOpenGLWidget)
@@ -319,6 +304,16 @@ auto QtWindow::closeEvent(QCloseEvent * const e)
     e->accept();
 }
 
+QtWindow::QtWindow(OpenGLLoader & openGLLoader, QWidget * const parent)
+    : QOpenGLWidget{parent}
+    , isMouseGrabbed{false}
+    , isWindowClosing{false}
+    , openGLLoader{&openGLLoader}
+    , onAboutToResizeConnection{registerAboutToResizeEventHandler()}
+{
+    keyStatus.resize(static_cast<std::size_t>(ape::Key::last) + 1, ape::KeyStatus::released);
+}
+
 template<typename F>
 auto QtWindow::handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
     -> void
@@ -341,6 +336,15 @@ auto QtWindow::setKeyStatus(Key const key, KeyStatus const status)
     -> void
 {
     keyStatus[static_cast<std::size_t>(key)] = status;
+}
+
+auto QtWindow::registerAboutToResizeEventHandler() const
+    -> QMetaObject::Connection
+{
+    return connect(this, &QtWindow::aboutToResize, [this] 
+    {
+        onResize.fire(getSize());
+    });
 }
 
 } // namespace ape::qt

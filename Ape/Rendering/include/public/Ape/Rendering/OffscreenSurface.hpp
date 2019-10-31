@@ -28,6 +28,9 @@ public:
     auto getSize() const
         -> Size<int>;
 
+    auto setSize(Size<int> const & newSize)
+        -> void;
+
 private:
 
     Texture colorBuffer;

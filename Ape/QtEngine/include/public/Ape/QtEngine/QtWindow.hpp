@@ -5,6 +5,13 @@
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
 
+namespace ape
+{
+
+class OpenGLLoader;
+
+} // namespace ape
+
 namespace ape::qt
 {
 
@@ -27,7 +34,9 @@ class QtWindow : public QOpenGLWidget, public Window, private QOpenGLFunctions
 
 public:
 
-    explicit QtWindow(QWidget * parent = nullptr);
+    explicit QtWindow(OpenGLLoader & openGLLoader);
+
+    QtWindow(OpenGLLoader & openGLLoader, QWidget & parent);
 
     ~QtWindow();
 
@@ -110,10 +119,6 @@ protected:
         -> void override;
 
     // virtual (from QOpenGLWidget)
-    auto resizeEvent(QResizeEvent * e)
-        -> void override;
-
-    // virtual (from QOpenGLWidget)
     auto keyPressEvent(QKeyEvent * e)
         -> void override;
 
@@ -131,12 +136,17 @@ protected:
 
 private:
 
+    QtWindow(OpenGLLoader & openGLLoader, QWidget * parent);
+
     template<typename F>
     auto handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNotifier)
         -> void;
 
     auto setKeyStatus(Key key, KeyStatus status)
         -> void;
+
+    auto registerAboutToResizeEventHandler() const
+        -> QMetaObject::Connection;
 
 private:
 
@@ -146,7 +156,9 @@ private:
 
     bool isWindowClosing;
 
-    bool isOpenGLInitialized;
+    OpenGLLoader * openGLLoader;
+
+    QMetaObject::Connection onAboutToResizeConnection;
 
 };
 

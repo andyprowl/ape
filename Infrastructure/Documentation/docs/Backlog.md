@@ -1,11 +1,11 @@
- - Implement post-processing techniques (e.g. blurring)
-  - Update size of offscreen surface when window size changes
-  - Make sure everything works in Qt as well
+ - Unify the way GLFW windows and QT windows are created
+  - Ideally, there should be a single "Engine" class
+ - Add support for cube textures
+  - Implement skybox
+ - Support wireframe rendering
  - Let shader programs have names
  - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
- - Add support for cube textures
- - Implement skybox
- - Implement shadow mapping
+ - Complete implementation of shadow mapping
   - Implement point light shadows
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)

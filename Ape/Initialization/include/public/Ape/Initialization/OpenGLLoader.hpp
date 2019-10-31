@@ -29,6 +29,9 @@ public:
     auto loadFunctions()
         -> void;
 
+    auto areFunctionsLoaded() const
+        -> bool;
+
 private:
 
     auto prepareDebugOutput()
@@ -38,7 +41,7 @@ private:
 
     bool enableDebugOutput;
 
-    bool areFunctionsLoaded;
+    bool areOpenGLFunctionsLoaded;
 
 };
 

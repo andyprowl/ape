@@ -79,4 +79,12 @@ auto OffscreenSurface::getSize() const
     return size;
 }
 
+auto OffscreenSurface::setSize(Size<int> const & newSize)
+    -> void
+{
+    colorBuffer.setSize(newSize);
+
+    depthAndStencilBuffer.setStorage(newSize);
+}
+
 } // namespace ape

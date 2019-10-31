@@ -2,9 +2,10 @@
 
 #include <Foundational/Signal/ScopedSignalConnection.hpp>
 
+#include <algorithm>
 #include <functional>
 #include <memory>
-#include <unordered_map>
+#include <vector>
 
 namespace ape
 {
@@ -27,7 +28,10 @@ public:
 
 public:
 
-    Signal() = default;
+    Signal()
+        : nextCookie{0}
+    {
+    }
 
     Signal(Signal const & rhs) = delete;
 
@@ -46,9 +50,9 @@ public:
     auto registerHandler(Handler handler)
         -> ScopedSignalConnection
     {
-        auto const cookie = static_cast<int>(registrations.size());
+        auto const cookie = ++nextCookie;
 
-        registrations.emplace(cookie, std::move(handler));
+        registrations.emplace_back(cookie, std::move(handler));
 
         return ScopedSignalConnection{[this, cookie]
         { 
@@ -56,10 +60,18 @@ public:
         }};
     }
 
-    auto unregisterHandler(Cookie cookie)
+    auto unregisterHandler(Cookie const cookie)
         -> void
     {
-        registrations.erase(cookie);
+        for (auto it = std::cbegin(registrations); it != std::cend(registrations); ++it)
+        {
+            if (it->cookie == cookie)
+            {
+                registrations.erase(it);
+
+                return;
+            }
+        }
     }
 
     // Notice that arguments are taken by forwarding references although no forwarding is done.
@@ -72,13 +84,36 @@ public:
     {
         for (auto const & registration : registrations)
         {
-            registration.second(args...);
+            registration.handler(args...);
         }
     }
 
 private:
 
-    std::unordered_map<Cookie, Handler> registrations;
+    class Registration
+    {
+
+    public:
+
+        Registration(Cookie const cookie, Handler handler)
+            : cookie{cookie}
+            , handler{std::move(handler)}
+        {
+        }
+
+    public:
+
+        Cookie cookie;
+
+        Handler handler;
+
+    };
+
+private:
+
+    Cookie nextCookie;
+
+    std::vector<Registration> registrations;
 
 };
 

@@ -3,7 +3,7 @@
 #include "GLFW.hpp"
 #include "GLFWInitializer.hpp"
 
-#include <Ape/Initialization/Initialization.hpp>
+#include <Ape/Initialization/OpenGLLoader.hpp>
 
 namespace ape
 {
@@ -13,8 +13,9 @@ class GLFWGateway::Impl
 
 public:
 
-    Impl(int const majorVersion, int const minorVersion)
+    Impl(int const majorVersion, int const minorVersion, bool const enableDebugOutput)
         : glfwInitializer{majorVersion, minorVersion}
+        , loader{false, enableDebugOutput}
     {
     }
 
@@ -25,7 +26,7 @@ public:
 
         window.makeCurrent();
 
-        ape::initialize();
+        loader.loadFunctions();
 
         return window;
     }
@@ -37,7 +38,7 @@ public:
 
         window.makeCurrent();
 
-        ape::initialize();
+        loader.loadFunctions();
 
         return window;
     }
@@ -46,10 +47,15 @@ private:
 
     GLFWInitializer glfwInitializer;
 
+    OpenGLLoader loader;
+
 };
 
-GLFWGateway::GLFWGateway(int const majorVersion, int const minorVersion)
-    : impl{std::make_unique<Impl>(majorVersion, minorVersion)}
+GLFWGateway::GLFWGateway(
+    int const majorVersion,
+    int const minorVersion,
+    bool const enableDebugOutput)
+    : impl{std::make_unique<Impl>(majorVersion, minorVersion, enableDebugOutput)}
 {
 }
 

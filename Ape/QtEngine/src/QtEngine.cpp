@@ -32,7 +32,7 @@ public:
     {
         auto const size = window.getSize();
 
-        glViewport(0, 0, size.width, size.height);
+        setViewport(size);
 
         updateSelectedCameraAspectRatio(size);
     }
@@ -70,9 +70,9 @@ private:
     {
         return window->onResize.registerHandler([this] (Size<int> const & newSize)
         {
-            updateSelectedCameraAspectRatio(newSize);
-
             setViewport(newSize);
+
+            updateSelectedCameraAspectRatio(newSize);
         });
     }
 

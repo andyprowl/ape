@@ -23,4 +23,18 @@ public:
 
 };
 
+template<typename T>
+auto operator == (Position<T> const & lhs, Position<T> const & rhs)
+    -> bool
+{
+    return ((lhs.x == rhs.x) && (lhs.y == rhs.y));
+}
+
+template<typename T>
+auto operator != (Position<T> const & lhs, Position<T> const & rhs)
+    -> bool
+{
+    return !(lhs == rhs);
+}
+
 } // namespace ape

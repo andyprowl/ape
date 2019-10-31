@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/LineStyle.hpp>
+#include <Ape/Rendering/Viewport.hpp>
 
 #include <Ape/Scene/BodyRange.hpp>
 
@@ -27,12 +28,18 @@ public:
         ShapeRenderer const & shapeRenderer,
         LineStyleProvider const & styleProvider);
 
+    auto setViewport(Viewport const & newViewport)
+        -> void;
+
     auto render(
         BodyRange const & bodies,
         Camera const & camera) const
         -> void;
 
 private:
+
+    auto setupViewport() const
+        -> void;
 
     auto setupLineStyleUniforms() const
         -> void;
@@ -53,6 +60,8 @@ private:
     ShapeRenderer const * shapeRenderer;
     
     LineStyleProvider const * styleProvider;
+
+    Viewport viewport;
 
 };
 

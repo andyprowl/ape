@@ -23,4 +23,18 @@ public:
 
 };
 
+template<typename T>
+auto operator == (Offset<T> const & lhs, Offset<T> const & rhs)
+    -> bool
+{
+    return ((lhs.deltaX == rhs.deltaX) && (lhs.deltaY == rhs.deltaY));
+}
+
+template<typename T>
+auto operator != (Offset<T> const & lhs, Offset<T> const & rhs)
+    -> bool
+{
+    return !(lhs == rhs);
+}
+
 } // namespace ape

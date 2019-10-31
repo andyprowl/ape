@@ -21,3 +21,9 @@ AddPrivateDependencies(
 file(GLOB MOC_FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/mocs_compilation.cpp")
 
 source_group("Generated Files" FILES ${MOC_FILES})
+
+set_target_properties(
+    ${PROJECT_NAME}
+    PROPERTIES
+    VS_DEBUGGER_COMMAND_ARGUMENTS
+    "--enable-debug-output")

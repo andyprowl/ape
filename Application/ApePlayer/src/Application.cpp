@@ -26,7 +26,8 @@ class Application::Impl
 
 public:
 
-    Impl()
+    explicit Impl(bool const enableDebugOutput)
+        : gateway{4, 5, enableDebugOutput}
     {
         effectSelector.activatePreviousEffect();
     }
@@ -43,7 +44,7 @@ public:
 
 private:
 
-    ape::GLFWGateway gateway{4, 5};
+    ape::GLFWGateway gateway;
 
     ape::GLFWWindow window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})};
 
@@ -113,7 +114,12 @@ private:
 };
 
 Application::Application()
-    : impl{std::make_unique<Impl>()}
+    : Application{false}
+{
+}
+
+Application::Application(bool const enableDebugOutput)
+    : impl{std::make_unique<Impl>(enableDebugOutput)}
 {
 }
 

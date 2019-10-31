@@ -25,15 +25,15 @@ class StandardBodyRenderer
 public:
 
     StandardBodyRenderer(StandardShaderProgram & shader, ShapeRenderer const & shapeRenderer);
+ 
+    auto setViewport(Viewport const & newViewport)
+        -> void;
 
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
         Lighting const & lighting,
         ShadowMapping const & shadowMapping) const
-        -> void;
-
-    auto setViewport(Viewport const & newViewport)
         -> void;
 
 private:

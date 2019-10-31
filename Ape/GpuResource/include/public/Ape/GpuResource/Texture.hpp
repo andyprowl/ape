@@ -25,9 +25,18 @@ public:
     auto getSize() const
         -> Size<int>;
 
+    auto setSize(Size<int> const & newSize)
+        -> void;
+
 private:
 
     GpuResource resource;
+
+    Size<int> size;
+
+    TextureFormat format;
+
+    PixelType pixelType;
 
 };
 

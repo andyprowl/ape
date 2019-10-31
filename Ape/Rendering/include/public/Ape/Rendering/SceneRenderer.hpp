@@ -39,10 +39,10 @@ public:
         StandardBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
-        EffectRenderer flatTextureRenderer,
+        EffectRenderer effectRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
-        Window & screenSurface,
+        Window & targetSurface,
         Viewport const & viewport,
         glm::vec3 const & backgroundColor);
 
@@ -108,13 +108,13 @@ private:
 
     OutlinedBodyRenderer outlinedBodyRenderer;
 
-    EffectRenderer flatTextureRenderer;
+    EffectRenderer effectRenderer;
 
     CameraSelector const * cameraSelector;
 
     BodySelector const * pickedBodySelector;
 
-    Window * screenSurface;
+    Window * targetSurface;
 
     Viewport viewport;
 

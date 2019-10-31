@@ -13,6 +13,7 @@ namespace ape
 
 EffectRenderer::EffectRenderer(EffectSelector & selector)
     : selector{&selector}
+    , viewport{{0, 0}, {0, 0}}
 {
 }
 
@@ -29,10 +30,18 @@ auto EffectRenderer::render(Texture const & texture) const
     renderWithEffect(texture, *effect);
 }
 
+auto EffectRenderer::setViewport(Viewport const & newViewport)
+    -> void
+{
+    viewport = newViewport;
+}
+
 auto EffectRenderer::renderWithEffect(Texture const & texture, EffectShaderProgram & effect) const
     -> void
 {
     auto const shaderBinder = bind(effect);
+
+    setupViewport();
 
     effect.source = texture;
 
@@ -41,6 +50,12 @@ auto EffectRenderer::renderWithEffect(Texture const & texture, EffectShaderProgr
     drawQuad();
 
     glEnable(GL_DEPTH_TEST);
+}
+
+auto EffectRenderer::setupViewport() const
+    -> void
+{
+    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
 }
 
 auto EffectRenderer::drawQuad() const

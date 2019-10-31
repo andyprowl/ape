@@ -9,6 +9,8 @@ public:
 
     Application();
 
+    explicit Application(bool enableDebugOutput);
+
     Application(Application const & rhs) = delete;
 
     Application(Application && rhs) noexcept;

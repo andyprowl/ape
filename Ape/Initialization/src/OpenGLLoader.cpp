@@ -38,7 +38,7 @@ OpenGLLoader::OpenGLLoader()
 
 OpenGLLoader::OpenGLLoader(bool const loadImmediately, bool const enableDebugOutput)
     : enableDebugOutput{enableDebugOutput}
-    , areFunctionsLoaded{false}
+    , areOpenGLFunctionsLoaded{false}
 {
     if (loadImmediately)
     {
@@ -49,7 +49,7 @@ OpenGLLoader::OpenGLLoader(bool const loadImmediately, bool const enableDebugOut
 auto OpenGLLoader::loadFunctions()
     -> void
 {
-    if (areFunctionsLoaded)
+    if (areOpenGLFunctionsLoaded)
     {
         return;
     }
@@ -59,12 +59,18 @@ auto OpenGLLoader::loadFunctions()
         throw CouldNotLoadOpenGLFunctions{};
     }
 
-    areFunctionsLoaded = true;
+    areOpenGLFunctionsLoaded = true;
 
     if (enableDebugOutput)
     {
         prepareDebugOutput();
     }
+}
+
+auto OpenGLLoader::areFunctionsLoaded() const
+    -> bool
+{
+    return areOpenGLFunctionsLoaded;
 }
 
 auto OpenGLLoader::prepareDebugOutput()

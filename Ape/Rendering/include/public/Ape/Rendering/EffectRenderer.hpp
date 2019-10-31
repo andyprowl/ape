@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/FlatQuad.hpp>
+#include <Ape/Rendering/Viewport.hpp>
 
 namespace ape
 {
@@ -19,9 +20,15 @@ public:
     auto render(Texture const & texture) const
         -> void;
 
+    auto setViewport(Viewport const & newViewport)
+        -> void;
+
 private:
 
     auto renderWithEffect(Texture const & texture, EffectShaderProgram & effect) const
+        -> void;
+
+    auto setupViewport() const
         -> void;
 
     auto drawQuad() const
@@ -32,6 +39,8 @@ private:
     EffectSelector * selector;
 
     FlatQuad planeShape;
+
+    Viewport viewport;
 
 };
 

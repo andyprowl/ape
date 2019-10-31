@@ -156,6 +156,9 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
 Texture::Texture(TextureDescriptor descriptor)
     : resource{makeOpenGLTextureObject(descriptor)}
+    , size{descriptor.size}
+    , format{descriptor.format}
+    , pixelType{descriptor.pixelType}
 {
 }
 
@@ -178,37 +181,37 @@ auto Texture::bind(int const unit) const
 auto Texture::getFormat() const
     -> TextureFormat
 {
-    auto const id = resource.get();
-
-    glBindTexture(GL_TEXTURE_2D, id);
-
-    auto const mipLevel = 0;
-
-    auto format = 0;
-
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, mipLevel, GL_TEXTURE_INTERNAL_FORMAT, &format);
-
-    return convertFromOpenGLFormat(format);
+    return format;
 }
 
 auto Texture::getSize() const
     -> Size<int>
 {
-    auto const id = resource.get();
-    
-    glBindTexture(GL_TEXTURE_2D, id);
+    return size;
+}
 
-    auto const mipLevel = 0;
+auto Texture::setSize(Size<int> const & newSize)
+    -> void
+{
+    if (newSize == size)
+    {
+        return;
+    }
 
-    auto width = 0;
-    
-    auto height = 0;
-    
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, mipLevel, GL_TEXTURE_WIDTH, &width);
-    
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, mipLevel, GL_TEXTURE_HEIGHT, &height);
+    auto const openGLFormat = convertToOpenGLFormat(format);
 
-    return {width, height};
+    auto const openGLPixelType = convertToOpenGLPixelType(pixelType);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        openGLFormat,
+        newSize.width,
+        newSize.height,
+        0,
+        openGLFormat,
+        openGLPixelType,
+        nullptr);
 }
 
 } // namespace ape

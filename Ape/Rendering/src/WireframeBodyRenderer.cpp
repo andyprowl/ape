@@ -11,6 +11,8 @@
 #include <Ape/Scene/BodyPart.hpp>
 #include <Ape/Scene/Camera.hpp>
 
+#include <glad/glad.h>
+
 namespace ape
 {
 
@@ -21,13 +23,22 @@ WireframeBodyRenderer::WireframeBodyRenderer(
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
     , styleProvider{&styleProvider}
+    , viewport{{0, 0}, {0, 0}}
 {
+}
+
+auto WireframeBodyRenderer::setViewport(Viewport const & newViewport)
+    -> void
+{
+    viewport = newViewport;
 }
 
 auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & camera) const
     -> void
 {
     auto const shaderBinder = bind(*shader);
+
+    setupViewport();
 
     setupLineStyleUniforms();
 
@@ -37,6 +48,12 @@ auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & came
     {
         renderBody(*body, cameraTransformation);
     }
+}
+
+auto WireframeBodyRenderer::setupViewport() const
+    -> void
+{
+    glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
 }
 
 auto WireframeBodyRenderer::setupLineStyleUniforms() const

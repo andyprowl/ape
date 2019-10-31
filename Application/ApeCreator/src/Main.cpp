@@ -6,6 +6,7 @@
 #include <Application/TestScene/SampleSceneBuilder.hpp>
 
 #include <Ape/QtEngine/QtEngine.hpp>
+#include <Ape/QtEngine/QtGateway.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
 #include <Ape/Rendering/EffectCollectionReader.hpp>
@@ -18,6 +19,8 @@
 #include <Ape/Rendering/WireframeShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
+
+#include <Foundational/Range/Search.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>
@@ -63,10 +66,10 @@ auto makeTreeView(QWidget & parent, Model & model)
     return *view;
 }
 
-auto makeQtWindow(QWidget & parent)
+auto makeQtWindow(ape::qt::QtGateway & gateway, QWidget & parent)
     -> ape::qt::QtWindow &
 {
-    auto const widget = new ape::qt::QtWindow{&parent};
+    auto const widget = gateway.createWindow(parent);
 
     auto format = QSurfaceFormat{};
 
@@ -95,8 +98,20 @@ auto getGridLayout(QWidget & widget)
     return static_cast<QGridLayout &>(*widget.layout());
 }
 
+auto isDebugOutputEnabled(std::vector<std::string> const & arguments)
+    -> bool
+{
+    return ape::contains(arguments, "--enable-debug-output");
+}
+
 int main(int argc, char *argv[])
 {
+    auto const arguments = std::vector<std::string>{argv, argv + argc};
+
+    auto const enableDebugOutput = isDebugOutputEnabled(arguments);
+
+    auto gateway = ape::qt::QtGateway{enableDebugOutput};
+
     auto && app = QApplication{argc, argv};
     
     auto && model = TableModel{2, 3};
@@ -121,15 +136,15 @@ int main(int argc, char *argv[])
 
     auto & listView1 = makeListView(centralWidget, model);
 
-    auto & sceneView1 = makeQtWindow(window);
+    auto & sceneView1 = makeQtWindow(gateway, window);
 
     sceneView1.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView2 = makeQtWindow(window);
+    auto & sceneView2 = makeQtWindow(gateway, window);
 
     sceneView2.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
-    auto & sceneView3 = makeQtWindow(window);
+    auto & sceneView3 = makeQtWindow(gateway, window);
 
     sceneView3.setFocusPolicy(Qt::FocusPolicy::ClickFocus);
 
@@ -247,7 +262,7 @@ int main(int argc, char *argv[])
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
 
     engine1.start();
-    
+
     /// ---
 
     auto cameraSelector2 = ape::CameraSelector{scene};
