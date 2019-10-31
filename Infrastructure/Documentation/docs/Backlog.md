@@ -2,9 +2,10 @@
   - Ideally, there should be a single "Engine" class
  - Add support for cube textures
   - Implement skybox
- - Support wireframe rendering
  - Let shader programs (or at least effects) have names
   - Use that to select the initial effect in ApePlayer and ApeCreator
+ - Figure out a good way of reducing duplication in effect shaders
+ - Support wireframe rendering
  - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
  - Complete implementation of shadow mapping
   - Implement point light shadows
