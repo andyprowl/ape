@@ -49,6 +49,8 @@ auto OutlinedBodyRenderer::setViewport(Viewport const & newViewport)
     -> void
 {
     standardRenderer.setViewport(newViewport);
+
+    wireframeRenderer.setViewport(newViewport);
 }
 
 auto OutlinedBodyRenderer::render(
