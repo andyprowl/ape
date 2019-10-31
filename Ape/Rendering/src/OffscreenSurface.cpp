@@ -17,10 +17,11 @@ auto makeColorBuffer(Size<int> const & size)
         size,
         TextureFormat::redGreenBlue,
         PixelType::unsignedByte,
-        TextureWrapping::clampToEdge,
         nullptr};
 
-    return Texture{descriptor};
+    auto const wrapping = TextureWrapping::clampToEdge;
+
+    return Texture{descriptor, wrapping};
 }
 
 auto makeDepthAndStencilBuffer(Size<int> const & size)

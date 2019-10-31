@@ -3,6 +3,8 @@
 namespace ape
 {
 
+using GLenum = unsigned int;
+
 enum class TextureFormat
 {
     unknown,
@@ -13,5 +15,11 @@ enum class TextureFormat
     depthOnly,
     depthAndStencil
 };
+
+auto convertToOpenGLFormat(TextureFormat format)
+    -> GLenum;
+
+auto convertFromOpenGLFormat(GLenum format)
+    -> TextureFormat;
 
 } // namespace ape

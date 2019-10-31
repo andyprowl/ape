@@ -2,112 +2,16 @@
 
 #include <glad/glad.h>
 
-#include <cassert>
-#include <unordered_map>
-
 namespace ape
 {
 
 namespace
 {
 
-auto const textureFormatMap = std::unordered_map<TextureFormat, GLenum>{
-    {TextureFormat::depthOnly, GL_DEPTH_COMPONENT},
-    {TextureFormat::depthAndStencil, GL_DEPTH_STENCIL},
-    {TextureFormat::redOnly, GL_RED},
-    {TextureFormat::redGreenOnly, GL_RG},
-    {TextureFormat::redGreenBlue, GL_RGB},
-    {TextureFormat::redGreenBlueAlpha, GL_RGBA}};
-
-auto const pixelTypeMap = std::unordered_map<PixelType, GLenum>{
-    {PixelType::unsignedByte, GL_UNSIGNED_BYTE},
-    {PixelType::floatingPoint, GL_FLOAT}};
-
-auto const textureWrapping = std::unordered_map<TextureWrapping, GLint>{
-    {TextureWrapping::repeat, GL_REPEAT},
-    {TextureWrapping::clampToEdge, GL_CLAMP_TO_EDGE}};
-
-auto convertToOpenGLFormat(TextureFormat const format)
-    -> GLenum
-{
-    auto const it = textureFormatMap.find(format);
-
-    if (it == std::cend(textureFormatMap))
-    {
-        assert(false);
-
-        return 0;
-    }
-
-    return it->second;
-}
-
-auto convertFromOpenGLFormat(GLenum const format)
-    -> TextureFormat
-{
-    for (auto const & entry : textureFormatMap)
-    {
-        if (entry.second == format)
-        {
-            return entry.first;
-        }
-    }
-
-    assert(false);
-
-    return TextureFormat::unknown;
-}
-
-auto convertToOpenGLPixelType(PixelType const type)
-    -> GLenum
-{
-    auto const it = pixelTypeMap.find(type);
-
-    if (it == std::cend(pixelTypeMap))
-    {
-        assert(false);
-
-        return 0;
-    }
-
-    return it->second;
-}
-
-auto convertFromOpenGLPixelType(GLenum const type)
-    -> PixelType
-{
-    for (auto const & entry : pixelTypeMap)
-    {
-        if (entry.second == type)
-        {
-            return entry.first;
-        }
-    }
-
-    assert(false);
-
-    return PixelType::unknown;
-}
-
-auto convertToOpenGLTextureWrapping(TextureWrapping const wrapping)
-    -> GLint
-{
-    auto const it = textureWrapping.find(wrapping);
-
-    if (it == std::cend(textureWrapping))
-    {
-        assert(false);
-
-        return 0;
-    }
-
-    return it->second;
-}
-
-auto setTextureWrapping(TextureDescriptor const & descriptor)
+auto setTextureWrapping(TextureWrapping const wrapping)
     -> void
 {
-    auto const wrappingMode = convertToOpenGLTextureWrapping(descriptor.wrapping);
+    auto const wrappingMode = convertToOpenGLTextureWrapping(wrapping);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingMode);
 
@@ -134,7 +38,9 @@ auto setTextureImageData(TextureDescriptor const & descriptor)
     glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, pixelType, bytes);
 }
 
-auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
+auto makeOpenGLTextureObject(
+    TextureDescriptor const & descriptor,
+    TextureWrapping const wrapping)
     -> GpuResource
 {
     auto textureId = GpuResource::Id{};
@@ -143,7 +49,7 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    setTextureWrapping(descriptor);
+    setTextureWrapping(wrapping);
 
     setTextureImageData(descriptor);
 
@@ -154,8 +60,8 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
 } // unnamed namespace
 
-Texture::Texture(TextureDescriptor descriptor)
-    : resource{makeOpenGLTextureObject(descriptor)}
+Texture::Texture(TextureDescriptor descriptor, TextureWrapping const wrapping)
+    : resource{makeOpenGLTextureObject(descriptor, wrapping)}
     , size{descriptor.size}
     , format{descriptor.format}
     , pixelType{descriptor.pixelType}

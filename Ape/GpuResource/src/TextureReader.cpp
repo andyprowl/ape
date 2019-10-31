@@ -49,11 +49,9 @@ auto makeTextureDescriptor(
 {
     auto const bytes = reinterpret_cast<std::byte *>(imageBytes);
 
-    auto const wrapping = TextureWrapping::repeat;
-
     auto const pixelType = PixelType::unsignedByte;
 
-    return {size, format, pixelType, wrapping, bytes};
+    return {size, format, pixelType, bytes};
 }
 
 auto readTextureDescriptor(std::filesystem::path const & path)
@@ -93,7 +91,9 @@ auto TextureReader::read(std::filesystem::path const & path) const
 
     auto const descriptor = readTextureDescriptor(absolutePath);
 
-    auto texture = Texture{descriptor};
+    auto const wrapping = TextureWrapping::repeat;
+
+    auto texture = Texture{descriptor, wrapping};
 
     stbi_image_free(static_cast<void *>(descriptor.bytes));
 

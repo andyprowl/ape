@@ -2,6 +2,7 @@
 
 #include <Ape/GpuResource/GpuResource.hpp>
 #include <Ape/GpuResource/TextureDescriptor.hpp>
+#include <Ape/GpuResource/TextureWrapping.hpp>
 
 namespace ape
 {
@@ -11,7 +12,7 @@ class Texture
 
 public:
 
-    explicit Texture(TextureDescriptor descriptor);
+    Texture(TextureDescriptor descriptor, TextureWrapping wrapping);
 
     auto getId() const
         -> GpuResource::Id;

@@ -3,7 +3,8 @@
  - Add support for cube textures
   - Implement skybox
  - Support wireframe rendering
- - Let shader programs have names
+ - Let shader programs (or at least effects) have names
+  - Use that to select the initial effect in ApePlayer and ApeCreator
  - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
  - Complete implementation of shadow mapping
   - Implement point light shadows

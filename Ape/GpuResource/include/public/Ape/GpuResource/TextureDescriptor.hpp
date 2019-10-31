@@ -2,7 +2,6 @@
 
 #include <Ape/GpuResource/PixelType.hpp>
 #include <Ape/GpuResource/TextureFormat.hpp>
-#include <Ape/GpuResource/TextureWrapping.hpp>
 
 #include <Foundational/Mathematics/Size.hpp>
 
@@ -22,13 +21,11 @@ public:
         Size<int> const size,
         TextureFormat format,
         PixelType const pixelType,
-        TextureWrapping const wrapping,
-        std::byte * bytes)
+        std::byte * const bytes)
         : size{size}
         , format{format}
         , pixelType{pixelType}
-        , wrapping{wrapping}
-        , bytes{std::move(bytes)}
+        , bytes{bytes}
     {
     }
 
@@ -39,8 +36,6 @@ public:
     TextureFormat format;
 
     PixelType pixelType;
-
-    TextureWrapping wrapping;
 
     std::byte * bytes;
 

@@ -30,6 +30,8 @@ public:
         : gateway{4, 5, enableDebugOutput}
     {
         effectSelector.activatePreviousEffect();
+
+        effectSelector.activatePreviousEffect();
     }
 
     auto run()
