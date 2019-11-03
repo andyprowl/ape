@@ -1,9 +1,10 @@
 #include "MainWindow.hpp"
 #include "TableModel.hpp"
 
-#include <Application/TestScene/SampleAssetBuilder.hpp>
-#include <Application/TestScene/SampleInputHandler.hpp>
-#include <Application/TestScene/SampleSceneBuilder.hpp>
+#include <Application/RaveCore/RaveSkyboxCollectionReader.hpp>
+#include <Application/RaveCore/RaveAssetBuilder.hpp>
+#include <Application/RaveCore/RaveInputHandler.hpp>
+#include <Application/RaveCore/RaveSceneBuilder.hpp>
 
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtGateway.hpp>
@@ -16,7 +17,6 @@
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
 #include <Ape/Rendering/SkyboxCollection.hpp>
-#include <Ape/Rendering/SkyboxCollectionReader.hpp>
 #include <Ape/Rendering/SkyboxSelector.hpp>
 #include <Ape/Rendering/SkyboxShaderProgram.hpp>
 #include <Ape/Rendering/StandardShaderProgram.hpp>
@@ -194,9 +194,9 @@ int main(int argc, char *argv[])
 
     sceneView1.makeCurrent();
 
-    auto assets = createSampleAssets();
+    auto assets = rave::createSampleAssets();
     
-    auto scene = createSampleScene(assets);
+    auto scene = rave::createRaveScene(assets);
 
     auto standardShader = ape::StandardShaderProgram{};
 
@@ -208,7 +208,7 @@ int main(int argc, char *argv[])
 
     auto effectCollection = ape::EffectCollectionReader{}.read();
 
-    auto skyboxCollection = ape::SkyboxCollectionReader{}.read();
+    auto skyboxCollection = rave::RaveSkyboxCollectionReader{}.read();
 
     auto picker = ape::BodySelector{scene};
 
@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
         ape::Viewport{{0, 0}, sceneView1.getSize()},
         backgroundColor};
 
-    auto inputHandler1 = SampleInputHandler{
+    auto inputHandler1 = rave::RaveInputHandler{
         sceneView1,
         cameraSelector1,
         skyboxSelector1,
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
         ape::Viewport{{0, 0}, sceneView2.getSize()},
         backgroundColor};
 
-    auto inputHandler2 = SampleInputHandler{
+    auto inputHandler2 = rave::RaveInputHandler{
         sceneView2,
         cameraSelector2,
         skyboxSelector2,
@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
         ape::Viewport{{0, 0}, sceneView3.getSize()},
         backgroundColor};
 
-    auto inputHandler3 = SampleInputHandler{
+    auto inputHandler3 = rave::RaveInputHandler{
         sceneView3,
         cameraSelector3,
         skyboxSelector3,

@@ -30,7 +30,7 @@ auto EffectCollectionReader::read() const
 
     auto effects = std::vector<EffectShaderProgram>{};
 
-    for (auto const & entry : std::filesystem::recursive_directory_iterator(effectFolder))
+    for (auto const & entry : std::filesystem::recursive_directory_iterator{effectFolder})
     {
         if (isEffectShaderFile(entry))
         {

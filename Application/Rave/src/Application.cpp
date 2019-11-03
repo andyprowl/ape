@@ -1,8 +1,9 @@
 #include "Application.hpp"
 
-#include <Application/TestScene/SampleAssetBuilder.hpp>
-#include <Application/TestScene/SampleInputHandler.hpp>
-#include <Application/TestScene/SampleSceneBuilder.hpp>
+#include <Application/RaveCore/RaveAssetBuilder.hpp>
+#include <Application/RaveCore/RaveInputHandler.hpp>
+#include <Application/RaveCore/RaveSceneBuilder.hpp>
+#include <Application/RaveCore/RaveSkyboxCollectionReader.hpp>
 
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
@@ -14,7 +15,6 @@
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
-#include <Ape/Rendering/SkyboxCollectionReader.hpp>
 #include <Ape/Rendering/SkyboxSelector.hpp>
 #include <Ape/Rendering/SkyboxShaderProgram.hpp>
 #include <Ape/Rendering/StandardBodyRenderer.hpp>
@@ -23,6 +23,9 @@
 #include <Ape/Rendering/WireframeShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
+
+namespace rave
+{
 
 class Application::Impl
 {
@@ -53,9 +56,9 @@ private:
 
     ape::GLFWWindow window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})};
 
-    SampleAssetCollection assets{createSampleAssets()};
+    RaveAssetCollection assets{createSampleAssets()};
 
-    SampleScene scene{createSampleScene(assets)};
+    RaveScene scene{createRaveScene(assets)};
 
     ape::StandardShaderProgram standardShader;
 
@@ -69,7 +72,7 @@ private:
 
     ape::EffectSelector effectSelector{effectCollection};
 
-    ape::SkyboxCollection skyboxCollection{ape::SkyboxCollectionReader{}.read()};
+    ape::SkyboxCollection skyboxCollection{RaveSkyboxCollectionReader{}.read()};
 
     ape::SkyboxSelector skyboxSelector{skyboxCollection};
 
@@ -114,7 +117,7 @@ private:
         ape::Viewport{{0, 0}, window.getSize()},
         {0.0f, 0.0f, 0.0f}};
 
-    SampleInputHandler inputHandler{
+    RaveInputHandler inputHandler{
         window,
         cameraSelector,
         skyboxSelector,
@@ -150,3 +153,5 @@ auto Application::run()
 {
     return impl->run();
 }
+
+} // namespace rave

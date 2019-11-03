@@ -23,14 +23,17 @@ class WireframeShaderProgram;
 
 } // namespace ape
 
-class SampleScene;
+namespace rave
+{
 
-class SampleInputHandler : public ape::StandardInputHandler
+class RaveScene;
+
+class RaveInputHandler : public ape::StandardInputHandler
 {
 
 public:
 
-    SampleInputHandler(
+    RaveInputHandler(
         ape::Window & window,
         ape::CameraSelector & cameraSelector,
         ape::SkyboxSelector & skyboxSelector,
@@ -38,10 +41,10 @@ public:
         ape::BodySelector & bodyPicker,
         ape::StandardShaderProgram & standardShader,
         ape::LineStyleProvider & outlineStyleProvider,
-        SampleScene & scene);
+        RaveScene & scene);
 
     auto getScene() const
-        -> SampleScene &;
+        -> RaveScene &;
 
 private:
 
@@ -89,3 +92,5 @@ private:
     ape::LineStyleProvider * outlineStyleProvider;
 
 };
+
+} // namespace rave

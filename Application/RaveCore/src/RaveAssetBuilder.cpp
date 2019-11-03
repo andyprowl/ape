@@ -1,4 +1,4 @@
-#include <Application/TestScene/SampleAssetBuilder.hpp>
+#include <Application/RaveCore/RaveAssetBuilder.hpp>
 
 #include <Ape/AssetLoader/AssetLoader.hpp>
 #include <Ape/GpuResource/TextureReader.hpp>
@@ -6,6 +6,9 @@
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/Mesh.hpp>
 #include <Ape/Model/Shape.hpp>
+
+namespace rave
+{
 
 namespace
 {
@@ -295,7 +298,7 @@ auto resolveModelFilepath(std::filesystem::path relativePath)
     return std::filesystem::path{resourceFolder} / "models" / std::move(relativePath);
 }
 
-auto collectShapes(ape::AssetRepository & repository, SampleAssetCollection & collection)
+auto collectShapes(ape::AssetRepository & repository, RaveAssetCollection & collection)
     -> void
 {
     collection.shapes.reserve(collection.shapes.size() + repository.shapes.size());
@@ -306,7 +309,7 @@ auto collectShapes(ape::AssetRepository & repository, SampleAssetCollection & co
     }
 }
 
-auto createSimpleAssets(SampleAssetCollection & collection)
+auto createSimpleAssets(RaveAssetCollection & collection)
     -> void
 {
     auto builder = StatefulAssetBuilder{};
@@ -320,7 +323,7 @@ auto loadAssets(
     std::filesystem::path const & path,
     std::string modelName,
     ape::AssetRepository & destination,
-    SampleAssetCollection & collection)
+    RaveAssetCollection & collection)
     -> void
 {
     auto const loader = ape::AssetLoader{};
@@ -334,10 +337,10 @@ auto loadAssets(
 
 } // unnamed namespace
 
-auto SampleAssetBuilder::build() const
-    -> SampleAssetCollection
+auto RaveAssetBuilder::build() const
+    -> RaveAssetCollection
 {
-    auto collection = SampleAssetCollection{};
+    auto collection = RaveAssetCollection{};
 
     createSimpleAssets(collection);
 
@@ -353,3 +356,5 @@ auto SampleAssetBuilder::build() const
 
     return collection;
 }
+
+} // namespace rave

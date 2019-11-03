@@ -7,12 +7,15 @@
 
 #include <vector>
 
-class SampleScene : public ape::Scene
+namespace rave
+{
+
+class RaveScene : public ape::Scene
 {
 
 public:
     
-    SampleScene() = default;
+    RaveScene() = default;
 
     std::vector<ape::Body *> lamps;
 
@@ -37,3 +40,5 @@ public:
     std::vector<ape::BodySpotLightSynchronizer> bodySpotLightSynchronizers;
 
 };
+
+} // namespace rave

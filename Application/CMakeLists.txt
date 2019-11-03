@@ -1,7 +1,7 @@
 CreatePackage(Application)
 
-add_subdirectory(ApeCreator)
+add_subdirectory(ApeStudio)
 
-add_subdirectory(ApePlayer)
+add_subdirectory(Rave)
 
-add_subdirectory(TestScene)
+add_subdirectory(RaveCore)

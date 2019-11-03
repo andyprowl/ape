@@ -22,7 +22,7 @@ auto main(int argc, char const * * argv)
 
     try
     {
-        auto app = Application{enableDebugOutput};
+        auto app = rave::Application{enableDebugOutput};
 
         app.run();
     }

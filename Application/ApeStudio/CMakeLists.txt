@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ApeCreator)
+project(ApeStudio)
 
 set(CMAKE_AUTOMOC ON)
 
@@ -16,7 +16,7 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     Ape::Initialization
     Ape::QtEngine
-    Application::TestScene)
+    Application::RaveCore)
 
 file(GLOB MOC_FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/mocs_compilation.cpp")
 

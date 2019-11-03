@@ -2,6 +2,9 @@
 
 #include <memory>
 
+namespace rave
+{
+
 class Application
 {
 
@@ -35,3 +38,5 @@ private:
     std::unique_ptr<Impl> impl;
 
 };
+
+} // namespace rave

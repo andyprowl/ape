@@ -1,11 +1,14 @@
-#include <Application/TestScene/SampleSceneBuilder.hpp>
+#include <Application/RaveCore/RaveSceneBuilder.hpp>
 
-#include <Application/TestScene/SampleAssetBuilder.hpp>
+#include <Application/RaveCore/RaveAssetBuilder.hpp>
 
 #include <Ape/Model/BoxBuilder.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+
+namespace rave
+{
 
 namespace
 {
@@ -15,10 +18,10 @@ class StatefulSceneBuilder
 
 public:
 
-    explicit StatefulSceneBuilder(SampleAssetCollection & assets);
+    explicit StatefulSceneBuilder(RaveAssetCollection & assets);
 
     auto build()
-        -> SampleScene;
+        -> RaveScene;
 
 private:
 
@@ -135,19 +138,19 @@ private:
     
 private:
 
-    SampleAssetCollection * assets;
+    RaveAssetCollection * assets;
 
-    SampleScene scene;
+    RaveScene scene;
 
 };
 
-StatefulSceneBuilder::StatefulSceneBuilder(SampleAssetCollection & assets)
+StatefulSceneBuilder::StatefulSceneBuilder(RaveAssetCollection & assets)
     : assets{&assets}
 {
 }
 
 auto StatefulSceneBuilder::build()
-    -> SampleScene
+    -> RaveScene
 {
     createBodies();
 
@@ -692,15 +695,17 @@ auto StatefulSceneBuilder::createSynchronizers()
 
 } // unnamed namespace
 
-SampleSceneBuilder::SampleSceneBuilder(SampleAssetCollection & assets)
+RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets)
     : assets{&assets}
 {
 }
 
-auto SampleSceneBuilder::build() const
-    -> SampleScene
+auto RaveSceneBuilder::build() const
+    -> RaveScene
 {
     auto builder = StatefulSceneBuilder{*assets};
 
     return builder.build();
 }
+
+} // namespace rave

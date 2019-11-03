@@ -2,7 +2,10 @@
 
 #include <Ape/AssetLoader/AssetRepository.hpp>
 
-class SampleAssetCollection
+namespace rave
+{
+
+class RaveAssetCollection
 {
 
 public:
@@ -22,3 +25,5 @@ public:
     std::vector<ape::Shape *> shapes;
 
 };
+
+} // namespace rave

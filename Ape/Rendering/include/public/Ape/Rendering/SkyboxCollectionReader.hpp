@@ -14,14 +14,8 @@ class SkyboxCollectionReader
 
 public:
 
-    SkyboxCollectionReader();
-
-    auto read() const
+    auto read(std::filesystem::path const & skyboxFolder) const
         -> SkyboxCollection;
-
-private:
-
-    std::filesystem::path skyboxFolder;
 
 };
 

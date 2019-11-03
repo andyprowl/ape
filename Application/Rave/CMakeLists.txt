@@ -1,11 +1,11 @@
-project(ApePlayer)
+project(Rave)
 
 AddExecutable(${PROJECT_NAME})
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     Ape::GlfwEngine
-    Application::TestScene)
+    Application::RaveCore)
 
 set_target_properties(
     ${PROJECT_NAME}

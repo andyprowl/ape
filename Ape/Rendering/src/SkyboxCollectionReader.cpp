@@ -23,19 +23,15 @@ auto isCubeFaceBackTextureFile(std::filesystem::directory_entry const & entry)
 
 } // unnamed namespace
 
-SkyboxCollectionReader::SkyboxCollectionReader()
-    : skyboxFolder{resourceFolder "/skyboxes"}
-{
-}
 
-auto SkyboxCollectionReader::read() const
+auto SkyboxCollectionReader::read(std::filesystem::path const & skyboxFolder) const
     -> SkyboxCollection
 {
     auto skyboxes = std::vector<CubeTexture>{};
 
     auto textureReader = TextureReader{};
 
-    for (auto const & entry : std::filesystem::recursive_directory_iterator(skyboxFolder))
+    for (auto const & entry : std::filesystem::recursive_directory_iterator{skyboxFolder})
     {
         if (isCubeFaceBackTextureFile(entry))
         {

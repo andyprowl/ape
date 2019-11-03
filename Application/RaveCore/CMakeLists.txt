@@ -1,4 +1,4 @@
-project(TestScene)
+project(RaveCore)
 
 file(
     GLOB_RECURSE

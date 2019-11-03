@@ -1,9 +1,5 @@
- - Skyboxes and effects should belong to TestScene, not to Rendering
-  - TestScene should likely be renamed
- - Understand why the skybox requires weird tweaking
-  - Negation of Z coordinate in fragment shader
-  - Swapping of left and right
-  - Clockwise rotation of up and down
+ - Skyboxes and effects should belong to RaveCore, not to Rendering
+  - RaveCore should likely be renamed
  - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
   - Remove duplication by extracting the template
   - Same redundancy for EffectCollection, SkyboxCollection

@@ -1,6 +1,6 @@
-#include <Application/TestScene/SampleInputHandler.hpp>
+#include <Application/RaveCore/RaveInputHandler.hpp>
 
-#include <Application/TestScene/SampleScene.hpp>
+#include <Application/RaveCore/RaveScene.hpp>
 
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/StandardShaderProgram.hpp>
@@ -15,6 +15,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <algorithm>
+
+namespace rave
+{
 
 namespace
 {
@@ -55,7 +58,7 @@ auto getFunctionKey(int const i)
 
 } // unnamed namespace
 
-SampleInputHandler::SampleInputHandler(
+RaveInputHandler::RaveInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
     ape::SkyboxSelector & skyboxSelector,
@@ -63,7 +66,7 @@ SampleInputHandler::SampleInputHandler(
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
-    maybeUnused SampleScene & scene)
+    maybeUnused RaveScene & scene)
     : StandardInputHandler{window, cameraSelector, skyboxSelector, effectSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
@@ -72,16 +75,16 @@ SampleInputHandler::SampleInputHandler(
     assert(&scene == &cameraSelector.getScene());
 }
 
-auto SampleInputHandler::getScene() const
-    -> SampleScene &
+auto RaveInputHandler::getScene() const
+    -> RaveScene &
 {
     auto & scene = ape::getScene(*this);
 
-    return static_cast<SampleScene &>(scene);
+    return static_cast<RaveScene &>(scene);
 }
 
 // virtual (from InputHandler)
-auto SampleInputHandler::onFrame(std::chrono::nanoseconds const frameDuration)
+auto RaveInputHandler::onFrame(std::chrono::nanoseconds const frameDuration)
     -> void
 {
     StandardInputHandler::onFrame(frameDuration);
@@ -93,7 +96,7 @@ auto SampleInputHandler::onFrame(std::chrono::nanoseconds const frameDuration)
     processLightRevolution(frameDurationInSeconds);
 }
 
-auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const modifier)
+auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const modifier)
     -> void
 {
     StandardInputHandler::onKeyPress(key, modifier);
@@ -124,7 +127,7 @@ auto SampleInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const m
     }
 }
 
-auto SampleInputHandler::processShapeModification(double const lastFrameDuration) const
+auto RaveInputHandler::processShapeModification(double const lastFrameDuration) const
     -> void
 {
     processShapeRotation(lastFrameDuration);
@@ -132,7 +135,7 @@ auto SampleInputHandler::processShapeModification(double const lastFrameDuration
     processShapeScaling(lastFrameDuration);
 }
 
-auto SampleInputHandler::processShapeRotation(double const lastFrameDuration) const
+auto RaveInputHandler::processShapeRotation(double const lastFrameDuration) const
     -> void
 {
     auto & scene = getScene();
@@ -151,7 +154,7 @@ auto SampleInputHandler::processShapeRotation(double const lastFrameDuration) co
     }
 }
 
-auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) const
+auto RaveInputHandler::processShapeScaling(double const lastFrameDuration) const
     -> void
 {
     auto & scene = getScene();
@@ -170,7 +173,7 @@ auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) con
     }
 }
 
-auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) const
+auto RaveInputHandler::processLightRevolution(double const lastFrameDuration) const
     -> void
 {
     auto const & window = getWindow();
@@ -202,7 +205,7 @@ auto SampleInputHandler::processLightRevolution(double const lastFrameDuration) 
     }
 }
 
-auto SampleInputHandler::toggleBlinnPhongModel() const
+auto RaveInputHandler::toggleBlinnPhongModel() const
     -> void
 {
     standardShader->bind();
@@ -210,7 +213,7 @@ auto SampleInputHandler::toggleBlinnPhongModel() const
     standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
 }
 
-auto SampleInputHandler::togglePercentageCloserFiltering() const
+auto RaveInputHandler::togglePercentageCloserFiltering() const
     -> void
 {
     standardShader->bind();
@@ -218,7 +221,7 @@ auto SampleInputHandler::togglePercentageCloserFiltering() const
     standardShader->usePercentageCloserFiltering = !standardShader->usePercentageCloserFiltering;
 }
 
-auto SampleInputHandler::togglePickedObjects() const
+auto RaveInputHandler::togglePickedObjects() const
     -> void
 {
     auto & scene = getScene();
@@ -235,7 +238,7 @@ auto SampleInputHandler::togglePickedObjects() const
     }
 }
 
-auto SampleInputHandler::pickObjects() const
+auto RaveInputHandler::pickObjects() const
     -> void
 {
     auto & scene = getScene();
@@ -251,7 +254,7 @@ auto SampleInputHandler::pickObjects() const
     bodyPicker->selectBody(*scene.lamps.front());
 }
 
-auto SampleInputHandler::increaseOutlineWidth(float amount) const
+auto RaveInputHandler::increaseOutlineWidth(float amount) const
     -> void
 {
     auto const outliningStyle = outlineStyleProvider->getStyle();
@@ -262,3 +265,5 @@ auto SampleInputHandler::increaseOutlineWidth(float amount) const
 
     outlineStyleProvider->setStyle(newStyle);
 }
+
+} // namespace rave
