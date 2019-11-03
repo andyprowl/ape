@@ -1,8 +1,17 @@
  - Skyboxes and effects should belong to RaveCore, not to Rendering
-  - RaveCore should likely be renamed
+  - Some effects should be in rave\::RaveCore, some in ape\::Rendering
+  - Redesign effect readout: EffectReader ---> EffectCollection
+  - EffectReader\::readStandardEffects()
+  - RaveEffectCollectionBuilder <>--> EffectReader
+  - Let skybox readout follow the same design
+ - Write tutorial/documentation on skyboxes
  - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
   - Remove duplication by extracting the template
   - Same redundancy for EffectCollection, SkyboxCollection
+ - Use immutable storage for asset textures loaded from file
+ - Implement gamma correction
+  - Support and use SRGB internal format for asset textures loaded from file
+  - Enable automatic SRGB conversion when writing offscreen texture to target framebuffer
  - Unify the way GLFW windows and QT windows are created
   - Ideally, there should be a single "Engine" class
  - Add support for cube textures
