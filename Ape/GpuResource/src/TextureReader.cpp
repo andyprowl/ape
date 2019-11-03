@@ -17,12 +17,12 @@ namespace
 {
 
 auto const faceCodeMap = std::unordered_map<CubeTextureFace, std::string>{
-    {CubeTextureFace::right, "rt"},
-    {CubeTextureFace::left, "lf"},
-    {CubeTextureFace::top, "up"},
-    {CubeTextureFace::bottom, "dn"},
-    {CubeTextureFace::front, "ft"},
-    {CubeTextureFace::back, "bk"}};
+    {CubeTextureFace::right, "right"},
+    {CubeTextureFace::left, "left"},
+    {CubeTextureFace::top, "top"},
+    {CubeTextureFace::bottom, "bottom"},
+    {CubeTextureFace::front, "front"},
+    {CubeTextureFace::back, "back"}};
 
 auto determineFormat(int const numOfChannels)
     -> TextureFormat
@@ -99,26 +99,15 @@ public:
     explicit CubeTextureFacePathProvider(std::filesystem::path const & facePath)
         : parentPath{facePath.parent_path()}
         , extension{facePath.extension().string()}
-        , fileNamePrefix{getFileNamePrefix(facePath)}
     {
     }
 
     auto getFacePath(CubeTextureFace const face) const
         -> std::filesystem::path
     {
-        auto faceFileName = fileNamePrefix + faceCodeMap.at(face) + extension;
+        auto faceFileName = faceCodeMap.at(face) + extension;
 
         return (parentPath / std::move(faceFileName));
-    }
-
-private:
-
-    auto getFileNamePrefix(std::filesystem::path const & facePath) const
-        -> std::string
-    {
-        auto const fileName = facePath.filename().stem().string();
-
-        return fileName.substr(0, fileName.length() - 2);
     }
 
 private:
@@ -126,8 +115,6 @@ private:
     std::filesystem::path parentPath;
 
     std::string extension;
-
-    std::string fileNamePrefix;
 
 };
 

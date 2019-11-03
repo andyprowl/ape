@@ -18,7 +18,7 @@ auto isCubeFaceBackTextureFile(std::filesystem::directory_entry const & entry)
         return false;
     }
 
-    return (entry.path().filename().stem() == "bk");
+    return (entry.path().filename().stem() == "back");
 }
 
 } // unnamed namespace
