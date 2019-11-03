@@ -51,9 +51,9 @@ auto setTextureImageData(CubeTextureDescriptor const & descriptor)
 
     setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, descriptor.bottom);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, descriptor.back);
+    setTextureImageData(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, descriptor.front);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, descriptor.front);
+    setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, descriptor.back);
 }
 
 auto makeOpenGLTextureObject(

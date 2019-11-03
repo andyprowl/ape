@@ -8,6 +8,7 @@
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/ShadowMapping.hpp>
 #include <Ape/Rendering/ShapeRenderer.hpp>
+#include <Ape/Rendering/SkyboxRenderer.hpp>
 #include <Ape/Rendering/StandardBodyRenderer.hpp>
 #include <Ape/Rendering/Viewport.hpp>
 #include <Ape/Rendering/WireframeBodyRenderer.hpp>
@@ -39,6 +40,7 @@ public:
         StandardBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
+        SkyboxRenderer skyboxRenderer,
         EffectRenderer effectRenderer,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
@@ -93,6 +95,9 @@ private:
     auto renderPickedBodies(Camera const & camera) const
         -> void;
 
+    auto renderSkybox(Camera const & camera) const
+        -> void;
+
     auto renderOffscreenSurfaceToScreen() const
         -> void;
 
@@ -107,6 +112,8 @@ private:
     WireframeBodyRenderer wireframeBodyRenderer;
 
     OutlinedBodyRenderer outlinedBodyRenderer;
+
+    SkyboxRenderer skyboxRenderer;
 
     EffectRenderer effectRenderer;
 

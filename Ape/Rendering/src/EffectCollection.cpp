@@ -26,12 +26,12 @@ EffectCollection::EffectCollection(std::vector<EffectShaderProgram> effects)
 {
 }
 
-auto EffectCollection::addEffect(EffectShaderProgram program)
+auto EffectCollection::addEffect(EffectShaderProgram effect)
     -> void
 {
-    effects.push_back(std::make_unique<EffectShaderProgram>(std::move(program)));
+    effects.push_back(std::make_unique<EffectShaderProgram>(std::move(effect)));
 
-    onSignalAdded.fire(*effects.back());
+    onEffectAdded.fire(*effects.back());
 }
 
 auto EffectCollection::getNumOfEffects() const

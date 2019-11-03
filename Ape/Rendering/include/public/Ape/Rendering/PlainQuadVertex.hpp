@@ -6,12 +6,12 @@
 namespace ape
 {
 
-class FlatQuadVertex
+class PlainQuadVertex
 {
 
 public:
 
-    FlatQuadVertex(glm::vec2 const & position, glm::vec2 const & textureCoordinates)
+    PlainQuadVertex(glm::vec2 const & position, glm::vec2 const & textureCoordinates)
         : position{position}
         , textureCoordinates{textureCoordinates}
     {

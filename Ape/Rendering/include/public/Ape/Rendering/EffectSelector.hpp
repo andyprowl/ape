@@ -29,7 +29,7 @@ class EffectSelector
 
 public:
 
-    explicit EffectSelector(EffectCollection & effect);
+    explicit EffectSelector(EffectCollection & collection);
 
     auto getCollection() const
         -> EffectCollection &;

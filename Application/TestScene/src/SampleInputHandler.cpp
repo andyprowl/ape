@@ -58,12 +58,13 @@ auto getFunctionKey(int const i)
 SampleInputHandler::SampleInputHandler(
     ape::Window & window,
     ape::CameraSelector & cameraSelector,
+    ape::SkyboxSelector & skyboxSelector,
     ape::EffectSelector & effectSelector,
     ape::BodySelector & bodyPicker,
     ape::StandardShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused SampleScene & scene)
-    : StandardInputHandler{window, cameraSelector, effectSelector}
+    : StandardInputHandler{window, cameraSelector, skyboxSelector, effectSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
     , outlineStyleProvider{&outlineStyleProvider}
@@ -159,11 +160,11 @@ auto SampleInputHandler::processShapeScaling(double const lastFrameDuration) con
 
     auto const scalingDelta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
 
-    if (window.isKeyPressed(ape::Key::keyS))
+    if (window.isKeyPressed(ape::Key::keyZ))
     {
         ape::scaleUniformly(*scene.scalingContainer, 1 + scalingDelta);
     }
-    else if (window.isKeyPressed(ape::Key::keyX))
+    else if (window.isKeyPressed(ape::Key::keyC))
     {
         ape::scaleUniformly(*scene.scalingContainer, 1 - scalingDelta);
     }

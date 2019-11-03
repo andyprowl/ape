@@ -15,6 +15,10 @@
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Ape/Rendering/SkyboxCollection.hpp>
+#include <Ape/Rendering/SkyboxCollectionReader.hpp>
+#include <Ape/Rendering/SkyboxSelector.hpp>
+#include <Ape/Rendering/SkyboxShaderProgram.hpp>
 #include <Ape/Rendering/StandardShaderProgram.hpp>
 #include <Ape/Rendering/WireframeShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
@@ -200,7 +204,11 @@ int main(int argc, char *argv[])
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
+    auto skyboxShader = ape::SkyboxShaderProgram{};
+
     auto effectCollection = ape::EffectCollectionReader{}.read();
+
+    auto skyboxCollection = ape::SkyboxCollectionReader{}.read();
 
     auto picker = ape::BodySelector{scene};
 
@@ -233,9 +241,13 @@ int main(int argc, char *argv[])
         standardBodyRenderer1,
         wireframeBodyRenderer1};
 
+    auto skyboxSelector1 = ape::SkyboxSelector{skyboxCollection};
+
+    auto skyboxRenderer1 = ape::SkyboxRenderer{skyboxShader, skyboxSelector1};
+
     auto effectSelector1 = ape::EffectSelector{effectCollection};
 
-    auto flatTextureRenderer1 = ape::EffectRenderer{effectSelector1};
+    auto effectRenderer1 = ape::EffectRenderer{effectSelector1};
 
     auto renderer1 = ape::SceneRenderer{
         std::move(shapeRenderer1),
@@ -243,7 +255,8 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer1),
         std::move(wireframeBodyRenderer1),
         std::move(outlinedBodyRenderer1),
-        std::move(flatTextureRenderer1),
+        std::move(skyboxRenderer1),
+        std::move(effectRenderer1),
         cameraSelector1,
         picker,
         sceneView1,
@@ -253,6 +266,7 @@ int main(int argc, char *argv[])
     auto inputHandler1 = SampleInputHandler{
         sceneView1,
         cameraSelector1,
+        skyboxSelector1,
         effectSelector1,
         picker,
         standardShader,
@@ -287,9 +301,13 @@ int main(int argc, char *argv[])
         standardBodyRenderer2,
         wireframeBodyRenderer2};
     
+    auto skyboxSelector2 = ape::SkyboxSelector{skyboxCollection};
+
+    auto skyboxRenderer2 = ape::SkyboxRenderer{skyboxShader, skyboxSelector2};
+
     auto effectSelector2 = ape::EffectSelector{effectCollection};
 
-    auto flatTextureRenderer2 = ape::EffectRenderer{effectSelector2};
+    auto effectRenderer2 = ape::EffectRenderer{effectSelector2};
 
     auto renderer2 = ape::SceneRenderer{
         std::move(shapeRenderer2),
@@ -297,7 +315,8 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer2),
         std::move(wireframeBodyRenderer2),
         std::move(outlinedBodyRenderer2),
-        std::move(flatTextureRenderer2),
+        std::move(skyboxRenderer2),
+        std::move(effectRenderer2),
         cameraSelector2,
         picker,
         sceneView2,
@@ -307,6 +326,7 @@ int main(int argc, char *argv[])
     auto inputHandler2 = SampleInputHandler{
         sceneView2,
         cameraSelector2,
+        skyboxSelector2,
         effectSelector2,
         picker,
         standardShader,
@@ -345,9 +365,13 @@ int main(int argc, char *argv[])
         standardBodyRenderer3,
         wireframeBodyRenderer3};
 
+    auto skyboxSelector3 = ape::SkyboxSelector{skyboxCollection};
+
+    auto skyboxRenderer3 = ape::SkyboxRenderer{skyboxShader, skyboxSelector3};
+
     auto effectSelector3 = ape::EffectSelector{effectCollection};
 
-    auto flatTextureRenderer3 = ape::EffectRenderer{effectSelector3};
+    auto effectRenderer3 = ape::EffectRenderer{effectSelector3};
 
     auto renderer3 = ape::SceneRenderer{
         std::move(shapeRenderer3),
@@ -355,7 +379,8 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer3),
         std::move(wireframeBodyRenderer3),
         std::move(outlinedBodyRenderer3),
-        std::move(flatTextureRenderer3),
+        std::move(skyboxRenderer3),
+        std::move(effectRenderer3),
         cameraSelector3,
         picker,
         sceneView3,
@@ -365,6 +390,7 @@ int main(int argc, char *argv[])
     auto inputHandler3 = SampleInputHandler{
         sceneView3,
         cameraSelector3,
+        skyboxSelector3,
         effectSelector3,
         picker,
         standardShader,

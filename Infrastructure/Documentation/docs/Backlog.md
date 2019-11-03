@@ -1,3 +1,7 @@
+ - Implement infrared (green light) vision effect
+ - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
+  - Remove duplication by extracting the template
+  - Same redundancy for EffectCollection, SkyboxCollection
  - Unify the way GLFW windows and QT windows are created
   - Ideally, there should be a single "Engine" class
  - Add support for cube textures

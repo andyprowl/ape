@@ -16,6 +16,7 @@ enum class KeyModifier;
 class CameraSelector;
 class EffectSelector;
 class Scene;
+class SkyboxSelector;
 class Window;
 
 class StandardInputHandler : public InputHandler
@@ -26,6 +27,7 @@ public:
     StandardInputHandler(
         Window & window,
         CameraSelector & cameraSelector,
+        SkyboxSelector & skyboxSelector,
         EffectSelector & effectSelector,
         float manipulatorSensitivity = 0.1f);
 
@@ -82,6 +84,9 @@ private:
     auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier)
         -> void;
 
+    auto processSkyboxSwitching(ape::Key key, ape::KeyModifier modifier)
+        -> void;
+
     auto processEffectSwitching(ape::Key key, ape::KeyModifier modifier)
         -> void;
 
@@ -102,6 +107,8 @@ private:
     Window * handledWindow;
 
     CameraManipulator cameraManipulator;
+        
+    SkyboxSelector * skyboxSelector;
 
     EffectSelector * effectSelector;
 

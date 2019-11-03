@@ -19,10 +19,10 @@ namespace
 auto const faceCodeMap = std::unordered_map<CubeTextureFace, std::string>{
     {CubeTextureFace::right, "rt"},
     {CubeTextureFace::left, "lf"},
-    {CubeTextureFace::right, "up"},
-    {CubeTextureFace::right, "dn"},
-    {CubeTextureFace::right, "ft"},
-    {CubeTextureFace::right, "bk"}};
+    {CubeTextureFace::top, "up"},
+    {CubeTextureFace::bottom, "dn"},
+    {CubeTextureFace::front, "ft"},
+    {CubeTextureFace::back, "bk"}};
 
 auto determineFormat(int const numOfChannels)
     -> TextureFormat
@@ -66,10 +66,10 @@ auto makeTextureDescriptor(
     return {size, format, pixelType, bytes};
 }
 
-auto readTextureDescriptor(std::filesystem::path const & path)
+auto readTextureDescriptor(std::filesystem::path const & path, bool const flipVertically)
     -> TextureDescriptor
 {
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(flipVertically);
 
     auto size = Size<int>{0, 0};
 
@@ -116,7 +116,7 @@ private:
     auto getFileNamePrefix(std::filesystem::path const & facePath) const
         -> std::string
     {
-        auto const fileName = facePath.filename().string();
+        auto const fileName = facePath.filename().stem().string();
 
         return fileName.substr(0, fileName.length() - 2);
     }
@@ -141,7 +141,7 @@ auto TextureReader::read(std::filesystem::path const & path) const
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
-    auto const descriptor = readTextureDescriptor(absolutePath);
+    auto const descriptor = readTextureDescriptor(absolutePath, true);
 
     auto const wrapping = TextureWrapping::repeat;
 
@@ -165,7 +165,7 @@ auto TextureReader::readCubeTexture(std::filesystem::path const & facePath) cons
         readCubeTextureFaceDescriptor(CubeTextureFace::front, facePathGenerator),
         readCubeTextureFaceDescriptor(CubeTextureFace::back, facePathGenerator)};
 
-    auto const wrapping = TextureWrapping::repeat;
+    auto const wrapping = TextureWrapping::clampToEdge;
 
     return {std::move(descriptor), wrapping};
 }
@@ -185,7 +185,7 @@ auto TextureReader::readCubeTextureFaceDescriptor(
 
     auto const backFaceAbsolutePath = resolveToPathOfExistingFile(backFacePath);
 
-    return readTextureDescriptor(backFaceAbsolutePath);
+    return readTextureDescriptor(backFaceAbsolutePath, false);
 }
 
 auto TextureReader::resolveToPathOfExistingFile(std::filesystem::path const & path) const

@@ -14,6 +14,7 @@ enum class KeyModifier;
 
 class BodySelector;
 class CameraSelector;
+class SkyboxSelector;
 class EffectSelector;
 class LineStyleProvider;
 class StandardShaderProgram;
@@ -32,6 +33,7 @@ public:
     SampleInputHandler(
         ape::Window & window,
         ape::CameraSelector & cameraSelector,
+        ape::SkyboxSelector & skyboxSelector,
         ape::EffectSelector & effectSelector,
         ape::BodySelector & bodyPicker,
         ape::StandardShaderProgram & standardShader,

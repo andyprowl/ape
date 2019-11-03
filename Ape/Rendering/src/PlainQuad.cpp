@@ -1,6 +1,6 @@
-#include <Ape/Rendering/FlatQuad.hpp>
+#include <Ape/Rendering/PlainQuad.hpp>
 
-#include <Ape/Rendering/FlatQuadVertex.hpp>
+#include <Ape/Rendering/PlainQuadVertex.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/GpuResource/VertexArrayObject.hpp>
@@ -14,18 +14,18 @@ namespace ape
 namespace
 {
 
-auto makeVertexBufferObject(std::vector<FlatQuadVertex> const & vertices)
+auto makeVertexBufferObject(std::vector<PlainQuadVertex> const & vertices)
     -> VertexBufferObject
 {
     auto vbo = VertexBufferObject{};
 
     auto const binder = bind(vbo);
 
-    auto const vertexBufferSize = vertices.size() * sizeof(FlatQuadVertex);
+    auto const vertexBufferSize = vertices.size() * sizeof(PlainQuadVertex);
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    sendVertexLayoutToGpu<FlatQuadVertex>();
+    sendVertexLayoutToGpu<PlainQuadVertex>();
 
     return vbo;
 }
@@ -39,45 +39,45 @@ auto makeArrayObject(VertexBufferObject const & vertexBuffer)
 
     vertexBuffer.bind();
 
-    sendVertexLayoutToGpu<FlatQuadVertex>();
+    sendVertexLayoutToGpu<PlainQuadVertex>();
 
     return arrayObject;
 }
 
 } // unnamed namespace
 
-FlatQuad::FlatQuad()
+PlainQuad::PlainQuad()
     : vertexBuffer{makeVertices()}
     , arrayObject{makeArrayObject(vertexBuffer)}
 {
 }
 
-auto FlatQuad::getVertexBuffer() const 
+auto PlainQuad::getVertexBuffer() const 
     -> const VertexBufferObject &
 {
     return vertexBuffer;
 }
 
-auto FlatQuad::getArrayObject() const 
+auto PlainQuad::getArrayObject() const 
     -> const VertexArrayObject &
 {
     return arrayObject;
 }
 
-auto FlatQuad::getNumOfVertices() const
+auto PlainQuad::getNumOfVertices() const
     -> int
 {
     return 6;
 }
 
-auto FlatQuad::makeVertices() const
+auto PlainQuad::makeVertices() const
     -> VertexBufferObject
 {
     auto vao = VertexArrayObject{};
 
     auto const binder = bind(vao);
 
-    auto const vertices = std::vector<FlatQuadVertex>{
+    auto const vertices = std::vector<PlainQuadVertex>{
         {{-1.0f, +1.0f}, {+0.0f, +1.0f}},
         {{-1.0f, -1.0f}, {+0.0f, +0.0f}},
         {{+1.0f, -1.0f}, {+1.0f, +0.0f}},

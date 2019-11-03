@@ -5,6 +5,9 @@
 namespace ape
 {
 
+namespace
+{
+
 auto getVertexLayout()
     -> VertexLayout<3>
 {
@@ -13,6 +16,8 @@ auto getVertexLayout()
         encodeComponentLayout(ShapeVertex, normal),
         encodeComponentLayout(ShapeVertex, textureCoordinates)};
 }
+
+} // unnamed namespace
 
 template<>
 auto sendVertexLayoutToGpu<ShapeVertex>()

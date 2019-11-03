@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/FlatQuad.hpp>
+#include <Ape/Rendering/PlainQuad.hpp>
 #include <Ape/Rendering/Viewport.hpp>
 
 namespace ape
@@ -38,7 +38,7 @@ private:
 
     EffectSelector * selector;
 
-    FlatQuad planeShape;
+    PlainQuad planeShape;
 
     Viewport viewport;
 

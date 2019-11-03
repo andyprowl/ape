@@ -1,6 +1,7 @@
 #include <Ape/UpdateHandling/StandardInputHandler.hpp>
 
 #include <Ape/Rendering/EffectSelector.hpp>
+#include <Ape/Rendering/SkyboxSelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Scene/Scene.hpp>
 #include <Ape/Windowing/Window.hpp>
@@ -13,10 +14,12 @@ namespace ape
 StandardInputHandler::StandardInputHandler(
     Window & handledWindow,
     CameraSelector & cameraSelector,
+    SkyboxSelector & skyboxSelector,
     EffectSelector & effectSelector,
     float const manipulatorSensitivity)
     : handledWindow{&handledWindow}
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
+    , skyboxSelector{&skyboxSelector}
     , effectSelector{&effectSelector}
     , keyPressHandlerConnection{registerKeyboardHandlerConnection()}
     , mouseWheelHandlerConnection{registerMouseWheelHandlerConnection()}
@@ -59,6 +62,8 @@ auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     processLightToggling(key, modifier);
 
     processCameraSwitching(key, modifier);
+
+    processSkyboxSwitching(key, modifier);
 
     processEffectSwitching(key, modifier);
 }
@@ -195,6 +200,26 @@ auto StandardInputHandler::processCameraSwitching(
     if (modifier == ape::KeyModifier::control)
     {
         switchToCamera(index);
+    }
+}
+
+auto StandardInputHandler::processSkyboxSwitching(
+    ape::Key const key,
+    ape::KeyModifier const modifier)
+    -> void
+{
+    if (key != ape::Key::keyS)
+    {
+        return;
+    }
+
+    if (modifier == ape::KeyModifier::shift)
+    {
+        skyboxSelector->activateNextSkybox();
+    }
+    else
+    {
+        skyboxSelector->activatePreviousSkybox();
     }
 }
 

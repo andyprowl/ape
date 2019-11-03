@@ -14,6 +14,9 @@
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
+#include <Ape/Rendering/SkyboxCollectionReader.hpp>
+#include <Ape/Rendering/SkyboxSelector.hpp>
+#include <Ape/Rendering/SkyboxShaderProgram.hpp>
 #include <Ape/Rendering/StandardBodyRenderer.hpp>
 #include <Ape/Rendering/StandardShaderProgram.hpp>
 #include <Ape/Rendering/WireframeBodyRenderer.hpp>
@@ -29,9 +32,7 @@ public:
     explicit Impl(bool const enableDebugOutput)
         : gateway{4, 5, enableDebugOutput}
     {
-        effectSelector.activatePreviousEffect();
-
-        effectSelector.activatePreviousEffect();
+        effectSelector.activateEffect(5);
     }
 
     auto run()
@@ -60,9 +61,15 @@ private:
 
     ape::WireframeShaderProgram wireframeShader;
 
+    ape::SkyboxShaderProgram skyboxShader;
+
     ape::EffectCollection effectCollection{ape::EffectCollectionReader{}.read()};
 
     ape::EffectSelector effectSelector{effectCollection};
+
+    ape::SkyboxCollection skyboxCollection{ape::SkyboxCollectionReader{}.read()};
+
+    ape::SkyboxSelector skyboxSelector{skyboxCollection};
 
     std::unique_ptr<ape::ShapeArrayObjectRenderer> shapeRenderer{
         std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes)};
@@ -83,7 +90,9 @@ private:
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
 
-    ape::EffectRenderer flatTextureRenderer{effectSelector};
+    ape::EffectRenderer effectRenderer{effectSelector};
+
+    ape::SkyboxRenderer skyboxRenderer{skyboxShader, skyboxSelector};
 
     ape::CameraSelector cameraSelector{scene};
 
@@ -95,7 +104,8 @@ private:
         std::move(standardBodyRenderer),
         std::move(wireframeBodyRenderer),
         std::move(outlinedBodyRenderer),
-        std::move(flatTextureRenderer),
+        std::move(skyboxRenderer),
+        std::move(effectRenderer),
         cameraSelector,
         bodyPicker,
         window,
@@ -105,6 +115,7 @@ private:
     SampleInputHandler inputHandler{
         window,
         cameraSelector,
+        skyboxSelector,
         effectSelector,
         bodyPicker,
         standardShader,

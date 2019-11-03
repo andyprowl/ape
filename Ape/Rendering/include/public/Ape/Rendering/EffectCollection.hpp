@@ -32,7 +32,7 @@ public:
 
     explicit EffectCollection(std::vector<EffectShaderProgram> effects);
 
-    auto addEffect(EffectShaderProgram program)
+    auto addEffect(EffectShaderProgram effect)
         -> void;
 
     auto getNumOfEffects() const
@@ -46,7 +46,7 @@ public:
 
 public:
 
-    Signal<auto (EffectShaderProgram &) -> void> onSignalAdded;
+    Signal<auto (EffectShaderProgram &) -> void> onEffectAdded;
 
 private:
 

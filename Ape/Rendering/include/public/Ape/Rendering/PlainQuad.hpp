@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Ape/Model/ShapeVertex.hpp>
-
-#include <Ape/GpuResource/ElementBufferObject.hpp>
 #include <Ape/GpuResource/VertexArrayObject.hpp>
 #include <Ape/GpuResource/VertexBufferObject.hpp>
 
@@ -11,12 +8,12 @@
 namespace ape
 {
 
-class FlatQuad
+class PlainQuad
 {
 
 public:
 
-    FlatQuad();
+    PlainQuad();
 
     auto getVertexBuffer() const 
         -> const VertexBufferObject &;

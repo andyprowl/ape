@@ -24,6 +24,7 @@ SceneRenderer::SceneRenderer(
     StandardBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
+    SkyboxRenderer skyboxRenderer,
     EffectRenderer effectRenderer,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
@@ -36,6 +37,7 @@ SceneRenderer::SceneRenderer(
     , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
     , effectRenderer{std::move(effectRenderer)}
+    , skyboxRenderer{std::move(skyboxRenderer)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
     , targetSurface{&targetSurface}
@@ -96,6 +98,8 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     outlinedBodyRenderer.setViewport(viewport);
 
     wireframeBodyRenderer.setViewport(viewport);
+
+    skyboxRenderer.setViewport(viewport);
 
     effectRenderer.setViewport(viewport);
 
@@ -172,6 +176,8 @@ auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
     renderNonPickedBodies(*activeCamera);
 
     renderPickedBodies(*activeCamera);
+
+    renderSkybox(*activeCamera);
 }
 
 auto SceneRenderer::clearTargetBuffers()
@@ -210,6 +216,12 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
     auto const & lighting = cameraSelector->getScene().getLighting();
 
     outlinedBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
+}
+
+auto SceneRenderer::renderSkybox(Camera const & camera) const
+    -> void
+{
+    skyboxRenderer.render(camera);
 }
 
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const

@@ -1,13 +1,13 @@
 #pragma once
 
 #include <Ape/GpuResource/GenericTextureUniform.hpp>
-#include <Ape/GpuResource/Texture.hpp>
+#include <Ape/GpuResource/CubeTexture.hpp>
 
 namespace ape
 {
 
 template<>
-class Uniform<Texture> : public detail::GenericTextureUniform<Texture>
+class Uniform<CubeTexture> : public detail::GenericTextureUniform<CubeTexture>
 {
 
 public:
