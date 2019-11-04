@@ -1,6 +1,6 @@
-#include <Application/RaveCore/RaveInputHandler.hpp>
+#include <Rave/RaveCore/RaveInputHandler.hpp>
 
-#include <Application/RaveCore/RaveScene.hpp>
+#include <Rave/RaveCore/RaveScene.hpp>
 
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/StandardShaderProgram.hpp>

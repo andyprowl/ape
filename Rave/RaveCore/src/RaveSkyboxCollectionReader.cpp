@@ -1,4 +1,4 @@
-#include <Application/RaveCore/RaveSkyboxCollectionReader.hpp>
+#include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
 namespace rave
 {

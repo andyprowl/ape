@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Application/RaveCore/RaveAssetCollection.hpp>
+#include <Rave/RaveCore/RaveAssetCollection.hpp>
 
 namespace rave
 {

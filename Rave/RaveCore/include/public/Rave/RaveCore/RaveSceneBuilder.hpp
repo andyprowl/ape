@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Application/RaveCore/RaveScene.hpp>
+#include <Rave/RaveCore/RaveScene.hpp>
 
 namespace rave
 {

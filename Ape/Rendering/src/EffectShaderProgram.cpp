@@ -10,18 +10,26 @@ namespace
 
 auto const screenTextureUnit = 0;
 
-auto buildFlatQuadShader(std::string fragmentShaderFileName)
-    -> ShaderProgram
+auto buildVertexShader()
+    -> VertexShader
 {
     auto const builder = ShaderBuilder{{resourceFolder "/shaders/Effects"}};
 
-    return builder.buildProgram("Quad.Vertex.glsl", std::move(fragmentShaderFileName));
+    return builder.buildVertexShader("Effect.Vertex.glsl");
+}
+
+auto buildFragmentShader(std::filesystem::path fragmentShaderPath)
+    -> FragmentShader
+{
+    auto const builder = ShaderBuilder{{fragmentShaderPath.parent_path()}};
+
+    return builder.buildFragmentShader(fragmentShaderPath.filename());
 }
 
 } // unnamed namespace
 
-EffectShaderProgram::EffectShaderProgram(std::string fragmentShaderFileName)
-    : ShaderProgram{buildFlatQuadShader(std::move(fragmentShaderFileName))}
+EffectShaderProgram::EffectShaderProgram(std::filesystem::path fragmentShaderPath)
+    : ShaderProgram{buildVertexShader(), buildFragmentShader(std::move(fragmentShaderPath))}
     , source{*this, "screenTexture", screenTextureUnit}
 {
 }

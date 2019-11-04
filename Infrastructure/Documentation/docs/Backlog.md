@@ -12,10 +12,9 @@
  - Implement gamma correction
   - Support and use SRGB internal format for asset textures loaded from file
   - Enable automatic SRGB conversion when writing offscreen texture to target framebuffer
+ - Create depth of field effect
  - Unify the way GLFW windows and QT windows are created
   - Ideally, there should be a single "Engine" class
- - Add support for cube textures
-  - Implement skybox
  - Let shader programs (or at least effects) have names
   - Use that to select the initial effect in ApePlayer and ApeCreator
  - Figure out a good way of reducing duplication in effect shaders
@@ -28,7 +27,6 @@
  - callers of glViewport should do so through the Window object
  - Implement normal visualization through geometry shaders
  - (Re-)implement glowing based on view position and normal
- - Implement gamma correction
  - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
   - Works correctly with ApeCreator
  - Introduce different namespaces for packages (not just "ape")
@@ -41,4 +39,3 @@
  - Try and generalize GLFWEngine-based and Qt's event-based approaches
  - Add CMake install target also handling correct deployment of dependencies
  - Support flat shapes/meshes
- - Support "enterable", room-like shapes with an inner and outer layer with inverted normals

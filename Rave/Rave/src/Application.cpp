@@ -1,14 +1,15 @@
 #include "Application.hpp"
 
-#include <Application/RaveCore/RaveAssetBuilder.hpp>
-#include <Application/RaveCore/RaveInputHandler.hpp>
-#include <Application/RaveCore/RaveSceneBuilder.hpp>
-#include <Application/RaveCore/RaveSkyboxCollectionReader.hpp>
+#include <Rave/RaveCore/RaveAssetBuilder.hpp>
+#include <Rave/RaveCore/RaveEffectCollectionReader.hpp>
+#include <Rave/RaveCore/RaveInputHandler.hpp>
+#include <Rave/RaveCore/RaveSceneBuilder.hpp>
+#include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
-#include <Ape/Rendering/EffectCollectionReader.hpp>
+#include <Ape/Rendering/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
@@ -37,7 +38,7 @@ public:
     {
         skyboxSelector.activateSkybox(3);
 
-        effectSelector.activateEffect(5);
+        effectSelector.activateEffect(4);
     }
 
     auto run()
@@ -68,7 +69,7 @@ private:
 
     ape::SkyboxShaderProgram skyboxShader;
 
-    ape::EffectCollection effectCollection{ape::EffectCollectionReader{}.read()};
+    ape::EffectCollection effectCollection{RaveEffectCollectionReader{}.read()};
 
     ape::EffectSelector effectSelector{effectCollection};
 

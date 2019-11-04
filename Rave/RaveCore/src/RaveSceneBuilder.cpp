@@ -1,6 +1,6 @@
-#include <Application/RaveCore/RaveSceneBuilder.hpp>
+#include <Rave/RaveCore/RaveSceneBuilder.hpp>
 
-#include <Application/RaveCore/RaveAssetBuilder.hpp>
+#include <Rave/RaveCore/RaveAssetBuilder.hpp>
 
 #include <Ape/Model/BoxBuilder.hpp>
 

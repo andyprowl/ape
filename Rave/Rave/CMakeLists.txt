@@ -5,7 +5,7 @@ AddExecutable(${PROJECT_NAME})
 AddPrivateDependencies(
     ${PROJECT_NAME}
     Ape::GlfwEngine
-    Application::RaveCore)
+    Rave::RaveCore)
 
 set_target_properties(
     ${PROJECT_NAME}

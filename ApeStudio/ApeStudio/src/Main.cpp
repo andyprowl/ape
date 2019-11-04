@@ -1,16 +1,17 @@
 #include "MainWindow.hpp"
 #include "TableModel.hpp"
 
-#include <Application/RaveCore/RaveSkyboxCollectionReader.hpp>
-#include <Application/RaveCore/RaveAssetBuilder.hpp>
-#include <Application/RaveCore/RaveInputHandler.hpp>
-#include <Application/RaveCore/RaveSceneBuilder.hpp>
+#include <Rave/RaveCore/RaveAssetBuilder.hpp>
+#include <Rave/RaveCore/RaveEffectCollectionReader.hpp>
+#include <Rave/RaveCore/RaveInputHandler.hpp>
+#include <Rave/RaveCore/RaveSceneBuilder.hpp>
+#include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtGateway.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
 #include <Ape/Rendering/DepthShaderProgram.hpp>
-#include <Ape/Rendering/EffectCollectionReader.hpp>
+#include <Ape/Rendering/EffectCollection.hpp>
 #include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
@@ -206,7 +207,7 @@ int main(int argc, char *argv[])
 
     auto skyboxShader = ape::SkyboxShaderProgram{};
 
-    auto effectCollection = ape::EffectCollectionReader{}.read();
+    auto effectCollection = rave::RaveEffectCollectionReader{}.read();
 
     auto skyboxCollection = rave::RaveSkyboxCollectionReader{}.read();
 

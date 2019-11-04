@@ -13,7 +13,7 @@ void main()
 {   
     vec3 tc = vec3(1.0, 0.0, 0.0);
 
-    vec3 pixcol = texture2D(screenTexture, textureCoords).rgb;
+    vec3 textureColor = texture2D(screenTexture, textureCoords).rgb;
 
     vec3 colors[3];
 
@@ -23,11 +23,11 @@ void main()
 
     colors[2] = vec3(1.0, 0.0, 0.0);
 
-    float lum = (pixcol.r+pixcol.g+pixcol.b) / 3.0;
+    float lum = (textureColor.r + textureColor.g + textureColor.b) / 3.0;
 
     int ix = (lum < 0.5) ? 0 : 1;
 
-    tc = mix(colors[ix], colors[ix+1], (lum -float(ix) * 0.5) /0.5);
+    tc = mix(colors[ix], colors[ix + 1], (lum - float(ix) * 0.5) / 0.5);
   
     fragmentColor = vec4(tc, 1.0);
 }

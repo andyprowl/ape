@@ -3,7 +3,7 @@
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/TextureUniform.hpp>
 
-#include <string>
+#include <filesystem>
 
 namespace ape
 {
@@ -13,7 +13,7 @@ class EffectShaderProgram : public ShaderProgram
 
 public:
 
-    explicit EffectShaderProgram(std::string fragmentShaderFileName);
+    explicit EffectShaderProgram(std::filesystem::path fragmentShaderPath);
 
 public:
 

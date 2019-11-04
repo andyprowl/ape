@@ -18,8 +18,10 @@ add_subdirectory(3rdParty)
 
 add_subdirectory(Ape)
 
-add_subdirectory(Application)
+add_subdirectory(ApeStudio)
 
 add_subdirectory(Foundational)
 
 add_subdirectory(Infrastructure)
+
+add_subdirectory(Rave)
