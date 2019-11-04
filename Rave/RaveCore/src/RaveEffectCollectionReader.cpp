@@ -10,7 +10,7 @@ auto RaveEffectCollectionReader::read() const
 {
     auto collection = ape::EffectCollection{};
 
-    auto populator = ape::EffectCollectionPopulator{collection};
+    auto const populator = ape::EffectCollectionPopulator{collection};
 
     populator.addAllStandardEffects();
 

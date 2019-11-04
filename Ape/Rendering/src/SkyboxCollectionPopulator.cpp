@@ -1,4 +1,8 @@
-#include <Ape/Rendering/SkyboxCollectionReader.hpp>
+#include <Ape/Rendering/SkyboxCollectionPopulator.hpp>
+
+#include <Ape/Rendering/SkyboxCollection.hpp>
+
+#include <Ape/GpuResource/TextureReader.hpp>
 
 #include <filesystem>
 
@@ -23,25 +27,24 @@ auto isCubeFaceBackTextureFile(std::filesystem::directory_entry const & entry)
 
 } // unnamed namespace
 
-
-auto SkyboxCollectionReader::read(std::filesystem::path const & skyboxFolder) const
-    -> SkyboxCollection
+SkyboxCollectionPopulator::SkyboxCollectionPopulator(SkyboxCollection & collection)
+    : collection{&collection}
 {
-    auto skyboxes = std::vector<CubeTexture>{};
+}
 
-    auto textureReader = TextureReader{};
-
+auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
+    std::filesystem::path const & skyboxFolder) const
+    -> void
+{
     for (auto const & entry : std::filesystem::recursive_directory_iterator{skyboxFolder})
     {
         if (isCubeFaceBackTextureFile(entry))
         {
             auto cubeTexture = textureReader.readCubeTexture(entry.path());
 
-            skyboxes.push_back(std::move(cubeTexture));
+            collection->addSkybox(std::move(cubeTexture));
         }
     }
-
-    return SkyboxCollection{std::move(skyboxes)};
 }
 
 } // namespace ape

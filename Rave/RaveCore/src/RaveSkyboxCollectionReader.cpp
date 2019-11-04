@@ -1,14 +1,22 @@
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
+#include <Ape/Rendering/SkyboxCollectionPopulator.hpp>
+
 namespace rave
 {
 
 auto RaveSkyboxCollectionReader::read() const
     -> ape::SkyboxCollection
 {
-    auto const skyboxFolder = std::filesystem::path{resourceFolder} / "skyboxes";
+    auto collection = ape::SkyboxCollection{};
 
-    return reader.read(skyboxFolder);
+    auto const populator = ape::SkyboxCollectionPopulator{collection};
+
+    auto const skyboxFolder = std::filesystem::path{resourceFolder} / "Skyboxes";
+
+    populator.addAllSkyboxesInFolder(skyboxFolder);
+
+    return collection;
 }
 
 } // namespace rave
