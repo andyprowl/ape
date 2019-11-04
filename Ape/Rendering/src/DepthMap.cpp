@@ -1,6 +1,7 @@
 #include <Ape/Rendering/DepthMap.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -15,13 +16,16 @@ auto makeDepthMapTexture(Size<int> const & size)
 {
     auto const descriptor = TextureDescriptor{
         size,
-        TextureFormat::depthOnly,
+        TextureImageFormat::depth,
+        TextureInternalFormat::depth32,
         PixelType::floatingPoint,
         nullptr};
     
     auto const wrapping = TextureWrapping::clampToEdge;
 
-    return Texture{descriptor, wrapping};
+    auto const storageType = TextureStorageType::immutable;
+
+    return Texture{descriptor, wrapping, storageType};
 }
 
 auto makeDepthMapFrameBuffer(Texture & depthMapTexture)

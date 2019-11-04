@@ -2,7 +2,9 @@
  - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
   - Remove duplication by extracting the template
   - Same redundancy for EffectCollection, SkyboxCollection
- - Use immutable storage for asset textures loaded from file
+ - Handling of cube texture readout is ugly: refactor that
+  - Also consider extracting a separate reader, since Texture and CubeTexture are separate objects
+  - Alternatively, define the current texture as a Texture2D or RectangleTexture
  - Implement gamma correction
   - Support and use SRGB internal format for asset textures loaded from file
   - Enable automatic SRGB conversion when writing offscreen texture to target framebuffer

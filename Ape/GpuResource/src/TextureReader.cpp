@@ -24,38 +24,58 @@ auto const faceCodeMap = std::unordered_map<CubeTextureFace, std::string>{
     {CubeTextureFace::front, "front"},
     {CubeTextureFace::back, "back"}};
 
-auto determineFormat(int const numOfChannels)
-    -> TextureFormat
+auto determineImageFormat(int const numOfChannels)
+    -> TextureImageFormat
 {
     switch (numOfChannels)
     {
-        case 1:
-        {
-            return TextureFormat::redOnly;
-        }
-
         case 3:
         {
-            return TextureFormat::redGreenBlue;
+            return TextureImageFormat::rgb;
         }
 
         case 4:
         {
-            return TextureFormat::redGreenBlueAlpha;
+            return TextureImageFormat::rgba;
         }
 
         default:
         {
             assert(false);
 
-            return TextureFormat::unknown;
+            return TextureImageFormat::unknown;
+        }
+    }
+}
+
+auto chooseInternalFormat(TextureImageFormat const format)
+    -> TextureInternalFormat
+{
+    switch (format)
+    {
+
+        case TextureImageFormat::rgb:
+        {
+            return TextureInternalFormat::rgb8;
+        }
+
+        case TextureImageFormat::rgba:
+        {
+            return TextureInternalFormat::rgba8;
+        }
+
+        default:
+        {
+            assert(false);
+
+            return TextureInternalFormat::unknown;
         }
     }
 }
 
 auto makeTextureDescriptor(
     Size<int> const & size,
-    TextureFormat const format,
+    TextureImageFormat const imageFormat,
     stbi_uc * const imageBytes)
     -> TextureDescriptor
 {
@@ -63,7 +83,9 @@ auto makeTextureDescriptor(
 
     auto const pixelType = PixelType::unsignedByte;
 
-    return {size, format, pixelType, bytes};
+    auto const internalFormat = chooseInternalFormat(imageFormat);
+
+    return {size, imageFormat, internalFormat, pixelType, bytes};
 }
 
 auto readTextureDescriptor(std::filesystem::path const & path, bool const flipVertically)
@@ -84,7 +106,7 @@ auto readTextureDescriptor(std::filesystem::path const & path, bool const flipVe
         throw CouldNotReadTexture{path};
     }
 
-    auto format = determineFormat(numOfChannels);
+    auto format = determineImageFormat(numOfChannels);
 
     return makeTextureDescriptor(size, format, bytes);
 }
@@ -123,7 +145,9 @@ TextureReader::TextureReader(std::vector<std::filesystem::path> searchPaths)
 {
 }
 
-auto TextureReader::read(std::filesystem::path const & path) const
+auto TextureReader::read(
+    std::filesystem::path const & path,
+    TextureStorageType const storageType) const
     -> Texture
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
@@ -132,14 +156,16 @@ auto TextureReader::read(std::filesystem::path const & path) const
 
     auto const wrapping = TextureWrapping::repeat;
 
-    auto texture = Texture{descriptor, wrapping};
+    auto texture = Texture{descriptor, wrapping, storageType};
 
     stbi_image_free(static_cast<void *>(descriptor.bytes));
 
     return texture;
 }
 
-auto TextureReader::readCubeTexture(std::filesystem::path const & facePath) const
+auto TextureReader::readCubeTexture(
+    std::filesystem::path const & facePath,
+    TextureStorageType const storageType) const
     -> CubeTexture
 {
     auto const facePathGenerator = CubeTextureFacePathProvider{facePath};
@@ -154,7 +180,7 @@ auto TextureReader::readCubeTexture(std::filesystem::path const & facePath) cons
 
     auto const wrapping = TextureWrapping::clampToEdge;
 
-    return {std::move(descriptor), wrapping};
+    return {std::move(descriptor), wrapping, storageType};
 }
 
 auto TextureReader::getSearchPaths() const

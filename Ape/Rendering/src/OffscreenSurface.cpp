@@ -1,6 +1,7 @@
 #include <Ape/Rendering/OffscreenSurface.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Ape/GpuResource/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -15,13 +16,16 @@ auto makeColorBuffer(Size<int> const & size)
 {
     auto const descriptor = TextureDescriptor{
         size,
-        TextureFormat::redGreenBlue,
+        TextureImageFormat::rgb,
+        TextureInternalFormat::rgb8,
         PixelType::unsignedByte,
         nullptr};
 
     auto const wrapping = TextureWrapping::clampToEdge;
 
-    return Texture{descriptor, wrapping};
+    auto const storageType = TextureStorageType::modifiable;
+
+    return Texture{descriptor, wrapping, storageType};
 }
 
 auto makeDepthAndStencilBuffer(Size<int> const & size)

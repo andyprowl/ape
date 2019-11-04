@@ -3,6 +3,7 @@
 #include <Ape/GpuResource/FileFinder.hpp>
 #include <Ape/GpuResource/CubeTexture.hpp>
 #include <Ape/GpuResource/Texture.hpp>
+#include <Ape/GpuResource/TextureStorageType.hpp>
 
 #include <filesystem>
 #include <stdexcept>
@@ -47,10 +48,12 @@ public:
 
     explicit TextureReader(std::vector<std::filesystem::path> searchPaths);
 
-    auto read(std::filesystem::path const & path) const
+    auto read(std::filesystem::path const & path, TextureStorageType storageType) const
         -> Texture;
 
-    auto readCubeTexture(std::filesystem::path const & facePath) const
+    auto readCubeTexture(
+        std::filesystem::path const & facePath,
+        TextureStorageType const storageType) const
         -> CubeTexture;
 
     auto getSearchPaths() const

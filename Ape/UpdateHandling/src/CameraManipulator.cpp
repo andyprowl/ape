@@ -122,13 +122,15 @@ auto CameraManipulator::processStraightMovement(
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
+    auto const speedMultiplier = window->isKeyPressed(Key::keyRightShift) ? 4.0f : 1.0f;
+
     if (window->isKeyPressed(Key::keyUp))
     {
-        moveCameraAlongDirection(camera, +translationDelta);
+        moveCameraAlongDirection(camera, +1.0f * translationDelta * speedMultiplier);
     }
     else if (window->isKeyPressed(Key::keyDown))
     {
-        moveCameraAlongDirection(camera, -translationDelta);
+        moveCameraAlongDirection(camera, -1.0f * translationDelta * speedMultiplier);
     }
 }
 
@@ -139,13 +141,15 @@ auto CameraManipulator::processStrafeMovement(
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
+    auto const speedMultiplier = window->isKeyPressed(Key::keyRightShift) ? 4.0f : 1.0f;
+
     if (window->isKeyPressed(Key::keyLeft))
     {
-        moveCameraSideways(camera, -translationDelta);
+        moveCameraSideways(camera, -1.0f * translationDelta * speedMultiplier);
     }
     else if (window->isKeyPressed(Key::keyRight))
     {
-        moveCameraSideways(camera, +translationDelta);
+        moveCameraSideways(camera, +1.0f * translationDelta * speedMultiplier);
     }
 }
 

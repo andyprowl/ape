@@ -287,7 +287,7 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 
-    auto texture = textureReader.read(filepath);
+    auto texture = textureReader.read(filepath, ape::TextureStorageType::immutable);
 
     return assets.textures.emplace_back(std::move(texture));
 }

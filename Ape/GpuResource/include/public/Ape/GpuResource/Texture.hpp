@@ -7,12 +7,17 @@
 namespace ape
 {
 
+enum class TextureStorageType;
+
 class Texture
 {
 
 public:
 
-    Texture(TextureDescriptor descriptor, TextureWrapping wrapping);
+    Texture(
+        TextureDescriptor const & descriptor,
+        TextureWrapping wrapping,
+        TextureStorageType storageType);
 
     auto getId() const
         -> GpuResource::Id;
@@ -20,8 +25,11 @@ public:
     auto bind(int unit) const
         -> void;
 
-    auto getFormat() const
-        -> TextureFormat;
+    auto getImageFormat() const
+        -> TextureImageFormat;
+
+    auto getInternalFormat() const
+        -> TextureInternalFormat;
 
     auto getSize() const
         -> Size<int>;
@@ -31,13 +39,22 @@ public:
 
 private:
 
+    auto recreateMutableStorage()
+        -> void;
+
+private:
+
     GpuResource resource;
 
     Size<int> size;
 
-    TextureFormat format;
+    TextureImageFormat imageFormat;
+
+    TextureInternalFormat internalFormat;
 
     PixelType pixelType;
+
+    TextureWrapping wrapping;
 
 };
 

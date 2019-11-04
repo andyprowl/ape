@@ -7,12 +7,17 @@
 namespace ape
 {
 
+enum class TextureStorageType;
+
 class CubeTexture
 {
 
 public:
 
-    CubeTexture(CubeTextureDescriptor descriptor, TextureWrapping wrapping);
+    CubeTexture(
+        CubeTextureDescriptor const & descriptor,
+        TextureWrapping wrapping,
+        TextureStorageType storageType);
 
     auto getId() const
         -> GpuResource::Id;

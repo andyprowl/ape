@@ -40,7 +40,9 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
     {
         if (isCubeFaceBackTextureFile(entry))
         {
-            auto cubeTexture = textureReader.readCubeTexture(entry.path());
+            auto const storageType = TextureStorageType::immutable;
+
+            auto cubeTexture = textureReader.readCubeTexture(entry.path(), storageType);
 
             collection->addSkybox(std::move(cubeTexture));
         }

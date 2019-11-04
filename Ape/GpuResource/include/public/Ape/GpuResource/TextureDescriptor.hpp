@@ -1,7 +1,8 @@
 #pragma once
 
 #include <Ape/GpuResource/PixelType.hpp>
-#include <Ape/GpuResource/TextureFormat.hpp>
+#include <Ape/GpuResource/TextureImageFormat.hpp>
+#include <Ape/GpuResource/TextureInternalFormat.hpp>
 
 #include <Foundational/Mathematics/Size.hpp>
 
@@ -19,11 +20,13 @@ public:
 
     TextureDescriptor(
         Size<int> const size,
-        TextureFormat format,
+        TextureImageFormat imageFormat,
+        TextureInternalFormat internalFormat,
         PixelType const pixelType,
         std::byte * const bytes)
         : size{size}
-        , format{format}
+        , imageFormat{imageFormat}
+        , internalFormat{internalFormat}
         , pixelType{pixelType}
         , bytes{bytes}
     {
@@ -33,7 +36,9 @@ public:
 
     Size<int> size;
 
-    TextureFormat format;
+    TextureImageFormat imageFormat;
+
+    TextureInternalFormat internalFormat;
 
     PixelType pixelType;
 

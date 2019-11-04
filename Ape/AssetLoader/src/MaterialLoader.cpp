@@ -162,7 +162,9 @@ auto MaterialLoader::importTexture(std::filesystem::path const & path) const
         return *existingTexture;
     }
 
-    auto & texture = assets->textures.emplace_back(textureReader.read(path));
+    const auto storageType = TextureStorageType::immutable;
+
+    auto & texture = assets->textures.emplace_back(textureReader.read(path, storageType));
 
     textureCache->registerTexture(texture, path);
 
