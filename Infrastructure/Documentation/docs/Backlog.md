@@ -1,9 +1,3 @@
- - Skyboxes and effects should belong to RaveCore, not to Rendering
-  - Some effects should be in rave\::RaveCore, some in ape\::Rendering
-  - Redesign effect readout: EffectReader ---> EffectCollection
-  - EffectReader\::readStandardEffects()
-  - RaveEffectCollectionBuilder <>--> EffectReader
-  - Let skybox readout follow the same design
  - Write tutorial/documentation on skyboxes
  - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
   - Remove duplication by extracting the template
