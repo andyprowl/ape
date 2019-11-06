@@ -1,4 +1,3 @@
- - Gamma correction in Qt doesn't work: probably Qt creates a linear FBO!
  - Write tutorial/documentation on skyboxes
  - Write tutorial/documentation on gamma correction
  - Complete implementation of shadow mapping
