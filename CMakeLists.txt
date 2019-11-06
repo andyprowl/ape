@@ -20,6 +20,8 @@ add_subdirectory(Ape)
 
 add_subdirectory(ApeStudio)
 
+add_subdirectory(Experimental)
+
 add_subdirectory(Foundational)
 
 add_subdirectory(Infrastructure)

@@ -11,6 +11,16 @@ namespace ape
 namespace
 {
 
+template<typename T>
+auto makeVectorWithCapacity(std::size_t const capacity)
+{
+    auto v = std::vector<T>{};
+
+    v.reserve(capacity);
+
+    return v;
+}
+
 auto toString(aiString const & s)
     -> std::string
 {
@@ -25,6 +35,12 @@ auto getTextureFilename(aiMaterial const & m, aiTextureType const type, int cons
     m.GetTexture(type, index, &filename);
 
     return toString(filename);
+}
+
+auto getTextureColorSpace(aiTextureType const type)
+    -> ColorSpace
+{
+    return (type == aiTextureType_DIFFUSE) ? ColorSpace::perceptual : ColorSpace::linear;
 }
 
 } // unnamed
@@ -127,11 +143,11 @@ auto MaterialLoader::importTextures(
     std::filesystem::path const & directory) const
     -> std::vector<Texture const *>
 {
-    auto numOfTextures = material.GetTextureCount(aiTextureType_DIFFUSE);
+    auto numOfTextures = material.GetTextureCount(type);
 
-    auto textures = std::vector<Texture const *>{};
+    auto textures = makeVectorWithCapacity<Texture const *>(numOfTextures);
 
-    textures.reserve(numOfTextures);
+    auto const colorSpace = getTextureColorSpace(type);
 
     for (auto i = 0u; i < numOfTextures; ++i)
     {
@@ -144,7 +160,7 @@ auto MaterialLoader::importTextures(
 
         auto const path = directory / std::move(filename);
 
-        auto const & texture = importTexture(path);
+        auto const & texture = getOrReadTexture(path, colorSpace);
 
         textures.push_back(&texture);
     }
@@ -152,7 +168,9 @@ auto MaterialLoader::importTextures(
     return textures;
 }
 
-auto MaterialLoader::importTexture(std::filesystem::path const & path) const
+auto MaterialLoader::getOrReadTexture(
+    std::filesystem::path const & path,
+    ColorSpace const colorSpace) const
     -> Texture const &
 {
     auto const existingTexture = textureCache->findTexture(path);
@@ -162,13 +180,23 @@ auto MaterialLoader::importTexture(std::filesystem::path const & path) const
         return *existingTexture;
     }
 
+    return readAndStoreTexture(path, colorSpace);
+}
+
+auto MaterialLoader::readAndStoreTexture(
+    std::filesystem::path const & path,
+    ColorSpace const colorSpace) const
+    -> Texture const &
+{
     const auto storageType = TextureStorageType::immutable;
 
-    auto & texture = assets->textures.emplace_back(textureReader.read(path, storageType));
+    auto readTexture = textureReader.read(path, storageType, colorSpace);
 
-    textureCache->registerTexture(texture, path);
+    auto & storedTexture = assets->textures.emplace_back(std::move(readTexture));
 
-    return texture;
+    textureCache->registerTexture(storedTexture, path);
+
+    return storedTexture;
 }
 
 } // namespace ape

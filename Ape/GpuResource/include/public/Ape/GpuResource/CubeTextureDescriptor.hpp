@@ -1,6 +1,8 @@
 #pragma once
 
-#include <Ape/GpuResource/TextureDescriptor.hpp>
+#include <Ape/GpuResource/CubeTextureImageSet.hpp>
+#include <Ape/GpuResource/TextureInternalFormat.hpp>
+#include <Ape/GpuResource/TextureWrapping.hpp>
 
 namespace ape
 {
@@ -11,34 +13,22 @@ class CubeTextureDescriptor
 public:
 
     CubeTextureDescriptor(
-        TextureDescriptor right,
-        TextureDescriptor left,
-        TextureDescriptor top,
-        TextureDescriptor bottom,
-        TextureDescriptor front,
-        TextureDescriptor back)
-        : right{std::move(right)}
-        , left{std::move(left)}
-        , top{std::move(top)}
-        , bottom{std::move(bottom)}
-        , front{std::move(front)}
-        , back{std::move(back)}
+        CubeTextureImageSet const & imageSet,
+        TextureInternalFormat const internalFormat,
+        TextureWrapping const wrapping)
+        : imageSet{imageSet}
+        , internalFormat{internalFormat}
+        , wrapping{wrapping}
     {
     }
 
 public:
 
-    TextureDescriptor right;
+    CubeTextureImageSet imageSet;
 
-    TextureDescriptor left;
+    TextureInternalFormat internalFormat;
 
-    TextureDescriptor top;
-
-    TextureDescriptor bottom;
-
-    TextureDescriptor front;
-
-    TextureDescriptor back;
+    TextureWrapping wrapping;
 
 };
 

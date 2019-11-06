@@ -36,7 +36,7 @@ public:
     explicit Impl(bool const enableDebugOutput)
         : gateway{4, 5, enableDebugOutput}
     {
-        skyboxSelector.activateSkybox(3);
+        skyboxSelector.activateSkybox(4);
 
         effectSelector.activateEffect(4);
     }

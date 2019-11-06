@@ -14,18 +14,19 @@ namespace
 auto makeDepthMapTexture(Size<int> const & size)
     -> Texture
 {
-    auto const descriptor = TextureDescriptor{
+    auto const image = TextureImage{
+        nullptr,
         size,
         TextureImageFormat::depth,
+        PixelType::floatingPoint};
+
+    auto const descriptor = TextureDescriptor{
+        image,
         TextureInternalFormat::depth32,
-        PixelType::floatingPoint,
-        nullptr};
-    
-    auto const wrapping = TextureWrapping::clampToEdge;
+        TextureWrapping::clampToEdge,
+        TextureStorageType::immutable};
 
-    auto const storageType = TextureStorageType::immutable;
-
-    return Texture{descriptor, wrapping, storageType};
+    return Texture{descriptor};
 }
 
 auto makeDepthMapFrameBuffer(Texture & depthMapTexture)

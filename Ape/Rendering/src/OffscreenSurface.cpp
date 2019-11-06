@@ -14,18 +14,19 @@ namespace
 auto makeColorBuffer(Size<int> const & size)
     -> Texture
 {
-    auto const descriptor = TextureDescriptor{
+    auto const image = TextureImage{
+        nullptr,
         size,
         TextureImageFormat::rgb,
-        TextureInternalFormat::rgb8,
-        PixelType::unsignedByte,
-        nullptr};
+        PixelType::unsignedByte};
 
-    auto const wrapping = TextureWrapping::clampToEdge;
+    auto const descriptor = TextureDescriptor{
+        image,
+        TextureInternalFormat::srgb8,
+        TextureWrapping::clampToEdge,
+        TextureStorageType::modifiable};
 
-    auto const storageType = TextureStorageType::modifiable;
-
-    return Texture{descriptor, wrapping, storageType};
+    return Texture{descriptor};
 }
 
 auto makeDepthAndStencilBuffer(Size<int> const & size)

@@ -8,6 +8,8 @@
 #include <string>
 #include <vector>
 
+enum class ColorSpace;
+
 enum aiTextureType : int;
 
 struct aiMaterial;
@@ -53,7 +55,10 @@ private:
         std::filesystem::path const & directory) const
         -> std::vector<Texture const *>;
 
-    auto importTexture(std::filesystem::path const & path) const
+    auto getOrReadTexture(std::filesystem::path const & path, ColorSpace const colorSpace) const
+        -> Texture const &;
+
+    auto readAndStoreTexture(std::filesystem::path const & path, ColorSpace const colorSpace) const
         -> Texture const &;
 
 private:

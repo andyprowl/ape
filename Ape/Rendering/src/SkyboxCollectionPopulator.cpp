@@ -38,14 +38,16 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 {
     for (auto const & entry : std::filesystem::recursive_directory_iterator{skyboxFolder})
     {
-        if (isCubeFaceBackTextureFile(entry))
+        if (!isCubeFaceBackTextureFile(entry))
         {
-            auto const storageType = TextureStorageType::immutable;
-
-            auto cubeTexture = textureReader.readCubeTexture(entry.path(), storageType);
-
-            collection->addSkybox(std::move(cubeTexture));
+            continue;
         }
+
+        auto const folder = entry.path().parent_path();
+
+        auto skybox = textureReader.read(folder, ColorSpace::perceptual);
+
+        collection->addSkybox(std::move(skybox));
     }
 }
 

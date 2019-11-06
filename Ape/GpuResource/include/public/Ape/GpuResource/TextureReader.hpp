@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Ape/GpuResource/FileFinder.hpp>
+#include <Ape/GpuResource/ColorSpace.hpp>
 #include <Ape/GpuResource/CubeTexture.hpp>
+#include <Ape/GpuResource/FileFinder.hpp>
 #include <Ape/GpuResource/Texture.hpp>
 #include <Ape/GpuResource/TextureStorageType.hpp>
 
@@ -15,25 +16,13 @@ namespace ape
 
 enum class CubeTextureFace;
 
-class CouldNotFindTextureFile : public std::logic_error
+class CouldNotFindImageFile : public std::logic_error
 {
 
 public:
 
-    explicit CouldNotFindTextureFile(std::filesystem::path const & path)
-        : logic_error{"The texture file '" + path.string() + "' was not found"}
-    {
-    }
-
-};
-
-class CouldNotReadTexture : public std::logic_error
-{
-
-public:
-
-    explicit CouldNotReadTexture(std::filesystem::path const & path)
-        : logic_error{"Failed to read texture file '" + path.string() + "'"}
+    explicit CouldNotFindImageFile(std::filesystem::path const & path)
+        : logic_error{"The image file '" + path.string() + "' was not found"}
     {
     }
 
@@ -48,27 +37,16 @@ public:
 
     explicit TextureReader(std::vector<std::filesystem::path> searchPaths);
 
-    auto read(std::filesystem::path const & path, TextureStorageType storageType) const
+    auto read(
+        std::filesystem::path const & path,
+        TextureStorageType storageType,
+        ColorSpace imageColorSpace) const
         -> Texture;
-
-    auto readCubeTexture(
-        std::filesystem::path const & facePath,
-        TextureStorageType const storageType) const
-        -> CubeTexture;
 
     auto getSearchPaths() const
         -> std::vector<std::filesystem::path>;
 
 private:
-
-    class CubeTextureFacePathProvider;
-
-private:
-
-    auto readCubeTextureFaceDescriptor(
-        CubeTextureFace face,
-        CubeTextureFacePathProvider const & pathProvider) const
-        -> TextureDescriptor;
 
     auto resolveToPathOfExistingFile(std::filesystem::path const & path) const
         -> std::filesystem::path;

@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Ape/GpuResource/PixelType.hpp>
-#include <Ape/GpuResource/TextureImageFormat.hpp>
+#include <Ape/GpuResource/TextureImage.hpp>
 #include <Ape/GpuResource/TextureInternalFormat.hpp>
+#include <Ape/GpuResource/TextureStorageType.hpp>
+#include <Ape/GpuResource/TextureWrapping.hpp>
 
 #include <Foundational/Mathematics/Size.hpp>
 
 #include <cstddef>
 #include <stdexcept>
-#include <string>
 
 namespace ape
 {
@@ -19,30 +19,26 @@ class TextureDescriptor
 public:
 
     TextureDescriptor(
-        Size<int> const size,
-        TextureImageFormat imageFormat,
-        TextureInternalFormat internalFormat,
-        PixelType const pixelType,
-        std::byte * const bytes)
-        : size{size}
-        , imageFormat{imageFormat}
+        TextureImage const & image,
+        TextureInternalFormat const internalFormat,
+        TextureWrapping const wrapping,
+        TextureStorageType const storageType)
+        : image{image}
         , internalFormat{internalFormat}
-        , pixelType{pixelType}
-        , bytes{bytes}
+        , wrapping{wrapping}
+        , storageType{storageType}
     {
     }
 
 public:
 
-    Size<int> size;
-
-    TextureImageFormat imageFormat;
+    TextureImage image;
 
     TextureInternalFormat internalFormat;
 
-    PixelType pixelType;
+    TextureWrapping wrapping;
 
-    std::byte * bytes;
+    TextureStorageType storageType;
 
 };
 

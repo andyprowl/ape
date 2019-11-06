@@ -3,6 +3,9 @@
 namespace ape
 {
 
+enum class ColorSpace;
+enum class TextureImageFormat;
+
 using GLenum = unsigned int;
 
 enum class TextureInternalFormat
@@ -26,6 +29,9 @@ auto convertToOpenGLInternalFormat(TextureInternalFormat format)
     -> GLenum;
 
 auto convertFromOpenGLInternalFormat(GLenum format)
+    -> TextureInternalFormat;
+
+auto determineInternalFormat(TextureImageFormat format, ColorSpace colorSpace)
     -> TextureInternalFormat;
 
 } // namespace ape

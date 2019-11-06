@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/GpuResource/TextureReader.hpp>
+#include <Ape/GpuResource/CubeTextureReader.hpp>
 
 #include <filesystem>
 
@@ -23,7 +23,7 @@ private:
 
     SkyboxCollection * collection;
 
-    TextureReader textureReader;
+    CubeTextureReader textureReader;
 
 };
 

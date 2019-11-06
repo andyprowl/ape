@@ -53,7 +53,7 @@ auto ShaderReader::getSearchPaths() const
 auto ShaderReader::resolveToPathOfExistingFile(std::filesystem::path const & path) const
     -> std::filesystem::path
 {
-    auto existingFilePath = fileFinder.findExistingFile(path);
+    auto existingFilePath = fileFinder.findExistingPath(path);
 
     if (!existingFilePath)
     {

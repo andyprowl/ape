@@ -14,10 +14,7 @@ class Texture
 
 public:
 
-    Texture(
-        TextureDescriptor const & descriptor,
-        TextureWrapping wrapping,
-        TextureStorageType storageType);
+    explicit Texture(TextureDescriptor const & descriptor);
 
     auto getId() const
         -> GpuResource::Id;

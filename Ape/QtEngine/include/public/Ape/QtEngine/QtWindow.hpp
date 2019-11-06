@@ -131,6 +131,10 @@ protected:
         -> void override;
 
     // virtual (from QOpenGLWidget)
+    auto resizeEvent(QResizeEvent * e)
+        -> void override;
+
+    // virtual (from QOpenGLWidget)
     auto closeEvent(QCloseEvent * e)
         -> void override;
 

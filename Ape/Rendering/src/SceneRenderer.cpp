@@ -53,6 +53,8 @@ SceneRenderer::SceneRenderer(
     // Culling is not appropriate for all shapes. This should be done conditionally in the future.
     // However, when appropriate, it will save at least 50% of fragment shader calls.
     glEnable(GL_CULL_FACE);
+
+    glEnable(GL_FRAMEBUFFER_SRGB);
 }
 
 auto SceneRenderer::render()

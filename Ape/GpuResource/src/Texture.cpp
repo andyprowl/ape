@@ -12,10 +12,10 @@ namespace ape
 namespace
 {
 
-auto setTextureWrapping(TextureWrapping const wrapping)
+auto setTextureWrapping(TextureDescriptor const & descriptor)
     -> void
 {
-    auto const wrappingMode = convertToOpenGLTextureWrapping(wrapping);
+    auto const wrappingMode = convertToOpenGLTextureWrapping(descriptor.wrapping);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingMode);
 
@@ -29,76 +29,71 @@ auto setTextureWrapping(TextureWrapping const wrapping)
 auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
     -> void
 {
-    auto const imageFormat = convertToOpenGLImageFormat(descriptor.imageFormat);
+    auto const imageFormat = convertToOpenGLImageFormat(descriptor.image.format);
 
     auto const internalFormat = convertToOpenGLInternalFormat(descriptor.internalFormat);
 
-    auto const pixelType = convertToOpenGLPixelType(descriptor.pixelType);
+    auto const pixelType = convertToOpenGLPixelType(descriptor.image.pixelType);
 
     glTexStorage2D(
         GL_TEXTURE_2D,
         1,
         internalFormat,
-        descriptor.size.width,
-        descriptor.size.height);
+        descriptor.image.size.width,
+        descriptor.image.size.height);
 
-    if (descriptor.bytes != nullptr)
+    if (descriptor.image.bytes != nullptr)
     {
         glTexSubImage2D(
             GL_TEXTURE_2D,
             0,
             0,
             0,
-            descriptor.size.width,
-            descriptor.size.height,
+            descriptor.image.size.width,
+            descriptor.image.size.height,
             imageFormat,
             pixelType,
-            descriptor.bytes);
+            descriptor.image.bytes);
     }
 }
 
 auto setMutableTextureImageData(TextureDescriptor const & descriptor)
     -> void
 {
-    auto const imageFormat = convertToOpenGLImageFormat(descriptor.imageFormat);
+    auto const imageFormat = convertToOpenGLImageFormat(descriptor.image.format);
 
     auto const internalFormat = convertToOpenGLInternalFormat(descriptor.internalFormat);
 
-    auto const pixelType = convertToOpenGLPixelType(descriptor.pixelType);
+    auto const pixelType = convertToOpenGLPixelType(descriptor.image.pixelType);
 
     glTexImage2D(
         GL_TEXTURE_2D,
         0,
         internalFormat,
-        descriptor.size.width,
-        descriptor.size.height,
+        descriptor.image.size.width,
+        descriptor.image.size.height,
         0,
         imageFormat,
         pixelType,
-        descriptor.bytes);
+        descriptor.image.bytes);
 }
 
-auto setTextureImageData(
-    TextureDescriptor const & descriptor,
-    TextureStorageType const storageType)
+auto setTextureImageData(TextureDescriptor const & descriptor)
     -> void
 {
-    if (storageType == TextureStorageType::modifiable)
+    if (descriptor.storageType == TextureStorageType::modifiable)
     {
         setMutableTextureImageData(descriptor);
     }
     else
     {
-        assert(storageType == TextureStorageType::immutable);
+        assert(descriptor.storageType == TextureStorageType::immutable);
 
         setImmutableTextureImageData(descriptor);
     }
 }
 
-auto makeOpenGLTextureObject(
-    TextureDescriptor const & descriptor,
-    TextureWrapping const wrapping,
-    TextureStorageType const storageType)
+auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
     -> GpuResource
 {
     auto textureId = GpuResource::Id{};
@@ -107,9 +102,9 @@ auto makeOpenGLTextureObject(
 
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    setTextureWrapping(wrapping);
+    setTextureWrapping(descriptor);
 
-    setTextureImageData(descriptor, storageType);
+    setTextureImageData(descriptor);
 
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -118,16 +113,13 @@ auto makeOpenGLTextureObject(
 
 } // unnamed namespace
 
-Texture::Texture(
-    TextureDescriptor const & descriptor,
-    TextureWrapping const wrapping,
-    TextureStorageType const storageType)
-    : resource{makeOpenGLTextureObject(descriptor, wrapping, storageType)}
-    , size{descriptor.size}
+Texture::Texture(TextureDescriptor const & descriptor)
+    : resource{makeOpenGLTextureObject(descriptor)}
+    , size{descriptor.image.size}
     , internalFormat{descriptor.internalFormat}
-    , imageFormat{descriptor.imageFormat}
-    , pixelType{descriptor.pixelType}
-    , wrapping{wrapping}
+    , imageFormat{descriptor.image.format}
+    , pixelType{descriptor.image.pixelType}
+    , wrapping{descriptor.wrapping}
 {
 }
 

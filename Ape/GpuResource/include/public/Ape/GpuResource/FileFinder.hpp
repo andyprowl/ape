@@ -18,15 +18,15 @@ public:
     auto getSearchPaths() const
         -> std::vector<std::filesystem::path>;
 
-    auto findExistingFile(std::filesystem::path const & path) const
+    auto findExistingPath(std::filesystem::path const & path) const
         -> std::optional<std::filesystem::path>;
 
 private:
 
-    auto findFileFromAbsolutePath(std::filesystem::path const & path) const
+    auto findFromAbsolutePath(std::filesystem::path const & path) const
         -> std::optional<std::filesystem::path>;
 
-    auto findFileFromRelativePath(std::filesystem::path const & path) const
+    auto findFromRelativePath(std::filesystem::path const & path) const
         -> std::optional<std::filesystem::path>;
 
 private:

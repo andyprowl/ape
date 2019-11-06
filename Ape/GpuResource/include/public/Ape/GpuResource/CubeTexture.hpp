@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Ape/GpuResource/GpuResource.hpp>
 #include <Ape/GpuResource/CubeTextureDescriptor.hpp>
+#include <Ape/GpuResource/GpuResource.hpp>
 #include <Ape/GpuResource/TextureWrapping.hpp>
 
 namespace ape
@@ -14,10 +14,7 @@ class CubeTexture
 
 public:
 
-    CubeTexture(
-        CubeTextureDescriptor const & descriptor,
-        TextureWrapping wrapping,
-        TextureStorageType storageType);
+    explicit CubeTexture(CubeTextureDescriptor const & descriptor);
 
     auto getId() const
         -> GpuResource::Id;

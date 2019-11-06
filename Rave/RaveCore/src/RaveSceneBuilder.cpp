@@ -555,20 +555,25 @@ auto StatefulSceneBuilder::createPointLights()
     {
         auto const position = positions[i];
 
-        createPointLight(position); 
+        auto & light = createPointLight(position);
+
+        if (i >= 2)
+        {
+            light.turnOff();
+        }
     }
 }
 
 auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position)
     -> ape::PointLight &
 {
-    auto const ambient = glm::vec3{0.2f, 0.2f, 0.2f};
+    auto const ambient = glm::vec3{0.1f, 0.1f, 0.1f};
 
-    auto const diffuse = glm::vec3{0.8f, 0.5f, 0.7f};
+    auto const diffuse = glm::vec3{0.4f, 0.3f, 0.6f};
 
     auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
 
-    auto const attenuation = ape::Attenuation{1.0f, 0.09f, 0.032f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.06f};
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
@@ -621,7 +626,7 @@ auto StatefulSceneBuilder::createSpotLight(
 {
     auto const cutoff = ape::SpotLight::CutoffAngle{glm::radians(10.0f), glm::radians(20.0f)};
 
-    auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.0052f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.005f, 0.062f};
 
     auto & lighting = scene.getLighting();
 

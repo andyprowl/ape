@@ -295,6 +295,16 @@ auto QtWindow::wheelEvent(QWheelEvent * const e)
     onMouseWheel.fire(Offset<int>{deltaX, deltaY});
 }
 
+auto QtWindow::resizeEvent(QResizeEvent * const e)
+    -> void
+{
+    auto const newSize = e->size();
+
+    onResize.fire(Size<int>{newSize.width(), newSize.height()});
+
+    QOpenGLWidget::resizeEvent(e);
+}
+
 // virtual (from QOpenGLWidget)
 auto QtWindow::closeEvent(QCloseEvent * const e)
     -> void
@@ -343,7 +353,7 @@ auto QtWindow::registerAboutToResizeEventHandler() const
 {
     return connect(this, &QtWindow::aboutToResize, [this] 
     {
-        onResize.fire(getSize());
+        //onResize.fire(getSize());
     });
 }
 

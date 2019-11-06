@@ -1,11 +1,17 @@
 #include <Ape/GpuResource/TextureInternalFormat.hpp>
 
+#include <Ape/GpuResource/ColorSpace.hpp>
+#include <Ape/GpuResource/TextureImageFormat.hpp>
+
 #include <glad/glad.h>
 
 #include <cassert>
 #include <unordered_map>
 
 namespace ape
+{
+
+namespace
 {
 
 auto const internalFormatMap = std::unordered_map<TextureInternalFormat, GLenum>{
@@ -21,6 +27,16 @@ auto const internalFormatMap = std::unordered_map<TextureInternalFormat, GLenum>
     {TextureInternalFormat::depth32f, GL_DEPTH_COMPONENT32F},
     {TextureInternalFormat::depth24Stencil8, GL_DEPTH24_STENCIL8},
     {TextureInternalFormat::depth32fStencil8, GL_DEPTH32F_STENCIL8}};
+
+auto const linearSpaceFormatMap = std::unordered_map<TextureImageFormat, TextureInternalFormat>{
+    {TextureImageFormat::rgb, TextureInternalFormat::rgb8},
+    {TextureImageFormat::rgba, TextureInternalFormat::rgba8}};
+
+auto const gammaSpaceFormatMap = std::unordered_map<TextureImageFormat, TextureInternalFormat>{
+    {TextureImageFormat::rgb, TextureInternalFormat::srgb8},
+    {TextureImageFormat::rgba, TextureInternalFormat::srgba8}};
+
+} // unnamed namespace
 
 auto convertToOpenGLInternalFormat(TextureInternalFormat const format)
     -> GLenum
@@ -51,6 +67,21 @@ auto convertFromOpenGLInternalFormat(GLenum const format)
     assert(false);
 
     return TextureInternalFormat::unknown;
+}
+
+auto determineInternalFormat(TextureImageFormat const format, ColorSpace const imageColorSpace)
+    -> TextureInternalFormat
+{
+    if (imageColorSpace == ColorSpace::linear)
+    {
+        return linearSpaceFormatMap.at(format);
+    }
+    else
+    {
+        assert(imageColorSpace == ColorSpace::perceptual);
+
+        return gammaSpaceFormatMap.at(format);
+    }
 }
 
 } // namespace ape

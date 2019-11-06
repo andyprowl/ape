@@ -14,20 +14,20 @@ auto FileFinder::getSearchPaths() const
     return searchPaths;
 }
 
-auto FileFinder::findExistingFile(std::filesystem::path const & path) const
+auto FileFinder::findExistingPath(std::filesystem::path const & path) const
     -> std::optional<std::filesystem::path>
 {
     if (path.is_absolute())
     {
-        return findFileFromAbsolutePath(path);
+        return findFromAbsolutePath(path);
     }
     else
     {
-        return findFileFromRelativePath(path);
+        return findFromRelativePath(path);
     }
 }
 
-auto FileFinder::findFileFromAbsolutePath(std::filesystem::path const & path) const
+auto FileFinder::findFromAbsolutePath(std::filesystem::path const & path) const
     -> std::optional<std::filesystem::path>
 {
     if (std::filesystem::exists(path))
@@ -40,7 +40,7 @@ auto FileFinder::findFileFromAbsolutePath(std::filesystem::path const & path) co
     }
 }
 
-auto FileFinder::findFileFromRelativePath(std::filesystem::path const & path) const
+auto FileFinder::findFromRelativePath(std::filesystem::path const & path) const
     -> std::optional<std::filesystem::path>
 {
     for (auto const & searchPath : searchPaths)
