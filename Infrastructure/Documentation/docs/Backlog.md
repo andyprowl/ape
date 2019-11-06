@@ -1,14 +1,18 @@
+ - Gamma correction in Qt doesn't work: probably Qt creates a linear FBO!
  - Write tutorial/documentation on skyboxes
  - Write tutorial/documentation on gamma correction
+ - Complete implementation of shadow mapping
+  - Implement point light shadows
+  - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
+    application, not the VS plugin)
+ - Qt window resizing has stopped working again
+  - In fact it seems even going back to the commit that "fixed" it no longer works
  - Implement normal maps
   - Have AssetLoader read normal maps
   - Have shader apply normal maps
  - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
   - Remove duplication by extracting the template
   - Same redundancy for EffectCollection, SkyboxCollection
- - Implement gamma correction
-  - Support and use SRGB internal format for asset textures loaded from file
-  - Enable automatic SRGB conversion when writing offscreen texture to target framebuffer
  - Create depth of field effect
  - Unify the way GLFW windows and QT windows are created
   - Ideally, there should be a single "Engine" class
@@ -17,10 +21,6 @@
  - Figure out a good way of reducing duplication in effect shaders
  - Support wireframe rendering
  - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
- - Complete implementation of shadow mapping
-  - Implement point light shadows
-  - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
-    application, not the VS plugin)
  - callers of glViewport should do so through the Window object
  - Implement normal visualization through geometry shaders
  - (Re-)implement glowing based on view position and normal

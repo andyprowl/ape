@@ -78,9 +78,13 @@ auto makeQtWindow(ape::qt::QtGateway & gateway, QWidget & parent)
 
     auto format = QSurfaceFormat{};
 
+    format.setColorSpace(QSurfaceFormat::ColorSpace::sRGBColorSpace);
+
     format.setVersion(4, 5);
 
     widget->setFormat(format);
+
+    widget->setTextureFormat(GL_SRGB8_ALPHA8);
 
     return *widget;
 }
