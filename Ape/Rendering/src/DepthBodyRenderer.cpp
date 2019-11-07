@@ -55,7 +55,11 @@ auto DepthBodyRenderer::render(
 
     render(bodies, lighting.spot, lightingView.getSpotView(), target.getSpotMapping());
 
-    render(bodies, lighting.directional, lightingView.getDirectionalView(), target.getDirectionalMapping());
+    render(
+        bodies,
+        lighting.directional,
+        lightingView.getDirectionalView(),
+        target.getDirectionalMapping());
 }
 
 template<typename LightType>

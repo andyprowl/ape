@@ -2,8 +2,12 @@
  - Write tutorial/documentation on gamma correction
  - Complete implementation of shadow mapping
   - Implement point light shadows
+  - Tightly fit lighting view matrices to the scene
+  - Implement cascaded shadow maps at least for directional lights
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
+   - This has been worked around by allowing to turn off debug mode from command line
+  - Consider implementing (restoring?) PCF
  - Qt window resizing has stopped working again
   - In fact it seems even going back to the commit that "fixed" it no longer works
  - Implement normal maps
