@@ -1,8 +1,8 @@
 #version 450 core
 
-layout(triangles) in;
+layout (triangles) in;
 
-layout(triangle_strip, max_vertices = 16) out;
+layout (triangle_strip, max_vertices = 16) out;
 
 uniform float lineWidth = 0.04;
 

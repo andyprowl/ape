@@ -7,12 +7,12 @@
 namespace ape
 {
 
-class DepthShaderProgram : public ShaderProgram
+class MonoDepthShaderProgram : public ShaderProgram
 {
 
 public:
 
-    DepthShaderProgram();
+    MonoDepthShaderProgram();
 
 public:
 

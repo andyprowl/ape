@@ -8,10 +8,11 @@
 
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
-#include <Ape/Rendering/DepthShaderProgram.hpp>
 #include <Ape/Rendering/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/MonoDepthShaderProgram.hpp>
+#include <Ape/Rendering/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
@@ -63,7 +64,9 @@ private:
 
     ape::StandardShaderProgram standardShader;
 
-    ape::DepthShaderProgram depthShader;
+    ape::MonoDepthShaderProgram monoDepthShader;
+
+    ape::OmniDepthShaderProgram omniDepthShader;
 
     ape::WireframeShaderProgram wireframeShader;
 
@@ -83,7 +86,9 @@ private:
     //std::unique_ptr<ape::ShapeBufferObjectRenderer> shapeRenderer{
     //  std::make_unique<ape::ShapeBufferObjectRenderer>()};
 
-    ape::DepthBodyRenderer depthBodyRenderer{depthShader, *shapeRenderer};
+    ape::DepthBodyRenderer depthBodyRenderer{
+        {monoDepthShader, *shapeRenderer},
+        {omniDepthShader, *shapeRenderer}};
 
     ape::StandardBodyRenderer standardBodyRenderer{standardShader, *shapeRenderer};
 

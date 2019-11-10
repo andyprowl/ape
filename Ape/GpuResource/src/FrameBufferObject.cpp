@@ -1,5 +1,6 @@
 #include <Ape/GpuResource/FrameBufferObject.hpp>
 
+#include <Ape/GpuResource/CubeTexture.hpp>
 #include <Ape/GpuResource/RenderBufferObject.hpp>
 #include <Ape/GpuResource/Texture.hpp>
 
@@ -103,6 +104,18 @@ auto FrameBufferObject::isComplete() const
     auto const status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 
     return (status == GL_FRAMEBUFFER_COMPLETE);
+}
+
+auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachment const attachment)
+    -> void
+{
+    auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const textureId = texture.getId();
+
+    auto const mipmapLevel = 0;
+
+    glFramebufferTexture(GL_FRAMEBUFFER, glAttachment, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment const attachment)

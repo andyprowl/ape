@@ -2,6 +2,8 @@ CreatePackage(Foundational)
 
 add_subdirectory(CompilerSupport)
 
+add_subdirectory(FileSystem)
+
 add_subdirectory(Mathematics)
 
 add_subdirectory(Meta)

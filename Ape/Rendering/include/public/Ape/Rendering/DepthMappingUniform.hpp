@@ -2,6 +2,7 @@
 
 #include <Ape/Rendering/DepthMapping.hpp>
 
+#include <Ape/GpuResource/CubeTextureUniform.hpp>
 #include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/TextureUniform.hpp>
@@ -27,8 +28,8 @@ public:
         ShaderProgram & program,
         std::string prefix,
         int const firstDepthMapUnit)
-        //: point{program, prefix + ".point"}
-        : spot{program, prefix + ".spot"}
+        : point{program, prefix + ".point"}
+        , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
         , maxNumOfLightsPerType{8}
         , firstDepthMapUnit{firstDepthMapUnit}
@@ -39,7 +40,7 @@ public:
     auto set(DepthMapping const & mapping)
         -> void
     {
-        //setPointMapping(mapping);
+        setPointMapping(mapping);
 
         setSpotMapping(mapping);
 
@@ -56,7 +57,7 @@ public:
 
 public:
 
-    //UnsizedVectorUniform<Uniform<Texture>> point;
+    UnsizedVectorUniform<Uniform<CubeTexture>> point;
 
     UnsizedVectorUniform<Uniform<Texture>> spot;
 
@@ -71,12 +72,10 @@ private:
 
         auto index = firstDepthMapUnit;
 
-        /*
         for (auto i = 0; i < maxNumOfLightsPerType; ++i)
         {
             point[i].bind(index++);
         }
-        */
 
         for (auto i = 0; i < maxNumOfLightsPerType; ++i)
         {
@@ -89,13 +88,11 @@ private:
         }
     }
 
-    /*
     auto setPointMapping(DepthMapping const & mapping)
         -> void
     {
         setTextures(mapping.getPointMapping(), point);
     }
-    */
 
     auto setSpotMapping(DepthMapping const & mapping)
         -> void
@@ -109,9 +106,10 @@ private:
         setTextures(mapping.getDirectionalMapping(), directional);
     }
 
+    template<typename DepthMapType, typename TextureType>
     auto setTextures(
-        std::vector<DepthMap> const & source,
-        UnsizedVectorUniform<Uniform<Texture>> & target)
+        std::vector<DepthMapType> const & source,
+        UnsizedVectorUniform<Uniform<TextureType>> & target)
         -> void
     {
         for (auto i = 0; i < static_cast<int>(source.size()); ++i)

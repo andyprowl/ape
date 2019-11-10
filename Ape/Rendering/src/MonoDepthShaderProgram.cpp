@@ -1,4 +1,4 @@
-#include <Ape/Rendering/DepthShaderProgram.hpp>
+#include <Ape/Rendering/MonoDepthShaderProgram.hpp>
 
 #include <Ape/GpuResource/ShaderBuilder.hpp>
 
@@ -13,12 +13,12 @@ auto buildDepthShader()
 {
     auto const builder = ShaderBuilder{{resourceFolder "/shaders"}};
 
-    return builder.buildProgram("Depth/Depth.Vertex.glsl", "Depth/Depth.Fragment.glsl");
+    return builder.buildProgram("Depth/Mono.Depth.Vertex.glsl", "Depth/Mono.Depth.Fragment.glsl");
 }
 
 } // unnamed namespace
 
-DepthShaderProgram::DepthShaderProgram()
+MonoDepthShaderProgram::MonoDepthShaderProgram()
     : ShaderProgram{buildDepthShader()}
     , lightTransformation{*this, "lightTransformation"}
 {

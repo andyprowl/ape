@@ -4,6 +4,7 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
+    Foundational::FileSystem
     Foundational::Mathematics
     Foundational::Meta)
 
@@ -13,4 +14,3 @@ AddPrivateDependencies(
     3rdParty::glm
     3rdParty::Stb
     Foundational::CompilerSupport)
-    

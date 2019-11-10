@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Ape/Rendering/DepthMap.hpp>
+#include <Ape/Rendering/OmniDepthMap.hpp>
+#include <Ape/Rendering/MonoDepthMap.hpp>
 
 #include <vector>
 
@@ -17,22 +18,22 @@ public:
     DepthMapping(Lighting const & lighting, Size<int> const & mapSize);
 
     auto getPointMapping()
-        -> std::vector<DepthMap> &;
+        -> std::vector<OmniDepthMap> &;
 
     auto getPointMapping() const
-        -> std::vector<DepthMap> const &;
+        -> std::vector<OmniDepthMap> const &;
 
     auto getSpotMapping() const
-        -> std::vector<DepthMap> const &;
+        -> std::vector<MonoDepthMap> const &;
 
     auto getSpotMapping()
-        -> std::vector<DepthMap> &;
+        -> std::vector<MonoDepthMap> &;
 
     auto getDirectionalMapping()
-        -> std::vector<DepthMap> &;
+        -> std::vector<MonoDepthMap> &;
 
     auto getDirectionalMapping() const
-        -> std::vector<DepthMap> const &;
+        -> std::vector<MonoDepthMap> const &;
 
 private:
 
@@ -40,11 +41,11 @@ private:
 
     Size<int> mapSize;
 
-    std::vector<DepthMap> directionalMapping;
+    std::vector<OmniDepthMap> pointMapping;
 
-    std::vector<DepthMap> spotMapping;
+    std::vector<MonoDepthMap> spotMapping;
 
-    std::vector<DepthMap> pointMapping;
+    std::vector<MonoDepthMap> directionalMapping;
 
 };
 

@@ -6,12 +6,12 @@
 namespace ape
 {
 
-class DepthMap
+class MonoDepthMap
 {
 
 public:
 
-    explicit DepthMap(Size<int> const & size);
+    explicit MonoDepthMap(Size<int> const & size);
 
     auto getTexture() const
         -> Texture const &;

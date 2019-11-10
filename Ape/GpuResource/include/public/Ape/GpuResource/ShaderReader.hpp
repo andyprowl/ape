@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/GpuResource/FileFinder.hpp>
+#include <Foundational/FileSystem/FileFinder.hpp>
 
 #include <filesystem>
 #include <stdexcept>

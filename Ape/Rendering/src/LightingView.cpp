@@ -11,9 +11,64 @@ namespace ape
 namespace
 {
 
-auto makeSpotView(SpotLight const & light, Size<int> const & viewSize)
+auto makePointLightDirectionView(
+    glm::vec3 const & position,
+    glm::vec3 const & direction,
+    glm::vec3 const & viewUp)
     -> glm::mat4
 {
+    // TODO: Is it correct not to compute the aspect ratio from the view's aspect ratio?
+    // (like we do for spot lights)
+    auto const aspectRatio = 1.0;
+
+    auto const fieldOfView = glm::radians(90.0f);
+
+    auto const nearPlaneDistance = 0.1f;
+    
+    auto const farPlaneDistance = 100.0f;
+
+    auto const camera = Camera{
+        CameraView::Placement{position, direction, viewUp},
+        PerspectiveProjection::Frustum{
+            fieldOfView,
+            aspectRatio,
+            nearPlaneDistance,
+            farPlaneDistance}};
+
+    return camera.getTransformation();
+}
+
+auto makePointLightView(PointLight const & light)
+    -> PointLightView
+{
+    auto const & position = light.getPosition();
+
+    // The choice of the "up" vectors is due to the OpenGL's convention for cube maps.
+    // See https://stackoverflow.com/a/11694336/1932150 for a convenient diagram.
+
+    return {
+        makePointLightDirectionView(position, {+1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}),
+        makePointLightDirectionView(position, {-1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}),
+        makePointLightDirectionView(position, {0.0f, +1.0f, 0.0f}, {0.0f, 0.0f, +1.0f}),
+        makePointLightDirectionView(position, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}),
+        makePointLightDirectionView(position, {0.0f, 0.0f, +1.0f}, {0.0f, -1.0f, 0.0f}),
+        makePointLightDirectionView(position, {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f})};
+}
+
+auto makePointLightView(Lighting const & lighting)
+    -> std::vector<PointLightView>
+{
+    return transform(lighting.point, [] (PointLight const & light)
+    {
+        return makePointLightView(light);
+    });
+}
+
+auto makeSpotLightView(SpotLight const & light, Size<int> const & viewSize)
+    -> glm::mat4
+{
+    // TODO: Is it correct to compute the aspect ratio from the view's aspect ratio?
+    // (unlike for point lights where we use a fixed aspect ratio of 1.0)
     auto const aspectRatio = viewSize.width / static_cast<float>(viewSize.height);
 
     auto const fieldOfView = light.getCutoff().outer * 2.0f;
@@ -27,16 +82,16 @@ auto makeSpotView(SpotLight const & light, Size<int> const & viewSize)
     return camera.getTransformation();
 }
 
-auto makeSpotView(Lighting const & lighting, Size<int> const & viewSize)
+auto makeSpotLightView(Lighting const & lighting, Size<int> const & viewSize)
     -> std::vector<glm::mat4>
 {
     return transform(lighting.spot, [&viewSize] (SpotLight const & light)
     {
-        return makeSpotView(light, viewSize);
+        return makeSpotLightView(light, viewSize);
     });
 }
 
-auto makeDirectionalView(DirectionalLight const & light)
+auto makeDirectionalLightView(DirectionalLight const & light)
     -> glm::mat4
 {
     auto const nearPlane = 0.1f;
@@ -56,12 +111,12 @@ auto makeDirectionalView(DirectionalLight const & light)
     return camera.getTransformation();
 }
 
-auto makeDirectionalView(Lighting const & lighting)
+auto makeDirectionalLightView(Lighting const & lighting)
     -> std::vector<glm::mat4>
 {
     return transform(lighting.directional, [] (DirectionalLight const & light)
     {
-        return makeDirectionalView(light);
+        return makeDirectionalLightView(light);
     });
 }
 
@@ -70,8 +125,10 @@ auto makeDirectionalView(Lighting const & lighting)
 LightingView::LightingView(Lighting const & lighting, Size<int> const & viewSize)
     : lighting{&lighting}
     , viewSize{viewSize}
-    , spotView{makeSpotView(lighting, viewSize)}
-    , directionalView{makeDirectionalView(lighting)}
+    , pointView{makePointLightView(lighting)}
+    , spotView{makeSpotLightView(lighting, viewSize)}
+    , directionalView{makeDirectionalLightView(lighting)}
+    , pointLightChangeHandlerConnections{registerForPointLightChangeNotifications()}
     , spotLightChangeHandlerConnections{registerForSpotLightChangeNotifications()}
     , directionalLightChangeHandlerConnections{registerForDirectionalLightChangeNotifications()}
 {
@@ -83,10 +140,10 @@ auto LightingView::getLighting() const
     return *lighting;
 }
 
-auto LightingView::getDirectionalView() const
-    -> std::vector<glm::mat4> const &
+auto LightingView::getPointView() const
+    -> std::vector<PointLightView> const &
 {
-    return directionalView;
+    return pointView;
 }
 
 auto LightingView::getSpotView() const
@@ -95,10 +152,10 @@ auto LightingView::getSpotView() const
     return spotView;
 }
 
-auto LightingView::getPointView() const
+auto LightingView::getDirectionalView() const
     -> std::vector<glm::mat4> const &
 {
-    return pointView;
+    return directionalView;
 }
 
 auto LightingView::setViewSize(Size<int> const & newViewSize)
@@ -108,8 +165,17 @@ auto LightingView::setViewSize(Size<int> const & newViewSize)
 
     for (auto i = 0u; i < spotView.size(); ++i)
     {
-        spotView[i] = makeSpotView(lighting->spot[i], viewSize);
+        spotView[i] = makeSpotLightView(lighting->spot[i], viewSize);
     }
+}
+
+auto LightingView::registerForPointLightChangeNotifications()
+    -> std::vector<ScopedSignalConnection>
+{
+    return transform(lighting->point, [this] (PointLight const & light)
+    {
+        return registerForLightChangeNotifications(light);
+    });
 }
 
 auto LightingView::registerForSpotLightChangeNotifications()
@@ -140,12 +206,20 @@ auto LightingView::registerForLightChangeNotifications(LightType const & light)
     });
 }
 
+auto LightingView::udpateLightView(PointLight const & light)
+    -> void
+{
+    auto const index = std::distance(lighting->point.data(), &light);
+
+    pointView[index] = makePointLightView(light);
+}
+
 auto LightingView::udpateLightView(SpotLight const & light)
     -> void
 {
     auto const index = std::distance(lighting->spot.data(), &light);
 
-    spotView[index] = makeSpotView(light, viewSize);
+    spotView[index] = makeSpotLightView(light, viewSize);
 }
 
 auto LightingView::udpateLightView(DirectionalLight const & light)
@@ -153,7 +227,7 @@ auto LightingView::udpateLightView(DirectionalLight const & light)
 {
     auto const index = std::distance(lighting->directional.data(), &light);
 
-    directionalView[index] = makeDirectionalView(light);
+    directionalView[index] = makeDirectionalLightView(light);
 }
 
 } // namespace ape

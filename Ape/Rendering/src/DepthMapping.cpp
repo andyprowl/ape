@@ -10,13 +10,22 @@ namespace ape
 namespace
 {
 
-template<typename LightContainer>
-auto makeDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
-    -> std::vector<DepthMap>
+auto makePointLightDepthMapping(std::vector<PointLight> const & lights, Size<int> const & mapSize)
+    -> std::vector<OmniDepthMap>
 {
     return transform(lights, [&mapSize] (auto const & /*light*/)
     {
-        return DepthMap{mapSize};
+        return OmniDepthMap{mapSize};
+    });
+}
+
+template<typename LightContainer>
+auto makeOrientedLightDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
+    -> std::vector<MonoDepthMap>
+{
+    return transform(lights, [&mapSize] (auto const & /*light*/)
+    {
+        return MonoDepthMap{mapSize};
     });
 }
 
@@ -25,44 +34,44 @@ auto makeDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
 DepthMapping::DepthMapping(Lighting const & lighting, Size<int> const & mapSize)
     : lighting{&lighting}
     , mapSize{mapSize}
-    , pointMapping{makeDepthMapping(lighting.point, mapSize)}
-    , spotMapping{makeDepthMapping(lighting.spot, mapSize)}
-    , directionalMapping{makeDepthMapping(lighting.directional, mapSize)}
+    , pointMapping{makePointLightDepthMapping(lighting.point, mapSize)}
+    , spotMapping{makeOrientedLightDepthMapping(lighting.spot, mapSize)}
+    , directionalMapping{makeOrientedLightDepthMapping(lighting.directional, mapSize)}
 {
 }
 
 auto DepthMapping::getPointMapping()
-    -> std::vector<DepthMap> &
+    -> std::vector<OmniDepthMap> &
 {
     return pointMapping;
 }
 
 auto DepthMapping::getPointMapping() const
-    -> std::vector<DepthMap> const &
+    -> std::vector<OmniDepthMap> const &
 {
     return pointMapping;
 }
 
 auto DepthMapping::getSpotMapping()
-    -> std::vector<DepthMap> &
+    -> std::vector<MonoDepthMap> &
 {
     return spotMapping;
 }
 
 auto DepthMapping::getSpotMapping() const
-    -> std::vector<DepthMap> const &
+    -> std::vector<MonoDepthMap> const &
 {
     return spotMapping;
 }
 
 auto DepthMapping::getDirectionalMapping()
-    -> std::vector<DepthMap> &
+    -> std::vector<MonoDepthMap> &
 {
     return directionalMapping;
 }
 
 auto DepthMapping::getDirectionalMapping() const
-    -> std::vector<DepthMap> const &
+    -> std::vector<MonoDepthMap> const &
 {
     return directionalMapping;
 }

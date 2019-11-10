@@ -600,6 +600,8 @@ auto StatefulSceneBuilder::createSpotLights()
 
     auto & light = createSpotLight({0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, colors.back()); 
 
+    light.turnOff();
+
     scene.playerFlashlight = &light;
 }
 

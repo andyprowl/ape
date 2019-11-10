@@ -138,8 +138,6 @@ struct Lighting
 struct LightingView
 {
 
-    //mat4 point[MAX_NUM_OF_POINT_LIGHTS];
-
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
     mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
@@ -149,7 +147,7 @@ struct LightingView
 struct DepthMapping
 {
 
-    //sampler2D point[MAX_NUM_OF_POINT_LIGHTS];
+    samplerCube point[MAX_NUM_OF_POINT_LIGHTS];
 
     sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
 
@@ -159,8 +157,6 @@ struct DepthMapping
 
 struct LightSpacePositioning
 {
-
-    //vec4 point[MAX_NUM_OF_POINT_LIGHTS];
 
     vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
@@ -199,6 +195,10 @@ void main()
     vertex.normal = normalize(transform.normal * normalAttribute);
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
+
+    // For point lights we do not need to compute the vertex position in light space.
+    // This is due to how omnidirectional shadow maps are implemented.
+    // We only need to do this for monodirectional shadow maps (spot and directional lights).
 
     for (int i = 0; i < lighting.spotArraySize; ++i)
     {

@@ -138,8 +138,6 @@ struct Lighting
 struct LightingView
 {
 
-    //mat4 point[MAX_NUM_OF_POINT_LIGHTS];
-
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
     mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
@@ -149,7 +147,7 @@ struct LightingView
 struct DepthMapping
 {
 
-    //sampler2D point[MAX_NUM_OF_POINT_LIGHTS];
+    samplerCube point[MAX_NUM_OF_POINT_LIGHTS];
 
     sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
 
@@ -159,8 +157,6 @@ struct DepthMapping
 
 struct LightSpacePositioning
 {
-
-    //vec4 point[MAX_NUM_OF_POINT_LIGHTS];
 
     vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
@@ -232,7 +228,10 @@ float sampleSingleShadowValue(vec3 depthMapPosition, sampler2D depthMap, float b
     return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }
 
-float calculateShadowFactor(vec3 lightDirection, vec4 lightSpacePosition, sampler2D depthMap)
+float calculateMonodirectionalShadowFactor(
+    vec3 lightDirection,
+    vec4 lightSpacePosition,
+    sampler2D depthMap)
 {
     vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
@@ -248,6 +247,24 @@ float calculateShadowFactor(vec3 lightDirection, vec4 lightSpacePosition, sample
     {
         return sampleSingleShadowValue(depthMapPosition, depthMap, bias);
     }
+}
+
+float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depthMap)
+{
+    // TODO: This can be different for each light! This is a hack.
+    // The far plane should either be passed a part of the light uniform or the algorithm should be
+    // changed to not make use of the far plane.
+    const float farPlaneDistance = 100.0;
+
+    vec3 lightToVertex = vertex.position - lightPosition;
+
+    float closestDepth = texture(depthMap, lightToVertex).r * farPlaneDistance;
+
+    float currentDepth = length(lightToVertex);
+
+    float bias = 0.0002;
+
+    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }
 
 vec3 computeAmbientLight(LightColor color)
@@ -324,9 +341,20 @@ vec3 computePointLighting()
     {
         PointLight light = lighting.point[i];
 
-        if (light.isTurnedOn)
+        if (!light.isTurnedOn)
         {
-            color += computePointLight(light);
+            continue;
+        }
+
+        float shadow = calculateOmnidirectionalShadowFactor(
+            light.position,
+            depthMapping.point[i]);
+
+        if (shadow > 0.0)
+        {
+            vec3 contribution = computePointLight(light);
+
+            color += shadow * contribution;
         }
     }
 
@@ -371,7 +399,7 @@ vec3 computeSpotLighting()
 
         vec4 lightSpacePosition = lightSpacePositioning.spot[i];
 
-        float shadow = calculateShadowFactor(
+        float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
             lightSpacePosition,
             depthMapping.spot[i]);
@@ -415,7 +443,7 @@ vec3 computeDirectionalLighting()
 
         vec4 lightSpacePosition = lightSpacePositioning.directional[i];
 
-        float shadow = calculateShadowFactor(
+        float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
             lightSpacePosition,
             depthMapping.directional[i]);

@@ -29,6 +29,11 @@ auto setTextureWrapping(TextureWrapping const wrapping)
 auto setTextureImageData(GLenum const target, TextureImage const & image)
     -> void
 {
+    if (image.bytes == nullptr)
+    {
+        return;
+    }
+
     auto const imageFormat = convertToOpenGLImageFormat(image.format);
 
     auto const pixelType = convertToOpenGLPixelType(image.pixelType);

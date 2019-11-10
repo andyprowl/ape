@@ -1,13 +1,26 @@
- - Write tutorial/documentation on skyboxes
+ - Extract "Lighting" project out of Rendering
+  - Should include both depth mapping and lighting stuff
+  - What about the standard renderer/shader?
  - Write tutorial/documentation on gamma correction
+ - Write tutorial/documentation on skyboxes
+ - Inversion effect no longer seems to work
+  - The image is extremely bright
+  - Is this related to gamma?
+  - I think it looked OK before we did omnidirectional shadow mapping
  - Complete implementation of shadow mapping
-  - Implement point light shadows
   - Tightly fit lighting view matrices to the scene
   - Implement cascaded shadow maps at least for directional lights
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
    - This has been worked around by allowing to turn off debug mode from command line
   - Consider implementing (restoring?) PCF
+ - F1 to rotate lights does not work in ApeStudio
+ - Performance has dropped a lot in ApeStudio, at least when not plugged to power
+  - Try profiling through NSight
+ - Shouldn't LightingView cameras have the aspect ratio of the depth map rather than the aspect
+   ratio of the display window?
+  - In particular for point light shadow maps, if vertical FOV is 90 and AR is not 1, we get a HFOV
+   which is greater than (or lower than) 90, which means redundant or insufficient view coverage
  - Qt window resizing has stopped working again
   - In fact it seems even going back to the commit that "fixed" it no longer works
  - Implement normal maps

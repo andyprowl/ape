@@ -6,6 +6,7 @@
 namespace ape
 {
 
+class CubeTexture;
 class RenderBufferObject;
 class Texture;
 
@@ -30,6 +31,9 @@ public:
         -> bool;
 
     auto attach(Texture const & texture, FrameBufferAttachment attachment)
+        -> void;
+
+    auto attach(CubeTexture const & texture, FrameBufferAttachment attachment)
         -> void;
 
     auto attach(RenderBufferObject const & renderBuffer, FrameBufferAttachment attachment)

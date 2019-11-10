@@ -2,9 +2,10 @@
 
 #include <Ape/GpuResource/ColorSpace.hpp>
 #include <Ape/GpuResource/CubeTexture.hpp>
-#include <Ape/GpuResource/FileFinder.hpp>
 #include <Ape/GpuResource/Texture.hpp>
 #include <Ape/GpuResource/TextureStorageType.hpp>
+
+#include <Foundational/FileSystem/FileFinder.hpp>
 
 #include <filesystem>
 #include <stdexcept>

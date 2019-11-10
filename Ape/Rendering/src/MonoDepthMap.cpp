@@ -1,4 +1,4 @@
-#include <Ape/Rendering/DepthMap.hpp>
+#include <Ape/Rendering/MonoDepthMap.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/GpuResource/TextureStorageType.hpp>
@@ -20,6 +20,7 @@ auto makeDepthMapTexture(Size<int> const & size)
         TextureImageFormat::depth,
         PixelType::floatingPoint};
 
+    // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = TextureDescriptor{
         image,
         TextureInternalFormat::depth32,
@@ -49,26 +50,26 @@ auto makeDepthMapFrameBuffer(Texture & depthMapTexture)
 
 } // unnamed namespace
 
-DepthMap::DepthMap(Size<int> const & size)
+MonoDepthMap::MonoDepthMap(Size<int> const & size)
     : texture{makeDepthMapTexture(size)}
     , frameBuffer{makeDepthMapFrameBuffer(texture)}
     , size{size}
 {
 }
 
-auto DepthMap::getTexture() const
+auto MonoDepthMap::getTexture() const
     -> Texture const &
 {
     return texture;
 }
 
-auto DepthMap::getFrameBuffer() const
+auto MonoDepthMap::getFrameBuffer() const
     -> FrameBufferObject const &
 {
     return frameBuffer;
 }
 
-auto DepthMap::getSize() const
+auto MonoDepthMap::getSize() const
     -> Size<int>
 {
     return size;

@@ -10,10 +10,11 @@
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtGateway.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
-#include <Ape/Rendering/DepthShaderProgram.hpp>
 #include <Ape/Rendering/EffectCollection.hpp>
 #include <Ape/Rendering/EffectSelector.hpp>
 #include <Ape/Rendering/LineStyleProvider.hpp>
+#include <Ape/Rendering/MonoDepthShaderProgram.hpp>
+#include <Ape/Rendering/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
 #include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
@@ -205,7 +206,9 @@ int main(int argc, char *argv[])
 
     auto standardShader = ape::StandardShaderProgram{};
 
-    auto depthShader = ape::DepthShaderProgram{};
+    auto monoDepthShader = ape::MonoDepthShaderProgram{};
+
+    auto omniDepthShader = ape::OmniDepthShaderProgram{};
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
@@ -233,7 +236,9 @@ int main(int argc, char *argv[])
     auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
     //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectRenderer>();
 
-    auto depthBodyRenderer1 = ape::DepthBodyRenderer{depthShader, *shapeRenderer1};
+    auto depthBodyRenderer1 = ape::DepthBodyRenderer{
+        {monoDepthShader, *shapeRenderer1},
+        {omniDepthShader, *shapeRenderer1}};
 
     auto standardBodyRenderer1 = ape::StandardBodyRenderer{standardShader, *shapeRenderer1};
 
@@ -293,7 +298,9 @@ int main(int argc, char *argv[])
 
     auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
 
-    auto depthBodyRenderer2 = ape::DepthBodyRenderer{depthShader, *shapeRenderer2};
+    auto depthBodyRenderer2 = ape::DepthBodyRenderer{
+        {monoDepthShader, *shapeRenderer2},
+        {omniDepthShader, *shapeRenderer2}};
 
     auto standardBodyRenderer2 = ape::StandardBodyRenderer{standardShader, *shapeRenderer2};
 
@@ -354,10 +361,12 @@ int main(int argc, char *argv[])
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
     // must be created in the corresponding renderer context.
     sceneView3.makeCurrent();
-     
+
     auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
 
-    auto depthBodyRenderer3 = ape::DepthBodyRenderer{depthShader, *shapeRenderer3};
+    auto depthBodyRenderer3 = ape::DepthBodyRenderer{
+        {monoDepthShader, *shapeRenderer3},
+        {omniDepthShader, *shapeRenderer3}};
 
     auto standardBodyRenderer3 = ape::StandardBodyRenderer{standardShader, *shapeRenderer3};
 
