@@ -1,7 +1,7 @@
-#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightSystemView.hpp>
 
 #include <Ape/Scene/Camera.hpp>
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 #include <Foundational/Range/Transform.hpp>
 
@@ -55,10 +55,10 @@ auto makePointLightView(PointLight const & light)
         makePointLightDirectionView(position, {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f})};
 }
 
-auto makePointLightView(Lighting const & lighting)
+auto makePointLightView(LightSystem const & lightSystem)
     -> std::vector<PointLightView>
 {
-    return transform(lighting.point, [] (PointLight const & light)
+    return transform(lightSystem.point, [] (PointLight const & light)
     {
         return makePointLightView(light);
     });
@@ -82,10 +82,10 @@ auto makeSpotLightView(SpotLight const & light, Size<int> const & viewSize)
     return camera.getTransformation();
 }
 
-auto makeSpotLightView(Lighting const & lighting, Size<int> const & viewSize)
+auto makeSpotLightView(LightSystem const & lightSystem, Size<int> const & viewSize)
     -> std::vector<glm::mat4>
 {
-    return transform(lighting.spot, [&viewSize] (SpotLight const & light)
+    return transform(lightSystem.spot, [&viewSize] (SpotLight const & light)
     {
         return makeSpotLightView(light, viewSize);
     });
@@ -111,10 +111,10 @@ auto makeDirectionalLightView(DirectionalLight const & light)
     return camera.getTransformation();
 }
 
-auto makeDirectionalLightView(Lighting const & lighting)
+auto makeDirectionalLightView(LightSystem const & lightSystem)
     -> std::vector<glm::mat4>
 {
-    return transform(lighting.directional, [] (DirectionalLight const & light)
+    return transform(lightSystem.directional, [] (DirectionalLight const & light)
     {
         return makeDirectionalLightView(light);
     });
@@ -122,82 +122,82 @@ auto makeDirectionalLightView(Lighting const & lighting)
 
 } // unnamed namespace
 
-LightingView::LightingView(Lighting const & lighting, Size<int> const & viewSize)
-    : lighting{&lighting}
+LightSystemView::LightSystemView(LightSystem const & lightSystem, Size<int> const & viewSize)
+    : lightSystem{&lightSystem}
     , viewSize{viewSize}
-    , pointView{makePointLightView(lighting)}
-    , spotView{makeSpotLightView(lighting, viewSize)}
-    , directionalView{makeDirectionalLightView(lighting)}
+    , pointView{makePointLightView(lightSystem)}
+    , spotView{makeSpotLightView(lightSystem, viewSize)}
+    , directionalView{makeDirectionalLightView(lightSystem)}
     , pointLightChangeHandlerConnections{registerForPointLightChangeNotifications()}
     , spotLightChangeHandlerConnections{registerForSpotLightChangeNotifications()}
     , directionalLightChangeHandlerConnections{registerForDirectionalLightChangeNotifications()}
 {
 }
 
-auto LightingView::getLighting() const
-    -> Lighting const &
+auto LightSystemView::getLighting() const
+    -> LightSystem const &
 {
-    return *lighting;
+    return *lightSystem;
 }
 
-auto LightingView::getPointView() const
+auto LightSystemView::getPointView() const
     -> std::vector<PointLightView> const &
 {
     return pointView;
 }
 
-auto LightingView::getSpotView() const
+auto LightSystemView::getSpotView() const
     -> std::vector<glm::mat4> const &
 {
     return spotView;
 }
 
-auto LightingView::getDirectionalView() const
+auto LightSystemView::getDirectionalView() const
     -> std::vector<glm::mat4> const &
 {
     return directionalView;
 }
 
-auto LightingView::setViewSize(Size<int> const & newViewSize)
+auto LightSystemView::setViewSize(Size<int> const & newViewSize)
     -> void
 {
     viewSize = newViewSize;
 
     for (auto i = 0u; i < spotView.size(); ++i)
     {
-        spotView[i] = makeSpotLightView(lighting->spot[i], viewSize);
+        spotView[i] = makeSpotLightView(lightSystem->spot[i], viewSize);
     }
 }
 
-auto LightingView::registerForPointLightChangeNotifications()
+auto LightSystemView::registerForPointLightChangeNotifications()
     -> std::vector<ScopedSignalConnection>
 {
-    return transform(lighting->point, [this] (PointLight const & light)
+    return transform(lightSystem->point, [this] (PointLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
 }
 
-auto LightingView::registerForSpotLightChangeNotifications()
+auto LightSystemView::registerForSpotLightChangeNotifications()
     -> std::vector<ScopedSignalConnection>
 {
-    return transform(lighting->spot, [this] (SpotLight const & light)
+    return transform(lightSystem->spot, [this] (SpotLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
 }
 
-auto LightingView::registerForDirectionalLightChangeNotifications()
+auto LightSystemView::registerForDirectionalLightChangeNotifications()
     -> std::vector<ScopedSignalConnection>
 {
-    return transform(lighting->directional, [this] (DirectionalLight const & light)
+    return transform(lightSystem->directional, [this] (DirectionalLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
 }
 
 template<typename LightType>
-auto LightingView::registerForLightChangeNotifications(LightType const & light)
+auto LightSystemView::registerForLightChangeNotifications(LightType const & light)
     -> ScopedSignalConnection
 {
     return light.onLightChanged.registerHandler([this, &light]
@@ -206,26 +206,26 @@ auto LightingView::registerForLightChangeNotifications(LightType const & light)
     });
 }
 
-auto LightingView::udpateLightView(PointLight const & light)
+auto LightSystemView::udpateLightView(PointLight const & light)
     -> void
 {
-    auto const index = std::distance(lighting->point.data(), &light);
+    auto const index = std::distance(lightSystem->point.data(), &light);
 
     pointView[index] = makePointLightView(light);
 }
 
-auto LightingView::udpateLightView(SpotLight const & light)
+auto LightSystemView::udpateLightView(SpotLight const & light)
     -> void
 {
-    auto const index = std::distance(lighting->spot.data(), &light);
+    auto const index = std::distance(lightSystem->spot.data(), &light);
 
     spotView[index] = makeSpotLightView(light, viewSize);
 }
 
-auto LightingView::udpateLightView(DirectionalLight const & light)
+auto LightSystemView::udpateLightView(DirectionalLight const & light)
     -> void
 {
-    auto const index = std::distance(lighting->directional.data(), &light);
+    auto const index = std::distance(lightSystem->directional.data(), &light);
 
     directionalView[index] = makeDirectionalLightView(light);
 }

@@ -118,7 +118,7 @@ struct DirectionalLight
 
 };
 
-struct Lighting
+struct LightSystem
 {
 
     PointLight point[MAX_NUM_OF_POINT_LIGHTS];
@@ -135,7 +135,7 @@ struct Lighting
 
 };
 
-struct LightingView
+struct LightSystemView
 {
 
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
@@ -178,9 +178,9 @@ uniform Transform transform;
 
 uniform Camera camera;
 
-uniform Lighting lighting;
+uniform LightSystem lightSystem;
 
-uniform LightingView lightingView;
+uniform LightSystemView lightSystemView;
 
 void main()
 {
@@ -200,13 +200,13 @@ void main()
     // This is due to how omnidirectional shadow maps are implemented.
     // We only need to do this for monodirectional shadow maps (spot and directional lights).
 
-    for (int i = 0; i < lighting.spotArraySize; ++i)
+    for (int i = 0; i < lightSystem.spotArraySize; ++i)
     {
-        lightSpacePositioning.spot[i] = lightingView.spot[i] * modelPosition;
+        lightSpacePositioning.spot[i] = lightSystemView.spot[i] * modelPosition;
     }
 
-    for (int i = 0; i < lighting.directionalArraySize; ++i)
+    for (int i = 0; i < lightSystem.directionalArraySize; ++i)
     {
-        lightSpacePositioning.directional[i] = lightingView.directional[i] * modelPosition;
+        lightSpacePositioning.directional[i] = lightSystemView.directional[i] * modelPosition;
     }
 }

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightSystemView.hpp>
 
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/VectorUniform.hpp>
@@ -11,12 +11,12 @@ namespace ape
 {
 
 template<>
-class Uniform<LightingView>
+class Uniform<LightSystemView>
 {
 
 public:
 
-    using ValueType = LightingView;
+    using ValueType = LightSystemView;
 
 public:
 
@@ -26,18 +26,18 @@ public:
     {
     }
 
-    auto set(ValueType const & lighting)
+    auto set(ValueType const & lightSystem)
         -> void
     {
-        spot = lighting.getSpotView();
+        spot = lightSystem.getSpotView();
 
-        directional = lighting.getDirectionalView();
+        directional = lightSystem.getDirectionalView();
     }
 
-    auto operator = (ValueType const & lighting)
+    auto operator = (ValueType const & lightSystem)
         -> Uniform &
     {
-        set(lighting);
+        set(lightSystem);
 
         return *this;
     }

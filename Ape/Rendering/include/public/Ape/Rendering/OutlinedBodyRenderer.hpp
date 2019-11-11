@@ -10,7 +10,7 @@ namespace ape
 
 class Body;
 class Camera;
-class Lighting;
+class LightSystem;
 class ShadowMapping;
 
 class OutlinedBodyRenderer
@@ -28,7 +28,7 @@ public:
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
-        Lighting const & lighting,
+        LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
         -> void;
 
@@ -37,7 +37,7 @@ private:
     auto performStandardRenderingAndFillStencilBuffer(
         BodyRange const & bodies,
         Camera const & camera,
-        Lighting const & lighting,
+        LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
         -> void;
 

@@ -118,7 +118,7 @@ struct DirectionalLight
 
 };
 
-struct Lighting
+struct LightSystem
 {
 
     PointLight point[MAX_NUM_OF_POINT_LIGHTS];
@@ -135,7 +135,7 @@ struct Lighting
 
 };
 
-struct LightingView
+struct LightSystemView
 {
 
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
@@ -174,9 +174,9 @@ uniform Camera camera;
 
 uniform Material material;
 
-uniform Lighting lighting;
+uniform LightSystem lightSystem;
 
-uniform LightingView lightingView;
+uniform LightSystemView lightSystemView;
 
 uniform DepthMapping depthMapping;
 
@@ -337,9 +337,9 @@ vec3 computePointLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.pointArraySize; ++i)
+    for (int i = 0; i < lightSystem.pointArraySize; ++i)
     {
-        PointLight light = lighting.point[i];
+        PointLight light = lightSystem.point[i];
 
         if (!light.isTurnedOn)
         {
@@ -388,9 +388,9 @@ vec3 computeSpotLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.spotArraySize; ++i)
+    for (int i = 0; i < lightSystem.spotArraySize; ++i)
     {
-        SpotLight light = lighting.spot[i];
+        SpotLight light = lightSystem.spot[i];
 
         if (!light.isTurnedOn)
         {
@@ -432,9 +432,9 @@ vec3 computeDirectionalLighting()
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lighting.directionalArraySize; ++i)
+    for (int i = 0; i < lightSystem.directionalArraySize; ++i)
     {
-        DirectionalLight light = lighting.directional[i];
+        DirectionalLight light = lightSystem.directional[i];
 
         if (!light.isTurnedOn)
         {

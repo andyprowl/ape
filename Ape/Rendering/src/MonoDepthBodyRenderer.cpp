@@ -2,7 +2,7 @@
 
 #include <Ape/Rendering/DepthMapping.hpp>
 #include <Ape/Rendering/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightSystemView.hpp>
 #include <Ape/Rendering/ShapeRenderer.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
@@ -11,7 +11,7 @@
 #include <Ape/Scene/Body.hpp>
 #include <Ape/Scene/BodyPart.hpp>
 #include <Ape/Scene/Camera.hpp>
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 #include <glad/glad.h>
 
@@ -45,45 +45,45 @@ MonoDepthBodyRenderer::MonoDepthBodyRenderer(
 
 auto MonoDepthBodyRenderer::render(
     BodySetView const & bodies,
-    LightingView const & lightingView,
+    LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
     auto const shaderBinder = bind(*shader);
 
-    renderSpotLightSetDepth(bodies, lightingView, target);
+    renderSpotLightSetDepth(bodies, lightSystemView, target);
 
-    renderDirectionalLightSetDepth(bodies, lightingView, target);
+    renderDirectionalLightSetDepth(bodies, lightSystemView, target);
 }
 
 auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
     BodySetView const & bodies,
-    LightingView const & lightingView,
+    LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
-    auto const & lighting = lightingView.getLighting();
+    auto const & lightSystem = lightSystemView.getLighting();
 
-    auto const & spotView = lightingView.getSpotView();
+    auto const & spotView = lightSystemView.getSpotView();
 
     auto & spotMapping = target.getSpotMapping();
 
-    renderLightSetDepth(bodies, lighting.spot, spotView, spotMapping);
+    renderLightSetDepth(bodies, lightSystem.spot, spotView, spotMapping);
 }
 
 auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     BodySetView const & bodies,
-    LightingView const & lightingView,
+    LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
-    auto const & lighting = lightingView.getLighting();
+    auto const & lightSystem = lightSystemView.getLighting();
 
-    auto const & directionalView = lightingView.getDirectionalView();
+    auto const & directionalView = lightSystemView.getDirectionalView();
 
     auto & directionalMapping = target.getDirectionalMapping();
 
-    renderLightSetDepth(bodies, lighting.directional, directionalView, directionalMapping);
+    renderLightSetDepth(bodies, lightSystem.directional, directionalView, directionalMapping);
 }
 
 template<typename LightType>

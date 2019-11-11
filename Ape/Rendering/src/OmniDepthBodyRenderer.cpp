@@ -1,7 +1,7 @@
 #include <Ape/Rendering/OmniDepthBodyRenderer.hpp>
 
 #include <Ape/Rendering/DepthMapping.hpp>
-#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightSystemView.hpp>
 #include <Ape/Rendering/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/ShapeRenderer.hpp>
 
@@ -11,7 +11,7 @@
 #include <Ape/Scene/Body.hpp>
 #include <Ape/Scene/BodyPart.hpp>
 #include <Ape/Scene/Camera.hpp>
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 #include <glad/glad.h>
 
@@ -45,7 +45,7 @@ OmniDepthBodyRenderer::OmniDepthBodyRenderer(
 
 auto OmniDepthBodyRenderer::render(
     BodySetView const & bodies,
-    LightingView const & lightingView,
+    LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
@@ -53,8 +53,8 @@ auto OmniDepthBodyRenderer::render(
     
     renderLightSetDepth(
         bodies,
-        lightingView.getLighting().point,
-        lightingView.getPointView(),
+        lightSystemView.getLighting().point,
+        lightSystemView.getPointView(),
         target.getPointMapping());
 }
 

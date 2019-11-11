@@ -591,9 +591,9 @@ auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position)
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
-    auto & lighting = scene.getLighting();
+    auto & lightSystem = scene.getLighting();
 
-    return lighting.point.emplace_back(position, attenuation, color, true);
+    return lightSystem.point.emplace_back(position, attenuation, color, true);
 }
 
 auto StatefulSceneBuilder::createSpotLights()
@@ -644,9 +644,9 @@ auto StatefulSceneBuilder::createSpotLight(
 
     auto const attenuation = ape::Attenuation{1.0f, 0.005f, 0.062f};
 
-    auto & lighting = scene.getLighting();
+    auto & lightSystem = scene.getLighting();
 
-    return lighting.spot.emplace_back(position, direction, cutoff, attenuation, color, true);
+    return lightSystem.spot.emplace_back(position, direction, cutoff, attenuation, color, true);
 }
 
 auto StatefulSceneBuilder::createDirectionalLights()

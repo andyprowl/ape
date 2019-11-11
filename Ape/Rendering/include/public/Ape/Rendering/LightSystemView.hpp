@@ -13,19 +13,19 @@ namespace ape
 {
 
 class DirectionalLight;
-class Lighting;
+class LightSystem;
 class PointLight;
 class SpotLight;
 
-class LightingView
+class LightSystemView
 {
 
 public:
 
-    LightingView(Lighting const & lighting, Size<int> const & viewSize);
+    LightSystemView(LightSystem const & lightSystem, Size<int> const & viewSize);
     
     auto getLighting() const
-        -> Lighting const &;
+        -> LightSystem const &;
 
     auto getPointView() const
         -> std::vector<PointLightView> const &;
@@ -65,7 +65,7 @@ private:
 
 private:
 
-    Lighting const * lighting;
+    LightSystem const * lightSystem;
 
     Size<int> viewSize;
 

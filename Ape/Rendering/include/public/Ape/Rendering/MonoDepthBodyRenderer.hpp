@@ -16,7 +16,7 @@ class BodyPart;
 class Camera;
 class DepthMapping;
 class MonoDepthShaderProgram;
-class LightingView;
+class LightSystemView;
 class Mesh;
 class ShapeRenderer;
 
@@ -33,7 +33,7 @@ public:
 
     auto render(
         BodySetView const & bodies,
-        LightingView const & lightingView,
+        LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 
@@ -41,13 +41,13 @@ private:
 
     auto renderSpotLightSetDepth(
         BodySetView const & bodies,
-        LightingView const & lightingView,
+        LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 
     auto renderDirectionalLightSetDepth(
         BodySetView const & bodies,
-        LightingView const & lightingView,
+        LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 

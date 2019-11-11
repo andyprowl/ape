@@ -13,7 +13,7 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
-class Lighting;
+class LightSystem;
 class Mesh;
 class ShadowMapping;
 class ShapeRenderer;
@@ -32,7 +32,7 @@ public:
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
-        Lighting const & lighting,
+        LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
         -> void;
 
@@ -43,7 +43,7 @@ private:
 
     auto setupInvariantUniforms(
         Camera const & camera,
-        Lighting const & lighting,
+        LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
         -> void;
 

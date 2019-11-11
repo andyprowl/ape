@@ -26,8 +26,8 @@ StandardShaderProgram::StandardShaderProgram()
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}
     , camera{*this, "camera"}
-    , lighting{*this, "lighting"}
-    , lightingView{*this, "lightingView"}
+    , lightSystem{*this, "lightSystem"}
+    , lightSystemView{*this, "lightSystemView"}
     , material{*this, "material", 0, 1}
     , depthMapping{*this, "depthMapping", 2}
     , useBlinnPhongModel{*this, "useBlinnPhongModel", true}

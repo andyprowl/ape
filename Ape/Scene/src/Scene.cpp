@@ -3,10 +3,10 @@
 namespace ape
 {
 
-Scene::Scene(std::vector<Body> bodies, std::vector<Camera> cameras, Lighting lighting)
+Scene::Scene(std::vector<Body> bodies, std::vector<Camera> cameras, LightSystem lightSystem)
     : bodies{std::move(bodies)}
     , cameras{std::move(cameras)}
-    , lighting{std::move(lighting)}
+    , lightSystem{std::move(lightSystem)}
 {
 }
 
@@ -94,15 +94,15 @@ auto Scene::addCamera(Camera camera)
 }
 
 auto Scene::getLighting()
-    -> Lighting &
+    -> LightSystem &
 {
-    return lighting;
+    return lightSystem;
 }
 
 auto Scene::getLighting() const
-    -> Lighting const &
+    -> LightSystem const &
 {
-    return lighting;
+    return lightSystem;
 }
 
 } // namespace ape

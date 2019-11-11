@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/DepthMapping.hpp>
-#include <Ape/Rendering/LightingView.hpp>
+#include <Ape/Rendering/LightSystemView.hpp>
 
 namespace ape
 {
@@ -11,15 +11,15 @@ class ShadowMapping
 
 public:
 
-    ShadowMapping(Lighting const & lighting, Size<int> const & mapSize)
-        : lightingView{lighting, mapSize}
-        , depthMapping{lighting, mapSize}
+    ShadowMapping(LightSystem const & lightSystem, Size<int> const & mapSize)
+        : lightSystemView{lightSystem, mapSize}
+        , depthMapping{lightSystem, mapSize}
     {
     }
 
 public:
 
-    LightingView lightingView;
+    LightSystemView lightSystemView;
 
     DepthMapping depthMapping;
 

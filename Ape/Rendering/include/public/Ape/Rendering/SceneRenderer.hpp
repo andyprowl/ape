@@ -3,7 +3,7 @@
 #include <Ape/Rendering/CameraUniform.hpp>
 #include <Ape/Rendering/DepthBodyRenderer.hpp>
 #include <Ape/Rendering/EffectRenderer.hpp>
-#include <Ape/Rendering/LightingUniform.hpp>
+#include <Ape/Rendering/LightSystemUniform.hpp>
 #include <Ape/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/ShadowMapping.hpp>

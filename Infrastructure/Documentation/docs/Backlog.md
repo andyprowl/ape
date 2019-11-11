@@ -1,5 +1,5 @@
- - Extract "Lighting" project out of Rendering
-  - Should include both depth mapping and lighting stuff
+ - Extract "LightSystem" project out of Rendering
+  - Should include both depth mapping and lightSystem stuff
   - What about the standard renderer/shader?
  - Write tutorial/documentation on gamma correction
  - Write tutorial/documentation on skyboxes
@@ -8,7 +8,7 @@
   - Is this related to gamma?
   - I think it looked OK before we did omnidirectional shadow mapping
  - Complete implementation of shadow mapping
-  - Tightly fit lighting view matrices to the scene
+  - Tightly fit lightSystem view matrices to the scene
   - Implement cascaded shadow maps at least for directional lights
   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
     application, not the VS plugin)
@@ -16,11 +16,11 @@
   - Consider implementing (restoring?) PCF
  - Shadows seem to be neverending, this is not realistic
   - Try not using 1.0 vs 0.0 but something in the middle that changes with distance
-  - Also, try playing with ambient lighting to compensate for this
+  - Also, try playing with ambient lightSystem to compensate for this
  - F1 to rotate lights does not work in ApeStudio
  - Performance has dropped a lot in ApeStudio, at least when not plugged to power
   - Try profiling through NSight
- - Shouldn't LightingView cameras have the aspect ratio of the depth map rather than the aspect
+ - Shouldn't LightSystemView cameras have the aspect ratio of the depth map rather than the aspect
    ratio of the display window?
   - In particular for point light shadow maps, if vertical FOV is 90 and AR is not 1, we get a HFOV
    which is greater than (or lower than) 90, which means redundant or insufficient view coverage

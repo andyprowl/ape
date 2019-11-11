@@ -2,7 +2,7 @@
 
 #include <Ape/Scene/Body.hpp>
 #include <Ape/Scene/Camera.hpp>
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 #include <Foundational/Range/ContainerView.hpp>
 #include <Foundational/Signal/Signal.hpp>
@@ -19,7 +19,7 @@ public:
 
     Scene() = default;
 
-    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, Lighting lighting);
+    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, LightSystem lightSystem);
 
     auto getBody(int index)
         -> Body &;
@@ -52,10 +52,10 @@ public:
         -> Camera &;
 
     auto getLighting()
-        -> Lighting &;
+        -> LightSystem &;
 
     auto getLighting() const
-        -> Lighting const &;
+        -> LightSystem const &;
 
 public:
 
@@ -73,7 +73,7 @@ private:
 
     std::vector<Camera> cameras;
 
-    Lighting lighting;
+    LightSystem lightSystem;
 
 };
 

@@ -56,11 +56,11 @@ auto OutlinedBodyRenderer::setViewport(Viewport const & newViewport)
 auto OutlinedBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
-    Lighting const & lighting,
+    LightSystem const & lightSystem,
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    performStandardRenderingAndFillStencilBuffer(bodies, camera, lighting, shadowMapping);
+    performStandardRenderingAndFillStencilBuffer(bodies, camera, lightSystem, shadowMapping);
 
     performWireframeRenderingWhereStencilBuffferIsNotFilled(bodies, camera);
 
@@ -70,7 +70,7 @@ auto OutlinedBodyRenderer::render(
 auto OutlinedBodyRenderer::performStandardRenderingAndFillStencilBuffer(
     BodyRange const & bodies,
     Camera const & camera,
-    Lighting const & lighting,
+    LightSystem const & lightSystem,
     ShadowMapping const & shadowMapping) const
     -> void
 {
@@ -83,7 +83,7 @@ auto OutlinedBodyRenderer::performStandardRenderingAndFillStencilBuffer(
     // value specified when calling glStencilFunc().
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-    standardRenderer.render(bodies, camera, lighting, shadowMapping);
+    standardRenderer.render(bodies, camera, lightSystem, shadowMapping);
 }
 
 auto OutlinedBodyRenderer::performWireframeRenderingWhereStencilBuffferIsNotFilled(

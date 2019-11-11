@@ -1,6 +1,6 @@
 #include <Ape/Rendering/DepthMapping.hpp>
 
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 #include <Foundational/Range/Transform.hpp>
 
@@ -31,12 +31,12 @@ auto makeOrientedLightDepthMapping(LightContainer const & lights, Size<int> cons
 
 } // unnamed namespace
 
-DepthMapping::DepthMapping(Lighting const & lighting, Size<int> const & mapSize)
-    : lighting{&lighting}
+DepthMapping::DepthMapping(LightSystem const & lightSystem, Size<int> const & mapSize)
+    : lightSystem{&lightSystem}
     , mapSize{mapSize}
-    , pointMapping{makePointLightDepthMapping(lighting.point, mapSize)}
-    , spotMapping{makeOrientedLightDepthMapping(lighting.spot, mapSize)}
-    , directionalMapping{makeOrientedLightDepthMapping(lighting.directional, mapSize)}
+    , pointMapping{makePointLightDepthMapping(lightSystem.point, mapSize)}
+    , spotMapping{makeOrientedLightDepthMapping(lightSystem.spot, mapSize)}
+    , directionalMapping{makeOrientedLightDepthMapping(lightSystem.directional, mapSize)}
 {
 }
 

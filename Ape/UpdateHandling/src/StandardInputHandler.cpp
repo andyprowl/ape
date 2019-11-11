@@ -248,14 +248,14 @@ auto StandardInputHandler::togglePointLight(int const index) const
 {
     auto & scene = getScene(*this);
 
-    auto & lighting = scene.getLighting();
+    auto & lightSystem = scene.getLighting();
 
-    if (index >= static_cast<int>(lighting.point.size()))
+    if (index >= static_cast<int>(lightSystem.point.size()))
     {
         return;
     }
 
-    lighting.point[index].toggle();
+    lightSystem.point[index].toggle();
 }
 
 auto StandardInputHandler::toggleSpotLight(int const index) const
@@ -263,14 +263,14 @@ auto StandardInputHandler::toggleSpotLight(int const index) const
 {
     auto & scene = getScene(*this);
 
-    auto & lighting = scene.getLighting();
+    auto & lightSystem = scene.getLighting();
 
-    if (index >= static_cast<int>(lighting.spot.size()))
+    if (index >= static_cast<int>(lightSystem.spot.size()))
     {
         return;
     }
 
-    lighting.spot[index].toggle();
+    lightSystem.spot[index].toggle();
 }
 
 auto StandardInputHandler::toggleDirectionalLight(int const index) const
@@ -278,14 +278,14 @@ auto StandardInputHandler::toggleDirectionalLight(int const index) const
 {
     auto & scene = getScene(*this);
 
-    auto & lighting = scene.getLighting();
+    auto & lightSystem = scene.getLighting();
 
-    if (index >= static_cast<int>(lighting.directional.size()))
+    if (index >= static_cast<int>(lightSystem.directional.size()))
     {
         return;
     }
 
-    lighting.directional[index].toggle();
+    lightSystem.directional[index].toggle();
 }
 
 auto StandardInputHandler::switchToCamera(int const index)

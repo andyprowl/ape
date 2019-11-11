@@ -9,14 +9,14 @@
 namespace ape
 {
 
-class Lighting
+class LightSystem
 {
 
 public:
 
-    Lighting() = default;
+    LightSystem() = default;
 
-    Lighting(
+    LightSystem(
         std::vector<PointLight> point,
         std::vector<SpotLight> spot,
         std::vector<DirectionalLight> directional)

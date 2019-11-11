@@ -13,7 +13,7 @@ class Body;
 class BodyPart;
 class Camera;
 class DepthMapping;
-class LightingView;
+class LightSystemView;
 class Mesh;
 class OmniDepthShaderProgram;
 class PointLight;
@@ -33,7 +33,7 @@ public:
 
     auto render(
         BodySetView const & bodies,
-        LightingView const & lightingView,
+        LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 

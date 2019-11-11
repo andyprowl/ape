@@ -107,17 +107,17 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 
     offscreenSurface.setSize(viewport.size);
 
-    shadowMapping.lightingView.setViewSize(viewport.size);
+    shadowMapping.lightSystemView.setViewSize(viewport.size);
 }
 
 auto SceneRenderer::makeShadowMapping() const
     -> ShadowMapping
 {
-    auto const & lighting = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLighting();
 
     auto const depthMapSize = Size<int>{1024, 1024};
 
-    return ShadowMapping{lighting, depthMapSize};
+    return ShadowMapping{lightSystem, depthMapSize};
 }
 
 auto SceneRenderer::setupDrawingMode() const
@@ -158,7 +158,7 @@ auto SceneRenderer::renderDepthMapping()
 {
     auto const & bodies = cameraSelector->getScene().getBodies();
 
-    depthBodyRenderer.render(bodies, shadowMapping.lightingView, shadowMapping.depthMapping);
+    depthBodyRenderer.render(bodies, shadowMapping.lightSystemView, shadowMapping.depthMapping);
 }
 
 auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
@@ -200,9 +200,9 @@ auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
         return;
     }
 
-    auto const & lighting = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    standardBodyRenderer.render(nonSelectedBodies, camera, lighting, shadowMapping);
+    standardBodyRenderer.render(nonSelectedBodies, camera, lightSystem, shadowMapping);
 }
 
 auto SceneRenderer::renderPickedBodies(Camera const & camera) const
@@ -215,9 +215,9 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
         return;
     }
 
-    auto const & lighting = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    outlinedBodyRenderer.render(selectedBodies, camera, lighting, shadowMapping);
+    outlinedBodyRenderer.render(selectedBodies, camera, lightSystem, shadowMapping);
 }
 
 auto SceneRenderer::renderSkybox(Camera const & camera) const

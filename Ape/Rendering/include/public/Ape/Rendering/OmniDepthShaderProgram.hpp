@@ -26,8 +26,8 @@ public:
     // MonoDepthShaderProgram): instead of lightTransformation, we should use viewTransformation.
     // The problem with the word "view", though, is that it does not encompass "projection",
     // whereas the transformations we are passing here do.
-    // But in this case we also a problem with the name "LightingView", because the transformations
-    // maintained there also encompass projection.
+    // But in this case we also a problem with the name "LightSystemView", because the
+    // transformations maintained there also encompass projection.
     Uniform<PointLightView> lightTransformation;
 
     // TODO: Same as above: is it OK to mention "light" here?

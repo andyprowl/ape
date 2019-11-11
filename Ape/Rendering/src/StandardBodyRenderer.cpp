@@ -36,7 +36,7 @@ auto StandardBodyRenderer::setViewport(Viewport const & newViewport)
 auto StandardBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
-    Lighting const & lighting,
+    LightSystem const & lightSystem,
     ShadowMapping const & shadowMapping) const
     -> void
 {
@@ -44,7 +44,7 @@ auto StandardBodyRenderer::render(
 
     setupViewport();
 
-    setupInvariantUniforms(camera, lighting, shadowMapping);
+    setupInvariantUniforms(camera, lightSystem, shadowMapping);
 
     auto const & cameraTransformation = camera.getTransformation();
 
@@ -62,15 +62,15 @@ auto StandardBodyRenderer::setupViewport() const
 
 auto StandardBodyRenderer::setupInvariantUniforms(
     Camera const & camera,
-    Lighting const & lighting,
+    LightSystem const & lightSystem,
     ShadowMapping const & shadowMapping) const
     -> void
 {
     shader->camera.set(camera);
 
-    shader->lighting.set(lighting);
+    shader->lightSystem.set(lightSystem);
 
-    shader->lightingView.set(shadowMapping.lightingView);
+    shader->lightSystemView.set(shadowMapping.lightSystemView);
 
     shader->depthMapping.set(shadowMapping.depthMapping);
 }

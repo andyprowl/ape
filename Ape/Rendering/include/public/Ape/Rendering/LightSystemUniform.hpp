@@ -3,7 +3,7 @@
 #include <Ape/GpuResource/ShaderProgram.hpp>
 #include <Ape/GpuResource/VectorUniform.hpp>
 
-#include <Ape/Scene/Lighting.hpp>
+#include <Ape/Scene/LightSystem.hpp>
 
 namespace ape
 {
@@ -292,12 +292,12 @@ public:
 };
 
 template<>
-class Uniform<Lighting>
+class Uniform<LightSystem>
 {
 
 public:
 
-    using ValueType = Lighting;
+    using ValueType = LightSystem;
 
 public:
 
@@ -314,14 +314,14 @@ public:
         return {point.get(), spot.get(), directional.get()};
     }
 
-    auto set(ValueType const & lighting)
+    auto set(ValueType const & lightSystem)
         -> void
     {
-        point = lighting.point;
+        point = lightSystem.point;
 
-        spot = lighting.spot;
+        spot = lightSystem.spot;
 
-        directional = lighting.directional;
+        directional = lightSystem.directional;
     }
 
     auto operator = (ValueType const & light)

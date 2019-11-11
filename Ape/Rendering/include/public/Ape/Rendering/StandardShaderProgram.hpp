@@ -2,8 +2,8 @@
 
 #include <Ape/Rendering/CameraUniform.hpp>
 #include <Ape/Rendering/DepthMappingUniform.hpp>
-#include <Ape/Rendering/LightingUniform.hpp>
-#include <Ape/Rendering/LightingViewUniform.hpp>
+#include <Ape/Rendering/LightSystemUniform.hpp>
+#include <Ape/Rendering/LightSystemViewUniform.hpp>
 #include <Ape/Rendering/MaterialUniform.hpp>
 
 #include <Ape/GpuResource/ShaderProgram.hpp>
@@ -28,9 +28,9 @@ public:
 
     Uniform<Camera> camera;
 
-    Uniform<Lighting> lighting;
+    Uniform<LightSystem> lightSystem;
 
-    Uniform<LightingView> lightingView;
+    Uniform<LightSystemView> lightSystemView;
 
     Uniform<Material> material;
 

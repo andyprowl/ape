@@ -19,7 +19,7 @@ public:
 
     auto render(
         BodySetView const & bodies,
-        LightingView const & lightingView,
+        LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 

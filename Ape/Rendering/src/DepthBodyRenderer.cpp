@@ -13,13 +13,13 @@ DepthBodyRenderer::DepthBodyRenderer(
 
 auto DepthBodyRenderer::render(
     BodySetView const & bodies,
-    LightingView const & lightingView,
+    LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
-    monoRenderer.render(bodies, lightingView, target);
+    monoRenderer.render(bodies, lightSystemView, target);
 
-    omniRenderer.render(bodies, lightingView, target);
+    omniRenderer.render(bodies, lightSystemView, target);
 }
 
 } // namespace ape

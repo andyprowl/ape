@@ -392,7 +392,7 @@ parametric projection matrix P introduced in (12):
 <a name="EarlyDepthTesting"></a>
 <div style="font-size:4pt">
 <sup>1</sup> On modern GPUs the depth testing can be performed <i>before</i> the fragment shader is
-run. This potentially allows skipping time-consuming lighting calculations if the GPU can deduce
+run. This potentially allows skipping time-consuming lightSystem calculations if the GPU can deduce
 that the fragment won't eventually be visible due to occlusion by another vertex.
 This process is called *early depth testing*.
 In order for early depth testing to be possible, the fragment shader shall not modify the NDC Z

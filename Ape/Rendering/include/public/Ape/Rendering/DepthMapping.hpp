@@ -8,14 +8,14 @@
 namespace ape
 {
 
-class Lighting;
+class LightSystem;
 
 class DepthMapping
 {
 
 public:
 
-    DepthMapping(Lighting const & lighting, Size<int> const & mapSize);
+    DepthMapping(LightSystem const & lightSystem, Size<int> const & mapSize);
 
     auto getPointMapping()
         -> std::vector<OmniDepthMap> &;
@@ -37,7 +37,7 @@ public:
 
 private:
 
-    Lighting const * lighting;
+    LightSystem const * lightSystem;
 
     Size<int> mapSize;
 
