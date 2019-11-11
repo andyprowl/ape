@@ -3,7 +3,7 @@
   - What about the standard renderer/shader?
  - Write tutorial/documentation on gamma correction
  - Write tutorial/documentation on skyboxes
- - Inversion effect no longer seems to work
+ - The "Inversion" post-processing effect no longer seems to work
   - The image is extremely bright
   - Is this related to gamma?
   - I think it looked OK before we did omnidirectional shadow mapping
@@ -14,6 +14,9 @@
     application, not the VS plugin)
    - This has been worked around by allowing to turn off debug mode from command line
   - Consider implementing (restoring?) PCF
+ - Shadows seem to be neverending, this is not realistic
+  - Try not using 1.0 vs 0.0 but something in the middle that changes with distance
+  - Also, try playing with ambient lighting to compensate for this
  - F1 to rotate lights does not work in ApeStudio
  - Performance has dropped a lot in ApeStudio, at least when not plugged to power
   - Try profiling through NSight

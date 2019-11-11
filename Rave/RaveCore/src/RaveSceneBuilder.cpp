@@ -348,11 +348,16 @@ auto StatefulSceneBuilder::createNanosuits()
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, {0.2f, 0.2f, 0.2f});
 
-    for (auto const & position : positions)
+    for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
-        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+        auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
 
-        scene.nanosuit = &addBody(translation * scaling, model);
+        auto const rotation = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(30.0f * (i - 1)),
+            glm::vec3{0.0f, 0.1f, 0.0f});
+
+        scene.nanosuit = &addBody(translation * rotation * scaling, model);
     }
 }
 
@@ -360,7 +365,9 @@ auto StatefulSceneBuilder::getNanosuitPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {1.0f, -2.0f, 1.0f}};
+        {-3.0f, -2.0f, -2.0f},
+        {1.0f, -2.0f, 1.0f},
+        {3.0f, -2.0f, 0.0f}};
 }
 
 auto StatefulSceneBuilder::createDragons()
@@ -372,11 +379,16 @@ auto StatefulSceneBuilder::createDragons()
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, {0.1f, 0.1f, 0.1f});
     
-    for (auto const & position : positions)
+    for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
-        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+        auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
 
-        scene.dragon = &addBody(translation * scaling, model);
+        auto const rotation = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(45.0f * i),
+            glm::vec3{0.0f, 0.1f, 0.0f});
+
+        scene.dragon = &addBody(translation * rotation * scaling, model);
     }
 }
 
@@ -384,7 +396,9 @@ auto StatefulSceneBuilder::getDragonPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-2.0f, -2.0f, 15.0f}};
+        {-2.0f, -2.0f, 15.0f},
+        {-8.0f, -2.0f, -7.0f},
+        {-2.0f, -2.0f, -15.0f}};
 }
 
 auto StatefulSceneBuilder::createSpaceships()
