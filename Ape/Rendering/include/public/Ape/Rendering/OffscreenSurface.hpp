@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Ape/GpuResource/FrameBufferObject.hpp>
-#include <Ape/GpuResource/RenderBufferObject.hpp>
-#include <Ape/GpuResource/Texture.hpp>
+#include <Ape/BufferObject/FrameBufferObject.hpp>
+#include <Ape/BufferObject/RenderBufferObject.hpp>
+#include <Ape/Texture/Texture.hpp>
 
 #include <Foundational/Mathematics/Size.hpp>
 

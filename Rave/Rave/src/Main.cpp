@@ -13,6 +13,12 @@ auto isDebugOutputEnabled(std::vector<std::string> const & arguments)
     return ape::contains(arguments, "--enable-debug-output");
 }
 
+auto isSponzaExcluded(std::vector<std::string> const & arguments)
+    -> bool
+{
+    return ape::contains(arguments, "--exclude-sponza");
+}
+
 auto main(int argc, char const * * argv)
     -> int
 {
@@ -20,9 +26,11 @@ auto main(int argc, char const * * argv)
 
     auto const enableDebugOutput = isDebugOutputEnabled(arguments);
 
+    auto const doNotIncludeSponza = isSponzaExcluded(arguments);
+
     try
     {
-        auto app = rave::Application{enableDebugOutput};
+        auto app = rave::Application{enableDebugOutput, doNotIncludeSponza};
 
         app.run();
     }

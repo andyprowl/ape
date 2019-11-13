@@ -1,11 +1,11 @@
 #pragma once
 
-#include <Ape/GpuResource/Texture.hpp>
-
 #include <glm/vec3.hpp>
 
 namespace ape
 {
+
+class Texture;
 
 class Material
 {

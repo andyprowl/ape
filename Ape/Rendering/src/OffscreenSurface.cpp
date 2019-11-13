@@ -1,7 +1,7 @@
 #include <Ape/Rendering/OffscreenSurface.hpp>
 
 #include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/GpuResource/TextureStorageType.hpp>
+#include <Ape/Texture/TextureStorageType.hpp>
 
 #include <cassert>
 

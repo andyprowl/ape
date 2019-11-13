@@ -3,11 +3,11 @@
 #include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/ModelPart.hpp>
-#include <Ape/Model/Shape.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/Camera.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Scene/Scene.hpp>
+#include <Ape/Shape/Shape.hpp>
 #include <Ape/Windowing/Window.hpp>
 
 #include <glad/glad.h>
@@ -19,9 +19,9 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
-    std::unique_ptr<ShapeRenderer> shapeRenderer,
+    std::unique_ptr<ShapeDrawer> shapeRenderer,
     DepthBodyRenderer depthBodyRenderer,
-    StandardBodyRenderer standardBodyRenderer,
+    LightingBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
     SkyboxRenderer skyboxRenderer,
@@ -62,8 +62,6 @@ auto SceneRenderer::render()
 {
     setupDrawingMode();
 
-    setupViewport();
-
     if (hasActiveCamera())
     {
         renderSceneToOffscreenSurface();
@@ -94,16 +92,6 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     -> void
 {
     viewport = newViewport;
-
-    standardBodyRenderer.setViewport(viewport);
-
-    outlinedBodyRenderer.setViewport(viewport);
-
-    wireframeBodyRenderer.setViewport(viewport);
-
-    skyboxRenderer.setViewport(viewport);
-
-    effectRenderer.setViewport(viewport);
 
     offscreenSurface.setSize(viewport.size);
 
@@ -165,6 +153,8 @@ auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
     -> void
 {
     auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
+
+    setupViewport();
 
     clearTargetBuffers();
 
@@ -230,6 +220,8 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     -> void
 {
     targetSurface->makeCurrent();
+
+    setupViewport();
 
     auto const & texture = offscreenSurface.getColorBuffer();
 

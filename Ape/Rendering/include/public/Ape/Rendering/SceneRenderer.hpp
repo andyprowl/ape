@@ -1,19 +1,17 @@
 #pragma once
 
-#include <Ape/Rendering/CameraUniform.hpp>
-#include <Ape/Rendering/DepthBodyRenderer.hpp>
-#include <Ape/Rendering/EffectRenderer.hpp>
-#include <Ape/Rendering/LightSystemUniform.hpp>
 #include <Ape/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
-#include <Ape/Rendering/ShadowMapping.hpp>
-#include <Ape/Rendering/ShapeRenderer.hpp>
-#include <Ape/Rendering/SkyboxRenderer.hpp>
-#include <Ape/Rendering/StandardBodyRenderer.hpp>
 #include <Ape/Rendering/Viewport.hpp>
-#include <Ape/Rendering/WireframeBodyRenderer.hpp>
 
-#include <Ape/GpuResource/VertexArrayObject.hpp>
+#include <Ape/BufferObject/VertexArrayObject.hpp>
+#include <Ape/Effect/EffectRenderer.hpp>
+#include <Ape/Lighting/DepthBodyRenderer.hpp>
+#include <Ape/Lighting/ShadowMapping.hpp>
+#include <Ape/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Shape/ShapeDrawer.hpp>
+#include <Ape/Skybox/SkyboxRenderer.hpp>
+#include <Ape/Wireframe/WireframeBodyRenderer.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -35,9 +33,9 @@ class SceneRenderer
 public:
 
     SceneRenderer(
-        std::unique_ptr<ShapeRenderer> shapeRenderer,
+        std::unique_ptr<ShapeDrawer> shapeRenderer,
         DepthBodyRenderer depthBodyRenderer,
-        StandardBodyRenderer standardBodyRenderer,
+        LightingBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
         SkyboxRenderer skyboxRenderer,
@@ -103,11 +101,11 @@ private:
 
 private:
 
-    std::unique_ptr<ShapeRenderer> shapeRenderer;
+    std::unique_ptr<ShapeDrawer> shapeRenderer;
 
     DepthBodyRenderer depthBodyRenderer;
 
-    StandardBodyRenderer standardBodyRenderer;
+    LightingBodyRenderer standardBodyRenderer;
 
     WireframeBodyRenderer wireframeBodyRenderer;
 

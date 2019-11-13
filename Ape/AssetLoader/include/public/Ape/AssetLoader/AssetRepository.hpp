@@ -3,9 +3,9 @@
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/Mesh.hpp>
 #include <Ape/Model/Model.hpp>
-#include <Ape/Model/Shape.hpp>
 
-#include <Ape/GpuResource/Texture.hpp>
+#include <Ape/Shape/Shape.hpp>
+#include <Ape/Texture/Texture.hpp>
 
 #include <memory>
 #include <vector>

@@ -1,6 +1,6 @@
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
-#include <Ape/Rendering/SkyboxCollectionPopulator.hpp>
+#include <Ape/Skybox/SkyboxCollectionPopulator.hpp>
 
 namespace rave
 {

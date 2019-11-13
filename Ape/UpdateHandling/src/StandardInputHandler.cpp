@@ -1,9 +1,9 @@
 #include <Ape/UpdateHandling/StandardInputHandler.hpp>
 
-#include <Ape/Rendering/EffectSelector.hpp>
-#include <Ape/Rendering/SkyboxSelector.hpp>
+#include <Ape/Effect/EffectSelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Scene/Scene.hpp>
+#include <Ape/Skybox/SkyboxSelector.hpp>
 #include <Ape/Windowing/Window.hpp>
 
 #include <Foundational/Mathematics/Position.hpp>

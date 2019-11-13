@@ -6,25 +6,25 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
+#include <Ape/Effect/EffectCollectionPopulator.hpp>
+#include <Ape/Effect/EffectSelector.hpp>
 #include <Ape/GlfwEngine/GLFWEngine.hpp>
 #include <Ape/GlfwEngine/GLFWGateway.hpp>
-#include <Ape/Rendering/EffectCollectionPopulator.hpp>
-#include <Ape/Rendering/EffectSelector.hpp>
-#include <Ape/Rendering/LineStyleProvider.hpp>
-#include <Ape/Rendering/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/OmniDepthShaderProgram.hpp>
+#include <Ape/Lighting/MonoDepthShaderProgram.hpp>
+#include <Ape/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Lighting/LightingShaderProgram.hpp>
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
-#include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
-#include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
-#include <Ape/Rendering/SkyboxSelector.hpp>
-#include <Ape/Rendering/SkyboxShaderProgram.hpp>
-#include <Ape/Rendering/StandardBodyRenderer.hpp>
-#include <Ape/Rendering/StandardShaderProgram.hpp>
-#include <Ape/Rendering/WireframeBodyRenderer.hpp>
-#include <Ape/Rendering/WireframeShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Shape/ShapeArrayObjectDrawer.hpp>
+#include <Ape/Shape/ShapeBufferObjectDrawer.hpp>
+#include <Ape/Skybox/SkyboxSelector.hpp>
+#include <Ape/Skybox/SkyboxShaderProgram.hpp>
+#include <Ape/Wireframe/LineStyleProvider.hpp>
+#include <Ape/Wireframe/WireframeBodyRenderer.hpp>
+#include <Ape/Wireframe/WireframeShaderProgram.hpp>
 
 namespace rave
 {
@@ -34,8 +34,49 @@ class Application::Impl
 
 public:
 
-    explicit Impl(bool const enableDebugOutput)
+    Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
         : gateway{4, 5, enableDebugOutput}
+        , window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
+        , assets{createRaveAssets(doNotIncludeSponza)}
+        , scene{createRaveScene(assets, doNotIncludeSponza)}
+        , effectCollection{RaveEffectCollectionReader{}.read()}
+        , effectSelector{effectCollection}
+        , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
+        , skyboxSelector{skyboxCollection}
+        , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
+     // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>()}
+        , depthBodyRenderer{{monoDepthShader, *shapeRenderer}, {omniDepthShader, *shapeRenderer}}
+        , standardBodyRenderer{standardShader, *shapeRenderer}
+        , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
+        , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
+        , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
+        , effectRenderer{effectSelector}
+        , skyboxRenderer{skyboxShader, skyboxSelector}
+        , cameraSelector{scene}
+        , bodyPicker{scene}
+        , sceneRenderer{
+            std::move(shapeRenderer),
+            std::move(depthBodyRenderer),
+            std::move(standardBodyRenderer),
+            std::move(wireframeBodyRenderer),
+            std::move(outlinedBodyRenderer),
+            std::move(skyboxRenderer),
+            std::move(effectRenderer),
+            cameraSelector,
+            bodyPicker,
+            window,
+            ape::Viewport{{0, 0}, window.getSize()},
+            {0.0f, 0.0f, 0.0f}}
+        , inputHandler{
+            window,
+            cameraSelector,
+            skyboxSelector,
+            effectSelector,
+            bodyPicker,
+            standardShader,
+            wireframeStyleProvider,
+            scene}
+        , engine{window, sceneRenderer, inputHandler}
     {
         skyboxSelector.activateSkybox(5);
 
@@ -56,13 +97,13 @@ private:
 
     ape::GLFWGateway gateway;
 
-    ape::GLFWWindow window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})};
+    ape::GLFWWindow window;
 
-    RaveAssetCollection assets{createSampleAssets()};
+    RaveAssetCollection assets;
 
-    RaveScene scene{createRaveScene(assets)};
+    RaveScene scene;
 
-    ape::StandardShaderProgram standardShader;
+    ape::LightingShaderProgram standardShader;
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
@@ -72,78 +113,49 @@ private:
 
     ape::SkyboxShaderProgram skyboxShader;
 
-    ape::EffectCollection effectCollection{RaveEffectCollectionReader{}.read()};
+    ape::EffectCollection effectCollection;
 
-    ape::EffectSelector effectSelector{effectCollection};
+    ape::EffectSelector effectSelector;
 
-    ape::SkyboxCollection skyboxCollection{RaveSkyboxCollectionReader{}.read()};
+    ape::SkyboxCollection skyboxCollection;
 
-    ape::SkyboxSelector skyboxSelector{skyboxCollection};
+    ape::SkyboxSelector skyboxSelector;
 
-    std::unique_ptr<ape::ShapeArrayObjectRenderer> shapeRenderer{
-        std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes)};
+    std::unique_ptr<ape::ShapeDrawer> shapeRenderer;
 
-    //std::unique_ptr<ape::ShapeBufferObjectRenderer> shapeRenderer{
-    //  std::make_unique<ape::ShapeBufferObjectRenderer>()};
+    ape::DepthBodyRenderer depthBodyRenderer;
 
-    ape::DepthBodyRenderer depthBodyRenderer{
-        {monoDepthShader, *shapeRenderer},
-        {omniDepthShader, *shapeRenderer}};
+    ape::LightingBodyRenderer standardBodyRenderer;
 
-    ape::StandardBodyRenderer standardBodyRenderer{standardShader, *shapeRenderer};
+    ape::LineStyleProvider wireframeStyleProvider;
 
-    ape::LineStyleProvider wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
+    ape::WireframeBodyRenderer wireframeBodyRenderer;
 
-    ape::WireframeBodyRenderer wireframeBodyRenderer{
-        wireframeShader,
-        *shapeRenderer,
-        wireframeStyleProvider};
+    ape::OutlinedBodyRenderer outlinedBodyRenderer;
 
-    ape::OutlinedBodyRenderer outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer};
+    ape::EffectRenderer effectRenderer;
 
-    ape::EffectRenderer effectRenderer{effectSelector};
+    ape::SkyboxRenderer skyboxRenderer;
 
-    ape::SkyboxRenderer skyboxRenderer{skyboxShader, skyboxSelector};
+    ape::CameraSelector cameraSelector;
 
-    ape::CameraSelector cameraSelector{scene};
+    ape::BodySelector bodyPicker;
 
-    ape::BodySelector bodyPicker{scene};
+    ape::SceneRenderer sceneRenderer;;
 
-    ape::SceneRenderer sceneRenderer{
-        std::move(shapeRenderer),
-        std::move(depthBodyRenderer),
-        std::move(standardBodyRenderer),
-        std::move(wireframeBodyRenderer),
-        std::move(outlinedBodyRenderer),
-        std::move(skyboxRenderer),
-        std::move(effectRenderer),
-        cameraSelector,
-        bodyPicker,
-        window,
-        ape::Viewport{{0, 0}, window.getSize()},
-        {0.0f, 0.0f, 0.0f}};
+    RaveInputHandler inputHandler;
 
-    RaveInputHandler inputHandler{
-        window,
-        cameraSelector,
-        skyboxSelector,
-        effectSelector,
-        bodyPicker,
-        standardShader,
-        wireframeStyleProvider,
-        scene};
-
-    ape::GLFWEngine engine{window, sceneRenderer, inputHandler};
+    ape::GLFWEngine engine;
 
 };
 
 Application::Application()
-    : Application{false}
+    : Application{false, false}
 {
 }
 
-Application::Application(bool const enableDebugOutput)
-    : impl{std::make_unique<Impl>(enableDebugOutput)}
+Application::Application(bool const enableDebugOutput, bool const doNotIncludeSponza)
+    : impl{std::make_unique<Impl>(enableDebugOutput, doNotIncludeSponza)}
 {
 }
 

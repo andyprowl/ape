@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/SkyboxCollection.hpp>
+#include <Ape/Skybox/SkyboxCollection.hpp>
 
 namespace rave
 {

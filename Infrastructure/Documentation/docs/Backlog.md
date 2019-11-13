@@ -1,8 +1,13 @@
- - Extract "LightSystem" project out of Rendering
-  - Should include both depth mapping and lightSystem stuff
-  - What about the standard renderer/shader?
+ - Implement outlining by pushing vertices in the direction of normals
+ - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
+  - The reason for this is that depth body renderer has to bind framebuffer targets
+  - Not sure it is correct that the renderer does the binding and setting of viewport though
+  - Maybe it is a naming issue? It simply shouldn't be called "renderer"?
+  - Try to think how the generic pipeline would like if composed declaratively by the user
  - Write tutorial/documentation on gamma correction
  - Write tutorial/documentation on skyboxes
+ - Try FBX format for 3D models
+  - Use FBX SDK for importing the models
  - The "Inversion" post-processing effect no longer seems to work
   - The image is extremely bright
   - Is this related to gamma?
@@ -17,7 +22,6 @@
  - Shadows seem to be neverending, this is not realistic
   - Try not using 1.0 vs 0.0 but something in the middle that changes with distance
   - Also, try playing with ambient lightSystem to compensate for this
- - F1 to rotate lights does not work in ApeStudio
  - Performance has dropped a lot in ApeStudio, at least when not plugged to power
   - Try profiling through NSight
  - Shouldn't LightSystemView cameras have the aspect ratio of the depth map rather than the aspect

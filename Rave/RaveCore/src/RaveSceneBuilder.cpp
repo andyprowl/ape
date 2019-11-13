@@ -2,7 +2,7 @@
 
 #include <Rave/RaveCore/RaveAssetBuilder.hpp>
 
-#include <Ape/Model/BoxBuilder.hpp>
+#include <Ape/Shape/BoxBuilder.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
@@ -18,7 +18,7 @@ class StatefulSceneBuilder
 
 public:
 
-    explicit StatefulSceneBuilder(RaveAssetCollection & assets);
+    StatefulSceneBuilder(RaveAssetCollection & assets, bool doNotIncludeSponza);
 
     auto build()
         -> RaveScene;
@@ -87,6 +87,12 @@ private:
 
     auto getCastlePositions() const
         -> std::vector<glm::vec3>;
+    
+    auto createSponzas()
+        -> void;
+
+    auto getSponzaPositions() const
+        -> std::vector<glm::vec3>;
 
     auto createCameras()
         -> void;
@@ -140,12 +146,17 @@ private:
 
     RaveAssetCollection * assets;
 
+    bool doNotIncludeSponza;
+
     RaveScene scene;
 
 };
 
-StatefulSceneBuilder::StatefulSceneBuilder(RaveAssetCollection & assets)
+StatefulSceneBuilder::StatefulSceneBuilder(
+    RaveAssetCollection & assets,
+    bool const doNotIncludeSponza)
     : assets{&assets}
+    , doNotIncludeSponza{doNotIncludeSponza}
 {
 }
 
@@ -183,6 +194,8 @@ auto StatefulSceneBuilder::createBodies()
     createDynos();
 
     createCastles();
+
+    createSponzas();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
@@ -287,7 +300,10 @@ auto StatefulSceneBuilder::getPointLampPositions() const
         {0.0f, 0.0f, 5.0f},
         {0.0f, 1.0f, -5.0f},
         {0.0f, 10.0f, 5.0f},
-        {0.0f, 10.0f, -5.0f}};
+        {0.0f, 10.0f, -5.0f},
+        {0.0f, 3.0f, -40.0f},
+        {0.0f, 0.0f, -35.0f},
+        {0.0f, 3.0f, -30.0f}};
 }
 
 auto StatefulSceneBuilder::createFlashlights()
@@ -326,7 +342,9 @@ auto StatefulSceneBuilder::getFlashlightPositions() const
 {
     return {
         {2.5f, 1.0f, 3.0f},
-        {-2.5f, 1.5f, 2.5f}};
+        {-2.5f, 1.5f, 2.5f},
+        {-10.0f, 15.0f, -35.0f},
+        {10.0f, 15.0f, -35.0f}};
 }
 
 auto StatefulSceneBuilder::computeFlashlightRotation(glm::vec3 const & position)
@@ -472,6 +490,35 @@ auto StatefulSceneBuilder::getCastlePositions() const
     return {
         {-20.0f, -2.0f, 10.0f},
         {20.0f, -2.0f, 10.0f}};
+}
+
+auto StatefulSceneBuilder::createSponzas()
+    -> void
+{
+    if (doNotIncludeSponza)
+    {
+        return;
+    }
+
+    auto const & model = assets->sponzaAssets.models[0];
+
+    auto const positions = getSponzaPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.01f, 0.01f, 0.01f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getSponzaPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {0.0f, -2.0f, -35.0f}};
 }
 
 auto StatefulSceneBuilder::createCameras()
@@ -631,6 +678,8 @@ auto StatefulSceneBuilder::getSpotLightColors()
     return {
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.8f, 0.8f, 0.2f}, Specular{0.5f, 0.5f, 0.1f}},
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.2f, 0.3f, 0.9f}, Specular{0.5f, 0.7f, 0.8f}},
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.8f, 0.8f, 0.2f}, Specular{0.5f, 0.5f, 0.1f}},
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.2f, 0.3f, 0.9f}, Specular{0.5f, 0.7f, 0.8f}},
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.9f, 0.8f, 0.6f}, Specular{1.0f, 0.9f, 0.7f}}};
 }
 
@@ -717,14 +766,20 @@ auto StatefulSceneBuilder::createSynchronizers()
 } // unnamed namespace
 
 RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets)
+    : RaveSceneBuilder{assets, true}
+{
+}
+
+RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets, bool const doNotIncludeSponza)
     : assets{&assets}
+    , doNotIncludeSponza{doNotIncludeSponza}
 {
 }
 
 auto RaveSceneBuilder::build() const
     -> RaveScene
 {
-    auto builder = StatefulSceneBuilder{*assets};
+    auto builder = StatefulSceneBuilder{*assets, doNotIncludeSponza};
 
     return builder.build();
 }

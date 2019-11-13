@@ -3,6 +3,8 @@
 #include <Ape/AssetLoader/AssetRepository.hpp>
 #include <Ape/AssetLoader/TextureCache.hpp>
 
+#include <Ape/Texture/TextureSwizzleMask.hpp>
+
 #include <assimp/scene.h>
 
 namespace ape
@@ -41,6 +43,21 @@ auto getTextureColorSpace(aiTextureType const type)
     -> ColorSpace
 {
     return (type == aiTextureType_DIFFUSE) ? ColorSpace::perceptual : ColorSpace::linear;
+}
+
+auto setSwizzleIfGrayscale(Texture & texture)
+    -> void
+{
+    if (texture.getInternalFormat() != TextureInternalFormat::r8)
+    {
+        return;
+    }
+
+    const auto red = TextureSwizzle::red;
+
+    const auto one = TextureSwizzle::one;
+
+    texture.setSwizzleMask({red, red, red, one});
 }
 
 } // unnamed
@@ -191,6 +208,8 @@ auto MaterialLoader::readAndStoreTexture(
     const auto storageType = TextureStorageType::immutable;
 
     auto readTexture = textureReader.read(path, storageType, colorSpace);
+
+    setSwizzleIfGrayscale(readTexture);
 
     auto & storedTexture = assets->textures.emplace_back(std::move(readTexture));
 

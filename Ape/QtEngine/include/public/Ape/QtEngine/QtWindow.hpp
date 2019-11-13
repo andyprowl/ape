@@ -149,9 +149,6 @@ private:
     auto setKeyStatus(Key key, KeyStatus status)
         -> void;
 
-    auto registerAboutToResizeEventHandler() const
-        -> QMetaObject::Connection;
-
 private:
 
     std::vector<ape::KeyStatus> keyStatus;
@@ -161,8 +158,6 @@ private:
     bool isWindowClosing;
 
     OpenGLLoader * openGLLoader;
-
-    QMetaObject::Connection onAboutToResizeConnection;
 
 };
 

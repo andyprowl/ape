@@ -14,5 +14,6 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
     Ape::Rendering
+    Ape::Skybox
     Ape::Windowing
     Foundational::CompilerSupport)

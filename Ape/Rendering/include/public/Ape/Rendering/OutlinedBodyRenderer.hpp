@@ -1,9 +1,8 @@
 #pragma once
 
-#include <Ape/Rendering/StandardBodyRenderer.hpp>
-#include <Ape/Rendering/WireframeBodyRenderer.hpp>
-
+#include <Ape/Lighting/LightingBodyRenderer.hpp>
 #include <Ape/Scene/BodyRange.hpp>
+#include <Ape/Wireframe/WireframeBodyRenderer.hpp>
 
 namespace ape
 {
@@ -19,11 +18,8 @@ class OutlinedBodyRenderer
 public:
 
     OutlinedBodyRenderer(
-        StandardBodyRenderer standardRenderer,
+        LightingBodyRenderer standardRenderer,
         WireframeBodyRenderer wireframeRenderer);
-
-    auto setViewport(Viewport const & newViewport)
-        -> void;
 
     auto render(
         BodyRange const & bodies,
@@ -48,7 +44,7 @@ private:
 
 private:
 
-    StandardBodyRenderer standardRenderer;
+    LightingBodyRenderer standardRenderer;
     
     WireframeBodyRenderer wireframeRenderer;
 

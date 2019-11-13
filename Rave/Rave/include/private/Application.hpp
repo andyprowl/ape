@@ -12,7 +12,7 @@ public:
 
     Application();
 
-    explicit Application(bool enableDebugOutput);
+    Application(bool enableDebugOutput, bool doNotIncludeSponza);
 
     Application(Application const & rhs) = delete;
 

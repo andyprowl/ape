@@ -1,11 +1,11 @@
 #include <Rave/RaveCore/RaveAssetBuilder.hpp>
 
 #include <Ape/AssetLoader/AssetLoader.hpp>
-#include <Ape/GpuResource/TextureReader.hpp>
-#include <Ape/Model/BoxBuilder.hpp>
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/Mesh.hpp>
-#include <Ape/Model/Shape.hpp>
+#include <Ape/Shape/BoxBuilder.hpp>
+#include <Ape/Shape/Shape.hpp>
+#include <Ape/Texture/TextureReader.hpp>
 
 namespace rave
 {
@@ -341,6 +341,16 @@ auto loadAssets(
 
 } // unnamed namespace
 
+RaveAssetBuilder::RaveAssetBuilder()
+    : RaveAssetBuilder{true}
+{
+}
+
+RaveAssetBuilder::RaveAssetBuilder(bool const doNotIncludeSponza)
+    : doNotIncludeSponza{doNotIncludeSponza}
+{
+}
+
 auto RaveAssetBuilder::build() const
     -> RaveAssetCollection
 {
@@ -357,6 +367,11 @@ auto RaveAssetBuilder::build() const
     loadAssets("Dyno/Apatosaurus.obj", "Dyno", collection.dynoAssets, collection);
 
     loadAssets("Castle/Castle.obj", "Castle", collection.castleAssets, collection);
+
+    if (!doNotIncludeSponza)
+    {
+        loadAssets("Sponza/sponza.obj", "Sponza", collection.sponzaAssets, collection);
+    }
 
     return collection;
 }

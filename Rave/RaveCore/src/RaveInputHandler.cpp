@@ -2,11 +2,11 @@
 
 #include <Rave/RaveCore/RaveScene.hpp>
 
-#include <Ape/Rendering/LineStyleProvider.hpp>
-#include <Ape/Rendering/StandardShaderProgram.hpp>
+#include <Ape/Lighting/LightingShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Windowing/Window.hpp>
+#include <Ape/Wireframe/LineStyleProvider.hpp>
 
 #include <Foundational/CompilerSupport/CompilerWarnings.hpp>
 #include <Foundational/Mathematics/Math.hpp>
@@ -64,7 +64,7 @@ RaveInputHandler::RaveInputHandler(
     ape::SkyboxSelector & skyboxSelector,
     ape::EffectSelector & effectSelector,
     ape::BodySelector & bodyPicker,
-    ape::StandardShaderProgram & standardShader,
+    ape::LightingShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused RaveScene & scene)
     : StandardInputHandler{window, cameraSelector, skyboxSelector, effectSelector}

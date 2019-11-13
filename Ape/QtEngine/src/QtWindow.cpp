@@ -21,7 +21,16 @@ auto const keyTranslationTable = std::unordered_map<Qt::Key, ape::Key>{
     {Qt::Key_Left, ape::Key::keyLeft},
     {Qt::Key_Right, ape::Key::keyRight},
     {Qt::Key_Shift, ape::Key::keyLeftShift},
-    {Qt::Key_Control, ape::Key::keyLeftControl}};
+    {Qt::Key_Control, ape::Key::keyLeftControl},
+    {Qt::Key_F1, ape::Key::keyF1},
+    {Qt::Key_F2, ape::Key::keyF2},
+    {Qt::Key_F3, ape::Key::keyF3},
+    {Qt::Key_F4, ape::Key::keyF4},
+    {Qt::Key_F5, ape::Key::keyF5},
+    {Qt::Key_F6, ape::Key::keyF6},
+    {Qt::Key_F7, ape::Key::keyF7},
+    {Qt::Key_F8, ape::Key::keyF8},
+    {Qt::Key_F9, ape::Key::keyF9}};
 
 auto const modifierTranslationTable = std::unordered_map<Qt::KeyboardModifier, ape::KeyModifier>{
     {Qt::KeyboardModifier::ShiftModifier, ape::KeyModifier::shift},
@@ -319,7 +328,6 @@ QtWindow::QtWindow(OpenGLLoader & openGLLoader, QWidget * const parent)
     , isMouseGrabbed{false}
     , isWindowClosing{false}
     , openGLLoader{&openGLLoader}
-    , onAboutToResizeConnection{registerAboutToResizeEventHandler()}
 {
     keyStatus.resize(static_cast<std::size_t>(ape::Key::last) + 1, ape::KeyStatus::released);
 }
@@ -346,15 +354,6 @@ auto QtWindow::setKeyStatus(Key const key, KeyStatus const status)
     -> void
 {
     keyStatus[static_cast<std::size_t>(key)] = status;
-}
-
-auto QtWindow::registerAboutToResizeEventHandler() const
-    -> QMetaObject::Connection
-{
-    return connect(this, &QtWindow::aboutToResize, [this] 
-    {
-        //onResize.fire(getSize());
-    });
 }
 
 } // namespace ape::qt

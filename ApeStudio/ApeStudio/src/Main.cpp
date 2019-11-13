@@ -7,24 +7,24 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
+#include <Ape/Effect/EffectCollection.hpp>
+#include <Ape/Effect/EffectSelector.hpp>
+#include <Ape/Lighting/MonoDepthShaderProgram.hpp>
+#include <Ape/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Lighting/LightingShaderProgram.hpp>
 #include <Ape/QtEngine/QtEngine.hpp>
 #include <Ape/QtEngine/QtGateway.hpp>
 #include <Ape/QtEngine/QtWindow.hpp>
-#include <Ape/Rendering/EffectCollection.hpp>
-#include <Ape/Rendering/EffectSelector.hpp>
-#include <Ape/Rendering/LineStyleProvider.hpp>
-#include <Ape/Rendering/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/SceneRenderer.hpp>
-#include <Ape/Rendering/ShapeArrayObjectRenderer.hpp>
-#include <Ape/Rendering/ShapeBufferObjectRenderer.hpp>
-#include <Ape/Rendering/SkyboxCollection.hpp>
-#include <Ape/Rendering/SkyboxSelector.hpp>
-#include <Ape/Rendering/SkyboxShaderProgram.hpp>
-#include <Ape/Rendering/StandardShaderProgram.hpp>
-#include <Ape/Rendering/WireframeShaderProgram.hpp>
 #include <Ape/Scene/BodySelector.hpp>
 #include <Ape/Scene/CameraSelector.hpp>
+#include <Ape/Shape/ShapeArrayObjectDrawer.hpp>
+#include <Ape/Shape/ShapeBufferObjectDrawer.hpp>
+#include <Ape/Skybox/SkyboxCollection.hpp>
+#include <Ape/Skybox/SkyboxSelector.hpp>
+#include <Ape/Skybox/SkyboxShaderProgram.hpp>
+#include <Ape/Wireframe/LineStyleProvider.hpp>
+#include <Ape/Wireframe/WireframeShaderProgram.hpp>
 
 #include <Foundational/Range/Search.hpp>
 
@@ -114,11 +114,19 @@ auto isDebugOutputEnabled(std::vector<std::string> const & arguments)
     return ape::contains(arguments, "--enable-debug-output");
 }
 
+auto isSponzaExcluded(std::vector<std::string> const & arguments)
+    -> bool
+{
+    return ape::contains(arguments, "--exclude-sponza");
+}
+
 int main(int argc, char *argv[])
 {
     auto const arguments = std::vector<std::string>{argv, argv + argc};
 
     auto const enableDebugOutput = isDebugOutputEnabled(arguments);
+
+    auto const doNotIncludeSponza = isSponzaExcluded(arguments);
 
     auto gateway = ape::qt::QtGateway{enableDebugOutput};
 
@@ -200,11 +208,11 @@ int main(int argc, char *argv[])
 
     sceneView1.makeCurrent();
 
-    auto assets = rave::createSampleAssets();
+    auto assets = rave::createRaveAssets(doNotIncludeSponza);
     
-    auto scene = rave::createRaveScene(assets);
+    auto scene = rave::createRaveScene(assets, doNotIncludeSponza);
 
-    auto standardShader = ape::StandardShaderProgram{};
+    auto standardShader = ape::LightingShaderProgram{};
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
@@ -228,19 +236,19 @@ int main(int argc, char *argv[])
 
     auto cameraSelector1 = ape::CameraSelector{scene};
 
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
     // must be created in the corresponding renderer context.
     sceneView1.makeCurrent();
     
-    auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
-    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectRenderer>();
+    auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
+    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectDrawer>();
 
     auto depthBodyRenderer1 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer1},
         {omniDepthShader, *shapeRenderer1}};
 
-    auto standardBodyRenderer1 = ape::StandardBodyRenderer{standardShader, *shapeRenderer1};
+    auto standardBodyRenderer1 = ape::LightingBodyRenderer{standardShader, *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -291,18 +299,18 @@ int main(int argc, char *argv[])
 
     auto cameraSelector2 = ape::CameraSelector{scene};
 
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
     // must be created in the corresponding renderer context.
     sceneView2.makeCurrent();
 
-    auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
+    auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer2 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer2},
         {omniDepthShader, *shapeRenderer2}};
 
-    auto standardBodyRenderer2 = ape::StandardBodyRenderer{standardShader, *shapeRenderer2};
+    auto standardBodyRenderer2 = ape::LightingBodyRenderer{standardShader, *shapeRenderer2};
 
     auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -357,18 +365,18 @@ int main(int argc, char *argv[])
     
     auto cameraSelector3 = ape::CameraSelector{scene};
 
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeRenderer must be created in the
+    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
     // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
     // must be created in the corresponding renderer context.
     sceneView3.makeCurrent();
 
-    auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectRenderer>(assets.shapes);
+    auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer3 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer3},
         {omniDepthShader, *shapeRenderer3}};
 
-    auto standardBodyRenderer3 = ape::StandardBodyRenderer{standardShader, *shapeRenderer3};
+    auto standardBodyRenderer3 = ape::LightingBodyRenderer{standardShader, *shapeRenderer3};
 
     auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
         wireframeShader,
