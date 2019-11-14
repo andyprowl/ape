@@ -87,13 +87,13 @@ private:
     auto clearTargetBuffers()
         -> void;
 
-    auto renderNonPickedBodies(Camera const & camera) const
+    auto renderNonPickedBodies() const
         -> void;
 
-    auto renderPickedBodies(Camera const & camera) const
+    auto renderPickedBodies() const
         -> void;
 
-    auto renderSkybox(Camera const & camera) const
+    auto renderSkybox() const
         -> void;
 
     auto renderOffscreenSurfaceToScreen() const

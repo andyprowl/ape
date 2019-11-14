@@ -1,3 +1,5 @@
+ - Implement frustum culling
+ - Implement occlusion culling
  - Implement outlining by pushing vertices in the direction of normals
  - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
   - The reason for this is that depth body renderer has to bind framebuffer targets

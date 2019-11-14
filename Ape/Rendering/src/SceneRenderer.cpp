@@ -46,26 +46,20 @@ SceneRenderer::SceneRenderer(
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
 {
-    glEnable(GL_DEPTH_TEST);
-
-    glEnable(GL_STENCIL_TEST);
-
-    // Culling is not appropriate for all shapes. This should be done conditionally in the future.
-    // However, when appropriate, it will save at least 50% of fragment shader calls.
-    glEnable(GL_CULL_FACE);
-
-    glEnable(GL_FRAMEBUFFER_SRGB);
+    setupDrawingMode();
 }
 
 auto SceneRenderer::render()
     -> void
 {
+    if (!hasActiveCamera())
+    {
+        return;
+    }
+
     setupDrawingMode();
 
-    if (hasActiveCamera())
-    {
-        renderSceneToOffscreenSurface();
-    }
+    renderSceneToOffscreenSurface();
 
     renderOffscreenSurfaceToScreen();
 }
@@ -111,6 +105,16 @@ auto SceneRenderer::makeShadowMapping() const
 auto SceneRenderer::setupDrawingMode() const
     -> void
 {
+    glEnable(GL_DEPTH_TEST);
+
+    glEnable(GL_STENCIL_TEST);
+
+    // Culling is not appropriate for all shapes. This should be done conditionally in the future.
+    // However, when appropriate, it will save at least 50% of fragment shader calls.
+    glEnable(GL_CULL_FACE);
+
+    glEnable(GL_FRAMEBUFFER_SRGB);
+
     glCullFace(GL_BACK);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -133,6 +137,9 @@ auto SceneRenderer::hasActiveCamera() const
 auto SceneRenderer::renderSceneToOffscreenSurface()
     -> void
 {
+    // Since OpenGL 4 there always has to be at least one bound VAO when performing drawing
+    // operations. Because the shape renderer may not use per-shape VAOs, we bind to a common
+    // VAO here.
     with(arrayObject, [this]
     {
         renderDepthMapping();
@@ -158,18 +165,14 @@ auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
 
     clearTargetBuffers();
 
-    auto const activeCamera = cameraSelector->getActiveCamera();
-
-    assert(activeCamera != nullptr);
-
     // IMPORTANT: non-picked bodies must be drawn before picked bodies in order for outlining to
     // work correctly due to the way the stencil buffer is used.
 
-    renderNonPickedBodies(*activeCamera);
+    renderNonPickedBodies();
 
-    renderPickedBodies(*activeCamera);
+    renderPickedBodies();
 
-    renderSkybox(*activeCamera);
+    renderSkybox();
 }
 
 auto SceneRenderer::clearTargetBuffers()
@@ -180,7 +183,7 @@ auto SceneRenderer::clearTargetBuffers()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
+auto SceneRenderer::renderNonPickedBodies() const
     -> void
 {
     auto const nonSelectedBodies = pickedBodySelector->getNonSelectedBodies();
@@ -190,12 +193,16 @@ auto SceneRenderer::renderNonPickedBodies(Camera const & camera) const
         return;
     }
 
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    assert(activeCamera != nullptr);
+
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    standardBodyRenderer.render(nonSelectedBodies, camera, lightSystem, shadowMapping);
+    standardBodyRenderer.render(nonSelectedBodies, *activeCamera, lightSystem, shadowMapping);
 }
 
-auto SceneRenderer::renderPickedBodies(Camera const & camera) const
+auto SceneRenderer::renderPickedBodies() const
     -> void
 {
     auto const selectedBodies = pickedBodySelector->getSelectedBodies();
@@ -205,15 +212,23 @@ auto SceneRenderer::renderPickedBodies(Camera const & camera) const
         return;
     }
 
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    assert(activeCamera != nullptr);
+
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    outlinedBodyRenderer.render(selectedBodies, camera, lightSystem, shadowMapping);
+    outlinedBodyRenderer.render(selectedBodies, *activeCamera, lightSystem, shadowMapping);
 }
 
-auto SceneRenderer::renderSkybox(Camera const & camera) const
+auto SceneRenderer::renderSkybox() const
     -> void
 {
-    skyboxRenderer.render(camera);
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    assert(activeCamera != nullptr);
+
+    skyboxRenderer.render(*activeCamera);
 }
 
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const
