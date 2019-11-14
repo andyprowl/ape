@@ -1,10 +1,10 @@
 #include <Rave/RaveCore/RaveAssetBuilder.hpp>
 
-#include <Ape/AssetLoader/AssetLoader.hpp>
-#include <Ape/Model/Material.hpp>
-#include <Ape/Model/Mesh.hpp>
-#include <Ape/Shape/BoxBuilder.hpp>
-#include <Ape/Shape/Shape.hpp>
+#include <Ape/World/AssetLoader//AssetLoader.hpp>
+#include <Ape/World/Model/Material.hpp>
+#include <Ape/World/Model/Mesh.hpp>
+#include <Ape/World/Shape/BoxBuilder.hpp>
+#include <Ape/World/Shape/Shape.hpp>
 
 #include <Glow/Texture/TextureReader.hpp>
 

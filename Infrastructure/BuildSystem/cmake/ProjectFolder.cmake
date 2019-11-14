@@ -13,17 +13,19 @@ function(
 
     get_target_property(TARGET_TYPE ${TARGET_NAME} TYPE)
 
+    string(REPLACE "::" "/" PACKAGE_FOLDER "${PACKAGE_NAME}")
+
     if(TARGET_TYPE STREQUAL "INTERFACE_LIBRARY")
 
         set_target_properties(
             ${TARGET_NAME}.Interface
             PROPERTIES
             FOLDER
-            "${PACKAGE_NAME}")
+            "${PACKAGE_FOLDER}")
 
     else()
     
-        set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "${PACKAGE_NAME}")
+        set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "${PACKAGE_FOLDER}")
 
     endif()
     

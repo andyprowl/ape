@@ -2,7 +2,7 @@
 
 #include <Rave/RaveCore/RaveAssetBuilder.hpp>
 
-#include <Ape/Shape/BoxBuilder.hpp>
+#include <Ape/World/Shape/BoxBuilder.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>

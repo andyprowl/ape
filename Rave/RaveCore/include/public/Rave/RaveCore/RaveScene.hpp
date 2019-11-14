@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Ape/Scene/Scene.hpp>
-#include <Ape/UpdateHandling/BodyPointLightSynchronizer.hpp>
-#include <Ape/UpdateHandling/BodySpotLightSynchronizer.hpp>
-#include <Ape/UpdateHandling/CameraSpotlightSynchronizer.hpp>
+#include <Ape/Engine/UpdateHandling/BodyPointLightSynchronizer.hpp>
+#include <Ape/Engine/UpdateHandling/BodySpotLightSynchronizer.hpp>
+#include <Ape/Engine/UpdateHandling/CameraSpotlightSynchronizer.hpp>
+#include <Ape/World/Scene/Scene.hpp>
 
 #include <vector>
 

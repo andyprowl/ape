@@ -6,25 +6,25 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
-#include <Ape/Effect/EffectCollectionPopulator.hpp>
-#include <Ape/Effect/EffectSelector.hpp>
-#include <Ape/GlfwEngine/GLFWEngine.hpp>
-#include <Ape/GlfwEngine/GLFWGateway.hpp>
-#include <Ape/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Lighting/LightingBodyRenderer.hpp>
-#include <Ape/Lighting/LightingShaderProgram.hpp>
-#include <Ape/Rendering/OutlinedBodyRenderer.hpp>
-#include <Ape/Rendering/SceneRenderer.hpp>
-#include <Ape/Scene/BodySelector.hpp>
-#include <Ape/Scene/CameraSelector.hpp>
-#include <Ape/Shape/ShapeArrayObjectDrawer.hpp>
-#include <Ape/Shape/ShapeBufferObjectDrawer.hpp>
-#include <Ape/Skybox/SkyboxSelector.hpp>
-#include <Ape/Skybox/SkyboxShaderProgram.hpp>
-#include <Ape/Wireframe/LineStyleProvider.hpp>
-#include <Ape/Wireframe/WireframeBodyRenderer.hpp>
-#include <Ape/Wireframe/WireframeShaderProgram.hpp>
+#include <Ape/Engine/GlfwEngine/GLFWEngine.hpp>
+#include <Ape/Engine/GlfwEngine/GLFWGateway.hpp>
+#include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
+#include <Ape/Rendering/Effect/EffectSelector.hpp>
+#include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
+#include <Ape/Rendering/Rendering/SceneRenderer.hpp>
+#include <Ape/World/Scene/BodySelector.hpp>
+#include <Ape/World/Scene/CameraSelector.hpp>
+#include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
+#include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
+#include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
+#include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
+#include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
+#include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
+#include <Ape/Rendering/Wireframe/WireframeShaderProgram.hpp>
 
 namespace rave
 {

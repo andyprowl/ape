@@ -2,11 +2,11 @@
 
 #include <Rave/RaveCore/RaveScene.hpp>
 
-#include <Ape/Lighting/LightingShaderProgram.hpp>
-#include <Ape/Scene/BodySelector.hpp>
-#include <Ape/Scene/CameraSelector.hpp>
-#include <Ape/Windowing/Window.hpp>
-#include <Ape/Wireframe/LineStyleProvider.hpp>
+#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Windowing/Window.hpp>
+#include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
+#include <Ape/World/Scene/BodySelector.hpp>
+#include <Ape/World/Scene/CameraSelector.hpp>
 
 #include <Basix/CompilerSupport/CompilerWarnings.hpp>
 #include <Basix/Mathematics/Math.hpp>

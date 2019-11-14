@@ -185,7 +185,9 @@ function(
 
     endif()
 
-    add_library(${CURRENT_PACKAGE}::${TARGET_NAME} ALIAS ${TARGET_NAME})
+    set(QUALIFIED_ALIAS "${CURRENT_PACKAGE}::${TARGET_NAME}")
+
+    add_library(${QUALIFIED_ALIAS} ALIAS ${TARGET_NAME})
 
 endfunction()
 
@@ -200,7 +202,9 @@ function(
 
     if(${CURRENT_PACKAGE})
 
-        add_executable(${CURRENT_PACKAGE}::${TARGET_NAME} ALIAS ${TARGET_NAME})
+        set(QUALIFIED_ALIAS ${CURRENT_PACKAGE}::${TARGET_NAME})
+
+        add_executable(${QUALIFIED_ALIAS} ALIAS ${TARGET_NAME})
 
     endif()
 

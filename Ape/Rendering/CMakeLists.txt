@@ -1,24 +1,13 @@
-project(Rendering)
+CreatePackage(Rendering)
 
-AddLibrary(${PROJECT_NAME})
+add_subdirectory(Effect)
 
-AddPublicDependencies(
-    ${PROJECT_NAME}
-    3rdParty::glm
-    Ape::Effect
-    Ape::Lighting
-    Ape::Model
-    Ape::Scene
-    Ape::Shape
-    Ape::Skybox
-    Ape::Wireframe
-    Glow::BufferObject
-    Glow::Texture
-    Basix::Range)
+add_subdirectory(Lighting)
 
-AddPrivateDependencies(
-    ${PROJECT_NAME}
-    3rdParty::Glad
-    Ape::Windowing
-    Basix::CompilerSupport
-    Basix::Text)
+add_subdirectory(Rendering)
+
+add_subdirectory(Skybox)
+
+add_subdirectory(Windowing)
+
+add_subdirectory(Wireframe)

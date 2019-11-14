@@ -1,6 +1,6 @@
 #include <Rave/RaveCore/RaveEffectCollectionReader.hpp>
 
-#include <Ape/Effect/EffectCollectionPopulator.hpp>
+#include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 
 namespace rave
 {

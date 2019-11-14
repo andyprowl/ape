@@ -7,24 +7,24 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
-#include <Ape/Effect/EffectCollection.hpp>
-#include <Ape/Effect/EffectSelector.hpp>
-#include <Ape/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Lighting/LightingShaderProgram.hpp>
-#include <Ape/QtEngine/QtEngine.hpp>
-#include <Ape/QtEngine/QtGateway.hpp>
-#include <Ape/QtEngine/QtWindow.hpp>
-#include <Ape/Rendering/SceneRenderer.hpp>
-#include <Ape/Scene/BodySelector.hpp>
-#include <Ape/Scene/CameraSelector.hpp>
-#include <Ape/Shape/ShapeArrayObjectDrawer.hpp>
-#include <Ape/Shape/ShapeBufferObjectDrawer.hpp>
-#include <Ape/Skybox/SkyboxCollection.hpp>
-#include <Ape/Skybox/SkyboxSelector.hpp>
-#include <Ape/Skybox/SkyboxShaderProgram.hpp>
-#include <Ape/Wireframe/LineStyleProvider.hpp>
-#include <Ape/Wireframe/WireframeShaderProgram.hpp>
+#include <Ape/Engine/QtEngine/QtEngine.hpp>
+#include <Ape/Engine/QtEngine/QtGateway.hpp>
+#include <Ape/Engine/QtEngine/QtWindow.hpp>
+#include <Ape/Rendering/Effect/EffectCollection.hpp>
+#include <Ape/Rendering/Effect/EffectSelector.hpp>
+#include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/SceneRenderer.hpp>
+#include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
+#include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
+#include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
+#include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
+#include <Ape/Rendering/Wireframe/WireframeShaderProgram.hpp>
+#include <Ape/World/Scene/BodySelector.hpp>
+#include <Ape/World/Scene/CameraSelector.hpp>
+#include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
+#include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
 
 #include <Basix/Range/Search.hpp>
 

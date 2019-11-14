@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Effect/EffectCollection.hpp>
+#include <Ape/Rendering/Effect/EffectCollection.hpp>
 
 namespace rave
 {
