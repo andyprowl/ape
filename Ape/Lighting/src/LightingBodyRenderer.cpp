@@ -3,7 +3,6 @@
 #include <Ape/Lighting/ShadowMapping.hpp>
 #include <Ape/Lighting/LightingShaderProgram.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/Mesh.hpp>
 #include <Ape/Model/ModelPart.hpp>
@@ -11,7 +10,9 @@
 #include <Ape/Scene/BodyPart.hpp>
 #include <Ape/Scene/Camera.hpp>
 #include <Ape/Shape/ShapeDrawer.hpp>
-#include <Ape/Texture/Texture.hpp>
+
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/Texture.hpp>
 
 #include <glad/glad.h>
 

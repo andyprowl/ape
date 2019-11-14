@@ -2,8 +2,8 @@
 
 #include <Ape/Scene/BodyPart.hpp>
 
-#include <Foundational/Range/ContainerView.hpp>
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Range/ContainerView.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <string>
 #include <string_view>
@@ -50,14 +50,14 @@ public:
         -> BodyPart const &;
 
     auto getParts()
-        -> ContainerView<PartContainer>;
+        -> basix::ContainerView<PartContainer>;
 
     auto getParts() const
-        -> ContainerView<PartContainer const>;
+        -> basix::ContainerView<PartContainer const>;
 
 public:
 
-    mutable Signal<auto (BodyPart const & source) -> void> onLocalTransformationChanged;
+    mutable basix::Signal<auto (BodyPart const & source) -> void> onLocalTransformationChanged;
 
 private:
 

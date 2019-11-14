@@ -2,7 +2,7 @@
 
 #include <Ape/UpdateHandling/Pipeline.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -21,11 +21,11 @@ public:
 private:
 
     auto registerViewChangeEventHandler(Camera & camera)
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
 private:
 
-    ScopedSignalConnection handlerConnection;
+    basix::ScopedSignalConnection handlerConnection;
 
 };
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <glm/vec3.hpp>
 
@@ -63,7 +63,7 @@ public:
 
 public:
 
-    mutable Signal<auto () -> void> onLightChanged;
+    mutable basix::Signal<auto () -> void> onLightChanged;
 
 private:
 

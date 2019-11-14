@@ -124,15 +124,15 @@ auto Body::getPart(int index) const
 }
 
 auto Body::getParts()
-    -> ContainerView<PartContainer>
+    -> basix::ContainerView<PartContainer>
 {
-    return makeView(parts);
+    return basix::makeView(parts);
 }
 
 auto Body::getParts() const
-    -> ContainerView<PartContainer const>
+    -> basix::ContainerView<PartContainer const>
 {
-    return makeView(parts);
+    return basix::makeView(parts);
 }
 
 auto Body::connectPartsToSelf()

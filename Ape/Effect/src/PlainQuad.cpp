@@ -2,9 +2,9 @@
 
 #include <Ape/Effect/PlainQuadVertex.hpp>
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
-#include <Ape/BufferObject/VertexLayout.hpp>
-#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Glow/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <glad/glad.h>
 
@@ -15,31 +15,31 @@ namespace
 {
 
 auto makeVertexBufferObject(std::vector<PlainQuadVertex> const & vertices)
-    -> VertexBufferObject
+    -> glow::VertexBufferObject
 {
-    auto vbo = VertexBufferObject{};
+    auto vbo = glow::VertexBufferObject{};
 
-    auto const binder = bind(vbo);
+    auto const binder = glow::bind(vbo);
 
     auto const vertexBufferSize = vertices.size() * sizeof(PlainQuadVertex);
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    sendVertexLayoutToGpu<PlainQuadVertex>();
+    glow::sendVertexLayoutToGpu<PlainQuadVertex>();
 
     return vbo;
 }
 
-auto makeArrayObject(VertexBufferObject const & vertexBuffer)
-    -> VertexArrayObject
+auto makeArrayObject(glow::VertexBufferObject const & vertexBuffer)
+    -> glow::VertexArrayObject
 {
-    auto arrayObject = VertexArrayObject{};
+    auto arrayObject = glow::VertexArrayObject{};
 
-    auto const binder = bind(arrayObject);
+    auto const binder = glow::bind(arrayObject);
 
     vertexBuffer.bind();
 
-    sendVertexLayoutToGpu<PlainQuadVertex>();
+    glow::sendVertexLayoutToGpu<PlainQuadVertex>();
 
     return arrayObject;
 }
@@ -53,13 +53,13 @@ PlainQuad::PlainQuad()
 }
 
 auto PlainQuad::getVertexBuffer() const 
-    -> const VertexBufferObject &
+    -> const glow::VertexBufferObject &
 {
     return vertexBuffer;
 }
 
 auto PlainQuad::getArrayObject() const 
-    -> const VertexArrayObject &
+    -> const glow::VertexArrayObject &
 {
     return arrayObject;
 }
@@ -71,11 +71,11 @@ auto PlainQuad::getNumOfVertices() const
 }
 
 auto PlainQuad::makeVertices() const
-    -> VertexBufferObject
+    -> glow::VertexBufferObject
 {
-    auto vao = VertexArrayObject{};
+    auto vao = glow::VertexArrayObject{};
 
-    auto const binder = bind(vao);
+    auto const binder = glow::bind(vao);
 
     auto const vertices = std::vector<PlainQuadVertex>{
         {{-1.0f, +1.0f}, {+0.0f, +1.0f}},

@@ -5,14 +5,13 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
-    Ape::BufferObject
     Ape::Effect
-    Ape::GpuResource
-    Ape::Shader
-    Foundational::Range
-    Foundational::Signal)
+    Basix::Range
+    Basix::Signal
+    Glow::BufferObject
+    Glow::Shader)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
-    Foundational::Text)
+    Basix::Text)

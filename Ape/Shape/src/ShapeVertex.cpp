@@ -1,6 +1,6 @@
 #include <Ape/Shape/ShapeVertex.hpp>
 
-#include <Ape/BufferObject/VertexLayout.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
 
 namespace ape
 {
@@ -9,7 +9,7 @@ namespace
 {
 
 auto getVertexLayout()
-    -> VertexLayout<3>
+    -> glow::VertexLayout<3>
 {
     return {
         encodeComponentLayout(ShapeVertex, position),
@@ -19,13 +19,18 @@ auto getVertexLayout()
 
 } // unnamed namespace
 
+} // namespace ape
+
+namespace glow
+{
+
 template<>
-auto sendVertexLayoutToGpu<ShapeVertex>()
+auto sendVertexLayoutToGpu<ape::ShapeVertex>()
     -> void
 {
-    auto const layout = getVertexLayout();
+    auto const layout = ape::getVertexLayout();
 
     sendVertexLayoutToGpu(layout);
 }
 
-} // namespace ape
+} // namespace glow

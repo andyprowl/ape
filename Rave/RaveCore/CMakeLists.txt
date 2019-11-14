@@ -18,4 +18,4 @@ AddPublicDependencies(
     Ape::Skybox
     Ape::UpdateHandling
     Ape::Windowing
-    Foundational::CompilerSupport)
+    Basix::CompilerSupport)

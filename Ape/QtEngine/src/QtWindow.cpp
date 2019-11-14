@@ -132,7 +132,7 @@ auto QtWindow::getAspectRatio() const
 
 // virtual (from Window)
 auto QtWindow::getSize() const
-    -> Size<int>
+    -> basix::Size<int>
 {
     auto const windowSize = size();
 
@@ -141,7 +141,7 @@ auto QtWindow::getSize() const
 
 // virtual (from Window)
 auto QtWindow::getPosition() const
-    -> Position<int>
+    -> basix::Position<int>
 {
     auto const position = pos();
 
@@ -150,7 +150,7 @@ auto QtWindow::getPosition() const
 
 // virtual (from Window)
 auto QtWindow::getMousePosition() const
-    -> Position<int>
+    -> basix::Position<int>
 {
     auto const mouseScreenPosition = QCursor::pos();
     
@@ -301,7 +301,7 @@ auto QtWindow::wheelEvent(QWheelEvent * const e)
 
     auto const deltaY = delta.y() > 0 ? 1 : -1;
 
-    onMouseWheel.fire(Offset<int>{deltaX, deltaY});
+    onMouseWheel.fire(basix::Offset<int>{deltaX, deltaY});
 }
 
 auto QtWindow::resizeEvent(QResizeEvent * const e)
@@ -309,7 +309,7 @@ auto QtWindow::resizeEvent(QResizeEvent * const e)
 {
     auto const newSize = e->size();
 
-    onResize.fire(Size<int>{newSize.width(), newSize.height()});
+    onResize.fire(basix::Size<int>{newSize.width(), newSize.height()});
 
     QOpenGLWidget::resizeEvent(e);
 }

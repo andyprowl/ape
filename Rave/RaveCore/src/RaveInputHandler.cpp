@@ -8,8 +8,8 @@
 #include <Ape/Windowing/Window.hpp>
 #include <Ape/Wireframe/LineStyleProvider.hpp>
 
-#include <Foundational/CompilerSupport/CompilerWarnings.hpp>
-#include <Foundational/Mathematics/Math.hpp>
+#include <Basix/CompilerSupport/CompilerWarnings.hpp>
+#include <Basix/Mathematics/Math.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -259,7 +259,7 @@ auto RaveInputHandler::increaseOutlineWidth(float amount) const
 {
     auto const outliningStyle = outlineStyleProvider->getStyle();
 
-    auto const newWidth = ape::clamp(outliningStyle.width + amount, 0.0f, 0.1f);
+    auto const newWidth = basix::clamp(outliningStyle.width + amount, 0.0f, 0.1f);
 
     auto const newStyle = ape::LineStyle{newWidth, outliningStyle.color};
 

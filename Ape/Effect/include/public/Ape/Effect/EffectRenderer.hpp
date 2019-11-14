@@ -2,12 +2,18 @@
 
 #include <Ape/Effect/PlainQuad.hpp>
 
+namespace glow
+{
+
+class Texture;
+
+} // namespace glow
+
 namespace ape
 {
 
 class EffectSelector;
 class EffectShaderProgram;
-class Texture;
 
 class EffectRenderer
 {
@@ -16,12 +22,12 @@ public:
 
     explicit EffectRenderer(EffectSelector & selector);
 
-    auto render(Texture const & texture) const
+    auto render(glow::Texture const & texture) const
         -> void;
 
 private:
 
-    auto renderWithEffect(Texture const & texture, EffectShaderProgram & effect) const
+    auto renderWithEffect(glow::Texture const & texture, EffectShaderProgram & effect) const
         -> void;
 
     auto drawQuad() const

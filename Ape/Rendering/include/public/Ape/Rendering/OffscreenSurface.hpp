@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Ape/BufferObject/FrameBufferObject.hpp>
-#include <Ape/BufferObject/RenderBufferObject.hpp>
-#include <Ape/Texture/Texture.hpp>
+#include <Glow/BufferObject/FrameBufferObject.hpp>
+#include <Glow/BufferObject/RenderBufferObject.hpp>
+#include <Glow/Texture/Texture.hpp>
 
-#include <Foundational/Mathematics/Size.hpp>
+#include <Basix/Mathematics/Size.hpp>
 
 namespace ape
 {
@@ -14,32 +14,32 @@ class OffscreenSurface
 
 public:
 
-    explicit OffscreenSurface(Size<int> const & size);
+    explicit OffscreenSurface(basix::Size<int> const & size);
 
     auto getColorBuffer() const
-        -> Texture const &;
+        -> glow::Texture const &;
 
     auto getDepthAndStencilBuffer() const
-        -> RenderBufferObject const &;
+        -> glow::RenderBufferObject const &;
 
     auto getFrameBuffer() const
-        -> FrameBufferObject const &;
+        -> glow::FrameBufferObject const &;
 
     auto getSize() const
-        -> Size<int>;
+        -> basix::Size<int>;
 
-    auto setSize(Size<int> const & newSize)
+    auto setSize(basix::Size<int> const & newSize)
         -> void;
 
 private:
 
-    Texture colorBuffer;
+    glow::Texture colorBuffer;
 
-    RenderBufferObject depthAndStencilBuffer;
+    glow::RenderBufferObject depthAndStencilBuffer;
 
-    FrameBufferObject frameBuffer;
+    glow::FrameBufferObject frameBuffer;
 
-    Size<int> size;
+    basix::Size<int> size;
 
 };
 

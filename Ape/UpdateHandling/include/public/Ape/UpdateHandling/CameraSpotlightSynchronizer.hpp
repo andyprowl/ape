@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 namespace ape
 {
@@ -18,14 +18,14 @@ public:
 private:
 
     auto registerViewChangeEventHandler(Camera const & camera, SpotLight & light)
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto synchronize(Camera const & camera, SpotLight & light) const
         -> void;
 
 private:
 
-    ScopedSignalConnection handlerConnection;
+    basix::ScopedSignalConnection handlerConnection;
 
 };
 

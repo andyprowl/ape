@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <glm/mat4x4.hpp>
 

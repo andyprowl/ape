@@ -26,7 +26,7 @@ AddPrivateDependencies(
     opengl32
     Ape::Initialization
     Ape::UpdateHandling
-    Foundational::Time)
+    Basix::Time)
 
 file(GLOB MOC_FILES "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}_autogen/mocs_compilation.cpp")
 

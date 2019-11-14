@@ -1,7 +1,7 @@
 #include <Ape/Skybox/SkyboxCollection.hpp>
 
-#include <Foundational/Range/Search.hpp>
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Search.hpp>
+#include <Basix/Range/Transform.hpp>
 
 namespace ape
 {
@@ -9,27 +9,27 @@ namespace ape
 namespace
 {
 
-auto makeUniqueSkyboxes(std::vector<CubeTexture> skyboxes)
-    -> std::vector<std::unique_ptr<CubeTexture>>
+auto makeUniqueSkyboxes(std::vector<glow::CubeTexture> skyboxes)
+    -> std::vector<std::unique_ptr<glow::CubeTexture>>
 {
-    return transform<std::vector>(skyboxes, [] (CubeTexture & skybox)
-        -> std::unique_ptr<CubeTexture>
+    return basix::transform(skyboxes, [] (glow::CubeTexture & skybox)
+        -> std::unique_ptr<glow::CubeTexture>
     {
-        return std::make_unique<CubeTexture>(std::move(skybox));
+        return std::make_unique<glow::CubeTexture>(std::move(skybox));
     });
 }
 
 } // unnamed namespace
 
-SkyboxCollection::SkyboxCollection(std::vector<CubeTexture> skyboxes)
+SkyboxCollection::SkyboxCollection(std::vector<glow::CubeTexture> skyboxes)
     : skyboxes{makeUniqueSkyboxes(std::move(skyboxes))}
 {
 }
 
-auto SkyboxCollection::addSkybox(CubeTexture skybox)
+auto SkyboxCollection::addSkybox(glow::CubeTexture skybox)
     -> void
 {
-    skyboxes.push_back(std::make_unique<CubeTexture>(std::move(skybox)));
+    skyboxes.push_back(std::make_unique<glow::CubeTexture>(std::move(skybox)));
 
     onSkyboxAdded.fire(*skyboxes.back());
 }
@@ -41,15 +41,15 @@ auto SkyboxCollection::getNumOfSkyboxes() const
 }
 
 auto SkyboxCollection::getSkybox(int const i)
-    -> CubeTexture &
+    -> glow::CubeTexture &
 {
     return *(skyboxes[i]);
 }
 
-auto SkyboxCollection::getSkyboxIndex(CubeTexture const & skybox) const
+auto SkyboxCollection::getSkyboxIndex(glow::CubeTexture const & skybox) const
     -> int
 {
-    auto const it = findIf(skyboxes, [&skybox] (auto const & p)
+    auto const it = basix::findIf(skyboxes, [&skybox] (auto const & p)
     {
         return (p.get() == &skybox);
     });

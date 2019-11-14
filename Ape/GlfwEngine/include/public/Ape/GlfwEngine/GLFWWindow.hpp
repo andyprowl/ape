@@ -27,7 +27,7 @@ public:
 
     GLFWWindow(std::string_view title, CreateAsFullscreen);
 
-    GLFWWindow(std::string_view title, Size<int> const & size);
+    GLFWWindow(std::string_view title, basix::Size<int> const & size);
 
     GLFWWindow(GLFWWindow const & rhs) = delete;
 
@@ -47,15 +47,15 @@ public:
 
     // virtual (from Window)
     auto getSize() const
-        -> Size<int> override;
+        -> basix::Size<int> override;
 
     // virtual (from Window)
     auto getPosition() const
-        -> Position<int> override;
+        -> basix::Position<int> override;
 
     // virtual (from Window)
     auto getMousePosition() const
-        -> Position<int> override;
+        -> basix::Position<int> override;
 
     // virtual (from Window)
     auto isKeyPressed(Key key) const
@@ -108,7 +108,7 @@ private:
 
     public:
 
-        WindowArea(Position<int> const & position, Size<int> const & size)
+        WindowArea(basix::Position<int> const & position, basix::Size<int> const & size)
             : position{position}
             , size{size}
         {
@@ -116,9 +116,9 @@ private:
 
     public:
     
-        Position<int> position;
+        basix::Position<int> position;
 
-        Size<int> size;
+        basix::Size<int> size;
     
     };
 

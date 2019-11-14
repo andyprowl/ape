@@ -2,7 +2,7 @@
 
 #include <Ape/Effect/EffectShaderProgram.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -46,7 +46,7 @@ public:
 
 public:
 
-    Signal<auto (EffectShaderProgram &) -> void> onEffectAdded;
+    basix::Signal<auto (EffectShaderProgram &) -> void> onEffectAdded;
 
 private:
 

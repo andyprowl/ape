@@ -4,7 +4,6 @@
 #include <Ape/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Viewport.hpp>
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
 #include <Ape/Effect/EffectRenderer.hpp>
 #include <Ape/Lighting/DepthBodyRenderer.hpp>
 #include <Ape/Lighting/ShadowMapping.hpp>
@@ -12,6 +11,8 @@
 #include <Ape/Shape/ShapeDrawer.hpp>
 #include <Ape/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Wireframe/WireframeBodyRenderer.hpp>
+
+#include <Glow/BufferObject/VertexArrayObject.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -129,7 +130,7 @@ private:
 
     glm::vec3 backgroundColor;
 
-    VertexArrayObject arrayObject;
+    glow::VertexArrayObject arrayObject;
 
 };
 

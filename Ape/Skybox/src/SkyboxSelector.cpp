@@ -2,8 +2,8 @@
 
 #include <Ape/Skybox/SkyboxCollection.hpp>
 
-#include <Foundational/Range/Search.hpp>
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Search.hpp>
+#include <Basix/Range/Transform.hpp>
 
 #include <algorithm>
 #include <numeric>
@@ -15,11 +15,11 @@ namespace
 {
 
 auto getAllSkyboxesFromCollection(SkyboxCollection & collection)
-    -> std::vector<CubeTexture *>
+    -> std::vector<glow::CubeTexture *>
 {
     auto const numOfSkyboxes = collection.getNumOfSkyboxes();
 
-    auto effects = std::vector<CubeTexture *>{};
+    auto effects = std::vector<glow::CubeTexture *>{};
 
     effects.reserve(numOfSkyboxes);
 
@@ -49,13 +49,13 @@ auto SkyboxSelector::getCollection() const
 }
 
 auto SkyboxSelector::getAvailableSkyboxes() const
-    -> std::vector<CubeTexture *> const &
+    -> std::vector<glow::CubeTexture *> const &
 {
     return availableSkyboxes;
 }
 
 auto SkyboxSelector::getActiveSkybox() const
-    -> CubeTexture *
+    -> glow::CubeTexture *
 {
     if (!activeSkyboxIndex)
     {
@@ -78,7 +78,7 @@ auto SkyboxSelector::activateSkybox(int const index)
     onActiveSkyboxChanged.fire(getActiveSkybox());
 }
 
-auto SkyboxSelector::activateSkybox(CubeTexture const & effect)
+auto SkyboxSelector::activateSkybox(glow::CubeTexture const & effect)
     -> void
 {
     if (getActiveSkybox() == &effect)

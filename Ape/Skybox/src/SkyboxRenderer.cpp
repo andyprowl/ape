@@ -3,8 +3,9 @@
 #include <Ape/Skybox/SkyboxSelector.hpp>
 #include <Ape/Skybox/SkyboxShaderProgram.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/Scene/Camera.hpp>
+
+#include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <glad/glad.h>
 
@@ -38,7 +39,7 @@ auto SkyboxRenderer::render(Camera const & camera) const
     glDepthFunc(GL_LESS);
 }
 
-auto SkyboxRenderer::setupUniforms(Camera const & camera, CubeTexture const & skybox) const
+auto SkyboxRenderer::setupUniforms(Camera const & camera, glow::CubeTexture const & skybox) const
     -> void
 {
     auto const projection = camera.getProjection().getTransformation();

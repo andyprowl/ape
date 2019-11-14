@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Ape/BufferObject/FrameBufferObject.hpp>
-#include <Ape/Texture/CubeTexture.hpp>
+#include <Glow/BufferObject/FrameBufferObject.hpp>
+#include <Glow/Texture/CubeTexture.hpp>
 
 namespace ape
 {
@@ -11,24 +11,24 @@ class OmniDepthMap
 
 public:
 
-    explicit OmniDepthMap(Size<int> const & size);
+    explicit OmniDepthMap(basix::Size<int> const & size);
 
     auto getTexture() const
-        -> CubeTexture const &;
+        -> glow::CubeTexture const &;
 
     auto getFrameBuffer() const
-        -> FrameBufferObject const &;
+        -> glow::FrameBufferObject const &;
 
     auto getSize() const
-        -> Size<int>;
+        -> basix::Size<int>;
 
 private:
 
-    CubeTexture texture;
+    glow::CubeTexture texture;
 
-    FrameBufferObject frameBuffer;
+    glow::FrameBufferObject frameBuffer;
 
-    Size<int> size;
+    basix::Size<int> size;
 
 };
 

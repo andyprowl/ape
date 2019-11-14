@@ -2,7 +2,7 @@
 
 #include <Ape/Effect/EffectCollection.hpp>
 
-#include <Foundational/Text/Substring.hpp>
+#include <Basix/Text/Substring.hpp>
 
 namespace ape
 {
@@ -20,7 +20,7 @@ auto isEffectShaderFile(std::filesystem::directory_entry const & entry)
         return false;
     }
 
-    return endsWith(entry.path().string(), effectShaderSuffix);
+    return basix::endsWith(entry.path().string(), effectShaderSuffix);
 }
 
 } // unnamed namespace

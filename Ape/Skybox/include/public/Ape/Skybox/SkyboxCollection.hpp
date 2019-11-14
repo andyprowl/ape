@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Ape/Texture/CubeTexture.hpp>
+#include <Glow/Texture/CubeTexture.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -30,28 +30,28 @@ public:
 
     SkyboxCollection() = default;
 
-    explicit SkyboxCollection(std::vector<CubeTexture> skyboxes);
+    explicit SkyboxCollection(std::vector<glow::CubeTexture> skyboxes);
 
-    auto addSkybox(CubeTexture skybox)
+    auto addSkybox(glow::CubeTexture skybox)
         -> void;
 
     auto getNumOfSkyboxes() const
         -> int;
 
     auto getSkybox(int i)
-        -> CubeTexture &;
+        -> glow::CubeTexture &;
 
-    auto getSkyboxIndex(CubeTexture const & skybox) const
+    auto getSkyboxIndex(glow::CubeTexture const & skybox) const
         -> int;
 
 public:
 
-    Signal<auto (CubeTexture &) -> void> onSkyboxAdded;
+    basix::Signal<auto (glow::CubeTexture &) -> void> onSkyboxAdded;
 
 private:
 
     // Held by unique pointer to avoid invalidation issues.
-    std::vector<std::unique_ptr<CubeTexture>> skyboxes;
+    std::vector<std::unique_ptr<glow::CubeTexture>> skyboxes;
 
 };
 

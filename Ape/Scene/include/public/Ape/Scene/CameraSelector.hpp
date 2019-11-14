@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <optional>
 #include <stdexcept>
@@ -69,7 +69,7 @@ public:
 
 public:
 
-    mutable Signal<auto (Camera *) -> void> onActiveCameraChanged;
+    mutable basix::Signal<auto (Camera *) -> void> onActiveCameraChanged;
 
 private:
 
@@ -80,7 +80,7 @@ private:
         -> std::optional<int>;
 
     auto registerCamerReallocationHandler()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto restoreValidCameraReferences(std::vector<Camera *> & cameras) const
         -> void;
@@ -98,7 +98,7 @@ private:
 
     std::optional<int> activeCameraIndex;
 
-    ScopedSignalConnection cameraReallocationHandlerConnection;
+    basix::ScopedSignalConnection cameraReallocationHandlerConnection;
 
 };
 

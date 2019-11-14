@@ -2,11 +2,17 @@
 
 #include <Ape/Skybox/PlainCube.hpp>
 
+namespace glow
+{
+
+class CubeTexture;
+
+} // namespace glow
+
 namespace ape
 {
 
 class Camera;
-class CubeTexture;
 class SkyboxSelector;
 class SkyboxShaderProgram;
 
@@ -22,7 +28,7 @@ public:
 
 private:
 
-    auto setupUniforms(Camera const & camera, CubeTexture const & skybox) const
+    auto setupUniforms(Camera const & camera, glow::CubeTexture const & skybox) const
         -> void;
 
     auto drawCube() const

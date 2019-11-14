@@ -1,7 +1,7 @@
 #include <Ape/Lighting/OmniDepthMap.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/Texture/TextureStorageType.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -11,42 +11,42 @@ namespace ape
 namespace
 {
 
-auto makeOmniDepthMapFaceImage(Size<int> const & size)
-    -> TextureImage
+auto makeOmniDepthMapFaceImage(basix::Size<int> const & size)
+    -> glow::TextureImage
 {
-    return {nullptr, size, TextureImageFormat::depth, PixelType::floatingPoint};
+    return {nullptr, size, glow::TextureImageFormat::depth, glow::PixelType::floatingPoint};
 }
 
-auto makeOmniDepthMapImageSet(Size<int> const & size)
-    -> CubeTextureImageSet
+auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
+    -> glow::CubeTextureImageSet
 {
     auto const faceImage = makeOmniDepthMapFaceImage(size);
 
     return {faceImage, faceImage, faceImage, faceImage, faceImage, faceImage};
 }
 
-auto makeOmniDepthMapTexture(Size<int> const & size)
-    -> CubeTexture
+auto makeOmniDepthMapTexture(basix::Size<int> const & size)
+    -> glow::CubeTexture
 {
     auto const imageSet = makeOmniDepthMapImageSet(size);
 
     // TODO: Should we use depth32 or depth32f here?
-    auto const descriptor = CubeTextureDescriptor{
+    auto const descriptor = glow::CubeTextureDescriptor{
         imageSet,
-        TextureInternalFormat::depth32,
-        TextureWrapping::clampToEdge};
+        glow::TextureInternalFormat::depth32,
+        glow::TextureWrapping::clampToEdge};
 
-    return CubeTexture{descriptor};
+    return glow::CubeTexture{descriptor};
 }
 
-auto makeOmniDepthMapFrameBuffer(CubeTexture & depthMapTexture)
-    -> FrameBufferObject
+auto makeOmniDepthMapFrameBuffer(glow::CubeTexture & depthMapTexture)
+    -> glow::FrameBufferObject
 {
-    auto frameBuffer = FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{};
 
-    auto const binder = bind(frameBuffer);
+    auto const binder = glow::bind(frameBuffer);
 
-    frameBuffer.attach(depthMapTexture, FrameBufferAttachment::depth);
+    frameBuffer.attach(depthMapTexture, glow::FrameBufferAttachment::depth);
 
     frameBuffer.resetDrawTarget();
 
@@ -59,7 +59,7 @@ auto makeOmniDepthMapFrameBuffer(CubeTexture & depthMapTexture)
 
 } // unnamed namespace
 
-OmniDepthMap::OmniDepthMap(Size<int> const & size)
+OmniDepthMap::OmniDepthMap(basix::Size<int> const & size)
     : texture{makeOmniDepthMapTexture(size)}
     , frameBuffer{makeOmniDepthMapFrameBuffer(texture)}
     , size{size}
@@ -67,19 +67,19 @@ OmniDepthMap::OmniDepthMap(Size<int> const & size)
 }
 
 auto OmniDepthMap::getTexture() const
-    -> CubeTexture const &
+    -> glow::CubeTexture const &
 {
     return texture;
 }
 
 auto OmniDepthMap::getFrameBuffer() const
-    -> FrameBufferObject const &
+    -> glow::FrameBufferObject const &
 {
     return frameBuffer;
 }
 
 auto OmniDepthMap::getSize() const
-    -> Size<int>
+    -> basix::Size<int>
 {
     return size;
 }

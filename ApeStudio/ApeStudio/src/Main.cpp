@@ -26,7 +26,7 @@
 #include <Ape/Wireframe/LineStyleProvider.hpp>
 #include <Ape/Wireframe/WireframeShaderProgram.hpp>
 
-#include <Foundational/Range/Search.hpp>
+#include <Basix/Range/Search.hpp>
 
 #include <QApplication>
 #include <QFileSystemModel>
@@ -111,13 +111,13 @@ auto getGridLayout(QWidget & widget)
 auto isDebugOutputEnabled(std::vector<std::string> const & arguments)
     -> bool
 {
-    return ape::contains(arguments, "--enable-debug-output");
+    return basix::contains(arguments, "--enable-debug-output");
 }
 
 auto isSponzaExcluded(std::vector<std::string> const & arguments)
     -> bool
 {
-    return ape::contains(arguments, "--exclude-sponza");
+    return basix::contains(arguments, "--exclude-sponza");
 }
 
 int main(int argc, char *argv[])

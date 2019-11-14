@@ -103,7 +103,7 @@ auto CameraManipulator::onFrame(std::chrono::nanoseconds const frameDuration)
     processStrafeMovement(*activeCamera, frameDurationInSeconds);
 }
 
-auto CameraManipulator::onMouseWheel(Offset<int> const offset)
+auto CameraManipulator::onMouseWheel(basix::Offset<int> const offset)
     -> void
 {
     sightDriver.onMouseWheel(offset);

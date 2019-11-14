@@ -18,15 +18,15 @@ auto Scene::getBody(int const index)
 
 
 auto Scene::getBodies()
-    -> ContainerView<std::vector<Body>>
+    -> basix::ContainerView<std::vector<Body>>
 {
-    return ContainerView<std::vector<Body>>{bodies};
+    return basix::ContainerView<std::vector<Body>>{bodies};
 }
 
 auto Scene::getBodies() const
-    -> ContainerView<std::vector<Body> const>
+    -> basix::ContainerView<std::vector<Body> const>
 {
-    return ContainerView<std::vector<Body> const>{bodies};
+    return basix::ContainerView<std::vector<Body> const>{bodies};
 }
 
 auto Scene::getNumOfBodies() const
@@ -59,15 +59,15 @@ auto Scene::getCamera(int const index)
 }
 
 auto Scene::getCameras()
-    -> ContainerView<std::vector<Camera>>
+    -> basix::ContainerView<std::vector<Camera>>
 {
-    return ContainerView<std::vector<Camera>>{cameras};
+    return basix::ContainerView<std::vector<Camera>>{cameras};
 }
 
 auto Scene::getCameras() const
-    -> ContainerView<std::vector<Camera> const>
+    -> basix::ContainerView<std::vector<Camera> const>
 {
-    return ContainerView<std::vector<Camera> const>{cameras};
+    return basix::ContainerView<std::vector<Camera> const>{cameras};
 }
 
 auto Scene::getNumOfCameras() const

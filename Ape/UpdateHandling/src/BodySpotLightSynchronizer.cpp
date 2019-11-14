@@ -17,7 +17,7 @@ BodySpotLightSynchronizer::BodySpotLightSynchronizer(Body const & source, SpotLi
 auto BodySpotLightSynchronizer::registerTransformationChangeEventHandler(
     Body const & source,
     SpotLight & target)
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return source.onLocalTransformationChanged.registerHandler(
         [&source, &target] (auto const & part)

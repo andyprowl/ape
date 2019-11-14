@@ -6,12 +6,12 @@
 #include <Ape/Lighting/LightSystemViewUniform.hpp>
 #include <Ape/Lighting/MaterialUniform.hpp>
 
-#include <Ape/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
 
 namespace ape
 {
 
-class LightingShaderProgram : public ShaderProgram
+class LightingShaderProgram : public glow::ShaderProgram
 {
 
 public:
@@ -20,25 +20,25 @@ public:
 
 public:
 
-    Uniform<glm::mat4> modelTransformation;
+    glow::Uniform<glm::mat4> modelTransformation;
 
-    Uniform<glm::mat4> cameraTransformation;
+    glow::Uniform<glm::mat4> cameraTransformation;
 
-    Uniform<glm::mat3> normalTransformation;
+    glow::Uniform<glm::mat3> normalTransformation;
 
-    Uniform<Camera> camera;
+    glow::Uniform<Camera> camera;
 
-    Uniform<LightSystem> lightSystem;
+    glow::Uniform<LightSystem> lightSystem;
 
-    Uniform<LightSystemView> lightSystemView;
+    glow::Uniform<LightSystemView> lightSystemView;
 
-    Uniform<Material> material;
+    glow::Uniform<Material> material;
 
-    Uniform<DepthMapping> depthMapping;
+    glow::Uniform<DepthMapping> depthMapping;
 
-    Uniform<bool> useBlinnPhongModel;
+    glow::Uniform<bool> useBlinnPhongModel;
 
-    Uniform<bool> usePercentageCloserFiltering;
+    glow::Uniform<bool> usePercentageCloserFiltering;
 
 };
 

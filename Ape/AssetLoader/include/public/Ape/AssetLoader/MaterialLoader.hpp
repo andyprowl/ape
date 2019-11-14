@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Texture/TextureReader.hpp>
+#include <Glow/Texture/TextureReader.hpp>
 
 #include <glm/vec4.hpp>
 
@@ -8,18 +8,24 @@
 #include <string>
 #include <vector>
 
-enum class ColorSpace;
-
 enum aiTextureType : int;
 
 struct aiMaterial;
 struct aiScene;
 
+namespace glow
+{
+
+enum class ColorSpace;
+
+class Texture;
+
+} // namespace glow
+
 namespace ape
 {
 
 class AssetRepository;
-class Texture;
 class TextureCache;
 
 class MaterialLoader
@@ -53,13 +59,17 @@ private:
         aiMaterial const & material,
         aiTextureType const type,
         std::filesystem::path const & directory) const
-        -> std::vector<Texture const *>;
+        -> std::vector<glow::Texture const *>;
 
-    auto getOrReadTexture(std::filesystem::path const & path, ColorSpace const colorSpace) const
-        -> Texture const &;
+    auto getOrReadTexture(
+        std::filesystem::path const & path,
+        glow::ColorSpace const colorSpace) const
+        -> glow::Texture const &;
 
-    auto readAndStoreTexture(std::filesystem::path const & path, ColorSpace const colorSpace) const
-        -> Texture const &;
+    auto readAndStoreTexture(
+        std::filesystem::path const & path,
+        glow::ColorSpace const colorSpace) const
+        -> glow::Texture const &;
 
 private:
 
@@ -67,7 +77,7 @@ private:
 
     TextureCache * textureCache;
 
-    TextureReader textureReader;
+    glow::TextureReader textureReader;
 
 };
 

@@ -38,7 +38,7 @@ public:
     auto createWindow(std::string_view title, CreateAsFullscreen)
         -> GLFWWindow;
 
-    auto createWindow(std::string_view title, Size<int> const & size)
+    auto createWindow(std::string_view title, basix::Size<int> const & size)
         -> GLFWWindow;
 
 private:

@@ -1,6 +1,6 @@
 #include <Ape/Effect/PlainQuadVertex.hpp>
 
-#include <Ape/BufferObject/VertexLayout.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
 
 namespace ape
 {
@@ -9,7 +9,7 @@ namespace
 {
 
 auto getVertexLayout()
-    -> VertexLayout<2>
+    -> glow::VertexLayout<2>
 {
     return {
         encodeComponentLayout(PlainQuadVertex, position),
@@ -18,13 +18,18 @@ auto getVertexLayout()
 
 } // unnamed namespace
 
+} // namespace ape
+
+namespace glow
+{
+
 template<>
-auto sendVertexLayoutToGpu<PlainQuadVertex>()
+auto sendVertexLayoutToGpu<ape::PlainQuadVertex>()
     -> void
 {
-    auto const layout = getVertexLayout();
+    auto const layout = ape::getVertexLayout();
 
     sendVertexLayoutToGpu(layout);
 }
 
-} // namespace ape
+} // namespace glow

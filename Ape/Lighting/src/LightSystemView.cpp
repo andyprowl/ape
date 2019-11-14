@@ -3,7 +3,7 @@
 #include <Ape/Scene/Camera.hpp>
 #include <Ape/Scene/LightSystem.hpp>
 
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Transform.hpp>
 
 namespace ape
 {
@@ -58,13 +58,13 @@ auto makePointLightView(PointLight const & light)
 auto makePointLightView(LightSystem const & lightSystem)
     -> std::vector<PointLightView>
 {
-    return transform(lightSystem.point, [] (PointLight const & light)
+    return basix::transform(lightSystem.point, [] (PointLight const & light)
     {
         return makePointLightView(light);
     });
 }
 
-auto makeSpotLightView(SpotLight const & light, Size<int> const & viewSize)
+auto makeSpotLightView(SpotLight const & light, basix::Size<int> const & viewSize)
     -> glm::mat4
 {
     // TODO: Is it correct to compute the aspect ratio from the view's aspect ratio?
@@ -82,10 +82,10 @@ auto makeSpotLightView(SpotLight const & light, Size<int> const & viewSize)
     return camera.getTransformation();
 }
 
-auto makeSpotLightView(LightSystem const & lightSystem, Size<int> const & viewSize)
+auto makeSpotLightView(LightSystem const & lightSystem, basix::Size<int> const & viewSize)
     -> std::vector<glm::mat4>
 {
-    return transform(lightSystem.spot, [&viewSize] (SpotLight const & light)
+    return basix::transform(lightSystem.spot, [&viewSize] (SpotLight const & light)
     {
         return makeSpotLightView(light, viewSize);
     });
@@ -94,6 +94,9 @@ auto makeSpotLightView(LightSystem const & lightSystem, Size<int> const & viewSi
 auto makeDirectionalLightView(DirectionalLight const & light)
     -> glm::mat4
 {
+    // TODO: This matrix calculation is incorrect and hacky an needs to be changed.
+    // Cascaded shadow maps should be used.
+
     auto const nearPlane = 0.1f;
 
     auto const farPlane = 100.0f;
@@ -114,7 +117,7 @@ auto makeDirectionalLightView(DirectionalLight const & light)
 auto makeDirectionalLightView(LightSystem const & lightSystem)
     -> std::vector<glm::mat4>
 {
-    return transform(lightSystem.directional, [] (DirectionalLight const & light)
+    return basix::transform(lightSystem.directional, [] (DirectionalLight const & light)
     {
         return makeDirectionalLightView(light);
     });
@@ -122,7 +125,9 @@ auto makeDirectionalLightView(LightSystem const & lightSystem)
 
 } // unnamed namespace
 
-LightSystemView::LightSystemView(LightSystem const & lightSystem, Size<int> const & viewSize)
+LightSystemView::LightSystemView(
+    LightSystem const & lightSystem,
+    basix::Size<int> const & viewSize)
     : lightSystem{&lightSystem}
     , viewSize{viewSize}
     , pointView{makePointLightView(lightSystem)}
@@ -158,7 +163,7 @@ auto LightSystemView::getDirectionalView() const
     return directionalView;
 }
 
-auto LightSystemView::setViewSize(Size<int> const & newViewSize)
+auto LightSystemView::setViewSize(basix::Size<int> const & newViewSize)
     -> void
 {
     viewSize = newViewSize;
@@ -170,27 +175,27 @@ auto LightSystemView::setViewSize(Size<int> const & newViewSize)
 }
 
 auto LightSystemView::registerForPointLightChangeNotifications()
-    -> std::vector<ScopedSignalConnection>
+    -> std::vector<basix::ScopedSignalConnection>
 {
-    return transform(lightSystem->point, [this] (PointLight const & light)
+    return basix::transform(lightSystem->point, [this] (PointLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
 }
 
 auto LightSystemView::registerForSpotLightChangeNotifications()
-    -> std::vector<ScopedSignalConnection>
+    -> std::vector<basix::ScopedSignalConnection>
 {
-    return transform(lightSystem->spot, [this] (SpotLight const & light)
+    return basix::transform(lightSystem->spot, [this] (SpotLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
 }
 
 auto LightSystemView::registerForDirectionalLightChangeNotifications()
-    -> std::vector<ScopedSignalConnection>
+    -> std::vector<basix::ScopedSignalConnection>
 {
-    return transform(lightSystem->directional, [this] (DirectionalLight const & light)
+    return basix::transform(lightSystem->directional, [this] (DirectionalLight const & light)
     {
         return registerForLightChangeNotifications(light);
     });
@@ -198,7 +203,7 @@ auto LightSystemView::registerForDirectionalLightChangeNotifications()
 
 template<typename LightType>
 auto LightSystemView::registerForLightChangeNotifications(LightType const & light)
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return light.onLightChanged.registerHandler([this, &light]
     {

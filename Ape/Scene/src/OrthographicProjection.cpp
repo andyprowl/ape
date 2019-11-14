@@ -2,7 +2,7 @@
 
 #include <Ape/Scene/Camera.hpp>
 
-#include <Foundational/CompilerSupport/CompilerWarnings.hpp>
+#include <Basix/CompilerSupport/CompilerWarnings.hpp>
 
 disableCompilerWarnings()
 #include <glm/gtc/matrix_transform.hpp>

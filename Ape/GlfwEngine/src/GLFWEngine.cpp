@@ -5,10 +5,10 @@
 #include <Ape/UpdateHandling/InputHandler.hpp>
 #include <Ape/Windowing/Window.hpp>
 
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
-#include <Foundational/Time/FrequencyTracker.hpp>
-#include <Foundational/Time/Stopwatch.hpp>
-#include <Foundational/Time/TimeIntervalTracker.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Time/FrequencyTracker.hpp>
+#include <Basix/Time/Stopwatch.hpp>
+#include <Basix/Time/TimeIntervalTracker.hpp>
 
 #include "GLFW.hpp"
 
@@ -50,9 +50,9 @@ public:
 private:
     
     auto registerWindowResizeHandler()
-        -> ScopedSignalConnection
+        -> basix::ScopedSignalConnection
     {
-        return window->onResize.registerHandler([this] (Size<int> const & size)
+        return window->onResize.registerHandler([this] (basix::Size<int> const & size)
         {
             setViewport(size);
         });
@@ -84,7 +84,7 @@ private:
         return setViewport(size);
     }
 
-    auto setViewport(Size<int> const & size)
+    auto setViewport(basix::Size<int> const & size)
         -> void
     {
         if (size.height == 0)
@@ -154,7 +154,7 @@ private:
 
 private:
 
-    Stopwatch stopwatch;
+    basix::Stopwatch stopwatch;
     
     Window * window;
 
@@ -162,11 +162,11 @@ private:
 
     InputHandler * inputHandler;
 
-    TimeIntervalTracker timeTracker;
+    basix::TimeIntervalTracker timeTracker;
 
-    FrequencyTracker rateTracker;
+    basix::FrequencyTracker rateTracker;
 
-    ScopedSignalConnection resizeHandlerConnection;
+    basix::ScopedSignalConnection resizeHandlerConnection;
 
     bool stopBeforeNextIteration;
 

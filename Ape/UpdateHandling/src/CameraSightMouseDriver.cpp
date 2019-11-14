@@ -6,8 +6,8 @@
 #include <Ape/Scene/CameraSelector.hpp>
 #include <Ape/Windowing/Window.hpp>
 
-#include <Foundational/Mathematics/Math.hpp>
-#include <Foundational/Mathematics/Offset.hpp>
+#include <Basix/Mathematics/Math.hpp>
+#include <Basix/Mathematics/Offset.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -107,12 +107,14 @@ auto CameraSightMouseDriver::onFrame()
         return;
     }
 
-    auto const angularOffset = Offset{offset.deltaX * sensitivity, -offset.deltaY * sensitivity};
+    auto const angularOffset = basix::Offset{
+        offset.deltaX * sensitivity,
+        -offset.deltaY * sensitivity};
 
     moveBy(*activeCamera, angularOffset);
 }
 
-auto CameraSightMouseDriver::onMouseWheel(Offset<int> const offset)
+auto CameraSightMouseDriver::onMouseWheel(basix::Offset<int> const offset)
     -> void
 {
     auto const activeCamera = cameraSelector->getActiveCamera();
@@ -128,7 +130,7 @@ auto CameraSightMouseDriver::onMouseWheel(Offset<int> const offset)
 }
 
 auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return cameraSelector->onActiveCameraChanged.registerHandler(
         [this] (Camera const * const /*activeCamera*/)
@@ -137,10 +139,10 @@ auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
     });
 }
 
-auto CameraSightMouseDriver::moveBy(Camera & camera, Offset<float> const & angularOffset)
+auto CameraSightMouseDriver::moveBy(Camera & camera, basix::Offset<float> const & angularOffset)
     -> void
 {
-    angles.pitch = clamp((angles.pitch + angularOffset.deltaY), -89.0f, 89.0f);
+    angles.pitch = basix::clamp((angles.pitch + angularOffset.deltaY), -89.0f, 89.0f);
 
     angles.yaw += angularOffset.deltaX;
 
@@ -163,7 +165,7 @@ auto CameraSightMouseDriver::zoomBy(Camera & camera, float const factor) const
 
     auto const newFieldOfView = currentFieldOfView - factor;
 
-    auto const clampedFieldOfView = clamp(newFieldOfView, 1.0f, 45.0f);
+    auto const clampedFieldOfView = basix::clamp(newFieldOfView, 1.0f, 45.0f);
 
     perspective->setFieldOfView(glm::radians(clampedFieldOfView));
 }

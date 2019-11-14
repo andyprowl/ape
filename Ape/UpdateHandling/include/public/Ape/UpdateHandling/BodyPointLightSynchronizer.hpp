@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 namespace ape
 {
@@ -18,11 +18,11 @@ public:
 private:
 
     auto registerPositionChangeEventHandler(Body const & source, PointLight & target)
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
 private:
 
-    ScopedSignalConnection handlerConnection;
+    basix::ScopedSignalConnection handlerConnection;
 
 };
 

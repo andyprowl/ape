@@ -17,7 +17,7 @@ CameraSpotlightSynchronizer::CameraSpotlightSynchronizer(Camera const & camera, 
 auto CameraSpotlightSynchronizer::registerViewChangeEventHandler(
     Camera const & camera,
     SpotLight & light)
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return camera.onViewChanged.registerHandler(
         [this, &camera, &light] (glm::mat4 const & /*view*/)

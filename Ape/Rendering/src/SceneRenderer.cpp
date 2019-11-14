@@ -1,6 +1,5 @@
 #include <Ape/Rendering/SceneRenderer.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
 #include <Ape/Model/Material.hpp>
 #include <Ape/Model/ModelPart.hpp>
 #include <Ape/Scene/BodySelector.hpp>
@@ -9,6 +8,8 @@
 #include <Ape/Scene/Scene.hpp>
 #include <Ape/Shape/Shape.hpp>
 #include <Ape/Windowing/Window.hpp>
+
+#include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <glad/glad.h>
 
@@ -97,7 +98,7 @@ auto SceneRenderer::makeShadowMapping() const
 {
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    auto const depthMapSize = Size<int>{1024, 1024};
+    auto const depthMapSize = basix::Size<int>{1024, 1024};
 
     return ShadowMapping{lightSystem, depthMapSize};
 }

@@ -5,10 +5,10 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
-    Ape::GpuResource
     Ape::Model
     Ape::Scene
-    Foundational::Range)
+    Basix::Range
+    Glow::GpuResource)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
@@ -16,4 +16,4 @@ AddPrivateDependencies(
     Ape::Rendering
     Ape::Skybox
     Ape::Windowing
-    Foundational::CompilerSupport)
+    Basix::CompilerSupport)

@@ -1,7 +1,7 @@
 #include <Ape/Shape/Shape.hpp>
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
-#include <Ape/BufferObject/VertexLayout.hpp>
+#include <Glow/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
 
 #include <glad/glad.h>
 
@@ -12,9 +12,9 @@ namespace
 {
 
 auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
-    -> VertexBufferObject
+    -> glow::VertexBufferObject
 {
-    auto vbo = VertexBufferObject{};
+    auto vbo = glow::VertexBufferObject{};
 
     vbo.bind();
 
@@ -22,15 +22,15 @@ auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    sendVertexLayoutToGpu<ShapeVertex>();
+    glow::sendVertexLayoutToGpu<ShapeVertex>();
 
     return vbo;
 }
 
 auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
-    -> ElementBufferObject
+    -> glow::ElementBufferObject
 {
-    auto ebo = ElementBufferObject{};
+    auto ebo = glow::ElementBufferObject{};
 
     ebo.bind();
 
@@ -52,13 +52,13 @@ Shape::Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int
 }
 
 auto Shape::getVertexBufferObject() const 
-    -> const VertexBufferObject &
+    -> const glow::VertexBufferObject &
 {
     return bufferObjects.vertex;
 }
 
 auto Shape::getElementBufferObject() const 
-    -> const ElementBufferObject &
+    -> const glow::ElementBufferObject &
 {
     return bufferObjects.element;
 }
@@ -74,7 +74,7 @@ auto Shape::makeVertices(
     std::vector<unsigned int> const & indices) const
     -> BufferObjects
 {
-    auto vao = VertexArrayObject{};
+    auto vao = glow::VertexArrayObject{};
 
     vao.bind();
 

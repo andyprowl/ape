@@ -11,7 +11,7 @@ CameraViewSensor::CameraViewSensor(Camera & camera)
 }
 
 auto CameraViewSensor::registerViewChangeEventHandler(Camera & camera)
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return camera.onViewChanged.registerHandler([this] (glm::mat4 const & view)
     {

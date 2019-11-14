@@ -5,11 +5,11 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
-    Ape::BufferObject
     Ape::Model
-    Foundational::Range)
+    Basix::Range
+    Glow::BufferObject)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
-    Foundational::CompilerSupport)
+    Basix::CompilerSupport)

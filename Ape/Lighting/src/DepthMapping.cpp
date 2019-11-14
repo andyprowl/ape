@@ -2,7 +2,7 @@
 
 #include <Ape/Scene/LightSystem.hpp>
 
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Transform.hpp>
 
 namespace ape
 {
@@ -10,20 +10,24 @@ namespace ape
 namespace
 {
 
-auto makePointLightDepthMapping(std::vector<PointLight> const & lights, Size<int> const & mapSize)
+auto makePointLightDepthMapping(
+    std::vector<PointLight> const & lights,
+    basix::Size<int> const & mapSize)
     -> std::vector<OmniDepthMap>
 {
-    return transform(lights, [&mapSize] (auto const & /*light*/)
+    return basix::transform(lights, [&mapSize] (auto const & /*light*/)
     {
         return OmniDepthMap{mapSize};
     });
 }
 
 template<typename LightContainer>
-auto makeOrientedLightDepthMapping(LightContainer const & lights, Size<int> const & mapSize)
+auto makeOrientedLightDepthMapping(
+    LightContainer const & lights,
+    basix::Size<int> const & mapSize)
     -> std::vector<MonoDepthMap>
 {
-    return transform(lights, [&mapSize] (auto const & /*light*/)
+    return basix::transform(lights, [&mapSize] (auto const & /*light*/)
     {
         return MonoDepthMap{mapSize};
     });
@@ -31,7 +35,7 @@ auto makeOrientedLightDepthMapping(LightContainer const & lights, Size<int> cons
 
 } // unnamed namespace
 
-DepthMapping::DepthMapping(LightSystem const & lightSystem, Size<int> const & mapSize)
+DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size<int> const & mapSize)
     : lightSystem{&lightSystem}
     , mapSize{mapSize}
     , pointMapping{makePointLightDepthMapping(lightSystem.point, mapSize)}

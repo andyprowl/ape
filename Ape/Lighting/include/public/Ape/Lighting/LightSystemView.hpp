@@ -2,8 +2,8 @@
 
 #include <Ape/Lighting/PointLightView.hpp>
 
-#include <Foundational/Mathematics/Size.hpp>
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Mathematics/Size.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -22,7 +22,7 @@ class LightSystemView
 
 public:
 
-    LightSystemView(LightSystem const & lightSystem, Size<int> const & viewSize);
+    LightSystemView(LightSystem const & lightSystem, basix::Size<int> const & viewSize);
     
     auto getLighting() const
         -> LightSystem const &;
@@ -36,23 +36,23 @@ public:
     auto getDirectionalView() const
         -> std::vector<glm::mat4> const &;
 
-    auto setViewSize(Size<int> const & newViewSize)
+    auto setViewSize(basix::Size<int> const & newViewSize)
         -> void;
 
 private:
 
     auto registerForPointLightChangeNotifications()
-        -> std::vector<ScopedSignalConnection>;
+        -> std::vector<basix::ScopedSignalConnection>;
 
     auto registerForSpotLightChangeNotifications()
-        -> std::vector<ScopedSignalConnection>;
+        -> std::vector<basix::ScopedSignalConnection>;
 
     auto registerForDirectionalLightChangeNotifications()
-        -> std::vector<ScopedSignalConnection>;
+        -> std::vector<basix::ScopedSignalConnection>;
 
     template<typename LightType>
     auto registerForLightChangeNotifications(LightType const & light)
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto udpateLightView(PointLight const & light)
         -> void;
@@ -67,7 +67,7 @@ private:
 
     LightSystem const * lightSystem;
 
-    Size<int> viewSize;
+    basix::Size<int> viewSize;
 
     std::vector<PointLightView> pointView;
 
@@ -75,11 +75,11 @@ private:
 
     std::vector<glm::mat4> directionalView;
 
-    std::vector<ScopedSignalConnection> pointLightChangeHandlerConnections;
+    std::vector<basix::ScopedSignalConnection> pointLightChangeHandlerConnections;
 
-    std::vector<ScopedSignalConnection> spotLightChangeHandlerConnections;
+    std::vector<basix::ScopedSignalConnection> spotLightChangeHandlerConnections;
 
-    std::vector<ScopedSignalConnection> directionalLightChangeHandlerConnections;
+    std::vector<basix::ScopedSignalConnection> directionalLightChangeHandlerConnections;
 
 };
 

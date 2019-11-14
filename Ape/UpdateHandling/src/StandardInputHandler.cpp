@@ -6,7 +6,7 @@
 #include <Ape/Skybox/SkyboxSelector.hpp>
 #include <Ape/Windowing/Window.hpp>
 
-#include <Foundational/Mathematics/Position.hpp>
+#include <Basix/Mathematics/Position.hpp>
 
 namespace ape
 {
@@ -75,7 +75,7 @@ auto StandardInputHandler::onKeyRelease(Key const /*key*/, KeyModifier const /*m
 }
 
 // virtual
-auto StandardInputHandler::onMouseWheel(Offset<int> const offset)
+auto StandardInputHandler::onMouseWheel(basix::Offset<int> const offset)
     -> void
 {
     cameraManipulator.onMouseWheel(offset);
@@ -96,7 +96,7 @@ auto StandardInputHandler::onFocusLost()
 }
 
 auto StandardInputHandler::registerKeyboardHandlerConnection()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return handledWindow->onKeyboard.registerHandler(
         [this] (Key const key, KeyAction const action, KeyModifier const modifier)
@@ -113,16 +113,16 @@ auto StandardInputHandler::registerKeyboardHandlerConnection()
 }
 
 auto StandardInputHandler::registerMouseWheelHandlerConnection()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
-    return handledWindow->onMouseWheel.registerHandler([this] (Offset<int> const & offset)
+    return handledWindow->onMouseWheel.registerHandler([this] (basix::Offset<int> const & offset)
     {
         onMouseWheel(offset);
     });
 }
 
 auto StandardInputHandler::registerFocusAcquiredHandlerConnection()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return handledWindow->onFocusAcquired.registerHandler([this]
     {
@@ -131,7 +131,7 @@ auto StandardInputHandler::registerFocusAcquiredHandlerConnection()
 }
 
 auto StandardInputHandler::registerFocusLostHandlerConnection()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return handledWindow->onFocusLost.registerHandler([this]
     {

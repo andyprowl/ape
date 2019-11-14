@@ -2,25 +2,25 @@
 
 #include <Ape/Lighting/DepthMapping.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/Shader/CubeTextureUniform.hpp>
-#include <Ape/Shader/ShaderProgram.hpp>
-#include <Ape/Shader/TextureUniform.hpp>
-#include <Ape/Shader/VectorUniform.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Shader/CubeTextureUniform.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/TextureUniform.hpp>
+#include <Glow/Shader/VectorUniform.hpp>
 
 #include <string>
 #include <vector>
 
-namespace ape
+namespace glow
 {
 
 template<>
-class Uniform<DepthMapping>
+class Uniform<ape::DepthMapping>
 {
 
 public:
 
-    using ValueType = DepthMapping;
+    using ValueType = ape::DepthMapping;
 
 public:
 
@@ -37,7 +37,7 @@ public:
         bindSamplers(program);
     }
 
-    auto set(DepthMapping const & mapping)
+    auto set(ape::DepthMapping const & mapping)
         -> void
     {
         setPointMapping(mapping);
@@ -88,19 +88,19 @@ private:
         }
     }
 
-    auto setPointMapping(DepthMapping const & mapping)
+    auto setPointMapping(ape::DepthMapping const & mapping)
         -> void
     {
         setTextures(mapping.getPointMapping(), point);
     }
 
-    auto setSpotMapping(DepthMapping const & mapping)
+    auto setSpotMapping(ape::DepthMapping const & mapping)
         -> void
     {
         setTextures(mapping.getSpotMapping(), spot);
     }
 
-    auto setDirectionalMapping(DepthMapping const & mapping)
+    auto setDirectionalMapping(ape::DepthMapping const & mapping)
         -> void
     {
         setTextures(mapping.getDirectionalMapping(), directional);
@@ -126,4 +126,4 @@ private:
 
 };
 
-} // namespace ape
+} // namespace glow

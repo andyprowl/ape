@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Foundational/Mathematics/Offset.hpp>
-#include <Foundational/Mathematics/Position.hpp>
+#include <Basix/Mathematics/Offset.hpp>
+#include <Basix/Mathematics/Position.hpp>
 
 namespace ape
 {
@@ -11,19 +11,19 @@ class MovementTracker
 
 public:
 
-    explicit MovementTracker(Position<int> initialPosition);
+    explicit MovementTracker(basix::Position<int> initialPosition);
 
-    auto updatePosition(Position<int> position)
-        -> Offset<int>;
+    auto updatePosition(basix::Position<int> position)
+        -> basix::Offset<int>;
 
     auto getLastMovement() const
-        -> Offset<int>;
+        -> basix::Offset<int>;
 
 private:
 
-    Position<int> lastPosition;
+    basix::Position<int> lastPosition;
 
-    Offset<int> lastMovement;
+    basix::Offset<int> lastMovement;
 
 };
 

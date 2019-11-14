@@ -46,15 +46,15 @@ public:
 
     // virtual (from Window)
     auto getSize() const
-        -> Size<int> override;
+        -> basix::Size<int> override;
 
     // virtual (from Window)
     auto getPosition() const
-        -> Position<int> override;
+        -> basix::Position<int> override;
 
     // virtual (from Window)
     auto getMousePosition() const
-        -> Position<int> override;
+        -> basix::Position<int> override;
     
     // virtual (from Window)
     auto isKeyPressed(Key key) const

@@ -1,9 +1,7 @@
 #pragma once
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
-#include <Ape/BufferObject/VertexBufferObject.hpp>
-
-#include <Foundational/Meta/Counted.hpp>
+#include <Glow/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexBufferObject.hpp>
 
 namespace ape
 {
@@ -16,10 +14,10 @@ public:
     PlainQuad();
 
     auto getVertexBuffer() const 
-        -> const VertexBufferObject &;
+        -> const glow::VertexBufferObject &;
 
     auto getArrayObject() const 
-        -> const VertexArrayObject &;
+        -> const glow::VertexArrayObject &;
 
     auto getNumOfVertices() const
         -> int;
@@ -27,13 +25,13 @@ public:
 private:
 
     auto makeVertices() const
-        -> VertexBufferObject;
+        -> glow::VertexBufferObject;
 
 private:
 
-    VertexBufferObject vertexBuffer;
+    glow::VertexBufferObject vertexBuffer;
 
-    VertexArrayObject arrayObject;
+    glow::VertexArrayObject arrayObject;
 
 };
 

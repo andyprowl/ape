@@ -2,18 +2,18 @@
 
 #include <Ape/Lighting/PointLightView.hpp>
 
-#include <Ape/Shader/Uniform.hpp>
+#include <Glow/Shader/Uniform.hpp>
 
-namespace ape
+namespace glow
 {
 
 template<>
-class Uniform<PointLightView>
+class Uniform<ape::PointLightView>
 {
 
 public:
 
-    using ValueType = PointLightView;
+    using ValueType = ape::PointLightView;
 
 public:
 
@@ -67,4 +67,4 @@ public:
 
 };
 
-} // namespace ape
+} // namespace glow

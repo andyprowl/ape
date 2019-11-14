@@ -2,13 +2,9 @@ CreatePackage(Ape)
 
 add_subdirectory(AssetLoader)
 
-add_subdirectory(BufferObject)
-
 add_subdirectory(Effect)
 
 add_subdirectory(GlfwEngine)
-
-add_subdirectory(GpuResource)
 
 add_subdirectory(Initialization)
 
@@ -22,13 +18,9 @@ add_subdirectory(Rendering)
 
 add_subdirectory(Scene)
 
-add_subdirectory(Shader)
-
 add_subdirectory(Shape)
 
 add_subdirectory(Skybox)
-
-add_subdirectory(Texture)
 
 add_subdirectory(UpdateHandling)
 

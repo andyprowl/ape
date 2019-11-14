@@ -1,6 +1,6 @@
 #include <Ape/Effect/EffectShaderProgram.hpp>
 
-#include <Ape/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilder.hpp>
 
 namespace ape
 {
@@ -11,17 +11,17 @@ namespace
 auto const screenTextureUnit = 0;
 
 auto buildVertexShader()
-    -> VertexShader
+    -> glow::VertexShader
 {
-    auto const builder = ShaderBuilder{{resourceFolder "/shaders/Effects"}};
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders/Effects"}};
 
     return builder.buildVertexShader("Effect.Vertex.glsl");
 }
 
 auto buildFragmentShader(std::filesystem::path fragmentShaderPath)
-    -> FragmentShader
+    -> glow::FragmentShader
 {
-    auto const builder = ShaderBuilder{{fragmentShaderPath.parent_path()}};
+    auto const builder = glow::ShaderBuilder{{fragmentShaderPath.parent_path()}};
 
     return builder.buildFragmentShader(fragmentShaderPath.filename());
 }

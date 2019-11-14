@@ -2,10 +2,10 @@
 
 #include <Ape/Shape/Shape.hpp>
 
-#include <Ape/BufferObject/VertexLayout.hpp>
-#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
 
-#include <Foundational/Range/Insertion.hpp>
+#include <Basix/Range/Insertion.hpp>
 
 #include <glad/glad.h>
 
@@ -24,7 +24,7 @@ auto setupRenderingState(Shape const & shape)
 
     shape.getElementBufferObject().bind();
 
-    sendVertexLayoutToGpu<ShapeVertex>();
+    glow::sendVertexLayoutToGpu<ShapeVertex>();
 }
 
 } // unnamed namespace
@@ -61,7 +61,7 @@ auto ShapeArrayObjectDrawer::render(Shape const & shape) const
 
 auto ShapeArrayObjectDrawer::setupArrayObjectsForShapes(
     ShapeCollection const & shapes,
-    std::vector<VertexArrayObject> & destination) const
+    std::vector<glow::VertexArrayObject> & destination) const
     -> void
 {
     for (auto const shape : shapes)
@@ -76,16 +76,16 @@ auto ShapeArrayObjectDrawer::setupArrayObjectsForShapes(
 
 auto ShapeArrayObjectDrawer::setupArrayObjectForShape(
     Shape const & shape,
-    VertexArrayObject & destination) const
+    glow::VertexArrayObject & destination) const
     -> void
 {
-    auto const binder = bind(destination);
+    auto const binder = glow::bind(destination);
 
     setupRenderingState(shape);
 }
 
 auto ShapeArrayObjectDrawer::getArrayObjectForShape(Shape const & shape) const
-    -> const VertexArrayObject &
+    -> const glow::VertexArrayObject &
 {
     auto const shapeIndex = shape.getInstanceIndex();
 

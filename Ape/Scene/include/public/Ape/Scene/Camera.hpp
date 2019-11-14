@@ -3,7 +3,7 @@
 #include <Ape/Scene/CameraProjection.hpp>
 #include <Ape/Scene/CameraView.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -65,11 +65,11 @@ public:
 
 public:
 
-    mutable Signal<TransformEventSignature> onViewChanged;
+    mutable basix::Signal<TransformEventSignature> onViewChanged;
 
-    mutable Signal<TransformEventSignature> onProjectionChanged;
+    mutable basix::Signal<TransformEventSignature> onProjectionChanged;
 
-    mutable Signal<TransformEventSignature> onTransformationChanged;
+    mutable basix::Signal<TransformEventSignature> onTransformationChanged;
 
 private:
 

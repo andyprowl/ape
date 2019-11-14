@@ -1,7 +1,7 @@
 #include <Ape/Effect/EffectCollection.hpp>
 
-#include <Foundational/Range/Search.hpp>
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Search.hpp>
+#include <Basix/Range/Transform.hpp>
 
 namespace ape
 {
@@ -12,7 +12,7 @@ namespace
 auto makeUniqueEffects(std::vector<EffectShaderProgram> effects)
     -> std::vector<std::unique_ptr<EffectShaderProgram>>
 {
-    return transform<std::vector>(effects, [] (EffectShaderProgram & effect)
+    return basix::transform(effects, [] (EffectShaderProgram & effect)
         -> std::unique_ptr<EffectShaderProgram>
     {
         return std::make_unique<EffectShaderProgram>(std::move(effect));
@@ -49,7 +49,7 @@ auto EffectCollection::getEffect(int const i)
 auto EffectCollection::getEffectIndex(EffectShaderProgram const & effect) const
     -> int
 {
-    auto const it = findIf(effects, [&effect] (auto const & p)
+    auto const it = basix::findIf(effects, [&effect] (auto const & p)
     {
         return (p.get() == &effect);
     });

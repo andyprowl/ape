@@ -16,7 +16,7 @@ BodyPointLightSynchronizer::BodyPointLightSynchronizer(Body const & source, Poin
 auto BodyPointLightSynchronizer::registerPositionChangeEventHandler(
     Body const & source,
     PointLight & target)
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return source.onLocalTransformationChanged.registerHandler(
         [&source, &target] (auto const & part)

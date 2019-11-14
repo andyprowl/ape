@@ -2,7 +2,7 @@
 
 #include <Ape/Skybox/SkyboxCollection.hpp>
 
-#include <Ape/Texture/TextureReader.hpp>
+#include <Glow/Texture/TextureReader.hpp>
 
 #include <filesystem>
 
@@ -45,7 +45,7 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 
         auto const folder = entry.path().parent_path();
 
-        auto skybox = textureReader.read(folder, ColorSpace::perceptual);
+        auto skybox = textureReader.read(folder, glow::ColorSpace::perceptual);
 
         collection->addSkybox(std::move(skybox));
     }

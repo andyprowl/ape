@@ -2,8 +2,8 @@
 
 #include <Ape/Scene/Scene.hpp>
 
-#include <Foundational/Range/Removal.hpp>
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Removal.hpp>
+#include <Basix/Range/Transform.hpp>
 
 #include <algorithm>
 #include <optional>
@@ -107,7 +107,7 @@ auto BodySelector::selectBody(Body const & body)
 
     selectedBodies.push_back(&mutableBody);
 
-    remove(nonSelectedBodies, &mutableBody);
+    basix::remove(nonSelectedBodies, &mutableBody);
 
     onBodySelected.fire(mutableBody);
 
@@ -126,7 +126,7 @@ auto BodySelector::deselectBody(Body const & body)
 
     nonSelectedBodies.push_back(&mutableBody);
 
-    remove(selectedBodies, &mutableBody);
+    basix::remove(selectedBodies, &mutableBody);
 
     onBodyDeselected.fire(mutableBody);
 
@@ -154,7 +154,7 @@ auto BodySelector::deselectAllBodies()
 }
 
 auto BodySelector::registerBodyReallocationHandler()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return scene->onBodyReallocation.registerHandler([this]
     {
@@ -167,7 +167,7 @@ auto BodySelector::registerBodyReallocationHandler()
 }
 
 auto BodySelector::registerBodyAddedHandler()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return scene->onBodyAdded.registerHandler([this] (Body & body)
     {

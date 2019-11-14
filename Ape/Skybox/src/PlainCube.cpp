@@ -2,9 +2,9 @@
 
 #include <Ape/Skybox/PlainCubeVertex.hpp>
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
-#include <Ape/BufferObject/VertexLayout.hpp>
-#include <Ape/GpuResource/ScopedBinder.hpp>
+#include <Glow/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,31 +18,31 @@ namespace
 {
 
 auto makeVertexBufferObject(std::vector<PlainCubeVertex> const & vertices)
-    -> VertexBufferObject
+    -> glow::VertexBufferObject
 {
-    auto vbo = VertexBufferObject{};
+    auto vbo = glow::VertexBufferObject{};
 
-    auto const binder = bind(vbo);
+    auto const binder = glow::bind(vbo);
 
     auto const vertexBufferSize = vertices.size() * sizeof(PlainCubeVertex);
 
     glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
 
-    sendVertexLayoutToGpu<PlainCubeVertex>();
+    glow::sendVertexLayoutToGpu<PlainCubeVertex>();
 
     return vbo;
 }
 
-auto makeArrayObject(VertexBufferObject const & vertexBuffer)
-    -> VertexArrayObject
+auto makeArrayObject(glow::VertexBufferObject const & vertexBuffer)
+    -> glow::VertexArrayObject
 {
-    auto arrayObject = VertexArrayObject{};
+    auto arrayObject = glow::VertexArrayObject{};
 
-    auto const binder = bind(arrayObject);
+    auto const binder = glow::bind(arrayObject);
 
     vertexBuffer.bind();
 
-    sendVertexLayoutToGpu<PlainCubeVertex>();
+    glow::sendVertexLayoutToGpu<PlainCubeVertex>();
 
     return arrayObject;
 }
@@ -149,13 +149,13 @@ PlainCube::PlainCube()
 }
 
 auto PlainCube::getVertexBuffer() const 
-    -> const VertexBufferObject &
+    -> const glow::VertexBufferObject &
 {
     return vertexBuffer;
 }
 
 auto PlainCube::getArrayObject() const 
-    -> const VertexArrayObject &
+    -> const glow::VertexArrayObject &
 {
     return arrayObject;
 }
@@ -167,11 +167,11 @@ auto PlainCube::getNumOfVertices() const
 }
 
 auto PlainCube::makeVertices() const
-    -> VertexBufferObject
+    -> glow::VertexBufferObject
 {
-    auto vao = VertexArrayObject{};
+    auto vao = glow::VertexArrayObject{};
 
-    auto const binder = bind(vao);
+    auto const binder = glow::bind(vao);
 
     auto const vertices = PlainCubeVerticesBuilder{}.makeVertices();
 

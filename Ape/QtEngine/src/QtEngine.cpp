@@ -6,8 +6,8 @@
 #include <Ape/UpdateHandling/InputHandler.hpp>
 #include <Ape/Windowing/Window.hpp>
 
-#include <Foundational/Time/Stopwatch.hpp>
-#include <Foundational/Time/TimeIntervalTracker.hpp>
+#include <Basix/Time/Stopwatch.hpp>
+#include <Basix/Time/TimeIntervalTracker.hpp>
 
 #include <glad/glad.h>
 
@@ -66,9 +66,9 @@ public:
 private:
 
     auto registerWindowResizeHandler()
-        -> ScopedSignalConnection
+        -> basix::ScopedSignalConnection
     {
-        return window->onResize.registerHandler([this] (Size<int> const & newSize)
+        return window->onResize.registerHandler([this] (basix::Size<int> const & newSize)
         {
             setViewport(newSize);
 
@@ -76,7 +76,7 @@ private:
         });
     }
 
-    auto updateSelectedCameraAspectRatio(Size<int> const & size)
+    auto updateSelectedCameraAspectRatio(basix::Size<int> const & size)
         -> void
     {
         auto const camera = renderer->getCameraSelector().getActiveCamera();
@@ -98,10 +98,10 @@ private:
         perspective->setAspectRatio(aspectRatio);
     }
 
-    auto setViewport(Size<int> const & size)
+    auto setViewport(basix::Size<int> const & size)
         -> void
     {
-        auto const origin = Position{0, 0};
+        auto const origin = basix::Position{0, 0};
 
         renderer->setViewport({origin, size});
     }
@@ -114,15 +114,15 @@ private:
     
     InputHandler * inputHandler;
 
-    Stopwatch stopwatch;
+    basix::Stopwatch stopwatch;
 
-    TimeIntervalTracker timeTracker;
+    basix::TimeIntervalTracker timeTracker;
 
     QTimer heartbeat;
 
     QMetaObject::Connection loopTimerConnection;
 
-    ScopedSignalConnection resizeHandlerConnection;
+    basix::ScopedSignalConnection resizeHandlerConnection;
 
 };
 

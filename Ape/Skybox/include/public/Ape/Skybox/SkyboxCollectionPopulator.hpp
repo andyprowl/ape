@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Texture/CubeTextureReader.hpp>
+#include <Glow/Texture/CubeTextureReader.hpp>
 
 #include <filesystem>
 
@@ -23,7 +23,7 @@ private:
 
     SkyboxCollection * collection;
 
-    CubeTextureReader textureReader;
+    glow::CubeTextureReader textureReader;
 
 };
 

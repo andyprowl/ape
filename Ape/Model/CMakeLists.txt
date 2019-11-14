@@ -4,10 +4,9 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    3rdParty::glm
-    Ape::GpuResource)
+    3rdParty::glm)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
-    Foundational::CompilerSupport)
+    Basix::CompilerSupport)

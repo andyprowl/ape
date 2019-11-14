@@ -2,7 +2,7 @@
 
 #include <Ape/Wireframe/LineStyle.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 namespace ape
 {
@@ -22,7 +22,7 @@ public:
 
 public:
 
-    mutable Signal<auto (LineStyle const &) -> void> onStyleChanged;
+    mutable basix::Signal<auto (LineStyle const &) -> void> onStyleChanged;
 
 private:
 

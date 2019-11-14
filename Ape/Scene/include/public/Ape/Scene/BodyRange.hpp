@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Range/ContainerView.hpp>
+#include <Basix/Range/ContainerView.hpp>
 
 #include <vector>
 
@@ -9,7 +9,7 @@ namespace ape
 
 class Body;
 
-class BodyRange : public ContainerView<std::vector<Body *> const>
+class BodyRange : public basix::ContainerView<std::vector<Body *> const>
 {
 
 public:

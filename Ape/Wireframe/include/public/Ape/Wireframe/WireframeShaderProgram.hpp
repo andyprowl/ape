@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
 
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -8,7 +8,7 @@
 namespace ape
 {
 
-class WireframeShaderProgram : public ShaderProgram
+class WireframeShaderProgram : public glow::ShaderProgram
 {
 
 public:
@@ -17,12 +17,11 @@ public:
 
 public:
 
+    glow::Uniform<glm::mat4> transformation;
 
-    Uniform<glm::mat4> transformation;
+    glow::Uniform<glm::vec3> lineColor;
 
-    Uniform<glm::vec3> lineColor;
-
-    Uniform<float> lineWidth;
+    glow::Uniform<float> lineWidth;
 
 };
 

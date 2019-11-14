@@ -1,6 +1,6 @@
 #include <Ape/Lighting/OmniDepthShaderProgram.hpp>
 
-#include <Ape/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilder.hpp>
 
 namespace ape
 {
@@ -9,9 +9,9 @@ namespace
 {
 
 auto buildOmnidirectionalDepthShader()
-    -> ShaderProgram
+    -> glow::ShaderProgram
 {
-    auto const builder = ShaderBuilder{{resourceFolder "/shaders"}};
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
         "Depth/Omni.Depth.Vertex.glsl",

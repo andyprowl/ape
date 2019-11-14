@@ -2,21 +2,21 @@
 
 #include <Ape/Lighting/LightSystemView.hpp>
 
-#include <Ape/Shader/ShaderProgram.hpp>
-#include <Ape/Shader/VectorUniform.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/VectorUniform.hpp>
 
 #include <vector>
 
-namespace ape
+namespace glow
 {
 
 template<>
-class Uniform<LightSystemView>
+class Uniform<ape::LightSystemView>
 {
 
 public:
 
-    using ValueType = LightSystemView;
+    using ValueType = ape::LightSystemView;
 
 public:
 
@@ -50,4 +50,4 @@ public:
 
 };
 
-} // namespace ape
+} // namespace glow

@@ -2,12 +2,6 @@
 
 #include <Ape/Effect/EffectCollection.hpp>
 
-#include <Foundational/Range/Search.hpp>
-#include <Foundational/Range/Transform.hpp>
-
-#include <algorithm>
-#include <numeric>
-
 namespace ape
 {
 

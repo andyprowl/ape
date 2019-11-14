@@ -2,7 +2,7 @@
 
 #include <Ape/Shape/ShapeDrawer.hpp>
 
-#include <Ape/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexArrayObject.hpp>
 
 #include <vector>
 
@@ -33,20 +33,20 @@ private:
     
     auto setupArrayObjectsForShapes(
         ShapeCollection const & shapes,
-        std::vector<VertexArrayObject> & destination) const
+        std::vector<glow::VertexArrayObject> & destination) const
         -> void;
 
     auto setupArrayObjectForShape(
         Shape const & shape,
-        VertexArrayObject & destination) const
+        glow::VertexArrayObject & destination) const
         -> void;
 
     auto getArrayObjectForShape(Shape const & shape) const
-        -> const VertexArrayObject &;
+        -> const glow::VertexArrayObject &;
 
 private:
 
-    std::vector<VertexArrayObject> shapeArrayObjects;
+    std::vector<glow::VertexArrayObject> shapeArrayObjects;
 
 };
 

@@ -1,7 +1,7 @@
 #include <Ape/Rendering/OffscreenSurface.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/Texture/TextureStorageType.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -11,40 +11,42 @@ namespace ape
 namespace
 {
 
-auto makeColorBuffer(Size<int> const & size)
-    -> Texture
+auto makeColorBuffer(basix::Size<int> const & size)
+    -> glow::Texture
 {
-    auto const image = TextureImage{
+    auto const image = glow::TextureImage{
         nullptr,
         size,
-        TextureImageFormat::rgb,
-        PixelType::unsignedByte};
+        glow::TextureImageFormat::rgb,
+        glow::PixelType::unsignedByte};
 
-    auto const descriptor = TextureDescriptor{
+    auto const descriptor = glow::TextureDescriptor{
         image,
-        TextureInternalFormat::srgb8,
-        TextureWrapping::clampToEdge,
-        TextureStorageType::modifiable};
+        glow::TextureInternalFormat::srgb8,
+        glow::TextureWrapping::clampToEdge,
+        glow::TextureStorageType::modifiable};
 
-    return Texture{descriptor};
+    return glow::Texture{descriptor};
 }
 
-auto makeDepthAndStencilBuffer(Size<int> const & size)
-    -> RenderBufferObject
+auto makeDepthAndStencilBuffer(basix::Size<int> const & size)
+    -> glow::RenderBufferObject
 {
-    return RenderBufferObject{size};
+    return glow::RenderBufferObject{size};
 }
 
-auto makeFrameBufferForTarget(Texture & colorBuffer, RenderBufferObject & depthAndStencilBuffer)
-    -> FrameBufferObject
+auto makeFrameBufferForTarget(
+    glow::Texture & colorBuffer,
+    glow::RenderBufferObject & depthAndStencilBuffer)
+    -> glow::FrameBufferObject
 {
-    auto frameBuffer = FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{};
 
-    auto const binder = bind(frameBuffer);
+    auto const binder = glow::bind(frameBuffer);
 
-    frameBuffer.attach(colorBuffer, FrameBufferAttachment::color0);
+    frameBuffer.attach(colorBuffer, glow::FrameBufferAttachment::color0);
     
-    frameBuffer.attach(depthAndStencilBuffer, FrameBufferAttachment::depthAndStencil);
+    frameBuffer.attach(depthAndStencilBuffer, glow::FrameBufferAttachment::depthAndStencil);
 
     assert(frameBuffer.isComplete());
 
@@ -53,7 +55,7 @@ auto makeFrameBufferForTarget(Texture & colorBuffer, RenderBufferObject & depthA
 
 } // unnamed namespace
 
-OffscreenSurface::OffscreenSurface(Size<int> const & size)
+OffscreenSurface::OffscreenSurface(basix::Size<int> const & size)
     : colorBuffer{makeColorBuffer(size)}
     , depthAndStencilBuffer{makeDepthAndStencilBuffer(size)}
     , frameBuffer{makeFrameBufferForTarget(colorBuffer, depthAndStencilBuffer)}
@@ -62,30 +64,30 @@ OffscreenSurface::OffscreenSurface(Size<int> const & size)
 }
 
 auto OffscreenSurface::getColorBuffer() const
-    -> Texture const &
+    -> glow::Texture const &
 {
     return colorBuffer;
 }
 
 auto OffscreenSurface::getDepthAndStencilBuffer() const
-    -> RenderBufferObject const &
+    -> glow::RenderBufferObject const &
 {
     return depthAndStencilBuffer;
 }
 
 auto OffscreenSurface::getFrameBuffer() const
-    -> FrameBufferObject const &
+    -> glow::FrameBufferObject const &
 {
     return frameBuffer;
 }
 
 auto OffscreenSurface::getSize() const
-    -> Size<int>
+    -> basix::Size<int>
 {
     return size;
 }
 
-auto OffscreenSurface::setSize(Size<int> const & newSize)
+auto OffscreenSurface::setSize(basix::Size<int> const & newSize)
     -> void
 {
     colorBuffer.setSize(newSize);

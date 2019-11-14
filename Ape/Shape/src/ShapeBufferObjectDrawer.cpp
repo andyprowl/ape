@@ -2,7 +2,7 @@
 
 #include <Ape/Shape/Shape.hpp>
 
-#include <Ape/BufferObject/VertexLayout.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
 
 #include <glad/glad.h>
 
@@ -16,7 +16,7 @@ auto ShapeBufferObjectDrawer::render(Shape const & shape) const
 
     shape.getElementBufferObject().bind();
 
-    sendVertexLayoutToGpu<ShapeVertex>();
+    glow::sendVertexLayoutToGpu<ShapeVertex>();
 
     auto const numOfVertices = shape.getNumOfVertices();
 

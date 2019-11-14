@@ -1,15 +1,21 @@
 #pragma once
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <optional>
 #include <stdexcept>
 #include <string>
 
-namespace ape
+namespace glow
 {
 
 class CubeTexture;
+
+} // namespace glow
+
+namespace ape
+{
+
 class SkyboxCollection;
 
 class BadSkyboxIndex : public std::logic_error
@@ -35,15 +41,15 @@ public:
         -> SkyboxCollection &;
 
     auto getAvailableSkyboxes() const
-        -> std::vector<CubeTexture *> const &;
+        -> std::vector<glow::CubeTexture *> const &;
 
     auto getActiveSkybox() const
-        -> CubeTexture *;
+        -> glow::CubeTexture *;
     
     auto activateSkybox(int index)
         -> void;
 
-    auto activateSkybox(CubeTexture const & collection)
+    auto activateSkybox(glow::CubeTexture const & collection)
         -> void;
 
     auto activateNextSkybox()
@@ -57,7 +63,7 @@ public:
 
 public:
 
-    Signal<auto (CubeTexture *) -> void> onActiveSkyboxChanged;
+    basix::Signal<auto (glow::CubeTexture *) -> void> onActiveSkyboxChanged;
 
 private:
 
@@ -71,7 +77,7 @@ private:
 
     SkyboxCollection * collection;
 
-    std::vector<CubeTexture *> availableSkyboxes;
+    std::vector<glow::CubeTexture *> availableSkyboxes;
 
     std::optional<int> activeSkyboxIndex;
 

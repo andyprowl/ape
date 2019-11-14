@@ -2,8 +2,8 @@
 
 #include <Ape/Scene/Scene.hpp>
 
-#include <Foundational/Range/Search.hpp>
-#include <Foundational/Range/Transform.hpp>
+#include <Basix/Range/Search.hpp>
+#include <Basix/Range/Transform.hpp>
 
 #include <algorithm>
 #include <numeric>
@@ -115,7 +115,7 @@ auto CameraSelector::activateCamera(Camera const & camera)
 
     auto & mutableCamera = asMutableCameraFromScene(camera, *scene);
 
-    auto const it = find(availableCameras, &mutableCamera);
+    auto const it = basix::find(availableCameras, &mutableCamera);
 
     if (it == std::cend(availableCameras))
     {
@@ -192,7 +192,7 @@ auto CameraSelector::tryGetLastCameraIndex() const
 }
 
 auto CameraSelector::registerCamerReallocationHandler()
-    -> ScopedSignalConnection
+    -> basix::ScopedSignalConnection
 {
     return scene->onCameraReallocation.registerHandler([this]
     {

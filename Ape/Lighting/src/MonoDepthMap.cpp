@@ -1,7 +1,7 @@
 #include <Ape/Lighting/MonoDepthMap.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/Texture/TextureStorageType.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -11,33 +11,33 @@ namespace ape
 namespace
 {
 
-auto makeDepthMapTexture(Size<int> const & size)
-    -> Texture
+auto makeDepthMapTexture(basix::Size<int> const & size)
+    -> glow::Texture
 {
-    auto const image = TextureImage{
+    auto const image = glow::TextureImage{
         nullptr,
         size,
-        TextureImageFormat::depth,
-        PixelType::floatingPoint};
+        glow::TextureImageFormat::depth,
+        glow::PixelType::floatingPoint};
 
     // TODO: Should we use depth32 or depth32f here?
-    auto const descriptor = TextureDescriptor{
+    auto const descriptor = glow::TextureDescriptor{
         image,
-        TextureInternalFormat::depth32,
-        TextureWrapping::clampToEdge,
-        TextureStorageType::immutable};
+        glow::TextureInternalFormat::depth32,
+        glow::TextureWrapping::clampToEdge,
+        glow::TextureStorageType::immutable};
 
-    return Texture{descriptor};
+    return glow::Texture{descriptor};
 }
 
-auto makeDepthMapFrameBuffer(Texture & depthMapTexture)
-    -> FrameBufferObject
+auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture)
+    -> glow::FrameBufferObject
 {
-    auto frameBuffer = FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{};
 
-    auto const binder = bind(frameBuffer);
+    auto const binder = glow::bind(frameBuffer);
 
-    frameBuffer.attach(depthMapTexture, FrameBufferAttachment::depth);
+    frameBuffer.attach(depthMapTexture, glow::FrameBufferAttachment::depth);
 
     frameBuffer.resetDrawTarget();
 
@@ -50,7 +50,7 @@ auto makeDepthMapFrameBuffer(Texture & depthMapTexture)
 
 } // unnamed namespace
 
-MonoDepthMap::MonoDepthMap(Size<int> const & size)
+MonoDepthMap::MonoDepthMap(basix::Size<int> const & size)
     : texture{makeDepthMapTexture(size)}
     , frameBuffer{makeDepthMapFrameBuffer(texture)}
     , size{size}
@@ -58,19 +58,19 @@ MonoDepthMap::MonoDepthMap(Size<int> const & size)
 }
 
 auto MonoDepthMap::getTexture() const
-    -> Texture const &
+    -> glow::Texture const &
 {
     return texture;
 }
 
 auto MonoDepthMap::getFrameBuffer() const
-    -> FrameBufferObject const &
+    -> glow::FrameBufferObject const &
 {
     return frameBuffer;
 }
 
 auto MonoDepthMap::getSize() const
-    -> Size<int>
+    -> basix::Size<int>
 {
     return size;
 }

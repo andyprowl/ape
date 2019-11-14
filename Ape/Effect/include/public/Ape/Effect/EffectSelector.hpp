@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <optional>
 #include <stdexcept>
@@ -57,7 +57,7 @@ public:
 
 public:
 
-    Signal<auto (EffectShaderProgram *) -> void> onActiveEffectChanged;
+    basix::Signal<auto (EffectShaderProgram *) -> void> onActiveEffectChanged;
 
 private:
 

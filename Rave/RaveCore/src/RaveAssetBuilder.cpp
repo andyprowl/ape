@@ -5,7 +5,8 @@
 #include <Ape/Model/Mesh.hpp>
 #include <Ape/Shape/BoxBuilder.hpp>
 #include <Ape/Shape/Shape.hpp>
-#include <Ape/Texture/TextureReader.hpp>
+
+#include <Glow/Texture/TextureReader.hpp>
 
 namespace rave
 {
@@ -77,13 +78,13 @@ private:
         -> ape::Model &;
 
     auto createTextureFromLocalFile(std::string filename)
-        -> ape::Texture &;
+        -> glow::Texture &;
 
 private:
 
     ape::AssetRepository assets;
 
-    ape::TextureReader textureReader;
+    glow::TextureReader textureReader;
 
 };
 
@@ -283,13 +284,13 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
 }
 
 auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
-    -> ape::Texture &
+    -> glow::Texture &
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 
-    auto const storageType = ape::TextureStorageType::immutable;
+    auto const storageType = glow::TextureStorageType::immutable;
 
-    auto const colorSpace = ape::ColorSpace::perceptual;
+    auto const colorSpace = glow::ColorSpace::perceptual;
 
     auto texture = textureReader.read(filepath, storageType, colorSpace);
 

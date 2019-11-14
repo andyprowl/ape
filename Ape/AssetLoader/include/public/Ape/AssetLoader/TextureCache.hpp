@@ -5,10 +5,15 @@
 #include <string>
 #include <unordered_map>
 
-namespace ape
+namespace glow
 {
 
 class Texture;
+
+} // namespace glow
+
+namespace ape
+{
 
 class TexturePathNotUnique : public std::logic_error
 {
@@ -27,15 +32,15 @@ class TextureCache
 
 public:
 
-    auto registerTexture(Texture & texture, std::filesystem::path const & path)
+    auto registerTexture(glow::Texture & texture, std::filesystem::path const & path)
         -> void;
 
     auto findTexture(std::filesystem::path const & path) const
-        -> Texture *;
+        -> glow::Texture *;
 
 private:
 
-    std::unordered_map<std::string, Texture *> cache;
+    std::unordered_map<std::string, glow::Texture *> cache;
 
 };
 

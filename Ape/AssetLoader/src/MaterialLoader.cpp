@@ -3,7 +3,7 @@
 #include <Ape/AssetLoader/AssetRepository.hpp>
 #include <Ape/AssetLoader/TextureCache.hpp>
 
-#include <Ape/Texture/TextureSwizzleMask.hpp>
+#include <Glow/Texture/TextureSwizzleMask.hpp>
 
 #include <assimp/scene.h>
 
@@ -40,22 +40,24 @@ auto getTextureFilename(aiMaterial const & m, aiTextureType const type, int cons
 }
 
 auto getTextureColorSpace(aiTextureType const type)
-    -> ColorSpace
+    -> glow::ColorSpace
 {
-    return (type == aiTextureType_DIFFUSE) ? ColorSpace::perceptual : ColorSpace::linear;
+    return (type == aiTextureType_DIFFUSE)
+        ? glow::ColorSpace::perceptual
+        : glow::ColorSpace::linear;
 }
 
-auto setSwizzleIfGrayscale(Texture & texture)
+auto setSwizzleIfGrayscale(glow::Texture & texture)
     -> void
 {
-    if (texture.getInternalFormat() != TextureInternalFormat::r8)
+    if (texture.getInternalFormat() != glow::TextureInternalFormat::r8)
     {
         return;
     }
 
-    const auto red = TextureSwizzle::red;
+    const auto red = glow::TextureSwizzle::red;
 
-    const auto one = TextureSwizzle::one;
+    const auto one = glow::TextureSwizzle::one;
 
     texture.setSwizzleMask({red, red, red, one});
 }
@@ -158,11 +160,11 @@ auto MaterialLoader::importTextures(
     aiMaterial const & material,
     aiTextureType const type,
     std::filesystem::path const & directory) const
-    -> std::vector<Texture const *>
+    -> std::vector<glow::Texture const *>
 {
     auto numOfTextures = material.GetTextureCount(type);
 
-    auto textures = makeVectorWithCapacity<Texture const *>(numOfTextures);
+    auto textures = makeVectorWithCapacity<glow::Texture const *>(numOfTextures);
 
     auto const colorSpace = getTextureColorSpace(type);
 
@@ -187,8 +189,8 @@ auto MaterialLoader::importTextures(
 
 auto MaterialLoader::getOrReadTexture(
     std::filesystem::path const & path,
-    ColorSpace const colorSpace) const
-    -> Texture const &
+    glow::ColorSpace const colorSpace) const
+    -> glow::Texture const &
 {
     auto const existingTexture = textureCache->findTexture(path);
 
@@ -202,10 +204,10 @@ auto MaterialLoader::getOrReadTexture(
 
 auto MaterialLoader::readAndStoreTexture(
     std::filesystem::path const & path,
-    ColorSpace const colorSpace) const
-    -> Texture const &
+    glow::ColorSpace const colorSpace) const
+    -> glow::Texture const &
 {
-    const auto storageType = TextureStorageType::immutable;
+    const auto storageType = glow::TextureStorageType::immutable;
 
     auto readTexture = textureReader.read(path, storageType, colorSpace);
 

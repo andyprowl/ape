@@ -13,4 +13,4 @@ AddPrivateDependencies(
     3rdParty::glfw
     Ape::Initialization
     Ape::UpdateHandling
-    Foundational::Time)
+    Basix::Time)

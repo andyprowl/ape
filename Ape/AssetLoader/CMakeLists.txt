@@ -7,4 +7,4 @@ AddPublicDependencies(
     3rdParty::assimp::assimp
     Ape::Model
     Ape::Shape
-    Ape::Texture)
+    Glow::Texture)

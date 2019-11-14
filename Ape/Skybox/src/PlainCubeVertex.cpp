@@ -1,6 +1,6 @@
 #include <Ape/Skybox/PlainCubeVertex.hpp>
 
-#include <Ape/BufferObject/VertexLayout.hpp>
+#include <Glow/BufferObject/VertexLayout.hpp>
 
 namespace ape
 {
@@ -9,18 +9,23 @@ namespace
 {
 
 auto getVertexLayout()
-    -> VertexLayout<1>
+    -> glow::VertexLayout<1>
 {
     return {encodeComponentLayout(PlainCubeVertex, position)};
 }
 
 } // unnamed namespace
 
+} // namespace ape
+
+namespace glow
+{
+
 template<>
-auto sendVertexLayoutToGpu<PlainCubeVertex>()
+auto sendVertexLayoutToGpu<ape::PlainCubeVertex>()
     -> void
 {
-    auto const layout = getVertexLayout();
+    auto const layout = ape::getVertexLayout();
 
     sendVertexLayoutToGpu(layout);
 }

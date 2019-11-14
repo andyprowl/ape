@@ -1,20 +1,20 @@
 #pragma once
 
-#include <Ape/Shader/ShaderProgram.hpp>
-#include <Ape/Shader/VectorUniform.hpp>
-
 #include <Ape/Scene/LightSystem.hpp>
 
-namespace ape
+#include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/VectorUniform.hpp>
+
+namespace glow
 {
 
 template<>
-class Uniform<Attenuation>
+class Uniform<ape::Attenuation>
 {
 
 public:
 
-    using ValueType = Attenuation;
+    using ValueType = ape::Attenuation;
 
 public:
 
@@ -60,12 +60,12 @@ public:
 };
 
 template<>
-class Uniform<Light::Color>
+class Uniform<ape::Light::Color>
 {
 
 public:
 
-    using ValueType = Light::Color;
+    using ValueType = ape::Light::Color;
 
 public:
 
@@ -115,7 +115,7 @@ class PointLightUniform
 
 public:
 
-    using ValueType = PointLight;
+    using ValueType = ape::PointLight;
 
 public:
 
@@ -157,9 +157,9 @@ public:
 
     Uniform<glm::vec3> position;
 
-    Uniform<Light::Color> color;
+    Uniform<ape::Light::Color> color;
 
-    Uniform<Attenuation> attenuation;
+    Uniform<ape::Attenuation> attenuation;
 
     Uniform<bool> isTurnedOn;
 
@@ -170,7 +170,7 @@ class SpotLightUniform
 
 public:
 
-    using ValueType = SpotLight;
+    using ValueType = ape::SpotLight;
 
 public:
 
@@ -233,9 +233,9 @@ public:
 
     Uniform<float> outerCutoffCosine;
 
-    Uniform<Light::Color> color;
+    Uniform<ape::Light::Color> color;
 
-    Uniform<Attenuation> attenuation;
+    Uniform<ape::Attenuation> attenuation;
 
     Uniform<bool> isTurnedOn;
 
@@ -246,7 +246,7 @@ class DirectionalLightUniform
 
 public:
 
-    using ValueType = DirectionalLight;
+    using ValueType = ape::DirectionalLight;
 
 public:
 
@@ -285,19 +285,19 @@ public:
 
     Uniform<glm::vec3> direction;
 
-    Uniform<Light::Color> color;
+    Uniform<ape::Light::Color> color;
 
     Uniform<bool> isTurnedOn;
 
 };
 
 template<>
-class Uniform<LightSystem>
+class Uniform<ape::LightSystem>
 {
 
 public:
 
-    using ValueType = LightSystem;
+    using ValueType = ape::LightSystem;
 
 public:
 
@@ -342,4 +342,4 @@ public:
 
 };
 
-} // namespace ape
+} // namespace glow

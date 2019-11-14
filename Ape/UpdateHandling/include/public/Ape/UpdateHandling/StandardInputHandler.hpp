@@ -3,7 +3,7 @@
 #include <Ape/UpdateHandling/CameraManipulator.hpp>
 #include <Ape/UpdateHandling/InputHandler.hpp>
 
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 #include <memory>
 
@@ -52,7 +52,7 @@ protected:
     virtual auto onKeyRelease(Key key, KeyModifier modifier)
         -> void;
 
-    virtual auto onMouseWheel(Offset<int> position)
+    virtual auto onMouseWheel(basix::Offset<int> position)
         -> void;
 
     virtual auto onFocusAcquired()
@@ -64,16 +64,16 @@ protected:
 private:
 
     auto registerKeyboardHandlerConnection()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto registerMouseWheelHandlerConnection()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto registerFocusAcquiredHandlerConnection()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto registerFocusLostHandlerConnection()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
         -> void;
@@ -112,13 +112,13 @@ private:
 
     EffectSelector * effectSelector;
 
-    ScopedSignalConnection keyPressHandlerConnection;
+    basix::ScopedSignalConnection keyPressHandlerConnection;
 
-    ScopedSignalConnection mouseWheelHandlerConnection;
+    basix::ScopedSignalConnection mouseWheelHandlerConnection;
 
-    ScopedSignalConnection focusAcquiredHandlerConnection;
+    basix::ScopedSignalConnection focusAcquiredHandlerConnection;
 
-    ScopedSignalConnection focusLostHandlerConnection;
+    basix::ScopedSignalConnection focusLostHandlerConnection;
 
 };
 

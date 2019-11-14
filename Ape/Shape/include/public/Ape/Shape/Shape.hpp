@@ -2,17 +2,17 @@
 
 #include <Ape/Shape/ShapeVertex.hpp>
 
-#include <Ape/BufferObject/ElementBufferObject.hpp>
-#include <Ape/BufferObject/VertexBufferObject.hpp>
+#include <Glow/BufferObject/ElementBufferObject.hpp>
+#include <Glow/BufferObject/VertexBufferObject.hpp>
 
-#include <Foundational/Meta/Counted.hpp>
+#include <Basix/Meta/Counted.hpp>
 
 namespace ape
 {
 
 // Shape needs to be assigned a global, unique index that allows fast, vector-based indexing of
 // the corresponding VAOs in the given rendering context.
-class Shape : public Counted<Shape>
+class Shape : public basix::Counted<Shape>
 {
 
 public:
@@ -20,10 +20,10 @@ public:
     Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices);
 
     auto getVertexBufferObject() const
-        -> const VertexBufferObject &;
+        -> const glow::VertexBufferObject &;
 
     auto getElementBufferObject() const
-        -> const ElementBufferObject &;
+        -> const glow::ElementBufferObject &;
 
     auto getNumOfVertices() const
         -> int;
@@ -35,9 +35,9 @@ private:
     
     public:
 
-        VertexBufferObject vertex;
+        glow::VertexBufferObject vertex;
 
-        ElementBufferObject element;
+        glow::ElementBufferObject element;
     
     };
 

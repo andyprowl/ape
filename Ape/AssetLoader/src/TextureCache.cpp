@@ -3,7 +3,7 @@
 namespace ape
 {
 
-auto TextureCache::registerTexture(Texture & texture, std::filesystem::path const & path)
+auto TextureCache::registerTexture(glow::Texture & texture, std::filesystem::path const & path)
     -> void
 {
     auto const result = cache.emplace(path.string(), &texture);
@@ -15,7 +15,7 @@ auto TextureCache::registerTexture(Texture & texture, std::filesystem::path cons
 }
 
 auto TextureCache::findTexture(std::filesystem::path const & path) const
-    -> Texture *
+    -> glow::Texture *
 {
     auto const it = cache.find(path.string());
 

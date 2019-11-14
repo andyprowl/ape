@@ -25,7 +25,7 @@ class MonoDepthBodyRenderer
 
 public:
 
-    using BodySetView = ContainerView<std::vector<Body>>;
+    using BodySetView = basix::ContainerView<std::vector<Body>>;
 
 public:
 

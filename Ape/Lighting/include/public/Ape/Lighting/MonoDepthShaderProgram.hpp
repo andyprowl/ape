@@ -1,13 +1,13 @@
 #pragma once
 
-#include <Ape/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
 
 #include <glm/mat4x4.hpp>
 
 namespace ape
 {
 
-class MonoDepthShaderProgram : public ShaderProgram
+class MonoDepthShaderProgram : public glow::ShaderProgram
 {
 
 public:
@@ -16,7 +16,7 @@ public:
 
 public:
 
-    Uniform<glm::mat4> lightTransformation;
+    glow::Uniform<glm::mat4> lightTransformation;
 
 };
 

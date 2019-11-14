@@ -2,14 +2,14 @@
 
 #include <Ape/Lighting/PointLightViewUniform.hpp>
 
-#include <Ape/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
 
 #include <glm/mat4x4.hpp>
 
 namespace ape
 {
 
-class OmniDepthShaderProgram : public ShaderProgram
+class OmniDepthShaderProgram : public glow::ShaderProgram
 {
 
 public:
@@ -18,7 +18,7 @@ public:
 
 public:
 
-    Uniform<glm::mat4> modelTransformation;
+    glow::Uniform<glm::mat4> modelTransformation;
 
     // TODO: Is it OK for this to be named PointLightView? Shouldn't it be something generic, like
     // "OmnidirectionalView"? After all, depth mapping does not necessarily have to be done for a
@@ -28,10 +28,10 @@ public:
     // whereas the transformations we are passing here do.
     // But in this case we also a problem with the name "LightSystemView", because the
     // transformations maintained there also encompass projection.
-    Uniform<PointLightView> lightTransformation;
+    glow::Uniform<PointLightView> lightTransformation;
 
     // TODO: Same as above: is it OK to mention "light" here?
-    Uniform<glm::vec3> lightPosition;
+    glow::Uniform<glm::vec3> lightPosition;
 
 };
 

@@ -4,8 +4,8 @@
 #include <Ape/Scene/Camera.hpp>
 #include <Ape/Scene/LightSystem.hpp>
 
-#include <Foundational/Range/ContainerView.hpp>
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Range/ContainerView.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <vector>
 
@@ -25,10 +25,10 @@ public:
         -> Body &;
 
     auto getBodies()
-        -> ContainerView<std::vector<Body>>;
+        -> basix::ContainerView<std::vector<Body>>;
 
     auto getBodies() const
-        -> ContainerView<std::vector<Body> const>;
+        -> basix::ContainerView<std::vector<Body> const>;
 
     auto getNumOfBodies() const
         -> int;
@@ -40,10 +40,10 @@ public:
         -> Camera &;
 
     auto getCameras()
-        -> ContainerView<std::vector<Camera>>;
+        -> basix::ContainerView<std::vector<Camera>>;
 
     auto getCameras() const
-        -> ContainerView<std::vector<Camera> const>;
+        -> basix::ContainerView<std::vector<Camera> const>;
 
     auto getNumOfCameras() const
         -> int;
@@ -59,13 +59,13 @@ public:
 
 public:
 
-    mutable Signal<auto (Body &) -> void> onBodyAdded;
+    mutable basix::Signal<auto (Body &) -> void> onBodyAdded;
 
-    mutable Signal<auto () -> void> onBodyReallocation;
+    mutable basix::Signal<auto () -> void> onBodyReallocation;
 
-    mutable Signal<auto (Camera &) -> void> onCameraAdded;
+    mutable basix::Signal<auto (Camera &) -> void> onCameraAdded;
 
-    mutable Signal<auto () -> void> onCameraReallocation;
+    mutable basix::Signal<auto () -> void> onCameraReallocation;
 
 private:
 

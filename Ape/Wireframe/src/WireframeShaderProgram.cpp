@@ -1,6 +1,6 @@
 #include <Ape/Wireframe/WireframeShaderProgram.hpp>
 
-#include <Ape/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilder.hpp>
 
 namespace ape
 {
@@ -9,9 +9,9 @@ namespace
 {
 
 auto buildWireframeShader()
-    -> ShaderProgram
+    -> glow::ShaderProgram
 {
-    auto const builder = ShaderBuilder{{resourceFolder "/shaders"}};
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
         "Wireframe/Wire.Vertex.glsl",

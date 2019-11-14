@@ -2,7 +2,7 @@
 
 #include <Ape/Scene/BodyRange.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -56,19 +56,19 @@ public:
 
 public:
 
-    mutable Signal<auto (Body &) -> void> onBodySelected;
+    mutable basix::Signal<auto (Body &) -> void> onBodySelected;
 
-    mutable Signal<auto (Body &) -> void> onBodyDeselected;
+    mutable basix::Signal<auto (Body &) -> void> onBodyDeselected;
 
-    mutable Signal<auto () -> void> onSelectionChanged;
+    mutable basix::Signal<auto () -> void> onSelectionChanged;
 
 private:
 
     auto registerBodyReallocationHandler()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto registerBodyAddedHandler()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
     auto restoreValidBodyReferences(std::vector<Body *> & bodies) const
         -> void;
@@ -86,9 +86,9 @@ private:
 
     std::vector<Body *> nonSelectedBodies;
 
-    ScopedSignalConnection bodyReallocationHandlerConnection;
+    basix::ScopedSignalConnection bodyReallocationHandlerConnection;
 
-    ScopedSignalConnection bodyAddedHandlerConnection;
+    basix::ScopedSignalConnection bodyAddedHandlerConnection;
 
 };
 

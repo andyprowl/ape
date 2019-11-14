@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Ape/Shader/Uniform.hpp>
+#include <Glow/Shader/Uniform.hpp>
 
 #include <Ape/Scene/Camera.hpp>
 
-namespace ape
+namespace glow
 {
 
 template<>
-class Uniform<Camera>
+class Uniform<ape::Camera>
 {
 
 public:
@@ -18,7 +18,7 @@ public:
     {
     }
 
-    auto set(const Camera & camera)
+    auto set(const ape::Camera & camera)
         -> void
     {
         cameraPosition = camera.getView().getPosition();
@@ -30,4 +30,4 @@ public:
     
 };
 
-} // namespace ape
+} // namespace glow

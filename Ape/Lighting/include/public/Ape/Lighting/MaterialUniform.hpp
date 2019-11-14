@@ -1,20 +1,20 @@
 #pragma once
 
-#include <Ape/Shader/ShaderProgram.hpp>
-#include <Ape/Shader/TextureUniform.hpp>
-
 #include <Ape/Model/Material.hpp>
 
-namespace ape
+#include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/TextureUniform.hpp>
+
+namespace glow
 {
 
 template<>
-class Uniform<Material>
+class Uniform<ape::Material>
 {
 
 public:
 
-    using ValueType = Material;
+    using ValueType = ape::Material;
 
 public:
 
@@ -30,7 +30,7 @@ public:
     {
     }
 
-    auto set(Material const & material)
+    auto set(ape::Material const & material)
         -> void
     {
         ambient = material.ambient;
@@ -68,4 +68,4 @@ public:
 
 };
 
-} // namespace ape
+} // namespace glow

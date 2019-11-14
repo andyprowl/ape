@@ -3,9 +3,9 @@
 #include <Ape/UpdateHandling/MovementTracker.hpp>
 #include <Ape/UpdateHandling/TaitBryanAngles.hpp>
 
-#include <Foundational/Mathematics/Offset.hpp>
-#include <Foundational/Mathematics/Position.hpp>
-#include <Foundational/Signal/ScopedSignalConnection.hpp>
+#include <Basix/Mathematics/Offset.hpp>
+#include <Basix/Mathematics/Position.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 namespace ape
 {
@@ -34,15 +34,15 @@ public:
     auto onFrame()
         -> void;
 
-    auto onMouseWheel(Offset<int> offset)
+    auto onMouseWheel(basix::Offset<int> offset)
         -> void;
 
 private:
 
     auto registerForActiveCameraChangeNotifications()
-        -> ScopedSignalConnection;
+        -> basix::ScopedSignalConnection;
 
-    auto moveBy(Camera & camera, Offset<float> const & angularOffset)
+    auto moveBy(Camera & camera, basix::Offset<float> const & angularOffset)
         -> void;
 
     auto zoomBy(Camera & camera, float factor) const
@@ -62,7 +62,7 @@ private:
 
     bool isEngaged;
 
-    ScopedSignalConnection cameraChangeHandlerConnection;
+    basix::ScopedSignalConnection cameraChangeHandlerConnection;
 
 };
 

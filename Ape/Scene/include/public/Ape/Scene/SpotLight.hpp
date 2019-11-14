@@ -3,7 +3,7 @@
 #include <Ape/Scene/Attenuation.hpp>
 #include <Ape/Scene/Light.hpp>
 
-#include <Foundational/Signal/Signal.hpp>
+#include <Basix/Signal/Signal.hpp>
 
 namespace ape
 {

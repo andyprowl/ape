@@ -3,8 +3,8 @@
 #include <Ape/Effect/EffectSelector.hpp>
 #include <Ape/Effect/EffectShaderProgram.hpp>
 
-#include <Ape/GpuResource/ScopedBinder.hpp>
-#include <Ape/Texture/Texture.hpp>
+#include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/Texture.hpp>
 
 #include <glad/glad.h>
 
@@ -16,7 +16,7 @@ EffectRenderer::EffectRenderer(EffectSelector & selector)
 {
 }
 
-auto EffectRenderer::render(Texture const & texture) const
+auto EffectRenderer::render(glow::Texture const & texture) const
     -> void
 {
     auto const effect = selector->getActiveEffect();
@@ -29,7 +29,9 @@ auto EffectRenderer::render(Texture const & texture) const
     renderWithEffect(texture, *effect);
 }
 
-auto EffectRenderer::renderWithEffect(Texture const & texture, EffectShaderProgram & effect) const
+auto EffectRenderer::renderWithEffect(
+    glow::Texture const & texture,
+    EffectShaderProgram & effect) const
     -> void
 {
     auto const shaderBinder = bind(effect);
