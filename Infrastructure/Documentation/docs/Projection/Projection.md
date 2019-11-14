@@ -8,4 +8,4 @@ This process is fundamental for rendering 3D-looking graphics on 2D surfaces lik
 monitors.
 
 - [Perspective projection](Perspective/PerspectiveProjection.md)
-- [Orthogonal projection](Orthogonal/OrthogonalProjection.md)
+- [Orthographic projection](Orthographic/OrthographicProjection.md)
