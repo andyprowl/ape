@@ -23,7 +23,7 @@ namespace ape
 SceneRenderer::SceneRenderer(
     std::unique_ptr<ShapeDrawer> shapeRenderer,
     DepthBodyRenderer depthBodyRenderer,
-    LightingBodyRenderer standardBodyRenderer,
+    BlinnPhongBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
     SkyboxRenderer skyboxRenderer,

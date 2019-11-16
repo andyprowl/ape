@@ -1,7 +1,7 @@
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/Mesh.hpp>
@@ -19,15 +19,15 @@
 namespace ape
 {
 
-LightingBodyRenderer::LightingBodyRenderer(
-    LightingShaderProgram & shader,
+BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
+    BlinnPhongShaderProgram & shader,
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
 {
 }
 
-auto LightingBodyRenderer::render(
+auto BlinnPhongBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
     LightSystem const & lightSystem,
@@ -46,13 +46,13 @@ auto LightingBodyRenderer::render(
     }
 }
 
-auto LightingBodyRenderer::setupInvariantUniforms(
+auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     Camera const & camera,
     LightSystem const & lightSystem,
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    shader->camera.set(camera);
+    shader->cameraPosition.set(camera.getView().getPosition());
 
     shader->lightSystem.set(lightSystem);
 
@@ -61,7 +61,7 @@ auto LightingBodyRenderer::setupInvariantUniforms(
     shader->depthMapping.set(shadowMapping.depthMapping);
 }
 
-auto LightingBodyRenderer::renderBody(
+auto BlinnPhongBodyRenderer::renderBody(
     Body const & body,
     glm::mat4 const & cameraTransformation) const
     -> void
@@ -72,7 +72,7 @@ auto LightingBodyRenderer::renderBody(
     }
 }
 
-auto LightingBodyRenderer::renderBodyPart(
+auto BlinnPhongBodyRenderer::renderBodyPart(
     BodyPart const & part,
     glm::mat4 const & cameraTransformation) const
     -> void
@@ -85,7 +85,7 @@ auto LightingBodyRenderer::renderBodyPart(
     }
 }
 
-auto LightingBodyRenderer::setupBodyPartUniforms(
+auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
     BodyPart const & part,
     glm::mat4 const & cameraTransformation) const
     -> void
@@ -99,7 +99,7 @@ auto LightingBodyRenderer::setupBodyPartUniforms(
     shader->normalTransformation = part.getWorldNormalTransformation();
 }
 
-auto LightingBodyRenderer::renderMesh(Mesh const & mesh) const
+auto BlinnPhongBodyRenderer::renderMesh(Mesh const & mesh) const
     -> void
 {
     auto const & material = mesh.getMaterial();

@@ -1,4 +1,4 @@
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
 
@@ -20,12 +20,12 @@ auto buildStandardShader()
 
 } // unnamed namespace
 
-LightingShaderProgram::LightingShaderProgram()
+BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     : ShaderProgram{buildStandardShader()}
     , worldTransformation{*this, "transform.model"}
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}
-    , camera{*this, "camera"}
+    , cameraPosition{*this, "camera.position"}
     , lightSystem{*this, "lightSystem"}
     , lightSystemView{*this, "lightSystemView"}
     , material{*this, "material", 0, 1}

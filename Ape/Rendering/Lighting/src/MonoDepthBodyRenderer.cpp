@@ -87,11 +87,11 @@ auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     renderLightSetDepth(bodies, lightSystem.directional, directionalView, directionalMapping);
 }
 
-template<typename LightType>
+template<typename LightType, typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     std::vector<LightType> const & lights,
-    std::vector<glm::mat4> const & lightViews,
+    std::vector<LightViewType> const & lightViews,
     std::vector<MonoDepthMap> & depthMaps) const
     -> void
 {
@@ -110,9 +110,10 @@ auto MonoDepthBodyRenderer::renderLightSetDepth(
     }
 }
 
+template<typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
-    glm::mat4 const & lightTransformation,
+    LightViewType const & lightView,
     MonoDepthMap & target) const
     -> void
 {
@@ -126,6 +127,8 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 
     for (auto const & body : bodies)
     {
+        auto const & lightTransformation = ape::getTransformation(lightView);
+
         renderBody(asReference(body), lightTransformation);
     }
 }

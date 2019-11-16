@@ -51,17 +51,18 @@ private:
         DepthMapping & target) const
         -> void;
 
-    template<typename LightType>
+    template<typename LightType, typename LightViewType>
     auto renderLightSetDepth(
         BodySetView const & bodies,
         std::vector<LightType> const & lights,
-        std::vector<glm::mat4> const & lightViews,
+        std::vector<LightViewType> const & lightViews,
         std::vector<MonoDepthMap> & depthMaps) const
         -> void;
 
+    template<typename LightViewType>
     auto renderLightDepth(
         BodySetView const & bodies,
-        glm::mat4 const & lightTransformation,
+        LightViewType const & lightView,
         MonoDepthMap & target) const
         -> void;
 

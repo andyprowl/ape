@@ -7,7 +7,7 @@
 #include <Ape/Rendering/Effect/EffectRenderer.hpp>
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
@@ -37,7 +37,7 @@ public:
     SceneRenderer(
         std::unique_ptr<ShapeDrawer> shapeRenderer,
         DepthBodyRenderer depthBodyRenderer,
-        LightingBodyRenderer standardBodyRenderer,
+        BlinnPhongBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
         SkyboxRenderer skyboxRenderer,
@@ -107,7 +107,7 @@ private:
 
     DepthBodyRenderer depthBodyRenderer;
 
-    LightingBodyRenderer standardBodyRenderer;
+    BlinnPhongBodyRenderer standardBodyRenderer;
 
     WireframeBodyRenderer wireframeBodyRenderer;
 

@@ -17,7 +17,7 @@ class CameraSelector;
 class SkyboxSelector;
 class EffectSelector;
 class LineStyleProvider;
-class LightingShaderProgram;
+class BlinnPhongShaderProgram;
 class Window;
 class WireframeShaderProgram;
 
@@ -39,7 +39,7 @@ public:
         ape::SkyboxSelector & skyboxSelector,
         ape::EffectSelector & effectSelector,
         ape::BodySelector & bodyPicker,
-        ape::LightingShaderProgram & standardShader,
+        ape::BlinnPhongShaderProgram & standardShader,
         ape::LineStyleProvider & outlineStyleProvider,
         RaveScene & scene);
 
@@ -87,7 +87,7 @@ private:
 
     ape::BodySelector * bodyPicker;
 
-    ape::LightingShaderProgram * standardShader;
+    ape::BlinnPhongShaderProgram * standardShader;
 
     ape::LineStyleProvider * outlineStyleProvider;
 

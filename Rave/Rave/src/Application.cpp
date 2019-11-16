@@ -12,8 +12,8 @@
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
@@ -103,7 +103,7 @@ private:
 
     RaveScene scene;
 
-    ape::LightingShaderProgram standardShader;
+    ape::BlinnPhongShaderProgram standardShader;
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
@@ -125,7 +125,7 @@ private:
 
     ape::DepthBodyRenderer depthBodyRenderer;
 
-    ape::LightingBodyRenderer standardBodyRenderer;
+    ape::BlinnPhongBodyRenderer standardBodyRenderer;
 
     ape::LineStyleProvider wireframeStyleProvider;
 

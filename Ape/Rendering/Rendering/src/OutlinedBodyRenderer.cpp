@@ -1,6 +1,6 @@
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
 #include <glad/glad.h>
@@ -38,7 +38,7 @@ auto restoreDefaultStencilState()
 } // unnamed namespace
 
 OutlinedBodyRenderer::OutlinedBodyRenderer(
-    LightingBodyRenderer standardRenderer,
+    BlinnPhongBodyRenderer standardRenderer,
     WireframeBodyRenderer wireframeRenderer)
     : standardRenderer{std::move(standardRenderer)}
     , wireframeRenderer{std::move(wireframeRenderer)}

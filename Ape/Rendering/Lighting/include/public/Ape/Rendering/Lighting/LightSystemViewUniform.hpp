@@ -1,6 +1,8 @@
 #pragma once
 
+#include <Ape/Rendering/Lighting/DirectionalLightViewUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
+#include <Ape/Rendering/Lighting/SpotLightViewUniform.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/VectorUniform.hpp>
@@ -44,9 +46,9 @@ public:
 
 public:
 
-    UnsizedVectorUniform<Uniform<glm::mat4>> spot;
+    UnsizedVectorUniform<Uniform<ape::SpotLightView>> spot;
 
-    UnsizedVectorUniform<Uniform<glm::mat4>> directional;
+    UnsizedVectorUniform<Uniform<ape::DirectionalLightView>> directional;
 
 };
 

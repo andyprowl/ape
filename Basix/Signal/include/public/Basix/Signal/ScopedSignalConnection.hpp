@@ -21,13 +21,11 @@ public:
 
     auto operator = (ScopedSignalConnection && rhs) noexcept
         -> ScopedSignalConnection &;
+    
+    ~ScopedSignalConnection();
 
     auto detach()
         -> void;
-
-    ~ScopedSignalConnection();
-
-private:
 
     auto disconnect()
         -> void;

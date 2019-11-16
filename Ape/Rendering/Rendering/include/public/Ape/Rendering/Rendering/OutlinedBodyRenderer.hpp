@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
 #include <Ape/World/Scene/BodyRange.hpp>
@@ -19,7 +19,7 @@ class OutlinedBodyRenderer
 public:
 
     OutlinedBodyRenderer(
-        LightingBodyRenderer standardRenderer,
+        BlinnPhongBodyRenderer standardRenderer,
         WireframeBodyRenderer wireframeRenderer);
 
     auto render(
@@ -45,7 +45,7 @@ private:
 
 private:
 
-    LightingBodyRenderer standardRenderer;
+    BlinnPhongBodyRenderer standardRenderer;
     
     WireframeBodyRenderer wireframeRenderer;
 

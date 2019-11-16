@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Ape/Rendering/Lighting/CameraUniform.hpp>
 #include <Ape/Rendering/Lighting/DepthMappingUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniform.hpp>
@@ -11,12 +10,12 @@
 namespace ape
 {
 
-class LightingShaderProgram : public glow::ShaderProgram
+class BlinnPhongShaderProgram : public glow::ShaderProgram
 {
 
 public:
 
-    LightingShaderProgram();
+    BlinnPhongShaderProgram();
 
 public:
 
@@ -26,7 +25,7 @@ public:
 
     glow::Uniform<glm::mat3> normalTransformation;
 
-    glow::Uniform<Camera> camera;
+    glow::Uniform<glm::vec3> cameraPosition;
 
     glow::Uniform<LightSystem> lightSystem;
 

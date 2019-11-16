@@ -28,7 +28,7 @@ public:
     // whereas the transformations we are passing here do.
     // But in this case we also a problem with the name "LightSystemView", because the
     // transformations maintained there also encompass projection.
-    glow::Uniform<PointLightView> lightTransformation;
+    glow::Uniform<PointLightViewTransformation> lightTransformation;
 
     // TODO: Same as above: is it OK to mention "light" here?
     glow::Uniform<glm::vec3> lightPosition;

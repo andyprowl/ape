@@ -48,14 +48,14 @@ private:
 
     auto renderLightDepth(
         BodySetView const & bodies,
-        PointLightView const & lightTransformation,
+        PointLightView const & lightView,
         OmniDepthMap & target) const
         -> void;
 
-    auto renderBody(Body const & body, PointLightView const & lightTransformation) const
+    auto renderBody(Body const & body, PointLightView const & lightView) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, PointLightView const & lightTransformation) const
+    auto renderBodyPart(BodyPart const & part, PointLightView const & lightView) const
         -> void;
 
     auto renderMesh(Mesh const & mesh) const

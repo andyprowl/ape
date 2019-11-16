@@ -14,7 +14,7 @@
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
@@ -212,7 +212,7 @@ int main(int argc, char *argv[])
     
     auto scene = rave::createRaveScene(assets, doNotIncludeSponza);
 
-    auto standardShader = ape::LightingShaderProgram{};
+    auto standardShader = ape::BlinnPhongShaderProgram{};
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
@@ -248,7 +248,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer1},
         {omniDepthShader, *shapeRenderer1}};
 
-    auto standardBodyRenderer1 = ape::LightingBodyRenderer{standardShader, *shapeRenderer1};
+    auto standardBodyRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer2},
         {omniDepthShader, *shapeRenderer2}};
 
-    auto standardBodyRenderer2 = ape::LightingBodyRenderer{standardShader, *shapeRenderer2};
+    auto standardBodyRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
 
     auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer3},
         {omniDepthShader, *shapeRenderer3}};
 
-    auto standardBodyRenderer3 = ape::LightingBodyRenderer{standardShader, *shapeRenderer3};
+    auto standardBodyRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
 
     auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
         wireframeShader,

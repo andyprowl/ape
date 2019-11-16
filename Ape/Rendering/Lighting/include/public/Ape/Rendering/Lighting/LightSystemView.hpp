@@ -1,6 +1,10 @@
 #pragma once
 
+#include <Ape/Rendering/Lighting/DirectionalLightView.hpp>
 #include <Ape/Rendering/Lighting/PointLightView.hpp>
+#include <Ape/Rendering/Lighting/SpotLightView.hpp>
+
+#include <Ape/World/Scene/Camera.hpp>
 
 #include <Basix/Mathematics/Size.hpp>
 #include <Basix/Signal/ScopedSignalConnection.hpp>
@@ -31,36 +35,12 @@ public:
         -> std::vector<PointLightView> const &;
 
     auto getSpotView() const
-        -> std::vector<glm::mat4> const &;
+        -> std::vector<SpotLightView> const &;
 
     auto getDirectionalView() const
-        -> std::vector<glm::mat4> const &;
+        -> std::vector<DirectionalLightView> const &;
 
     auto setViewSize(basix::Size<int> const & newViewSize)
-        -> void;
-
-private:
-
-    auto registerForPointLightChangeNotifications()
-        -> std::vector<basix::ScopedSignalConnection>;
-
-    auto registerForSpotLightChangeNotifications()
-        -> std::vector<basix::ScopedSignalConnection>;
-
-    auto registerForDirectionalLightChangeNotifications()
-        -> std::vector<basix::ScopedSignalConnection>;
-
-    template<typename LightType>
-    auto registerForLightChangeNotifications(LightType const & light)
-        -> basix::ScopedSignalConnection;
-
-    auto udpateLightView(PointLight const & light)
-        -> void;
-
-    auto udpateLightView(SpotLight const & light)
-        -> void;
-
-    auto udpateLightView(DirectionalLight const & light)
         -> void;
 
 private:
@@ -71,15 +51,9 @@ private:
 
     std::vector<PointLightView> pointView;
 
-    std::vector<glm::mat4> spotView;
+    std::vector<SpotLightView> spotView;
 
-    std::vector<glm::mat4> directionalView;
-
-    std::vector<basix::ScopedSignalConnection> pointLightChangeHandlerConnections;
-
-    std::vector<basix::ScopedSignalConnection> spotLightChangeHandlerConnections;
-
-    std::vector<basix::ScopedSignalConnection> directionalLightChangeHandlerConnections;
+    std::vector<DirectionalLightView> directionalView;
 
 };
 

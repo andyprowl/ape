@@ -1,51 +1,111 @@
 #pragma once
 
-#include <glm/mat4x4.hpp>
+#include <Ape/Rendering/Lighting/PointLightViewTransformation.hpp>
+
+#include <Ape/World/Scene/Camera.hpp>
+
+#include <Basix/Mathematics/Size.hpp>
+#include <Basix/Signal/ScopedSignalConnection.hpp>
 
 namespace ape
 {
+
+class PointLight;
 
 class PointLightView
 {
 
 public:
 
-    PointLightView(
-        glm::mat4 const & right,
-        glm::mat4 const & left,
-        glm::mat4 const & top,
-        glm::mat4 const & bottom,
-        glm::mat4 const & front,
-        glm::mat4 const & back)
-        : right{right}
-        , left{left}
-        , top{top}
-        , bottom{bottom}
-        , front{front}
-        , back{back}
+    class FaceCameraSet
     {
-    }
+
+    public:
+
+        FaceCameraSet(
+            Camera right,
+            Camera left,
+            Camera top,
+            Camera bottom,
+            Camera front,
+            Camera back)
+            : right{std::move(right)}
+            , left{std::move(left)}
+            , top{std::move(top)}
+            , bottom{std::move(bottom)}
+            , front{std::move(front)}
+            , back{std::move(back)}
+        {
+        }
+
+    public:
+
+        Camera right;
+
+        Camera left;
+
+        Camera top;
+
+        Camera bottom;
+
+        Camera front;
+
+        Camera back;
+
+    };
 
 public:
 
-    glm::mat4 right;
+    explicit PointLightView(PointLight const & light);
 
-    glm::mat4 left;
+    PointLightView(PointLightView const & rhs) = delete;
 
-    glm::mat4 top;
+    PointLightView(PointLightView && rhs) noexcept;
 
-    glm::mat4 bottom;
+    auto operator = (PointLightView const & rhs)
+        -> PointLightView & = delete;
 
-    glm::mat4 front;
+    auto operator = (PointLightView && rhs) noexcept
+        -> PointLightView &;
 
-    glm::mat4 back;
+    ~PointLightView() = default;
+    
+    auto getFaceCameras() const
+        -> const FaceCameraSet &;
+
+private:
+
+    auto makeLightFaceCameras() const
+        -> FaceCameraSet;
+
+    auto updateLightFaceCameras()
+        -> void;
+
+    auto registerForLightChangeNotifications()
+        -> basix::ScopedSignalConnection;
+
+private:
+
+    PointLight const * light;
+
+    FaceCameraSet faceCameras;
+
+    basix::ScopedSignalConnection onLightChangedConnection;
 
 };
 
-inline auto operator * (PointLightView const & v, glm::mat4 const & m)
-    -> PointLightView
+inline auto getTransformation(PointLightView const & view)
+    -> PointLightViewTransformation
 {
-    return {v.right * m, v.left * m, v.top * m, v.bottom * m, v.front * m, v.back * m};
+    auto const & cameras = view.getFaceCameras();
+
+    return {
+        cameras.right.getTransformation(),
+        cameras.left.getTransformation(),
+        cameras.top.getTransformation(),
+        cameras.bottom.getTransformation(),
+        cameras.front.getTransformation(),
+        cameras.back.getTransformation()};
 }
 
 } // namespace ape

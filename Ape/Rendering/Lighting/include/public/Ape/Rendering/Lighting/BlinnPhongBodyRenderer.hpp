@@ -16,14 +16,14 @@ class LightSystem;
 class Mesh;
 class ShadowMapping;
 class ShapeDrawer;
-class LightingShaderProgram;
+class BlinnPhongShaderProgram;
 
-class LightingBodyRenderer
+class BlinnPhongBodyRenderer
 {
 
 public:
 
-    LightingBodyRenderer(LightingShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    BlinnPhongBodyRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer const & shapeRenderer);
 
     auto render(
         BodyRange const & bodies,
@@ -56,7 +56,7 @@ private:
 
 private:
 
-    LightingShaderProgram * shader;
+    BlinnPhongShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
 
