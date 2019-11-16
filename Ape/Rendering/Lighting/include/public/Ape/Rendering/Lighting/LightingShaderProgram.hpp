@@ -20,7 +20,7 @@ public:
 
 public:
 
-    glow::Uniform<glm::mat4> modelTransformation;
+    glow::Uniform<glm::mat4> worldTransformation;
 
     glow::Uniform<glm::mat4> cameraTransformation;
 

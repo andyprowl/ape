@@ -49,7 +49,7 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
 }
 
 auto makeAxisAlignedBoundingBox(std::vector<ShapeVertex> const & vertices)
-    -> AxisAlignedBox
+    -> Box
 {
     auto min = glm::vec3{maxFloat, maxFloat, maxFloat};
     
@@ -64,21 +64,25 @@ auto makeAxisAlignedBoundingBox(std::vector<ShapeVertex> const & vertices)
         max = {std::max(max.x, pos.x), std::max(max.y, pos.y), std::max(max.z, pos.z)};
     }
 
-    return {min, max};
+    return {(min + max) / 2.0f, {max - min}};
 }
 
-auto makeBoundingSphere(AxisAlignedBox const & box)
+auto makeBoundingSphere(Box const & box)
     -> Sphere
 {
-    auto const center = (box.max + box.min) / 2.0f;
+    auto const min = box.getCorner(Box::Corner::leftBottomBack);
 
-    auto const radius = glm::length(box.max - center);
+    auto const max = box.getCorner(Box::Corner::rightTopFront);
+
+    auto const center = (max + min) / 2.0f;
+
+    auto const radius = glm::length(max - center);
 
     return {center, radius};
 }
 
 auto makeBoundingVolumes(std::vector<ShapeVertex> const & vertices)
-    -> ShapeBoundingVolumeSet
+    -> ShapeBounds
 {
     auto const box = makeAxisAlignedBoundingBox(vertices);
 
@@ -115,7 +119,7 @@ auto Shape::getNumOfVertices() const
 }
 
 auto Shape::getBoundingVolumes() const
-    -> ShapeBoundingVolumeSet const &
+    -> ShapeBounds const &
 {
     return boundingVolumes;
 }

@@ -1,6 +1,6 @@
 #version 450 core
 
-in vec4 modelPosition;
+in vec4 worldPosition;
 
 uniform vec3 lightPosition;
 
@@ -11,7 +11,7 @@ void main()
     // changed to not make use of the far plane.
     const float farPlaneDistance = 100.0;
 
-    float distanceFromLight = length(vec3(modelPosition) - lightPosition);
+    float distanceFromLight = length(vec3(worldPosition) - lightPosition);
 
     float normalizedLightDistance = distanceFromLight / farPlaneDistance;
 

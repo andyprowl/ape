@@ -24,7 +24,7 @@ auto BodySpotLightSynchronizer::registerTransformationChangeEventHandler(
     {
         if (isRoot(part))
         {
-            auto const & transformation = part.getGlobalTransformation();
+            auto const & transformation = part.getWorldTransformation();
 
             auto const newPosition = glm::vec3{transformation[3]};
 

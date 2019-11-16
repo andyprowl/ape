@@ -3,7 +3,7 @@
 #include <Ape/World/AssetLoader//AssetLoader.hpp>
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/Mesh.hpp>
-#include <Ape/World/Shape/BoxBuilder.hpp>
+#include <Ape/World/Shape/BoxShapeBuilder.hpp>
 #include <Ape/World/Shape/Shape.hpp>
 
 #include <Glow/Texture/TextureReader.hpp>
@@ -17,7 +17,7 @@ namespace
 auto makeBox(ape::NormalDirection const normalDirection, glm::vec3 const & size)
     -> ape::Shape
 {
-    auto const builder = ape::BoxBuilder{};
+    auto const builder = ape::BoxShapeBuilder{};
 
     return builder.build(normalDirection, size);
 }

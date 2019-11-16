@@ -90,13 +90,13 @@ auto LightingBodyRenderer::setupBodyPartUniforms(
     glm::mat4 const & cameraTransformation) const
     -> void
 {
-    auto const & modelTransformation = part.getGlobalTransformation();
+    auto const & worldTransformation = part.getWorldTransformation();
 
-    shader->modelTransformation = modelTransformation;
+    shader->worldTransformation = worldTransformation;
     
-    shader->cameraTransformation = cameraTransformation * modelTransformation;
+    shader->cameraTransformation = cameraTransformation * worldTransformation;
 
-    shader->normalTransformation = part.getGlobalNormalTransformation();
+    shader->normalTransformation = part.getWorldNormalTransformation();
 }
 
 auto LightingBodyRenderer::renderMesh(Mesh const & mesh) const

@@ -22,7 +22,7 @@ auto buildStandardShader()
 
 LightingShaderProgram::LightingShaderProgram()
     : ShaderProgram{buildStandardShader()}
-    , modelTransformation{*this, "transform.model"}
+    , worldTransformation{*this, "transform.model"}
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}
     , camera{*this, "camera"}

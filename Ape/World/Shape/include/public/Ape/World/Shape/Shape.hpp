@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/World/Shape/ShapeBoundingVolumeSet.hpp>
+#include <Ape/World/Shape/ShapeBounds.hpp>
 #include <Ape/World/Shape/ShapeVertex.hpp>
 
 #include <Glow/BufferObject/ElementBufferObject.hpp>
@@ -30,7 +30,7 @@ public:
         -> int;
 
     auto getBoundingVolumes() const
-        -> ShapeBoundingVolumeSet const &;
+        -> ShapeBounds const &;
 
 private:
 
@@ -58,7 +58,7 @@ private:
 
     int numOfVertices;
 
-    ShapeBoundingVolumeSet boundingVolumes;
+    ShapeBounds boundingVolumes;
 
 };
 

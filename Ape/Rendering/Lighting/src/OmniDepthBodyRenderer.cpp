@@ -119,11 +119,11 @@ auto OmniDepthBodyRenderer::renderBodyPart(
     PointLightView const & lightTransformation) const
     -> void
 {
-    auto const & modelTransformation = part.getGlobalTransformation();
+    auto const & worldTransformation = part.getWorldTransformation();
     
-    shader->modelTransformation = modelTransformation;
+    shader->worldTransformation = worldTransformation;
 
-    shader->lightTransformation = lightTransformation * modelTransformation;
+    shader->lightTransformation = lightTransformation * worldTransformation;
 
     for (auto const mesh : part.getModel().getMeshes())
     {

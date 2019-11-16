@@ -4,7 +4,8 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    3rdParty::glm)
+    3rdParty::glm
+    Ape::World::Shape)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
