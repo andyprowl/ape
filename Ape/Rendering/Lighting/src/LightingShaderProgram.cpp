@@ -14,8 +14,8 @@ auto buildStandardShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Standard/Standard.Vertex.glsl",
-        "Standard/Standard.Fragment.glsl");
+        "BlinnPhong/BlinnPhong.Vertex.glsl",
+        "BlinnPhong/BlinnPhong.Fragment.glsl");
 }
 
 } // unnamed namespace
@@ -30,7 +30,7 @@ LightingShaderProgram::LightingShaderProgram()
     , lightSystemView{*this, "lightSystemView"}
     , material{*this, "material", 0, 1}
     , depthMapping{*this, "depthMapping", 2}
-    , useBlinnPhongModel{*this, "useBlinnPhongModel", true}
+    , usePhongModel{*this, "usePhongModel", false}
     , usePercentageCloserFiltering{*this, "usePercentageCloserFiltering", false}
 {
 }

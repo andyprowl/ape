@@ -210,7 +210,7 @@ auto RaveInputHandler::toggleBlinnPhongModel() const
 {
     standardShader->bind();
 
-    standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
+    standardShader->usePhongModel = !standardShader->usePhongModel;
 }
 
 auto RaveInputHandler::togglePercentageCloserFiltering() const

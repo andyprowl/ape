@@ -36,7 +36,7 @@ public:
 
     glow::Uniform<DepthMapping> depthMapping;
 
-    glow::Uniform<bool> useBlinnPhongModel;
+    glow::Uniform<bool> usePhongModel;
 
     glow::Uniform<bool> usePercentageCloserFiltering;
 
