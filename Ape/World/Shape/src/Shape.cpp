@@ -4,12 +4,17 @@
 #include <Glow/BufferObject/VertexLayout.hpp>
 
 #include <glad/glad.h>
+#include <glm/geometric.hpp>
 
 namespace ape
 {
 
 namespace
 {
+
+auto const minFloat = std::numeric_limits<float>::min();
+
+auto const maxFloat = std::numeric_limits<float>::max();
 
 auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
     -> glow::VertexBufferObject
@@ -43,11 +48,51 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
     return ebo;
 }
 
+auto makeAxisAlignedBoundingBox(std::vector<ShapeVertex> const & vertices)
+    -> AxisAlignedBox
+{
+    auto min = glm::vec3{maxFloat, maxFloat, maxFloat};
+    
+    auto max = glm::vec3{minFloat, minFloat, minFloat};
+
+    for (auto const & vertex : vertices)
+    {
+        auto const & pos = vertex.position;
+
+        min = {std::min(min.x, pos.x), std::min(min.y, pos.y), std::min(min.z, pos.z)};
+
+        max = {std::max(max.x, pos.x), std::max(max.y, pos.y), std::max(max.z, pos.z)};
+    }
+
+    return {min, max};
+}
+
+auto makeBoundingSphere(AxisAlignedBox const & box)
+    -> Sphere
+{
+    auto const center = (box.max + box.min) / 2.0f;
+
+    auto const radius = glm::length(box.max - center);
+
+    return {center, radius};
+}
+
+auto makeBoundingVolumes(std::vector<ShapeVertex> const & vertices)
+    -> ShapeBoundingVolumeSet
+{
+    auto const box = makeAxisAlignedBoundingBox(vertices);
+
+    auto const sphere = makeBoundingSphere(box);
+
+    return {box, sphere};
+}
+
 } // unnamed namespace
 
 Shape::Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices)
     : bufferObjects{makeVertices(vertices, indices)}
     , numOfVertices{static_cast<int>(indices.size())}
+    , boundingVolumes{makeBoundingVolumes(vertices)}
 {
 }
 
@@ -69,10 +114,16 @@ auto Shape::getNumOfVertices() const
     return numOfVertices;
 }
 
+auto Shape::getBoundingVolumes() const
+    -> ShapeBoundingVolumeSet const &
+{
+    return boundingVolumes;
+}
+
 auto Shape::makeVertices(
     std::vector<ShapeVertex> const & vertices,
     std::vector<unsigned int> const & indices) const
-    -> BufferObjects
+    -> BufferObjectSet
 {
     auto vao = glow::VertexArrayObject{};
 

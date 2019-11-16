@@ -16,13 +16,9 @@ class ShapeArrayObjectDrawer : public ShapeDrawer
 
 public:
 
-    using ShapeCollection = std::vector<Shape *>;
+    explicit ShapeArrayObjectDrawer(std::vector<Shape *> const & shapes);
 
-public:
-
-    explicit ShapeArrayObjectDrawer(ShapeCollection const & shapes);
-
-    auto registerShapes(ShapeCollection const & shapes)
+    auto registerShapes(std::vector<Shape *> const & shapes)
         -> void;
 
     // virtual (from ShapeDrawer)
@@ -32,7 +28,7 @@ public:
 private:
     
     auto setupArrayObjectsForShapes(
-        ShapeCollection const & shapes,
+        std::vector<Shape *> const & shapes,
         std::vector<glow::VertexArrayObject> & destination) const
         -> void;
 

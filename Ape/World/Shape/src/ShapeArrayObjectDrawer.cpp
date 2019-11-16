@@ -29,15 +29,16 @@ auto setupRenderingState(Shape const & shape)
 
 } // unnamed namespace
 
-ShapeArrayObjectDrawer::ShapeArrayObjectDrawer(ShapeCollection const & shapes)
+ShapeArrayObjectDrawer::ShapeArrayObjectDrawer(std::vector<Shape *> const & shapes)
 {
     registerShapes(shapes);
 }
 
-auto ShapeArrayObjectDrawer::registerShapes(ShapeCollection const & shapes)
+auto ShapeArrayObjectDrawer::registerShapes(std::vector<Shape *> const & shapes)
     -> void
 {
-    auto const lastShapeIndex = shapes.back()->getInstanceIndex();
+    // This design is weak and error-prone, as it relies on consistent order of insertion and
+    // creation of shapes. It should be changed to something more robust.
 
     shapeArrayObjects.resize(shapeArrayObjects.size() + shapes.size());
 
@@ -60,7 +61,7 @@ auto ShapeArrayObjectDrawer::render(Shape const & shape) const
 }
 
 auto ShapeArrayObjectDrawer::setupArrayObjectsForShapes(
-    ShapeCollection const & shapes,
+    std::vector<Shape *> const & shapes,
     std::vector<glow::VertexArrayObject> & destination) const
     -> void
 {

@@ -1,63 +1,69 @@
- - Implement frustum culling
- - Implement occlusion culling
- - Implement outlining by pushing vertices in the direction of normals
- - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
-  - The reason for this is that depth body renderer has to bind framebuffer targets
-  - Not sure it is correct that the renderer does the binding and setting of viewport though
-  - Maybe it is a naming issue? It simply shouldn't be called "renderer"?
-  - Try to think how the generic pipeline would like if composed declaratively by the user
- - Write tutorial/documentation on gamma correction
- - Write tutorial/documentation on skyboxes
- - Try FBX format for 3D models
-  - Use FBX SDK for importing the models
- - The "Inversion" post-processing effect no longer seems to work
-  - The image is extremely bright
-  - Is this related to gamma?
-  - I think it looked OK before we did omnidirectional shadow mapping
- - Complete implementation of shadow mapping
-  - Tightly fit lightSystem view matrices to the scene
-  - Implement cascaded shadow maps at least for directional lights
-  - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
-    application, not the VS plugin)
-   - This has been worked around by allowing to turn off debug mode from command line
-  - Consider implementing (restoring?) PCF
- - Shadows seem to be neverending, this is not realistic
-  - Try not using 1.0 vs 0.0 but something in the middle that changes with distance
-  - Also, try playing with ambient lightSystem to compensate for this
- - Performance has dropped a lot in ApeStudio, at least when not plugged to power
-  - Try profiling through NSight
- - Shouldn't LightSystemView cameras have the aspect ratio of the depth map rather than the aspect
-   ratio of the display window?
-  - In particular for point light shadow maps, if vertical FOV is 90 and AR is not 1, we get a HFOV
-   which is greater than (or lower than) 90, which means redundant or insufficient view coverage
- - Qt window resizing has stopped working again
-  - In fact it seems even going back to the commit that "fixed" it no longer works
- - Implement normal maps
-  - Have AssetLoader read normal maps
-  - Have shader apply normal maps
- - EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
-  - Remove duplication by extracting the template
-  - Same redundancy for EffectCollection, SkyboxCollection
- - Create depth of field effect
- - Unify the way GLFW windows and QT windows are created
-  - Ideally, there should be a single "Engine" class
- - Let shader programs (or at least effects) have names
-  - Use that to select the initial effect in ApePlayer and ApeCreator
- - Figure out a good way of reducing duplication in effect shaders
- - Support wireframe rendering
- - Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
- - callers of glViewport should do so through the Window object
- - Implement normal visualization through geometry shaders
- - (Re-)implement glowing based on view position and normal
- - Player camera lookat direction is now different and non-deterministic when ApePlayer starts
-  - Works correctly with ApeCreator
- - Introduce different namespaces for packages (not just "ape")
- - Do some performance benchmarking to compare rendering with VAOs and rendering with VBOs
- - QtCreator workflow for setting things up is particularly unwieldy. Make it easier
- - Refactor handling of Texture readout - should probably be part of AssetLoader, not GpuResource
-  - Readout of texture introduces dependency on stb
- - Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
-   constructing them
- - Try and generalize GLFWEngine-based and Qt's event-based approaches
- - Add CMake install target also handling correct deployment of dependencies
- - Support flat shapes/meshes
+- Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
+- Implement frustum culling
+    - Implement bounding volumes (AABB and bounding spheres) for shapes
+    - Implement bounding volumes for model parts
+    - Use frustum culling with view camera frustum
+    - Use frustum culling with for shadow map generation (light view frustum)
+- Implement occlusion culling
+- Implement outlining by pushing vertices in the direction of normals
+- Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
+    - The reason for this is that depth body renderer has to bind framebuffer targets
+    - Not sure it is correct that the renderer does the binding and setting of viewport though
+    - Maybe it is a naming issue? It simply shouldn't be called "renderer"?
+    - Try to think how the generic pipeline would like if composed declaratively by the user
+- Write tutorial/documentation on gamma correction
+- Write tutorial/documentation on skyboxes
+- Try FBX format for 3D models
+    - Use FBX SDK for importing the models
+- The "Inversion" post-processing effect no longer seems to work
+    - The image is extremely bright
+    - Is this related to gamma?
+    - I think it looked OK before we did omnidirectional shadow mapping
+- Complete implementation of shadow mapping
+   - Tightly fit lightSystem view matrices to the scene
+   - Implement cascaded shadow maps at least for directional lights
+   - Fix warning about texture base level and binding using NSight diagnostic tool (the standalone
+     application, not the VS plugin)
+       - This has been worked around by allowing to turn off debug mode from command line
+   - Consider implementing (restoring?) PCF
+   - Shadows seem to be neverending, this is not realistic
+       - Try not using 1.0 vs 0.0 but something in the middle that changes with distance
+       - Also, try playing with ambient lightSystem to compensate for this
+- Performance has dropped a lot in ApeStudio, at least when not plugged to power
+     - Try profiling through NSight
+- Shouldn't LightSystemView cameras have the aspect ratio of the depth map rather than the aspect
+  ratio of the display window?
+    - In particular for point light shadow maps, if vertical FOV is 90 and AR is not 1, we get a
+    - HFOV which is greater than (or lower than) 90, which means redundant or insufficient view
+    - coverage 
+- Qt window resizing has stopped working again
+    - In fact it seems even going back to the commit that "fixed" it no longer works
+- Implement normal maps
+    - Have AssetLoader read normal maps
+    - Have shader apply normal maps
+- EffectSelector, SkyboxSelector, CameraSelector can be instances of the same template
+    - Remove duplication by extracting the template
+    - Same redundancy for EffectCollection, SkyboxCollection
+- Create depth of field effect
+- Unify the way GLFW windows and QT windows are created
+    - Ideally, there should be a single "Engine" class
+- Let shader programs (or at least effects) have names
+    - Use that to select the initial effect in ApePlayer and ApeCreator
+- Figure out a good way of reducing duplication in effect shaders
+- Support wireframe rendering
+- Implement techniques to compose effects into chains, possibly reusing a pool of FBOs
+- callers of glViewport should do so through the Window object
+- Implement normal visualization through geometry shaders
+- (Re-)implement glowing based on view position and normal
+- Player camera lookat direction is now different and non-deterministic when ApePlayer starts
+    - Works correctly with ApeCreator
+- Introduce different namespaces for packages (not just "ape")
+- Do some performance benchmarking to compare rendering with VAOs and rendering with VBOs
+- QtCreator workflow for setting things up is particularly unwieldy. Make it easier
+- Refactor handling of Texture readout - should probably be part of AssetLoader, not GpuResource
+    - Readout of texture introduces dependency on stb
+- Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
+  constructing them
+- Try and generalize GLFWEngine-based and Qt's event-based approaches
+- Add CMake install target also handling correct deployment of dependencies
+- Support flat shapes/meshes

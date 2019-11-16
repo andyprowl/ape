@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Ape/World/Shape/ShapeBoundingVolumeSet.hpp>
 #include <Ape/World/Shape/ShapeVertex.hpp>
 
 #include <Glow/BufferObject/ElementBufferObject.hpp>
@@ -28,9 +29,12 @@ public:
     auto getNumOfVertices() const
         -> int;
 
+    auto getBoundingVolumes() const
+        -> ShapeBoundingVolumeSet const &;
+
 private:
 
-    class BufferObjects
+    class BufferObjectSet
     {
     
     public:
@@ -46,13 +50,15 @@ private:
     auto makeVertices(
         std::vector<ShapeVertex> const & vertices,
         std::vector<unsigned int> const & indices) const
-        -> BufferObjects;
+        -> BufferObjectSet;
 
 private:
     
-    BufferObjects bufferObjects;
+    BufferObjectSet bufferObjects;
 
     int numOfVertices;
+
+    ShapeBoundingVolumeSet boundingVolumes;
 
 };
 
