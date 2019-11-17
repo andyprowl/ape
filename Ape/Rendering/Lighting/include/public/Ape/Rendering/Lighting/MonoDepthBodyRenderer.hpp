@@ -13,8 +13,10 @@ namespace ape
 
 class Body;
 class BodyPart;
+class BodyPartMesh;
 class Camera;
 class DepthMapping;
+class FrustumCuller;
 class MonoDepthShaderProgram;
 class LightSystemView;
 class Mesh;
@@ -35,6 +37,12 @@ public:
         BodySetView const & bodies,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
+        -> void;
+
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
         -> void;
 
 private:
@@ -66,13 +74,24 @@ private:
         MonoDepthMap & target) const
         -> void;
 
-    auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const
+    auto renderBody(
+        Body const & body,
+        glm::mat4 const & lightTransformation,
+        FrustumCuller const & culler) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, glm::mat4 const & lightTransformation) const
+    auto renderBodyPart(
+        BodyPart const & part,
+        glm::mat4 const & lightTransformation,
+        FrustumCuller const & culler) const
         -> void;
 
-    auto renderMesh(Mesh const & mesh) const
+    auto isVisible(
+        BodyPartMesh const & mesh,
+        FrustumCuller const & culler) const
+        -> bool;
+
+    auto renderMesh(BodyPartMesh const & mesh) const
         -> void;
 
 private:
@@ -80,6 +99,8 @@ private:
     MonoDepthShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    bool performFrustumCulling;
 
 };
 

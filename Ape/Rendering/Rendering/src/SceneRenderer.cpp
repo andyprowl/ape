@@ -21,27 +21,15 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
-    std::unique_ptr<ShapeDrawer> shapeRenderer,
-    DepthBodyRenderer depthBodyRenderer,
-    BlinnPhongBodyRenderer standardBodyRenderer,
-    WireframeBodyRenderer wireframeBodyRenderer,
-    OutlinedBodyRenderer outlinedBodyRenderer,
-    BodyBoundsRenderer boundsRenderer,
-    SkyboxRenderer skyboxRenderer,
-    EffectRenderer effectRenderer,
+    std::unique_ptr<ShapeDrawer> shapeDrawer,
+    RendererSet renderers,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
     Window & targetSurface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
-    : shapeRenderer{std::move(shapeRenderer)}
-    , depthBodyRenderer{std::move(depthBodyRenderer)}
-    , standardBodyRenderer{std::move(standardBodyRenderer)}
-    , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
-    , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
-    , boundsRenderer{std::move(boundsRenderer)}
-    , effectRenderer{std::move(effectRenderer)}
-    , skyboxRenderer{std::move(skyboxRenderer)}
+    : shapeDrawer{std::move(shapeDrawer)}
+    , renderers{std::move(renderers)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
     , targetSurface{&targetSurface}
@@ -95,6 +83,20 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     offscreenSurface.setSize(viewport.size);
 
     shadowMapping.lightSystemView.setViewSize(viewport.size);
+}
+
+auto SceneRenderer::isFrustumCullingEnabled() const
+    -> bool
+{
+    return renderers.blinnPhongBodyRenderer.isFrustumCullingEnabled();
+}
+
+auto SceneRenderer::enableFrustumCulling(bool const enable)
+    -> void
+{
+    renderers.blinnPhongBodyRenderer.enableFrustumCulling(enable);
+
+    renderers.depthBodyRenderer.enableFrustumCulling(enable);
 }
 
 auto SceneRenderer::makeShadowMapping() const
@@ -158,7 +160,10 @@ auto SceneRenderer::renderDepthMapping()
 {
     auto const & bodies = cameraSelector->getScene().getBodies();
 
-    depthBodyRenderer.render(bodies, shadowMapping.lightSystemView, shadowMapping.depthMapping);
+    renderers.depthBodyRenderer.render(
+        bodies,
+        shadowMapping.lightSystemView,
+        shadowMapping.depthMapping);
 }
 
 auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
@@ -206,7 +211,11 @@ auto SceneRenderer::renderNonPickedBodies() const
 
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    standardBodyRenderer.render(nonSelectedBodies, *activeCamera, lightSystem, shadowMapping);
+    renderers.blinnPhongBodyRenderer.render(
+        nonSelectedBodies,
+        *activeCamera,
+        lightSystem,
+        shadowMapping);
 }
 
 auto SceneRenderer::renderPickedBodies() const
@@ -225,7 +234,11 @@ auto SceneRenderer::renderPickedBodies() const
 
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
-    outlinedBodyRenderer.render(selectedBodies, *activeCamera, lightSystem, shadowMapping);
+    renderers.outlinedBodyRenderer.render(
+        selectedBodies,
+        *activeCamera,
+        lightSystem,
+        shadowMapping);
 }
 
 auto SceneRenderer::renderBodyBounds() const
@@ -242,7 +255,7 @@ auto SceneRenderer::renderBodyBounds() const
 
     auto const & bodies = getScene(*this).getBodies();
 
-    boundsRenderer.render(bodies, *activeCamera);
+    renderers.boundsRenderer.render(bodies, *activeCamera);
 }
 
 auto SceneRenderer::renderSkybox() const
@@ -252,7 +265,7 @@ auto SceneRenderer::renderSkybox() const
 
     assert(activeCamera != nullptr);
 
-    skyboxRenderer.render(*activeCamera);
+    renderers.skyboxRenderer.render(*activeCamera);
 }
 
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const
@@ -264,7 +277,7 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
 
     auto const & texture = offscreenSurface.getColorBuffer();
 
-    effectRenderer.render(texture);
+    renderers.effectRenderer.render(texture);
 }
 
 auto getCamera(SceneRenderer const & renderer)

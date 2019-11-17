@@ -12,12 +12,13 @@ enum class Key;
 enum class KeyAction;
 enum class KeyModifier;
 
+class BlinnPhongShaderProgram;
 class BodySelector;
 class CameraSelector;
-class SkyboxSelector;
 class EffectSelector;
 class LineStyleProvider;
-class BlinnPhongShaderProgram;
+class SceneRenderer;
+class SkyboxSelector;
 class Window;
 class WireframeShaderProgram;
 
@@ -35,6 +36,7 @@ public:
 
     RaveInputHandler(
         ape::Window & window,
+        ape::SceneRenderer & renderer,
         ape::CameraSelector & cameraSelector,
         ape::SkyboxSelector & skyboxSelector,
         ape::EffectSelector & effectSelector,

@@ -11,6 +11,7 @@ namespace ape
 
 class Body;
 class BodyPart;
+class BodyPartMesh;
 class Camera;
 class FrustumCuller;
 class LightSystem;
@@ -31,6 +32,12 @@ public:
         Camera const & camera,
         LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
+        -> void;
+
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
         -> void;
 
 private:
@@ -58,7 +65,10 @@ private:
         glm::mat4 const & cameraTransformation) const
         -> void;
 
-    auto renderMesh(Mesh const & mesh) const
+    auto isVisible(BodyPartMesh const & mesh, FrustumCuller const & culler) const
+        -> bool;
+
+    auto renderMesh(BodyPartMesh const & mesh) const
         -> void;
 
 private:
@@ -66,6 +76,8 @@ private:
     BlinnPhongShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    bool performFrustumCulling;
 
 };
 

@@ -58,13 +58,14 @@ public:
         , bodyPicker{scene}
         , sceneRenderer{
             std::move(shapeRenderer),
-            std::move(depthBodyRenderer),
-            std::move(standardBodyRenderer),
-            std::move(wireframeBodyRenderer),
-            std::move(outlinedBodyRenderer),
-            std::move(bodyBoundsRenderer),
-            std::move(skyboxRenderer),
-            std::move(effectRenderer),
+            ape::SceneRenderer::RendererSet{
+                std::move(depthBodyRenderer),
+                std::move(standardBodyRenderer),
+                std::move(wireframeBodyRenderer),
+                std::move(outlinedBodyRenderer),
+                std::move(bodyBoundsRenderer),
+                std::move(skyboxRenderer),
+                std::move(effectRenderer)},
             cameraSelector,
             bodyPicker,
             window,
@@ -72,6 +73,7 @@ public:
             {0.0f, 0.0f, 0.0f}}
         , inputHandler{
             window,
+            sceneRenderer,
             cameraSelector,
             skyboxSelector,
             effectSelector,

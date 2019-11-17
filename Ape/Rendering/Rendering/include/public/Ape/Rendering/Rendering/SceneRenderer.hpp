@@ -35,15 +35,52 @@ class SceneRenderer
 
 public:
 
+    class RendererSet
+    {
+
+    public:
+
+        RendererSet(
+            DepthBodyRenderer depthBodyRenderer,
+            BlinnPhongBodyRenderer blinnPhongBodyRenderer,
+            WireframeBodyRenderer wireframeBodyRenderer,
+            OutlinedBodyRenderer outlinedBodyRenderer,
+            BodyBoundsRenderer boundsRenderer,
+            SkyboxRenderer skyboxRenderer,
+            EffectRenderer effectRenderer)
+            : depthBodyRenderer{std::move(depthBodyRenderer)}
+            , blinnPhongBodyRenderer{std::move(blinnPhongBodyRenderer)}
+            , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
+            , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
+            , boundsRenderer{std::move(boundsRenderer)}
+            , skyboxRenderer{std::move(skyboxRenderer)}
+            , effectRenderer{std::move(effectRenderer)}
+        {
+        }
+
+    public:
+
+        DepthBodyRenderer depthBodyRenderer;
+
+        BlinnPhongBodyRenderer blinnPhongBodyRenderer;
+
+        WireframeBodyRenderer wireframeBodyRenderer;
+
+        OutlinedBodyRenderer outlinedBodyRenderer;
+
+        BodyBoundsRenderer boundsRenderer;
+
+        SkyboxRenderer skyboxRenderer;
+
+        EffectRenderer effectRenderer;
+
+    };
+
+public:
+
     SceneRenderer(
-        std::unique_ptr<ShapeDrawer> shapeRenderer,
-        DepthBodyRenderer depthBodyRenderer,
-        BlinnPhongBodyRenderer standardBodyRenderer,
-        WireframeBodyRenderer wireframeBodyRenderer,
-        OutlinedBodyRenderer outlinedBodyRenderer,
-        BodyBoundsRenderer boundsRenderer,
-        SkyboxRenderer skyboxRenderer,
-        EffectRenderer effectRenderer,
+        std::unique_ptr<ShapeDrawer> shapeDrawer,
+        RendererSet renderers,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
         Window & targetSurface,
@@ -63,6 +100,12 @@ public:
         -> Viewport;
 
     auto setViewport(Viewport const & newViewport)
+        -> void;
+
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
         -> void;
 
 private:
@@ -108,21 +151,9 @@ private:
 
 private:
 
-    std::unique_ptr<ShapeDrawer> shapeRenderer;
+    std::unique_ptr<ShapeDrawer> shapeDrawer;
 
-    DepthBodyRenderer depthBodyRenderer;
-
-    BlinnPhongBodyRenderer standardBodyRenderer;
-
-    WireframeBodyRenderer wireframeBodyRenderer;
-
-    OutlinedBodyRenderer outlinedBodyRenderer;
-
-    BodyBoundsRenderer boundsRenderer;
-
-    SkyboxRenderer skyboxRenderer;
-
-    EffectRenderer effectRenderer;
+    RendererSet renderers;
 
     CameraSelector const * cameraSelector;
 

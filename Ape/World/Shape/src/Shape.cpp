@@ -70,11 +70,9 @@ auto makeAxisAlignedBoundingBox(std::vector<ShapeVertex> const & vertices)
 auto makeBoundingSphere(Box const & box)
     -> Sphere
 {
-    auto const min = box.getCorner(Box::Corner::leftBottomBack);
+    auto const center = box.getCenter();
 
     auto const max = box.getCorner(Box::Corner::rightTopFront);
-
-    auto const center = (max + min) / 2.0f;
 
     auto const radius = glm::length(max - center);
 

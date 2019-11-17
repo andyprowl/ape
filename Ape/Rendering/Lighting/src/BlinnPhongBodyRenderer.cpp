@@ -25,6 +25,7 @@ BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , performFrustumCulling{true}
 {
 }
 
@@ -47,6 +48,18 @@ auto BlinnPhongBodyRenderer::render(
     {
         renderBody(*body, cameraTransformation, culler);
     }
+}
+
+auto BlinnPhongBodyRenderer::isFrustumCullingEnabled() const
+    -> bool
+{
+    return performFrustumCulling;
+}
+
+auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
+    -> void
+{
+    performFrustumCulling = enable;
 }
 
 auto BlinnPhongBodyRenderer::setupInvariantUniforms(
@@ -86,18 +99,12 @@ auto BlinnPhongBodyRenderer::renderBodyPart(
 
     for (auto const & bodyMesh : part.getMeshes())
     {
-        auto const & bounds = bodyMesh.getBoundingVolumes();
-
-        auto const frustumRelation = culler.computeFrustumRelation(bounds);
-
-        if (frustumRelation == FrustumCuller::FrustumRelation::fullyOutside)
+        if (!isVisible(bodyMesh, culler))
         {
             continue;
         }
 
-        auto const & mesh = bodyMesh.getModel();
-
-        renderMesh(mesh);
+        renderMesh(bodyMesh);
     }
 }
 
@@ -115,14 +122,33 @@ auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
     shader->normalTransformation = part.getWorldNormalTransformation();
 }
 
-auto BlinnPhongBodyRenderer::renderMesh(Mesh const & mesh) const
+auto BlinnPhongBodyRenderer::isVisible(
+    BodyPartMesh const & mesh,
+    FrustumCuller const & culler) const
+    -> bool
+{
+    if (!isFrustumCullingEnabled())
+    {
+        return true;
+    }
+
+    auto const & bounds = mesh.getBoundingVolumes();
+
+    auto const frustumRelation = culler.computeFrustumRelation(bounds);
+
+    return (frustumRelation != FrustumCuller::FrustumRelation::fullyOutside);
+}
+
+auto BlinnPhongBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
     -> void
 {
-    auto const & material = mesh.getMaterial();
+    auto const & meshModel = mesh.getModel();
+
+    auto const & material = meshModel.getMaterial();
 
     shader->material = material;
 
-    auto const & shape = mesh.getShape();
+    auto const & shape = meshModel.getShape();
     
     shapeRenderer->render(shape);
 }

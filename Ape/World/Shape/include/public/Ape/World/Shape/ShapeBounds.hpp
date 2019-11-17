@@ -30,27 +30,13 @@ public:
     }
 
     auto transform(glm::mat4 const & transformation)
-        -> void
-    {
-        box.transform(transformation);
-
-        sphere.transform(transformation);
-    }
+        -> void;
 
     auto translate(glm::vec3 const & offset)
-    {
-        box.translate(offset);
-
-        sphere.translate(offset);
-    }
+        -> void;
 
     auto scale(float const factor)
-        -> void
-    {
-        box.scale(factor);
-
-        sphere.scale(factor);
-    }
+        -> void;
 
 private:
 

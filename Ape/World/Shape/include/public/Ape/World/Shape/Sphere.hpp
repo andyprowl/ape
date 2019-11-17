@@ -23,23 +23,32 @@ public:
         return center;
     }
 
+    auto setCenter(glm::vec3 const & newCenter)
+        -> void
+    {
+        center = newCenter;
+    }
+
     auto getRadius() const
         -> float
     {
         return radius;
     }
 
-    auto transform(glm::mat4 const & transformation)
+    auto getRadius(float const newRadius)
+        -> void
     {
-        center = glm::vec3{transformation * glm::vec4{center, 1.0f}};
+        radius = newRadius;
     }
 
     auto translate(glm::vec3 const & offset)
+        -> void
     {
         center += offset;
     }
 
     auto scale(float const factor)
+        -> void
     {
         radius *= factor;
     }

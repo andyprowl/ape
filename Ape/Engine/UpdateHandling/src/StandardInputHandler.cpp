@@ -1,6 +1,7 @@
 #include <Ape/Engine/UpdateHandling/StandardInputHandler.hpp>
 
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
+#include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
 #include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/World/Scene/CameraSelector.hpp>
@@ -13,11 +14,13 @@ namespace ape
 
 StandardInputHandler::StandardInputHandler(
     Window & handledWindow,
+    SceneRenderer & renderer,
     CameraSelector & cameraSelector,
     SkyboxSelector & skyboxSelector,
     EffectSelector & effectSelector,
     float const manipulatorSensitivity)
     : handledWindow{&handledWindow}
+    , renderer{&renderer}
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
     , skyboxSelector{&skyboxSelector}
     , effectSelector{&effectSelector}
@@ -58,6 +61,8 @@ auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     -> void
 {
     processFullScreenToggling(key, modifier);
+
+    processFrustumCullingToggling(key, modifier);
 
     processLightToggling(key, modifier);
 
@@ -157,6 +162,21 @@ auto StandardInputHandler::processFullScreenToggling(
     {
         handledWindow->exitFullScreen();
     }
+}
+
+auto StandardInputHandler::processFrustumCullingToggling(
+    ape::Key const key,
+    ape::KeyModifier const modifier) const
+    -> void
+{
+    if ((key != ape::Key::keyF) || (modifier != KeyModifier::none))
+    {
+        return;
+    }
+
+    auto const isFrustumCullingEnabled = renderer->isFrustumCullingEnabled();
+
+    renderer->enableFrustumCulling(!isFrustumCullingEnabled);
 }
 
 auto StandardInputHandler::processLightToggling(

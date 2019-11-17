@@ -60,6 +60,7 @@ auto getFunctionKey(int const i)
 
 RaveInputHandler::RaveInputHandler(
     ape::Window & window,
+    ape::SceneRenderer & renderer,
     ape::CameraSelector & cameraSelector,
     ape::SkyboxSelector & skyboxSelector,
     ape::EffectSelector & effectSelector,
@@ -67,7 +68,7 @@ RaveInputHandler::RaveInputHandler(
     ape::BlinnPhongShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused RaveScene & scene)
-    : StandardInputHandler{window, cameraSelector, skyboxSelector, effectSelector}
+    : StandardInputHandler{window, renderer, cameraSelector, skyboxSelector, effectSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
     , outlineStyleProvider{&outlineStyleProvider}

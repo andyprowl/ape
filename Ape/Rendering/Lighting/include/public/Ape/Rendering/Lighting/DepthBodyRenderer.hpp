@@ -23,6 +23,12 @@ public:
         DepthMapping & target) const
         -> void;
 
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
+        -> void;
+
 private:
 
     MonoDepthBodyRenderer monoRenderer;
