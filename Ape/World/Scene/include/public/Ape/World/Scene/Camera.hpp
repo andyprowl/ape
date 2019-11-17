@@ -20,11 +20,11 @@ public:
 public:
 
     Camera(
-        CameraView::Placement const & placement,
+        CameraView::System const & system,
         OrthographicProjection::Frustum const & frustum);
 
     Camera(
-        CameraView::Placement const & placement,
+        CameraView::System const & system,
         PerspectiveProjection::Frustum const & frustum);
 
     Camera(Camera const & rhs) = delete;
@@ -45,7 +45,7 @@ public:
     auto getView() const
         -> CameraView const &;
 
-    auto setView(CameraView::Placement const & placement)
+    auto setView(CameraView::System const & system)
         -> void;
 
     auto getProjection()

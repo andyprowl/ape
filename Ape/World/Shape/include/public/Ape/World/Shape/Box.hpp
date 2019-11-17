@@ -29,7 +29,7 @@ public:
 
     Box(
         glm::vec3 const & center,
-        glm::vec3 const & size,
+        glm::vec3 const & extents,
         glm::mat3 const & rotationAroundCenter = glm::mat3{1.0f});
 
     auto getCorners() const

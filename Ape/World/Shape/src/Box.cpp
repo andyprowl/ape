@@ -8,27 +8,30 @@ namespace
 
 auto makeCorners(
     glm::vec3 const & center,
-    glm::vec3 const & size,
+    glm::vec3 const & extents,
     glm::mat3 const & rotationAroundCenter)
     -> std::array<glm::vec3, 8u>
 {
     return {{
-        center + rotationAroundCenter * glm::vec3{+1.0f, +1.0f, +1.0f} * (size / 2.0f), // RTF
-        center + rotationAroundCenter * glm::vec3{+1.0f, +1.0f, -1.0f} * (size / 2.0f), // RTB
-        center + rotationAroundCenter * glm::vec3{+1.0f, -1.0f, +1.0f} * (size / 2.0f), // RBF
-        center + rotationAroundCenter * glm::vec3{+1.0f, -1.0f, -1.0f} * (size / 2.0f), // RBB
-        center + rotationAroundCenter * glm::vec3{-1.0f, +1.0f, +1.0f} * (size / 2.0f), // LTF
-        center + rotationAroundCenter * glm::vec3{-1.0f, +1.0f, -1.0f} * (size / 2.0f), // LTB
-        center + rotationAroundCenter * glm::vec3{-1.0f, -1.0f, +1.0f} * (size / 2.0f), // LBF
-        center + rotationAroundCenter * glm::vec3{-1.0f, -1.0f, -1.0f} * (size / 2.0f), // LBB
+        center + rotationAroundCenter * glm::vec3{+1.0f, +1.0f, +1.0f} * (extents / 2.0f), // RTF
+        center + rotationAroundCenter * glm::vec3{+1.0f, +1.0f, -1.0f} * (extents / 2.0f), // RTB
+        center + rotationAroundCenter * glm::vec3{+1.0f, -1.0f, +1.0f} * (extents / 2.0f), // RBF
+        center + rotationAroundCenter * glm::vec3{+1.0f, -1.0f, -1.0f} * (extents / 2.0f), // RBB
+        center + rotationAroundCenter * glm::vec3{-1.0f, +1.0f, +1.0f} * (extents / 2.0f), // LTF
+        center + rotationAroundCenter * glm::vec3{-1.0f, +1.0f, -1.0f} * (extents / 2.0f), // LTB
+        center + rotationAroundCenter * glm::vec3{-1.0f, -1.0f, +1.0f} * (extents / 2.0f), // LBF
+        center + rotationAroundCenter * glm::vec3{-1.0f, -1.0f, -1.0f} * (extents / 2.0f), // LBB
         }};
 }
 
 } // unnamed namespace
 
-Box::Box(glm::vec3 const & center, glm::vec3 const & size, glm::mat3 const & rotationAroundCenter)
+Box::Box(
+    glm::vec3 const & center,
+    glm::vec3 const & extents,
+    glm::mat3 const & rotationAroundCenter)
     : center{center}
-    , corners{makeCorners(center, size, rotationAroundCenter)}
+    , corners{makeCorners(center, extents, rotationAroundCenter)}
 {
 }
 

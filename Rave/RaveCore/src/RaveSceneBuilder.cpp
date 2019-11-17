@@ -546,7 +546,7 @@ auto StatefulSceneBuilder::createFrontCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto const placement = ape::CameraView::Placement{position, direction, up};
+    auto const placement = ape::CameraView::System{position, direction, up};
 
     auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
 
@@ -568,7 +568,7 @@ auto StatefulSceneBuilder::createBackCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto const placement = ape::CameraView::Placement{position, direction, up};
+    auto const placement = ape::CameraView::System{position, direction, up};
 
     auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
 
@@ -590,7 +590,7 @@ auto StatefulSceneBuilder::createRightCamera()
 
     auto const aspectRatio = 1.0f; // Will be corrected upon viewport setup
 
-    auto const placement = ape::CameraView::Placement{position, direction, up};
+    auto const placement = ape::CameraView::System{position, direction, up};
 
     auto const frustum = Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f};
 

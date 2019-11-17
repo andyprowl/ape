@@ -12,6 +12,7 @@ namespace ape
 class Body;
 class BodyPart;
 class Camera;
+class FrustumCuller;
 class LightSystem;
 class Mesh;
 class ShadowMapping;
@@ -40,10 +41,16 @@ private:
         ShadowMapping const & shadowMapping) const
         -> void;
 
-    auto renderBody(Body const & body, glm::mat4 const & cameraTransformation) const
+    auto renderBody(
+        Body const & body,
+        glm::mat4 const & cameraTransformation,
+        FrustumCuller const & culler) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
+    auto renderBodyPart(
+        BodyPart const & part,
+        glm::mat4 const & cameraTransformation,
+        FrustumCuller const & culler) const
         -> void;
 
     auto setupBodyPartUniforms(

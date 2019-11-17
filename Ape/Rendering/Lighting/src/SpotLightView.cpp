@@ -61,7 +61,7 @@ auto SpotLightView::makeLightCamera() const
     auto const viewUp = glm::vec3{0.0f, 1.0f, 0.0f};
     
     return {
-        CameraView::Placement{light->getPosition(), light->getDirection(), viewUp},
+        CameraView::System{light->getPosition(), light->getDirection(), viewUp},
         PerspectiveProjection::Frustum{fieldOfView, aspectRatio, 0.1f, 100.0f}};
 }
 

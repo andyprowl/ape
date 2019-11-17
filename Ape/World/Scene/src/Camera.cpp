@@ -6,16 +6,16 @@ namespace ape
 {
 
 Camera::Camera(
-    CameraView::Placement const & placement,
+    CameraView::System const & system,
     OrthographicProjection::Frustum const & frustum)
-    : Camera{CameraView{placement, *this}, CameraProjection{frustum, *this}}
+    : Camera{CameraView{system, *this}, CameraProjection{frustum, *this}}
 {
 }
 
 Camera::Camera(
-    CameraView::Placement const & placement,
+    CameraView::System const & system,
     PerspectiveProjection::Frustum const & frustum)
-    : Camera{CameraView{placement, *this}, CameraProjection{frustum, *this}}
+    : Camera{CameraView{system, *this}, CameraProjection{frustum, *this}}
 {
 }
 
@@ -53,10 +53,10 @@ auto Camera::getView() const
     return view;
 }
 
-auto Camera::setView(CameraView::Placement const & placement)
+auto Camera::setView(CameraView::System const & system)
     -> void
 {
-    view = CameraView{placement, *this};
+    view = CameraView{system, *this};
 
     updateTransformationAfterViewChanged();
 }

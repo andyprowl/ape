@@ -14,6 +14,7 @@
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
@@ -50,8 +51,9 @@ public:
         , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
         , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
         , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
-        , effectRenderer{effectSelector}
+        , bodyBoundsRenderer{boundsShader}
         , skyboxRenderer{skyboxShader, skyboxSelector}
+        , effectRenderer{effectSelector}
         , cameraSelector{scene}
         , bodyPicker{scene}
         , sceneRenderer{
@@ -60,6 +62,7 @@ public:
             std::move(standardBodyRenderer),
             std::move(wireframeBodyRenderer),
             std::move(outlinedBodyRenderer),
+            std::move(bodyBoundsRenderer),
             std::move(skyboxRenderer),
             std::move(effectRenderer),
             cameraSelector,
@@ -111,6 +114,8 @@ private:
 
     ape::WireframeShaderProgram wireframeShader;
 
+    ape::BodyBoundsShaderProgram boundsShader;
+
     ape::SkyboxShaderProgram skyboxShader;
 
     ape::EffectCollection effectCollection;
@@ -133,9 +138,11 @@ private:
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer;
 
-    ape::EffectRenderer effectRenderer;
+    ape::BodyBoundsRenderer bodyBoundsRenderer;
 
     ape::SkyboxRenderer skyboxRenderer;
+
+    ape::EffectRenderer effectRenderer;
 
     ape::CameraSelector cameraSelector;
 

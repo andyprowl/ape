@@ -8,7 +8,7 @@ namespace ape
 namespace
 {
 
-auto buildStandardShader()
+auto buildBlinnPhongShader()
     -> glow::ShaderProgram
 {
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
@@ -21,7 +21,7 @@ auto buildStandardShader()
 } // unnamed namespace
 
 BlinnPhongShaderProgram::BlinnPhongShaderProgram()
-    : ShaderProgram{buildStandardShader()}
+    : ShaderProgram{buildBlinnPhongShader()}
     , worldTransformation{*this, "transform.model"}
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}

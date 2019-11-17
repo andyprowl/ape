@@ -15,6 +15,7 @@
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
@@ -220,6 +221,8 @@ int main(int argc, char *argv[])
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
+    auto boundsShader = ape::BodyBoundsShaderProgram{};
+
     auto skyboxShader = ape::SkyboxShaderProgram{};
 
     auto effectCollection = rave::RaveEffectCollectionReader{}.read();
@@ -259,6 +262,8 @@ int main(int argc, char *argv[])
         standardBodyRenderer1,
         wireframeBodyRenderer1};
 
+    auto boundsRenderer1 = ape::BodyBoundsRenderer{boundsShader};
+
     auto skyboxSelector1 = ape::SkyboxSelector{skyboxCollection};
 
     auto skyboxRenderer1 = ape::SkyboxRenderer{skyboxShader, skyboxSelector1};
@@ -273,6 +278,7 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer1),
         std::move(wireframeBodyRenderer1),
         std::move(outlinedBodyRenderer1),
+        std::move(boundsRenderer1),
         std::move(skyboxRenderer1),
         std::move(effectRenderer1),
         cameraSelector1,
@@ -321,6 +327,8 @@ int main(int argc, char *argv[])
         standardBodyRenderer2,
         wireframeBodyRenderer2};
     
+    auto boundsRenderer2 = ape::BodyBoundsRenderer{boundsShader};
+
     auto skyboxSelector2 = ape::SkyboxSelector{skyboxCollection};
 
     auto skyboxRenderer2 = ape::SkyboxRenderer{skyboxShader, skyboxSelector2};
@@ -335,6 +343,7 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer2),
         std::move(wireframeBodyRenderer2),
         std::move(outlinedBodyRenderer2),
+        std::move(boundsRenderer2),
         std::move(skyboxRenderer2),
         std::move(effectRenderer2),
         cameraSelector2,
@@ -387,6 +396,8 @@ int main(int argc, char *argv[])
         standardBodyRenderer3,
         wireframeBodyRenderer3};
 
+    auto boundsRenderer3 = ape::BodyBoundsRenderer{boundsShader};
+
     auto skyboxSelector3 = ape::SkyboxSelector{skyboxCollection};
 
     auto skyboxRenderer3 = ape::SkyboxRenderer{skyboxShader, skyboxSelector3};
@@ -401,6 +412,7 @@ int main(int argc, char *argv[])
         std::move(standardBodyRenderer3),
         std::move(wireframeBodyRenderer3),
         std::move(outlinedBodyRenderer3),
+        std::move(boundsRenderer3),
         std::move(skyboxRenderer3),
         std::move(effectRenderer3),
         cameraSelector3,

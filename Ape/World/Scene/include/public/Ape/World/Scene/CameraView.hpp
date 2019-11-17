@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glm/geometric.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
@@ -13,15 +14,16 @@ class CameraView
 
 public:
 
-    class Placement
+    class System
     {
 
     public:
 
-        Placement(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up)
+        System(glm::vec3 const & position, glm::vec3 const & direction, glm::vec3 const & up)
             : position{position}
             , direction{direction}
             , up{up}
+            , right{glm::cross(direction, up)}
         {
         }
 
@@ -33,29 +35,34 @@ public:
 
         glm::vec3 up;
 
+        glm::vec3 right;
+
     };
 
 public:
 
-    CameraView(Placement const & placement, Camera & parent);
+    CameraView(System const & system, Camera & parent);
 
     auto getTransformation() const
         -> glm::mat4 const &;
 
     auto getPosition() const
-        -> glm::vec3;
+        -> glm::vec3 const &;
 
     auto setPosition(glm::vec3 const & newPosition)
         -> void;
 
     auto getDirection() const
-        -> glm::vec3;
+        -> glm::vec3 const &;
 
     auto setDirection(glm::vec3 const & newDirection)
         -> void;
 
     auto getUp() const
-        -> glm::vec3;
+        -> glm::vec3 const &;
+
+    auto getRight() const
+        -> glm::vec3 const &;
 
     auto getParent() const
         -> Camera &;
@@ -77,7 +84,7 @@ private:
 
 private:
 
-    Placement placement;
+    System system;
 
     glm::mat4 transformation;
 

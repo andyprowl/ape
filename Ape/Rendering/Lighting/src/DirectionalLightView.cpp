@@ -54,7 +54,7 @@ auto DirectionalLightView::makeLightCamera() const
     auto const viewUp = glm::vec3{0.0f, 1.0f, 0.0f};
 
     return {
-        CameraView::Placement{source, direction, viewUp},
+        CameraView::System{source, direction, viewUp},
         OrthographicProjection::Frustum{-30.0f, +30.0f, -30.0f, +30.0f, nearPlane, farPlane}};
 }
 

@@ -1,5 +1,6 @@
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 
+#include <Ape/Rendering/Lighting/FrustumCuller.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 
@@ -40,9 +41,11 @@ auto BlinnPhongBodyRenderer::render(
 
     auto const & cameraTransformation = camera.getTransformation();
 
+    auto const culler = FrustumCuller{camera};
+
     for (auto const body : bodies)
     {
-        renderBody(*body, cameraTransformation);
+        renderBody(*body, cameraTransformation, culler);
     }
 }
 
@@ -63,25 +66,38 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
 
 auto BlinnPhongBodyRenderer::renderBody(
     Body const & body,
-    glm::mat4 const & cameraTransformation) const
+    glm::mat4 const & cameraTransformation,
+    FrustumCuller const & culler) const
     -> void
 {
     for (auto const & part : body.getParts())
     {
-        renderBodyPart(part, cameraTransformation);
+        renderBodyPart(part, cameraTransformation, culler);
     }
 }
 
 auto BlinnPhongBodyRenderer::renderBodyPart(
     BodyPart const & part,
-    glm::mat4 const & cameraTransformation) const
+    glm::mat4 const & cameraTransformation,
+    FrustumCuller const & culler) const
     -> void
 {
     setupBodyPartUniforms(part, cameraTransformation);
 
-    for (auto const mesh : part.getModel().getMeshes())
+    for (auto const & bodyMesh : part.getMeshes())
     {
-        renderMesh(*mesh);
+        auto const & bounds = bodyMesh.getBoundingVolumes();
+
+        auto const frustumRelation = culler.computeFrustumRelation(bounds);
+
+        if (frustumRelation == FrustumCuller::FrustumRelation::fullyOutside)
+        {
+            continue;
+        }
+
+        auto const & mesh = bodyMesh.getModel();
+
+        renderMesh(mesh);
     }
 }
 

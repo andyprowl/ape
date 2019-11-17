@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Ape/Rendering/Rendering/BodyBoundsRenderer.hpp>
 #include <Ape/Rendering/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/Viewport.hpp>
@@ -40,6 +41,7 @@ public:
         BlinnPhongBodyRenderer standardBodyRenderer,
         WireframeBodyRenderer wireframeBodyRenderer,
         OutlinedBodyRenderer outlinedBodyRenderer,
+        BodyBoundsRenderer boundsRenderer,
         SkyboxRenderer skyboxRenderer,
         EffectRenderer effectRenderer,
         CameraSelector const & cameraSelector,
@@ -95,6 +97,9 @@ private:
     auto renderPickedBodies() const
         -> void;
 
+    auto renderBodyBounds() const
+        -> void;
+
     auto renderSkybox() const
         -> void;
 
@@ -112,6 +117,8 @@ private:
     WireframeBodyRenderer wireframeBodyRenderer;
 
     OutlinedBodyRenderer outlinedBodyRenderer;
+
+    BodyBoundsRenderer boundsRenderer;
 
     SkyboxRenderer skyboxRenderer;
 

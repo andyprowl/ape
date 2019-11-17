@@ -26,6 +26,7 @@ SceneRenderer::SceneRenderer(
     BlinnPhongBodyRenderer standardBodyRenderer,
     WireframeBodyRenderer wireframeBodyRenderer,
     OutlinedBodyRenderer outlinedBodyRenderer,
+    BodyBoundsRenderer boundsRenderer,
     SkyboxRenderer skyboxRenderer,
     EffectRenderer effectRenderer,
     CameraSelector const & cameraSelector,
@@ -38,6 +39,7 @@ SceneRenderer::SceneRenderer(
     , standardBodyRenderer{std::move(standardBodyRenderer)}
     , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
     , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
+    , boundsRenderer{std::move(boundsRenderer)}
     , effectRenderer{std::move(effectRenderer)}
     , skyboxRenderer{std::move(skyboxRenderer)}
     , cameraSelector{&cameraSelector}
@@ -174,6 +176,8 @@ auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
 
     renderPickedBodies();
 
+    renderBodyBounds();
+
     renderSkybox();
 }
 
@@ -221,6 +225,18 @@ auto SceneRenderer::renderPickedBodies() const
     auto const & lightSystem = cameraSelector->getScene().getLighting();
 
     outlinedBodyRenderer.render(selectedBodies, *activeCamera, lightSystem, shadowMapping);
+}
+
+auto SceneRenderer::renderBodyBounds() const
+    -> void
+{
+    auto const activeCamera = cameraSelector->getActiveCamera();
+
+    assert(activeCamera != nullptr);
+
+    auto const & bodies = getScene(*this).getBodies();
+
+    boundsRenderer.render(bodies, *activeCamera);
 }
 
 auto SceneRenderer::renderSkybox() const

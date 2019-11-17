@@ -25,7 +25,7 @@ auto makePointLightDirectionView(
     auto const farPlaneDistance = 100.0f;
 
     return {
-        CameraView::Placement{position, direction, viewUp},
+        CameraView::System{position, direction, viewUp},
         PerspectiveProjection::Frustum{
             fieldOfView,
             aspectRatio,
