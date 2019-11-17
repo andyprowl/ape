@@ -138,6 +138,8 @@ private:
 
     glm::vec3 backgroundColor;
 
+    bool renderBoundingBoxes;
+
     glow::VertexArrayObject arrayObject;
 
 };

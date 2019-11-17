@@ -81,6 +81,9 @@ private:
     auto updateDescendentWorldTransformations()
         -> void;
 
+    auto updateMeshBoundingVolumes()
+        -> void;
+
     auto makeMeshes() const
         -> std::vector<BodyPartMesh>;
 

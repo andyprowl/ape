@@ -32,6 +32,12 @@ public:
         glm::vec3 const & extents,
         glm::mat3 const & rotationAroundCenter = glm::mat3{1.0f});
 
+    auto getCenter() const
+        -> glm::vec3 const &
+    {
+        return center;
+    }
+
     auto getCorners() const
         -> std::array<glm::vec3, 8u> const &
     {

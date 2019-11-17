@@ -168,6 +168,8 @@ auto BodyPart::onParentTransformationChanged(glm::mat4 const & newTransformation
     updateWorldNormalTransformation();
 
     updateDescendentWorldTransformations();
+
+    updateMeshBoundingVolumes();
 }
 
 auto BodyPart::updateWorldTransformation()
@@ -175,10 +177,7 @@ auto BodyPart::updateWorldTransformation()
 {
     worldTransformation = getParentWorldTransformation() * localTransformation;
 
-    for (auto & bounds : meshes)
-    {
-        bounds.onPartTransformationChanged(worldTransformation);
-    }
+    updateMeshBoundingVolumes();
 }
 
 auto BodyPart::updateWorldNormalTransformation()
@@ -195,6 +194,15 @@ auto BodyPart::updateDescendentWorldTransformations()
         auto & component = getComponent(i);
 
         component.onParentTransformationChanged(worldTransformation);
+    }
+}
+
+auto BodyPart::updateMeshBoundingVolumes()
+    -> void
+{
+    for (auto & bounds : meshes)
+    {
+        bounds.onPartTransformationChanged(worldTransformation);
     }
 }
 

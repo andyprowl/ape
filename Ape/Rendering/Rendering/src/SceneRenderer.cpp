@@ -49,6 +49,7 @@ SceneRenderer::SceneRenderer(
     , shadowMapping{makeShadowMapping()}
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
+    , renderBoundingBoxes{false}
 {
     setupDrawingMode();
 }
@@ -230,6 +231,11 @@ auto SceneRenderer::renderPickedBodies() const
 auto SceneRenderer::renderBodyBounds() const
     -> void
 {
+    if (!renderBoundingBoxes)
+    {
+        return;
+    }
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);

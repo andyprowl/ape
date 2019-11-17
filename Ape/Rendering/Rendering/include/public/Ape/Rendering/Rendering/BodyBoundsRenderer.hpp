@@ -42,7 +42,8 @@ private:
 
     auto renderMesh(
         BodyPartMesh const & mesh,
-        glm::mat4 const & transformation) const
+        glm::mat4 const & cameraTransformation,
+        glm::mat4 const & partTransformation) const
         -> void;
 
     auto drawBox() const
