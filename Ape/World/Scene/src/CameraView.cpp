@@ -61,9 +61,9 @@ auto CameraView::setDirection(glm::vec3 const & newDirection)
 
     system.direction = normalizedDirection;
 
-    system.right = glm::cross(system.direction, glm::vec3{0.0, 1.0, 0.0});
+    system.right = glm::normalize(glm::cross(system.direction, glm::vec3{0.0, 1.0, 0.0}));
     
-    system.up = glm::cross(system.right, system.direction);
+    system.up = glm::normalize(glm::cross(system.right, system.direction));
     
     recalculateViewAndNotifyParent();
 }

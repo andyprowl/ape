@@ -116,6 +116,11 @@ auto SceneRenderer::setupDrawingMode() const
 
     glEnable(GL_STENCIL_TEST);
 
+    // Helped eliminating *some* seams when bias value for omnidirectional shadow mapping in
+    // Blinn-Phong shader was too low. Tweaking the value was the solution (even without enabling
+    // seamless cube maps), but enabling this capability seems to make sense anyway.
+    glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
     // Culling is not appropriate for all shapes. This should be done conditionally in the future.
     // However, when appropriate, it will save at least 50% of fragment shader calls.
     glEnable(GL_CULL_FACE);

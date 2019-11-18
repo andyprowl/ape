@@ -1,9 +1,11 @@
-- Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
+- Point light shadow maps generate artefacts
+ - The borders of the 6 view frusta are visible on the ground and on objects
+ - Not sure why these black lines are generated
+ - glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS) seems to only eliminate seams between later faces
 - Implement frustum culling
-    - Implement bounding volumes (AABB and bounding spheres) for shapes
-    - Implement bounding volumes for model parts
-    - Use frustum culling with view camera frustum
     - Use frustum culling with for shadow map generation (light view frustum)
+    - Frustum culling does not seem to work correctly for certain ground tiles when the camera is
+      very close
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
@@ -13,6 +15,7 @@
     - Try to think how the generic pipeline would like if composed declaratively by the user
 - Write tutorial/documentation on gamma correction
 - Write tutorial/documentation on skyboxes
+- Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
 - Try FBX format for 3D models
     - Use FBX SDK for importing the models
 - The "Inversion" post-processing effect no longer seems to work

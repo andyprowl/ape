@@ -90,7 +90,7 @@ private:
     auto computeCameraY() const
         -> float
     {
-        auto const & up = camera->getView().getDirection();
+        auto const & up = camera->getView().getUp();
 
         return glm::dot(center, up);
     }

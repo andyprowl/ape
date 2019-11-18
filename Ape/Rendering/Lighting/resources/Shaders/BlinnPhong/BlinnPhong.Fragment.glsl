@@ -262,7 +262,7 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depth
 
     float currentDepth = length(lightToVertex);
 
-    float bias = 0.0002;
+    float bias = 0.002;
 
     return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }

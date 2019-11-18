@@ -93,12 +93,16 @@ BodyBoundsRenderer::BodyBoundsRenderer(BodyBoundsShaderProgram & shader)
 auto BodyBoundsRenderer::render(BodySetView const & bodies, Camera const & camera) const
     -> void
 {
+    glDisable(GL_CULL_FACE);
+
     auto const shaderBinder = bind(*shader);
 
     for (auto const & body : bodies)
     {
         renderBody(body, camera);
     }
+
+    glEnable(GL_CULL_FACE);
 }
 
 auto BodyBoundsRenderer::renderBody(

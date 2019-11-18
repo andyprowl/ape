@@ -16,7 +16,7 @@ auto makePointLightDirectionView(
 {
     // TODO: Is it correct not to compute the aspect ratio from the view's aspect ratio?
     // (like we do for spot lights)
-    auto const aspectRatio = 1.0;
+    auto const aspectRatio = 1.0f;
 
     auto const fieldOfView = glm::radians(90.0f);
 
