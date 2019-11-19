@@ -177,6 +177,8 @@ auto StatefulSceneBuilder::build()
 auto StatefulSceneBuilder::createBodies()
     -> void
 {
+    scene.reserveBodyCapacity(200);
+
     createGroundTiles();
 
     createContainers();

@@ -126,14 +126,16 @@ private:
     {
         auto const dY = radius * precalculatedValues.factorY;
 
-        auto const thresholdY = cameraZ * precalculatedValues.factorY;
+        auto const thresholdY = glm::abs(cameraZ * precalculatedValues.factorY);
 
-        if ((cameraY > (thresholdY + dY)) || (cameraY < (-thresholdY - dY)))
+        auto const normalizedCameraY = cameraY * glm::sign(cameraZ);
+
+        if ((normalizedCameraY > (thresholdY + dY)) || (normalizedCameraY < (-thresholdY - dY)))
         {
             return FrustumRelation::fullyOutside;
         }
 
-        if ((cameraY > (thresholdY - dY)) || (cameraY < (-thresholdY + dY)))
+        if ((normalizedCameraY > (thresholdY - dY)) || (normalizedCameraY < (-thresholdY + dY)))
         {
             return FrustumRelation::partlyInside;
         }
@@ -146,14 +148,16 @@ private:
     {
         auto const dX = radius * precalculatedValues.factorX;
 
-        auto const thresholdX = cameraZ * precalculatedValues.factorX;
+        auto const thresholdX = glm::abs(cameraZ * precalculatedValues.factorX);
 
-        if ((cameraX > (thresholdX + dX)) || (cameraX < (-thresholdX - dX)))
+        auto const normalizedCameraX = cameraX * glm::sign(cameraZ);
+
+        if ((normalizedCameraX > (thresholdX + dX)) || (normalizedCameraX < (-thresholdX - dX)))
         {
             return FrustumRelation::fullyOutside;
         }
 
-        if ((cameraX > (thresholdX - dX)) || (cameraX < (-thresholdX + dX)))
+        if ((normalizedCameraX > (thresholdX - dX)) || (normalizedCameraX < (-thresholdX + dX)))
         {
             return FrustumRelation::partlyInside;
         }

@@ -37,7 +37,7 @@ public:
 
     Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
         : gateway{4, 5, enableDebugOutput}
-        , window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
+        , window{gateway.createWindow("Rave", {2000, 1000})}
         , assets{createRaveAssets(doNotIncludeSponza)}
         , scene{createRaveScene(assets, doNotIncludeSponza)}
         , effectCollection{RaveEffectCollectionReader{}.read()}

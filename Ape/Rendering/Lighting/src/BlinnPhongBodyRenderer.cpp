@@ -6,6 +6,7 @@
 
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/Mesh.hpp>
+#include <Ape/World/Model/Model.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
 #include <Ape/World/Scene/Body.hpp>
 #include <Ape/World/Scene/BodyPart.hpp>

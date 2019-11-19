@@ -52,6 +52,12 @@ auto Scene::addBody(Body body)
     return addedBody;
 }
 
+auto Scene::reserveBodyCapacity(const int capacity)
+    -> void
+{
+    return bodies.reserve(static_cast<std::size_t>(capacity));
+}
+
 auto Scene::getCamera(int const index)
     -> Camera &
 {

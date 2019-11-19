@@ -1,11 +1,7 @@
-- Point light shadow maps generate artefacts
- - The borders of the 6 view frusta are visible on the ground and on objects
- - Not sure why these black lines are generated
- - glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS) seems to only eliminate seams between later faces
 - Implement frustum culling
     - Use frustum culling with for shadow map generation (light view frustum)
-    - Frustum culling does not seem to work correctly for certain ground tiles when the camera is
-      very close
+    - Write tutorial on radar approach to frustum culling for spheres
+     - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d)
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?

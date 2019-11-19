@@ -121,7 +121,7 @@ auto StatefulAssetBuilder::preventReallocation()
 auto StatefulAssetBuilder::createGroundTileModels()
     -> void
 {
-    auto box = makeBox(ape::NormalDirection::outbound, {5.0f, 0.01f, 5.0f});
+    auto box = makeBox(ape::NormalDirection::outbound, {5.0f, 0.1f, 5.0f});
 
     auto const & shape = assets.shapes.emplace_back(std::move(box));
 
