@@ -1,7 +1,10 @@
 - Implement frustum culling
-    - Use frustum culling with for shadow map generation (light view frustum)
-    - Write tutorial on radar approach to frustum culling for spheres
-     - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d)
+ - Use frustum culling with for shadow map generation (light view frustum)
+ - Write tutorial on radar approach to frustum culling for spheres
+ - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
+ - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
+   culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
+   the sub-objects
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?

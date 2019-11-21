@@ -1,9 +1,10 @@
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
-#include <Ape/Rendering/Lighting/FrustumCuller.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
+
+#include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -139,7 +140,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    auto const culler = FrustumCuller{lightView.getCamera()};
+    auto const culler = RadarFrustumCuller{lightView.getCamera()};
 
     for (auto const & body : bodies)
     {
@@ -152,7 +153,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 auto MonoDepthBodyRenderer::renderBody(
     Body const & body,
     glm::mat4 const & lightTransformation,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> void
 {
     for (auto const & part : body.getParts())
@@ -164,7 +165,7 @@ auto MonoDepthBodyRenderer::renderBody(
 auto MonoDepthBodyRenderer::renderBodyPart(
     BodyPart const & part,
     glm::mat4 const & lightTransformation,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> void
 {
     auto const & worldTransformation = part.getWorldTransformation();
@@ -184,7 +185,7 @@ auto MonoDepthBodyRenderer::renderBodyPart(
 
 auto MonoDepthBodyRenderer::isVisible(
     BodyPartMesh const & mesh,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> bool
 {
     if (!isFrustumCullingEnabled())
@@ -192,11 +193,11 @@ auto MonoDepthBodyRenderer::isVisible(
         return true;
     }
 
-    auto const & bounds = mesh.getBoundingVolumes();
+    auto const & boundingSphere = mesh.getBoundingVolumes().getSphere();
 
-    auto const frustumRelation = culler.computeFrustumRelation(bounds);
+    auto const relation = culler.computeFrustumRelation(boundingSphere);
 
-    return (frustumRelation != FrustumCuller::FrustumRelation::fullyOutside);
+    return (relation != ContainmentRelation::fullyOutside);
 }
 
 auto MonoDepthBodyRenderer::renderMesh(BodyPartMesh const & mesh) const

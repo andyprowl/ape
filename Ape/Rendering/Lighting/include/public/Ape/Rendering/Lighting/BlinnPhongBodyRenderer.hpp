@@ -13,7 +13,7 @@ class Body;
 class BodyPart;
 class BodyPartMesh;
 class Camera;
-class FrustumCuller;
+class RadarFrustumCuller;
 class LightSystem;
 class Mesh;
 class ShadowMapping;
@@ -51,13 +51,13 @@ private:
     auto renderBody(
         Body const & body,
         glm::mat4 const & cameraTransformation,
-        FrustumCuller const & culler) const
+        RadarFrustumCuller const & culler) const
         -> void;
 
     auto renderBodyPart(
         BodyPart const & part,
         glm::mat4 const & cameraTransformation,
-        FrustumCuller const & culler) const
+        RadarFrustumCuller const & culler) const
         -> void;
 
     auto setupBodyPartUniforms(
@@ -65,7 +65,7 @@ private:
         glm::mat4 const & cameraTransformation) const
         -> void;
 
-    auto isVisible(BodyPartMesh const & mesh, FrustumCuller const & culler) const
+    auto isVisible(BodyPartMesh const & mesh, RadarFrustumCuller const & culler) const
         -> bool;
 
     auto renderMesh(BodyPartMesh const & mesh) const

@@ -1,8 +1,9 @@
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 
-#include <Ape/Rendering/Lighting/FrustumCuller.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+
+#include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
 
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/Mesh.hpp>
@@ -43,7 +44,7 @@ auto BlinnPhongBodyRenderer::render(
 
     auto const & cameraTransformation = camera.getTransformation();
 
-    auto const culler = FrustumCuller{camera};
+    auto const culler = RadarFrustumCuller{camera};
 
     for (auto const body : bodies)
     {
@@ -81,7 +82,7 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
 auto BlinnPhongBodyRenderer::renderBody(
     Body const & body,
     glm::mat4 const & cameraTransformation,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> void
 {
     for (auto const & part : body.getParts())
@@ -93,7 +94,7 @@ auto BlinnPhongBodyRenderer::renderBody(
 auto BlinnPhongBodyRenderer::renderBodyPart(
     BodyPart const & part,
     glm::mat4 const & cameraTransformation,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> void
 {
     setupBodyPartUniforms(part, cameraTransformation);
@@ -125,7 +126,7 @@ auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
 
 auto BlinnPhongBodyRenderer::isVisible(
     BodyPartMesh const & mesh,
-    FrustumCuller const & culler) const
+    RadarFrustumCuller const & culler) const
     -> bool
 {
     if (!isFrustumCullingEnabled())
@@ -133,11 +134,11 @@ auto BlinnPhongBodyRenderer::isVisible(
         return true;
     }
 
-    auto const & bounds = mesh.getBoundingVolumes();
+    auto const & boundingSphere = mesh.getBoundingVolumes().getSphere();
 
-    auto const frustumRelation = culler.computeFrustumRelation(bounds);
+    auto const relation = culler.computeFrustumRelation(boundingSphere);
 
-    return (frustumRelation != FrustumCuller::FrustumRelation::fullyOutside);
+    return (relation != ContainmentRelation::fullyOutside);
 }
 
 auto BlinnPhongBodyRenderer::renderMesh(BodyPartMesh const & mesh) const

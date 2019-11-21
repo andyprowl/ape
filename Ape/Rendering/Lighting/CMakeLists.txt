@@ -15,6 +15,7 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
+    Ape::Rendering::Culling
     Ape::World::Shape
     Basix::CompilerSupport
     Basix::Text)

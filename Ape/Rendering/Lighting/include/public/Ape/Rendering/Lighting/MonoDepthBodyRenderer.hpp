@@ -16,7 +16,7 @@ class BodyPart;
 class BodyPartMesh;
 class Camera;
 class DepthMapping;
-class FrustumCuller;
+class RadarFrustumCuller;
 class MonoDepthShaderProgram;
 class LightSystemView;
 class Mesh;
@@ -77,18 +77,18 @@ private:
     auto renderBody(
         Body const & body,
         glm::mat4 const & lightTransformation,
-        FrustumCuller const & culler) const
+        RadarFrustumCuller const & culler) const
         -> void;
 
     auto renderBodyPart(
         BodyPart const & part,
         glm::mat4 const & lightTransformation,
-        FrustumCuller const & culler) const
+        RadarFrustumCuller const & culler) const
         -> void;
 
     auto isVisible(
         BodyPartMesh const & mesh,
-        FrustumCuller const & culler) const
+        RadarFrustumCuller const & culler) const
         -> bool;
 
     auto renderMesh(BodyPartMesh const & mesh) const

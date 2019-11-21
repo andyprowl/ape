@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Ape/Rendering/Culling/ContainmentRelation.hpp>
+
 #include <Ape/World/Scene/PerspectiveProjection.hpp>
 
 #include <glm/vec3.hpp>
@@ -8,33 +10,24 @@ namespace ape
 {
 
 class Camera;
-class ShapeBounds;
 class Sphere;
 
-class FrustumCuller
+class RadarFrustumCuller
 {
 
 public:
 
-    enum class FrustumRelation
-    {
-        fullyOutside,
-        partlyInside,
-        fullyInside
-    };
-
-public:
-
-    explicit FrustumCuller(Camera const & camera);
-
-    auto computeFrustumRelation(ShapeBounds const & bounds) const
-        -> FrustumRelation;
+    explicit RadarFrustumCuller(Camera const & camera);
 
     auto computeFrustumRelation(Sphere const & sphere) const
-        -> FrustumRelation;
+        -> ContainmentRelation;
+
+    auto isPointInFrustum(glm::vec3 const & point) const
+        -> bool;
 
 private:
 
+    class PointCuller;
     class SphereCuller;
 
     class PrecalculatedValueSet
