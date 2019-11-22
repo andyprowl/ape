@@ -11,18 +11,18 @@ class CubeTextureImageSet
 public:
 
     CubeTextureImageSet(
-        TextureImage const & right,
-        TextureImage const & left,
-        TextureImage const & top,
-        TextureImage const & bottom,
-        TextureImage const & front,
-        TextureImage const & back)
-        : right{right}
-        , left{left}
-        , top{top}
-        , bottom{bottom}
-        , front{front}
-        , back{back}
+        TextureImage right,
+        TextureImage left,
+        TextureImage top,
+        TextureImage bottom,
+        TextureImage front,
+        TextureImage back)
+        : right{std::move(right)}
+        , left{std::move(left)}
+        , top{std::move(top)}
+        , bottom{std::move(bottom)}
+        , front{std::move(front)}
+        , back{std::move(back)}
     {
     }
 

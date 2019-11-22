@@ -14,14 +14,14 @@ namespace
 auto makeColorBuffer(basix::Size<int> const & size)
     -> glow::Texture
 {
-    auto const image = glow::TextureImage{
+    auto image = glow::TextureImage{
         nullptr,
         size,
         glow::TextureImageFormat::rgb,
         glow::PixelType::unsignedByte};
 
     auto const descriptor = glow::TextureDescriptor{
-        image,
+        std::move(image),
         glow::TextureInternalFormat::srgb8,
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::modifiable};

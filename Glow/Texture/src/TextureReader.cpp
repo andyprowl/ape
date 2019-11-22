@@ -16,13 +16,13 @@ auto readTextureDescriptor(
     TextureStorageType const storageType)
     -> TextureDescriptor
 {
-    auto const image = readImageFromFile(path, true);
+    auto image = readImageFromFile(path, true);
 
     auto const internalFormat = determineInternalFormat(image.format, colorSpace);
 
     auto const wrapping = TextureWrapping::repeat;
 
-    return {image, internalFormat, wrapping, storageType};
+    return {std::move(image), internalFormat, wrapping, storageType};
 }
 
 } // unnamed namespace
@@ -42,11 +42,7 @@ auto TextureReader::read(
 
     auto const descriptor = readTextureDescriptor(absolutePath, imageColorSpace, storageType);
     
-    auto texture = Texture{descriptor};
-
-    stbi_image_free(reinterpret_cast<void *>(descriptor.image.bytes));
-
-    return texture;
+    return Texture{descriptor};
 }
 
 auto TextureReader::getSearchPaths() const

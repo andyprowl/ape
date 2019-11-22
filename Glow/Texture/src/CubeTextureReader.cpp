@@ -70,34 +70,18 @@ auto readImageSetFromFolder(std::filesystem::path const & folderPath)
         readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::back), false)};
 }
 
-auto freeImageSetBytes(CubeTextureImageSet const & imageSet)
-    -> void
-{
-    stbi_image_free(reinterpret_cast<void *>(imageSet.front.bytes));
-
-    stbi_image_free(reinterpret_cast<void *>(imageSet.back.bytes));
-
-    stbi_image_free(reinterpret_cast<void *>(imageSet.left.bytes));
-
-    stbi_image_free(reinterpret_cast<void *>(imageSet.right.bytes));
-
-    stbi_image_free(reinterpret_cast<void *>(imageSet.top.bytes));
-
-    stbi_image_free(reinterpret_cast<void *>(imageSet.bottom.bytes));
-}
-
 auto readTextureDescriptor(
     std::filesystem::path const & folder,
     ColorSpace const colorSpace)
     -> CubeTextureDescriptor
 {
-    auto const imageSet = readImageSetFromFolder(folder);
+    auto imageSet = readImageSetFromFolder(folder);
 
     auto const internalFormat = determineInternalFormat(imageSet.front.format, colorSpace);
 
     auto const wrapping = TextureWrapping::clampToEdge;
 
-    return {imageSet, internalFormat, wrapping};
+    return {std::move(imageSet), internalFormat, wrapping};
 }
 
 } // unnamed namespace
@@ -116,11 +100,7 @@ auto CubeTextureReader::read(
 
     auto const descriptor = readTextureDescriptor(absolutePath, imageColorSpace);
     
-    auto texture = CubeTexture{descriptor};
-
-    freeImageSetBytes(descriptor.imageSet);
-
-    return texture;
+    return CubeTexture{descriptor};
 }
 
 auto CubeTextureReader::getSearchPaths() const

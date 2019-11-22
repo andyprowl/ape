@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <filesystem>
+#include <memory>
 #include <stdexcept>
 
 namespace glow
@@ -29,12 +30,26 @@ class TextureImage
 
 public:
 
+    class ImageBytesDeleter
+    {
+
+    public:
+
+        auto operator () (std::byte * const bytes) const
+            -> void;
+
+    };
+
+    using ImageBytesPtr = std::unique_ptr<std::byte, ImageBytesDeleter>;
+
+public:
+
     TextureImage(
-        std::byte * const bytes,
+        ImageBytesPtr bytes,
         basix::Size<int> const size,
         TextureImageFormat format,
         PixelType const pixelType)
-        : bytes{bytes}
+        : bytes{std::move(bytes)}
         , size{size}
         , format{format}
         , pixelType{pixelType}
@@ -43,7 +58,7 @@ public:
 
 public:
 
-    std::byte * bytes;
+    ImageBytesPtr bytes;
 
     basix::Size<int> const size;
 

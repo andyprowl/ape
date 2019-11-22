@@ -11,9 +11,9 @@ namespace
 {
 
 auto asBytes(stbi_uc * const imageData)
-    -> std::byte *
+    -> TextureImage::ImageBytesPtr
 {
-    return reinterpret_cast<std::byte *>(imageData);
+    return TextureImage::ImageBytesPtr{reinterpret_cast<std::byte *>(imageData)};
 }
 
 auto determineImageFormat(int const numOfChannels)
@@ -46,6 +46,12 @@ auto determineImageFormat(int const numOfChannels)
 }
 
 } // unnamed namespace
+
+auto TextureImage::ImageBytesDeleter::operator () (std::byte * const bytes) const
+    -> void
+{
+    stbi_image_free(reinterpret_cast<void *>(bytes));
+}
 
 auto readImageFromFile(std::filesystem::path const & path, bool const flipVertically)
     -> TextureImage

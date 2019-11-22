@@ -13,10 +13,10 @@ class CubeTextureDescriptor
 public:
 
     CubeTextureDescriptor(
-        CubeTextureImageSet const & imageSet,
+        CubeTextureImageSet imageSet,
         TextureInternalFormat const internalFormat,
         TextureWrapping const wrapping)
-        : imageSet{imageSet}
+        : imageSet{std::move(imageSet)}
         , internalFormat{internalFormat}
         , wrapping{wrapping}
     {

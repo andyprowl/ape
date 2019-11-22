@@ -20,19 +20,23 @@ auto makeOmniDepthMapFaceImage(basix::Size<int> const & size)
 auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
     -> glow::CubeTextureImageSet
 {
-    auto const faceImage = makeOmniDepthMapFaceImage(size);
-
-    return {faceImage, faceImage, faceImage, faceImage, faceImage, faceImage};
+    return {
+        makeOmniDepthMapFaceImage(size),
+        makeOmniDepthMapFaceImage(size),
+        makeOmniDepthMapFaceImage(size),
+        makeOmniDepthMapFaceImage(size),
+        makeOmniDepthMapFaceImage(size),
+        makeOmniDepthMapFaceImage(size)};
 }
 
 auto makeOmniDepthMapTexture(basix::Size<int> const & size)
     -> glow::CubeTexture
 {
-    auto const imageSet = makeOmniDepthMapImageSet(size);
+    auto imageSet = makeOmniDepthMapImageSet(size);
 
     // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = glow::CubeTextureDescriptor{
-        imageSet,
+        std::move(imageSet),
         glow::TextureInternalFormat::depth32,
         glow::TextureWrapping::clampToEdge};
 

@@ -42,9 +42,9 @@ auto setTextureImageData(GLenum const target, TextureImage const & image)
 
     auto const height = image.size.height;
 
-    auto const bytes = image.bytes;
+    auto const & bytes = image.bytes;
 
-    glTexSubImage2D(target, 0, 0, 0, width, height, imageFormat, pixelType, bytes);
+    glTexSubImage2D(target, 0, 0, 0, width, height, imageFormat, pixelType, bytes.get());
 }
 
 auto createTextureStorage(CubeTextureDescriptor const & descriptor)
