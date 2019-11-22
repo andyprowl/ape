@@ -57,7 +57,7 @@ auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
             descriptor.image.size.height,
             imageFormat,
             pixelType,
-            descriptor.image.bytes);
+            descriptor.image.bytes.get());
     }
 }
 
@@ -79,7 +79,7 @@ auto setMutableTextureImageData(TextureDescriptor const & descriptor)
         0,
         imageFormat,
         pixelType,
-        descriptor.image.bytes);
+        descriptor.image.bytes.get());
 }
 
 auto setTextureImageData(TextureDescriptor const & descriptor)

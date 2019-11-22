@@ -19,11 +19,11 @@ class TextureDescriptor
 public:
 
     TextureDescriptor(
-        TextureImage const & image,
+        TextureImage image,
         TextureInternalFormat const internalFormat,
         TextureWrapping const wrapping,
         TextureStorageType const storageType)
-        : image{image}
+        : image{std::move(image)}
         , internalFormat{internalFormat}
         , wrapping{wrapping}
         , storageType{storageType}

@@ -14,7 +14,7 @@ namespace
 auto makeDepthMapTexture(basix::Size<int> const & size)
     -> glow::Texture
 {
-    auto const image = glow::TextureImage{
+    auto image = glow::TextureImage{
         nullptr,
         size,
         glow::TextureImageFormat::depth,
@@ -22,7 +22,7 @@ auto makeDepthMapTexture(basix::Size<int> const & size)
 
     // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = glow::TextureDescriptor{
-        image,
+        std::move(image),
         glow::TextureInternalFormat::depth32,
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::immutable};
