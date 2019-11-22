@@ -4,6 +4,10 @@
     <img width="20%" src="Infrastructure/Documentation/docs/Main/Images/ApeLogo.png" />
 </div>
 
+### What is this?
+
+A toy 3D engine and companion tutorials I am writing while (and for) learning OpenGL.
+
 ### Building
 
 Generation through CMake:
