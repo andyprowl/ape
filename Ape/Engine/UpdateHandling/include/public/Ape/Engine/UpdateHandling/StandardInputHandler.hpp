@@ -16,6 +16,7 @@ enum class KeyModifier;
 class CameraSelector;
 class EffectSelector;
 class Scene;
+class SceneRenderer;
 class SkyboxSelector;
 class Window;
 
@@ -26,6 +27,7 @@ public:
 
     StandardInputHandler(
         Window & window,
+        SceneRenderer & renderer,
         CameraSelector & cameraSelector,
         SkyboxSelector & skyboxSelector,
         EffectSelector & effectSelector,
@@ -78,6 +80,9 @@ private:
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
         -> void;
 
+    auto processFrustumCullingToggling(ape::Key key, ape::KeyModifier modifier) const
+        -> void;
+
     auto processLightToggling(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 
@@ -105,6 +110,8 @@ private:
 private:
 
     Window * handledWindow;
+
+    SceneRenderer * renderer;
 
     CameraManipulator cameraManipulator;
         

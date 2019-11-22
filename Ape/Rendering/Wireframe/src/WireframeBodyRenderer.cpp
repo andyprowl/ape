@@ -69,9 +69,9 @@ auto WireframeBodyRenderer::renderBodyPart(
     glm::mat4 const & cameraTransformation) const
     -> void
 {
-    auto const & modelTransformation = part.getGlobalTransformation();
+    auto const & worldTransformation = part.getWorldTransformation();
 
-    shader->transformation = cameraTransformation * modelTransformation;
+    shader->transformation = cameraTransformation * worldTransformation;
 
     for (auto const mesh : part.getModel().getMeshes())
     {

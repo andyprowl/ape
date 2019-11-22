@@ -12,8 +12,9 @@
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
@@ -36,7 +37,7 @@ public:
 
     Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
         : gateway{4, 5, enableDebugOutput}
-        , window{gateway.createWindow("APE 3D GLFWEngine", {2000, 1000})}
+        , window{gateway.createWindow("Rave", {2000, 1000})}
         , assets{createRaveAssets(doNotIncludeSponza)}
         , scene{createRaveScene(assets, doNotIncludeSponza)}
         , effectCollection{RaveEffectCollectionReader{}.read()}
@@ -50,18 +51,21 @@ public:
         , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
         , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
         , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
-        , effectRenderer{effectSelector}
+        , bodyBoundsRenderer{boundsShader}
         , skyboxRenderer{skyboxShader, skyboxSelector}
+        , effectRenderer{effectSelector}
         , cameraSelector{scene}
         , bodyPicker{scene}
         , sceneRenderer{
             std::move(shapeRenderer),
-            std::move(depthBodyRenderer),
-            std::move(standardBodyRenderer),
-            std::move(wireframeBodyRenderer),
-            std::move(outlinedBodyRenderer),
-            std::move(skyboxRenderer),
-            std::move(effectRenderer),
+            ape::SceneRenderer::RendererSet{
+                std::move(depthBodyRenderer),
+                std::move(standardBodyRenderer),
+                std::move(wireframeBodyRenderer),
+                std::move(outlinedBodyRenderer),
+                std::move(bodyBoundsRenderer),
+                std::move(skyboxRenderer),
+                std::move(effectRenderer)},
             cameraSelector,
             bodyPicker,
             window,
@@ -69,6 +73,7 @@ public:
             {0.0f, 0.0f, 0.0f}}
         , inputHandler{
             window,
+            sceneRenderer,
             cameraSelector,
             skyboxSelector,
             effectSelector,
@@ -103,13 +108,15 @@ private:
 
     RaveScene scene;
 
-    ape::LightingShaderProgram standardShader;
+    ape::BlinnPhongShaderProgram standardShader;
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
     ape::OmniDepthShaderProgram omniDepthShader;
 
     ape::WireframeShaderProgram wireframeShader;
+
+    ape::BodyBoundsShaderProgram boundsShader;
 
     ape::SkyboxShaderProgram skyboxShader;
 
@@ -125,7 +132,7 @@ private:
 
     ape::DepthBodyRenderer depthBodyRenderer;
 
-    ape::LightingBodyRenderer standardBodyRenderer;
+    ape::BlinnPhongBodyRenderer standardBodyRenderer;
 
     ape::LineStyleProvider wireframeStyleProvider;
 
@@ -133,9 +140,11 @@ private:
 
     ape::OutlinedBodyRenderer outlinedBodyRenderer;
 
-    ape::EffectRenderer effectRenderer;
+    ape::BodyBoundsRenderer bodyBoundsRenderer;
 
     ape::SkyboxRenderer skyboxRenderer;
+
+    ape::EffectRenderer effectRenderer;
 
     ape::CameraSelector cameraSelector;
 

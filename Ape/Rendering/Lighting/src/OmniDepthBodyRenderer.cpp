@@ -85,7 +85,7 @@ auto OmniDepthBodyRenderer::renderLightSetDepth(
 
 auto OmniDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
-    PointLightView const & lightTransformation,
+    PointLightView const & lightView,
     OmniDepthMap & target) const
     -> void
 {
@@ -99,31 +99,33 @@ auto OmniDepthBodyRenderer::renderLightDepth(
 
     for (auto const & body : bodies)
     {
-        renderBody(asReference(body), lightTransformation);
+        renderBody(asReference(body), lightView);
     }
 }
 
 auto OmniDepthBodyRenderer::renderBody(
     Body const & body,
-    PointLightView const & lightTransformation) const
+    PointLightView const & lightView) const
     -> void
 {
     for (auto const & part : body.getParts())
     {
-        renderBodyPart(part, lightTransformation);
+        renderBodyPart(part, lightView);
     }
 }
 
 auto OmniDepthBodyRenderer::renderBodyPart(
     BodyPart const & part,
-    PointLightView const & lightTransformation) const
+    PointLightView const & lightView) const
     -> void
 {
-    auto const & modelTransformation = part.getGlobalTransformation();
+    auto const & worldTransformation = part.getWorldTransformation();
     
-    shader->modelTransformation = modelTransformation;
+    shader->worldTransformation.set(worldTransformation);
 
-    shader->lightTransformation = lightTransformation * modelTransformation;
+    auto const lightTransformation = getTransformation(lightView);
+
+    shader->lightTransformation = lightTransformation * worldTransformation;
 
     for (auto const mesh : part.getModel().getMeshes())
     {

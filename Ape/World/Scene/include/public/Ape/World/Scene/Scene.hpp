@@ -36,6 +36,9 @@ public:
     auto addBody(Body body)
         -> Body &;
 
+    auto reserveBodyCapacity(int capacity)
+        -> void;
+
     auto getCamera(int index)
         -> Camera &;
 

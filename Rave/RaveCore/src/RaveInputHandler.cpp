@@ -2,7 +2,7 @@
 
 #include <Rave/RaveCore/RaveScene.hpp>
 
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
@@ -60,14 +60,15 @@ auto getFunctionKey(int const i)
 
 RaveInputHandler::RaveInputHandler(
     ape::Window & window,
+    ape::SceneRenderer & renderer,
     ape::CameraSelector & cameraSelector,
     ape::SkyboxSelector & skyboxSelector,
     ape::EffectSelector & effectSelector,
     ape::BodySelector & bodyPicker,
-    ape::LightingShaderProgram & standardShader,
+    ape::BlinnPhongShaderProgram & standardShader,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused RaveScene & scene)
-    : StandardInputHandler{window, cameraSelector, skyboxSelector, effectSelector}
+    : StandardInputHandler{window, renderer, cameraSelector, skyboxSelector, effectSelector}
     , bodyPicker{&bodyPicker}
     , standardShader{&standardShader}
     , outlineStyleProvider{&outlineStyleProvider}
@@ -210,7 +211,7 @@ auto RaveInputHandler::toggleBlinnPhongModel() const
 {
     standardShader->bind();
 
-    standardShader->useBlinnPhongModel = !standardShader->useBlinnPhongModel;
+    standardShader->usePhongModel = !standardShader->usePhongModel;
 }
 
 auto RaveInputHandler::togglePercentageCloserFiltering() const

@@ -1,8 +1,10 @@
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
-#include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
+#include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
+
+#include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -41,6 +43,7 @@ MonoDepthBodyRenderer::MonoDepthBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , performFrustumCulling{true}
 {
 }
 
@@ -55,6 +58,18 @@ auto MonoDepthBodyRenderer::render(
     renderSpotLightSetDepth(bodies, lightSystemView, target);
 
     renderDirectionalLightSetDepth(bodies, lightSystemView, target);
+}
+
+auto MonoDepthBodyRenderer::isFrustumCullingEnabled() const
+    -> bool
+{
+    return performFrustumCulling;
+}
+
+auto MonoDepthBodyRenderer::enableFrustumCulling(bool const enable)
+    -> void
+{
+    performFrustumCulling = enable;
 }
 
 auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
@@ -87,11 +102,11 @@ auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     renderLightSetDepth(bodies, lightSystem.directional, directionalView, directionalMapping);
 }
 
-template<typename LightType>
+template<typename LightType, typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     std::vector<LightType> const & lights,
-    std::vector<glm::mat4> const & lightViews,
+    std::vector<LightViewType> const & lightViews,
     std::vector<MonoDepthMap> & depthMaps) const
     -> void
 {
@@ -110,9 +125,10 @@ auto MonoDepthBodyRenderer::renderLightSetDepth(
     }
 }
 
+template<typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
-    glm::mat4 const & lightTransformation,
+    LightViewType const & lightView,
     MonoDepthMap & target) const
     -> void
 {
@@ -124,42 +140,72 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
+    auto const culler = RadarFrustumCuller{lightView.getCamera()};
+
     for (auto const & body : bodies)
     {
-        renderBody(asReference(body), lightTransformation);
+        auto const & lightTransformation = ape::getTransformation(lightView);
+
+        renderBody(asReference(body), lightTransformation, culler);
     }
 }
 
 auto MonoDepthBodyRenderer::renderBody(
     Body const & body,
-    glm::mat4 const & lightTransformation) const
+    glm::mat4 const & lightTransformation,
+    RadarFrustumCuller const & culler) const
     -> void
 {
     for (auto const & part : body.getParts())
     {
-        renderBodyPart(part, lightTransformation);
+        renderBodyPart(part, lightTransformation, culler);
     }
 }
 
 auto MonoDepthBodyRenderer::renderBodyPart(
     BodyPart const & part,
-    glm::mat4 const & lightTransformation) const
+    glm::mat4 const & lightTransformation,
+    RadarFrustumCuller const & culler) const
     -> void
 {
-    auto const & modelTransformation = part.getGlobalTransformation();
+    auto const & worldTransformation = part.getWorldTransformation();
     
-    shader->lightTransformation = lightTransformation * modelTransformation;
+    shader->lightTransformation = lightTransformation * worldTransformation;
 
-    for (auto const mesh : part.getModel().getMeshes())
+    for (auto const bodyMesh : part.getMeshes())
     {
-        renderMesh(*mesh);
+        if (!isVisible(bodyMesh, culler))
+        {
+            continue;
+        }
+
+        renderMesh(bodyMesh);
     }
 }
 
-auto MonoDepthBodyRenderer::renderMesh(Mesh const & mesh) const
+auto MonoDepthBodyRenderer::isVisible(
+    BodyPartMesh const & mesh,
+    RadarFrustumCuller const & culler) const
+    -> bool
+{
+    if (!isFrustumCullingEnabled())
+    {
+        return true;
+    }
+
+    auto const & boundingSphere = mesh.getBoundingVolumes().getSphere();
+
+    auto const relation = culler.computeFrustumRelation(boundingSphere);
+
+    return (relation != ContainmentRelation::fullyOutside);
+}
+
+auto MonoDepthBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
     -> void
 {
-    auto const & shape = mesh.getShape();
+    auto const & meshModel = mesh.getModel();
+
+    auto const & shape = meshModel.getShape();
     
     shapeRenderer->render(shape);
 }

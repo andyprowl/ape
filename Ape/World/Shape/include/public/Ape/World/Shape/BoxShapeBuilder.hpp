@@ -6,7 +6,7 @@
 namespace ape
 {
 
-class BoxBuilder
+class BoxShapeBuilder
 {
 
 public:

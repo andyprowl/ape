@@ -186,11 +186,11 @@ void main()
 {
     vec4 rawPosition = vec4(positionAttribute, 1.0);
 
-    vec4 modelPosition = transform.model * rawPosition;
+    vec4 worldPosition = transform.model * rawPosition;
 
     gl_Position = transform.camera * rawPosition;
 
-    vertex.position = vec3(modelPosition);
+    vertex.position = vec3(worldPosition);
 
     vertex.normal = normalize(transform.normal * normalAttribute);
 
@@ -202,11 +202,11 @@ void main()
 
     for (int i = 0; i < lightSystem.spotArraySize; ++i)
     {
-        lightSpacePositioning.spot[i] = lightSystemView.spot[i] * modelPosition;
+        lightSpacePositioning.spot[i] = lightSystemView.spot[i] * worldPosition;
     }
 
     for (int i = 0; i < lightSystem.directionalArraySize; ++i)
     {
-        lightSpacePositioning.directional[i] = lightSystemView.directional[i] * modelPosition;
+        lightSpacePositioning.directional[i] = lightSystemView.directional[i] * worldPosition;
     }
 }

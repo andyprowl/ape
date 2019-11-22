@@ -7,8 +7,8 @@
 namespace ape
 {
 
-CameraView::CameraView(Placement const & placement, Camera & parent)
-    : placement{placement}
+CameraView::CameraView(System const & system, Camera & parent)
+    : system{system}
     , transformation{makeView()}
     , parent{&parent}
 {
@@ -21,22 +21,22 @@ auto CameraView::getTransformation() const
 }
 
 auto CameraView::getPosition() const
-    -> glm::vec3
+    -> glm::vec3 const &
 {
-    return placement.position;
+    return system.position;
 }
 
 auto CameraView::setPosition(glm::vec3 const & newPosition)
     -> void
 {
-    if (placement.position == newPosition)
+    if (system.position == newPosition)
     {
         return;
     }
 
-    auto const offset = newPosition - placement.position;
+    auto const offset = newPosition - system.position;
 
-    placement.position = newPosition;
+    system.position = newPosition;
 
     transformation = glm::translate(transformation, -offset);
 
@@ -44,9 +44,9 @@ auto CameraView::setPosition(glm::vec3 const & newPosition)
 }
 
 auto CameraView::getDirection() const
-    -> glm::vec3
+    -> glm::vec3 const &
 {
-    return placement.direction;
+    return system.direction;
 }
 
 auto CameraView::setDirection(glm::vec3 const & newDirection)
@@ -54,24 +54,30 @@ auto CameraView::setDirection(glm::vec3 const & newDirection)
 {
     auto const normalizedDirection = glm::normalize(newDirection);
 
-    if (placement.direction == normalizedDirection)
+    if (system.direction == normalizedDirection)
     {
         return;
     }
 
-    placement.direction = normalizedDirection;
+    system.direction = normalizedDirection;
 
-    auto const right = glm::normalize(glm::cross(placement.direction, glm::vec3{0.0, 1.0, 0.0}));
+    system.right = glm::normalize(glm::cross(system.direction, glm::vec3{0.0, 1.0, 0.0}));
     
-    placement.up = glm::cross(right, placement.direction);
+    system.up = glm::normalize(glm::cross(system.right, system.direction));
     
     recalculateViewAndNotifyParent();
 }
 
 auto CameraView::getUp() const
-    -> glm::vec3
+    -> glm::vec3 const &
 {
-    return placement.up;
+    return system.up;
+}
+
+auto CameraView::getRight() const
+    -> glm::vec3 const &
+{
+    return system.right;
 }
 
 auto CameraView::getParent() const
@@ -83,7 +89,7 @@ auto CameraView::getParent() const
 auto CameraView::makeView() const
     -> glm::mat4
 {
-    return glm::lookAt(placement.position, placement.position + placement.direction, placement.up);
+    return glm::lookAt(system.position, system.position + system.direction, system.up);
 }
 
 auto CameraView::recalculateViewAndNotifyParent()

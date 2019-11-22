@@ -27,4 +27,13 @@ auto contains(Container const & container, V const & value)
     return (it != std::cend(container));
 }
 
+template<typename Container, typename Pred>
+auto containsIf(Container const & container, Pred pred)
+    -> bool
+{
+    auto const it = findIf(container, std::move(pred));
+    
+    return (it != std::cend(container));
+}
+
 } // namespace basix

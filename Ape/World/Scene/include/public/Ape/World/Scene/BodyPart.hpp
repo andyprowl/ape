@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Ape/World/Scene/BodyPartMesh.hpp>
+
 #include <glm/mat4x4.hpp>
 
 #include <vector>
@@ -32,16 +34,19 @@ public:
     auto getComponent(int index)
         -> BodyPart &;
 
+    auto getMeshes() const
+        -> std::vector<BodyPartMesh> const &;
+
     auto getLocalTransformation() const
         -> glm::mat4 const &;
 
     auto setLocalTransformation(glm::mat4 const & newTransformation)
         -> void;
 
-    auto getGlobalTransformation() const
+    auto getWorldTransformation() const
         -> glm::mat4 const &;
 
-    auto getGlobalNormalTransformation() const
+    auto getWorldNormalTransformation() const
         -> glm::mat3 const &;
 
     // Implemented as a member because it does not require updating the normal matrix
@@ -61,20 +66,26 @@ private:
     auto setBody(Body & newBody)
         -> void;
 
-    auto getParentGlobalTransformation() const
+    auto getParentWorldTransformation() const
         -> glm::mat4;
 
     auto onParentTransformationChanged(glm::mat4 const & newTransformation)
         -> void;
 
-    auto updateGlobalTransformation()
+    auto updateWorldTransformation()
         -> void;
 
-    auto updateGlobalNormalTransformation()
+    auto updateWorldNormalTransformation()
         -> void;
 
-    auto updateDescendentGlobalTransformations()
+    auto updateDescendentWorldTransformations()
         -> void;
+
+    auto updateMeshBoundingVolumes()
+        -> void;
+
+    auto makeMeshes() const
+        -> std::vector<BodyPartMesh>;
 
 private:
 
@@ -84,9 +95,11 @@ private:
 
     glm::mat4 localTransformation;
 
-    glm::mat4 globalTransformation;
+    glm::mat4 worldTransformation;
 
-    glm::mat3 globalNormalTransformation;
+    glm::mat3 worldNormalTransformation;
+
+    std::vector<BodyPartMesh> meshes;
 
 };
 

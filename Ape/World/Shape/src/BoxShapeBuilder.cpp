@@ -1,4 +1,4 @@
-#include <Ape/World/Shape/BoxBuilder.hpp>
+#include <Ape/World/Shape/BoxShapeBuilder.hpp>
 
 #include <Ape/World/Shape/ShapeVertex.hpp>
 
@@ -42,9 +42,9 @@ class StatefulBuilder
 
 public:
 
-    using Size = BoxBuilder::Size;
+    using Size = BoxShapeBuilder::Size;
 
-    using Position = BoxBuilder::Position;
+    using Position = BoxShapeBuilder::Position;
 
     using Face = std::array<ShapeVertex, 4u>;
 
@@ -170,7 +170,7 @@ private:
 
 } // unnamed namespace
 
-auto BoxBuilder::build(
+auto BoxShapeBuilder::build(
     NormalDirection const normalDirection,
     Size const & size,
     Position const & center) const

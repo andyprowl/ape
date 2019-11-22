@@ -11,25 +11,33 @@ namespace ape
 
 class Body;
 class BodyPart;
+class BodyPartMesh;
 class Camera;
+class RadarFrustumCuller;
 class LightSystem;
 class Mesh;
 class ShadowMapping;
 class ShapeDrawer;
-class LightingShaderProgram;
+class BlinnPhongShaderProgram;
 
-class LightingBodyRenderer
+class BlinnPhongBodyRenderer
 {
 
 public:
 
-    LightingBodyRenderer(LightingShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    BlinnPhongBodyRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer const & shapeRenderer);
 
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
         LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
+        -> void;
+
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
         -> void;
 
 private:
@@ -40,10 +48,16 @@ private:
         ShadowMapping const & shadowMapping) const
         -> void;
 
-    auto renderBody(Body const & body, glm::mat4 const & cameraTransformation) const
+    auto renderBody(
+        Body const & body,
+        glm::mat4 const & cameraTransformation,
+        RadarFrustumCuller const & culler) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, glm::mat4 const & cameraTransformation) const
+    auto renderBodyPart(
+        BodyPart const & part,
+        glm::mat4 const & cameraTransformation,
+        RadarFrustumCuller const & culler) const
         -> void;
 
     auto setupBodyPartUniforms(
@@ -51,14 +65,19 @@ private:
         glm::mat4 const & cameraTransformation) const
         -> void;
 
-    auto renderMesh(Mesh const & mesh) const
+    auto isVisible(BodyPartMesh const & mesh, RadarFrustumCuller const & culler) const
+        -> bool;
+
+    auto renderMesh(BodyPartMesh const & mesh) const
         -> void;
 
 private:
 
-    LightingShaderProgram * shader;
+    BlinnPhongShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    bool performFrustumCulling;
 
 };
 

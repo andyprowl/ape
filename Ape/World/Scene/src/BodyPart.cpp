@@ -4,6 +4,8 @@
 
 #include <Ape/World/Model/ModelPart.hpp>
 
+#include <Basix/Range/Transform.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace ape
@@ -24,27 +26,10 @@ BodyPart::BodyPart(Body & body, ModelPart const & part)
     : body{&body}
     , part{&part}
     , localTransformation{part.getTransformation()}
-    , globalTransformation{getParentGlobalTransformation() * localTransformation}
-    , globalNormalTransformation{computeNormalTransformation(globalTransformation)}
+    , worldTransformation{getParentWorldTransformation() * localTransformation}
+    , worldNormalTransformation{computeNormalTransformation(worldTransformation)}
+    , meshes{makeMeshes()}
 {
-}
-
-auto BodyPart::getNumOfComponents() const
-    -> int
-{
-    return static_cast<int>(part->getComponents().size());
-}
-
-auto BodyPart::getComponent(int const index)
-    -> BodyPart &
-{
-    auto & modelComponents = part->getComponents();
-
-    auto & modelComponent = modelComponents[index];
-
-    auto inDepthIndex = modelComponent.getInDepthIndex();
-
-    return body->getPart(inDepthIndex);
 }
 
 auto BodyPart::getBody() const
@@ -76,6 +61,30 @@ auto BodyPart::getParent() const
     return &parentPart;
 }
 
+auto BodyPart::getNumOfComponents() const
+    -> int
+{
+    return static_cast<int>(part->getComponents().size());
+}
+
+auto BodyPart::getComponent(int const index)
+    -> BodyPart &
+{
+    auto & modelComponents = part->getComponents();
+
+    auto & modelComponent = modelComponents[index];
+
+    auto componentIndex = modelComponent.getInDepthIndex();
+
+    return body->getPart(componentIndex);
+}
+
+auto BodyPart::getMeshes() const
+    -> std::vector<BodyPartMesh> const &
+{
+    return meshes;
+}
+
 auto BodyPart::getLocalTransformation() const
     -> glm::mat4 const &
 {
@@ -87,25 +96,25 @@ auto BodyPart::setLocalTransformation(glm::mat4 const & newTransformation)
 {
     localTransformation = newTransformation;
 
-    updateGlobalTransformation();
+    updateWorldTransformation();
 
-    updateGlobalNormalTransformation();
+    updateWorldNormalTransformation();
 
-    updateDescendentGlobalTransformations();
+    updateDescendentWorldTransformations();
 
     body->onLocalTransformationChanged.fire(*this);
 }
 
-auto BodyPart::getGlobalTransformation() const
+auto BodyPart::getWorldTransformation() const
     -> glm::mat4 const &
 {
-    return globalTransformation;
+    return worldTransformation;
 }
 
-auto BodyPart::getGlobalNormalTransformation() const
+auto BodyPart::getWorldNormalTransformation() const
     -> glm::mat3 const &
 {
-    return globalNormalTransformation;
+    return worldNormalTransformation;
 }
 
 // Implemented as a member because it does not require updating the normal matrix
@@ -114,7 +123,7 @@ auto BodyPart::scaleUniformly(float const factor)
 {
     localTransformation = glm::scale(localTransformation, {factor, factor, factor});
 
-    updateGlobalTransformation();
+    updateWorldTransformation();
 
     body->onLocalTransformationChanged.fire(*this);
 }
@@ -125,7 +134,7 @@ auto BodyPart::translate(glm::vec3 const & offset)
 {
     localTransformation = glm::translate(localTransformation, offset);
 
-    updateGlobalTransformation();
+    updateWorldTransformation();
 
     body->onLocalTransformationChanged.fire(*this);
 }
@@ -136,14 +145,14 @@ auto BodyPart::setBody(Body & newBody)
     body = &newBody;
 }
 
-auto BodyPart::getParentGlobalTransformation() const
+auto BodyPart::getParentWorldTransformation() const
     -> glm::mat4
 {
     auto const parent = getParent();
 
     if (parent != nullptr)
     {
-        return parent->globalTransformation;
+        return parent->worldTransformation;
     }
     else
     {
@@ -154,34 +163,56 @@ auto BodyPart::getParentGlobalTransformation() const
 auto BodyPart::onParentTransformationChanged(glm::mat4 const & newTransformation)
     -> void
 {
-    globalTransformation = newTransformation * localTransformation;
+    worldTransformation = newTransformation * localTransformation;
 
-    updateGlobalNormalTransformation();
+    updateWorldNormalTransformation();
 
-    updateDescendentGlobalTransformations();
+    updateDescendentWorldTransformations();
+
+    updateMeshBoundingVolumes();
 }
 
-auto BodyPart::updateGlobalTransformation()
+auto BodyPart::updateWorldTransformation()
     -> void
 {
-    globalTransformation = getParentGlobalTransformation() * localTransformation;
+    worldTransformation = getParentWorldTransformation() * localTransformation;
+
+    updateMeshBoundingVolumes();
 }
 
-auto BodyPart::updateGlobalNormalTransformation()
+auto BodyPart::updateWorldNormalTransformation()
     -> void
 {
-    globalNormalTransformation = computeNormalTransformation(globalTransformation);
+    worldNormalTransformation = computeNormalTransformation(worldTransformation);
 }
 
-auto BodyPart::updateDescendentGlobalTransformations()
+auto BodyPart::updateDescendentWorldTransformations()
     -> void
 {
     for (auto i = 0; i < getNumOfComponents(); ++i)
     {
         auto & component = getComponent(i);
 
-        component.onParentTransformationChanged(globalTransformation);
+        component.onParentTransformationChanged(worldTransformation);
     }
+}
+
+auto BodyPart::updateMeshBoundingVolumes()
+    -> void
+{
+    for (auto & bounds : meshes)
+    {
+        bounds.onPartTransformationChanged(worldTransformation);
+    }
+}
+
+auto BodyPart::makeMeshes() const
+    -> std::vector<BodyPartMesh>
+{
+    return basix::transform(part->getMeshes(), [this] (Mesh const * const mesh)
+    {
+        return BodyPartMesh{*mesh, worldTransformation};
+    });
 }
 
 auto isRoot(BodyPart const & part)
@@ -209,7 +240,7 @@ auto setLocalPosition(BodyPart & part, glm::vec3 const & newPosition)
 auto getGlobalPosition(BodyPart const & part)
     -> glm::vec3
 {
-    auto const & transformation = part.getGlobalTransformation();
+    auto const & transformation = part.getWorldTransformation();
 
     return transformation[3];
 }

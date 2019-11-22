@@ -180,7 +180,7 @@ uniform LightSystemView lightSystemView;
 
 uniform DepthMapping depthMapping;
 
-uniform bool useBlinnPhongModel;
+uniform bool usePhongModel;
 
 uniform bool usePercentageCloserFiltering;
 
@@ -262,7 +262,7 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depth
 
     float currentDepth = length(lightToVertex);
 
-    float bias = 0.0002;
+    float bias = 0.002;
 
     return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
 }
@@ -285,8 +285,18 @@ vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
 
 float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
 {
-    if (useBlinnPhongModel)
+    if (usePhongModel)
     {
+        // Uses classical Phong model
+
+        vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
+
+        return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    }
+    else
+    {
+        // Uses Blinn-Phong model
+
         vec3 halfwayDirection = normalize(lightDirection + viewDirection);
 
         float shininessAdjuster = 4.0;
@@ -294,14 +304,6 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
         float shininess = material.shininess * shininessAdjuster;
 
         return pow(max(dot(vertex.normal, halfwayDirection), 0.0), shininess);
-    }
-    else
-    {
-        // Uses classical Phong model
-
-        vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
-
-        return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     }
 }
 

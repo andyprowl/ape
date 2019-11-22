@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/Lighting/PointLightView.hpp>
+#include <Ape/Rendering/Lighting/PointLightViewTransformation.hpp>
 
 #include <Glow/Shader/Uniform.hpp>
 
@@ -8,12 +8,12 @@ namespace glow
 {
 
 template<>
-class Uniform<ape::PointLightView>
+class Uniform<ape::PointLightViewTransformation>
 {
 
 public:
 
-    using ValueType = ape::PointLightView;
+    using ValueType = ape::PointLightViewTransformation;
 
 public:
 

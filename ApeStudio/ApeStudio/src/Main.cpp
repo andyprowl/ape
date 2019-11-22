@@ -14,7 +14,8 @@
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/LightingShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
@@ -212,13 +213,15 @@ int main(int argc, char *argv[])
     
     auto scene = rave::createRaveScene(assets, doNotIncludeSponza);
 
-    auto standardShader = ape::LightingShaderProgram{};
+    auto standardShader = ape::BlinnPhongShaderProgram{};
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
     auto omniDepthShader = ape::OmniDepthShaderProgram{};
 
     auto wireframeShader = ape::WireframeShaderProgram{};
+
+    auto boundsShader = ape::BodyBoundsShaderProgram{};
 
     auto skyboxShader = ape::SkyboxShaderProgram{};
 
@@ -248,7 +251,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer1},
         {omniDepthShader, *shapeRenderer1}};
 
-    auto standardBodyRenderer1 = ape::LightingBodyRenderer{standardShader, *shapeRenderer1};
+    auto standardBodyRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -258,6 +261,8 @@ int main(int argc, char *argv[])
     auto outlinedBodyRenderer1 = ape::OutlinedBodyRenderer{
         standardBodyRenderer1,
         wireframeBodyRenderer1};
+
+    auto boundsRenderer1 = ape::BodyBoundsRenderer{boundsShader};
 
     auto skyboxSelector1 = ape::SkyboxSelector{skyboxCollection};
 
@@ -269,12 +274,14 @@ int main(int argc, char *argv[])
 
     auto renderer1 = ape::SceneRenderer{
         std::move(shapeRenderer1),
-        std::move(depthBodyRenderer1),
-        std::move(standardBodyRenderer1),
-        std::move(wireframeBodyRenderer1),
-        std::move(outlinedBodyRenderer1),
-        std::move(skyboxRenderer1),
-        std::move(effectRenderer1),
+        ape::SceneRenderer::RendererSet{
+            std::move(depthBodyRenderer1),
+            std::move(standardBodyRenderer1),
+            std::move(wireframeBodyRenderer1),
+            std::move(outlinedBodyRenderer1),
+            std::move(boundsRenderer1),
+            std::move(skyboxRenderer1),
+            std::move(effectRenderer1)},
         cameraSelector1,
         picker,
         sceneView1,
@@ -283,6 +290,7 @@ int main(int argc, char *argv[])
 
     auto inputHandler1 = rave::RaveInputHandler{
         sceneView1,
+        renderer1,
         cameraSelector1,
         skyboxSelector1,
         effectSelector1,
@@ -310,7 +318,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer2},
         {omniDepthShader, *shapeRenderer2}};
 
-    auto standardBodyRenderer2 = ape::LightingBodyRenderer{standardShader, *shapeRenderer2};
+    auto standardBodyRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
 
     auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -321,6 +329,8 @@ int main(int argc, char *argv[])
         standardBodyRenderer2,
         wireframeBodyRenderer2};
     
+    auto boundsRenderer2 = ape::BodyBoundsRenderer{boundsShader};
+
     auto skyboxSelector2 = ape::SkyboxSelector{skyboxCollection};
 
     auto skyboxRenderer2 = ape::SkyboxRenderer{skyboxShader, skyboxSelector2};
@@ -331,12 +341,14 @@ int main(int argc, char *argv[])
 
     auto renderer2 = ape::SceneRenderer{
         std::move(shapeRenderer2),
-        std::move(depthBodyRenderer2),
-        std::move(standardBodyRenderer2),
-        std::move(wireframeBodyRenderer2),
-        std::move(outlinedBodyRenderer2),
-        std::move(skyboxRenderer2),
-        std::move(effectRenderer2),
+        ape::SceneRenderer::RendererSet{
+            std::move(depthBodyRenderer2),
+            std::move(standardBodyRenderer2),
+            std::move(wireframeBodyRenderer2),
+            std::move(outlinedBodyRenderer2),
+            std::move(boundsRenderer2),
+            std::move(skyboxRenderer2),
+            std::move(effectRenderer2)},
         cameraSelector2,
         picker,
         sceneView2,
@@ -345,6 +357,7 @@ int main(int argc, char *argv[])
 
     auto inputHandler2 = rave::RaveInputHandler{
         sceneView2,
+        renderer2,
         cameraSelector2,
         skyboxSelector2,
         effectSelector2,
@@ -376,7 +389,7 @@ int main(int argc, char *argv[])
         {monoDepthShader, *shapeRenderer3},
         {omniDepthShader, *shapeRenderer3}};
 
-    auto standardBodyRenderer3 = ape::LightingBodyRenderer{standardShader, *shapeRenderer3};
+    auto standardBodyRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
 
     auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -386,6 +399,8 @@ int main(int argc, char *argv[])
     auto outlinedBodyRenderer3 = ape::OutlinedBodyRenderer{
         standardBodyRenderer3,
         wireframeBodyRenderer3};
+
+    auto boundsRenderer3 = ape::BodyBoundsRenderer{boundsShader};
 
     auto skyboxSelector3 = ape::SkyboxSelector{skyboxCollection};
 
@@ -397,12 +412,14 @@ int main(int argc, char *argv[])
 
     auto renderer3 = ape::SceneRenderer{
         std::move(shapeRenderer3),
-        std::move(depthBodyRenderer3),
-        std::move(standardBodyRenderer3),
-        std::move(wireframeBodyRenderer3),
-        std::move(outlinedBodyRenderer3),
-        std::move(skyboxRenderer3),
-        std::move(effectRenderer3),
+        ape::SceneRenderer::RendererSet{
+            std::move(depthBodyRenderer3),
+            std::move(standardBodyRenderer3),
+            std::move(wireframeBodyRenderer3),
+            std::move(outlinedBodyRenderer3),
+            std::move(boundsRenderer3),
+            std::move(skyboxRenderer3),
+            std::move(effectRenderer3)},
         cameraSelector3,
         picker,
         sceneView3,
@@ -411,6 +428,7 @@ int main(int argc, char *argv[])
 
     auto inputHandler3 = rave::RaveInputHandler{
         sceneView3,
+        renderer3,
         cameraSelector3,
         skyboxSelector3,
         effectSelector3,

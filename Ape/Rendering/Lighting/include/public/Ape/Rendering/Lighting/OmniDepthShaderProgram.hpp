@@ -18,7 +18,7 @@ public:
 
 public:
 
-    glow::Uniform<glm::mat4> modelTransformation;
+    glow::Uniform<glm::mat4> worldTransformation;
 
     // TODO: Is it OK for this to be named PointLightView? Shouldn't it be something generic, like
     // "OmnidirectionalView"? After all, depth mapping does not necessarily have to be done for a
@@ -28,7 +28,7 @@ public:
     // whereas the transformations we are passing here do.
     // But in this case we also a problem with the name "LightSystemView", because the
     // transformations maintained there also encompass projection.
-    glow::Uniform<PointLightView> lightTransformation;
+    glow::Uniform<PointLightViewTransformation> lightTransformation;
 
     // TODO: Same as above: is it OK to mention "light" here?
     glow::Uniform<glm::vec3> lightPosition;

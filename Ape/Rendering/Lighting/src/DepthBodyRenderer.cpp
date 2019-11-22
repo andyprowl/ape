@@ -22,4 +22,16 @@ auto DepthBodyRenderer::render(
     omniRenderer.render(bodies, lightSystemView, target);
 }
 
+auto DepthBodyRenderer::isFrustumCullingEnabled() const
+    -> bool
+{
+    return monoRenderer.isFrustumCullingEnabled();
+}
+
+auto DepthBodyRenderer::enableFrustumCulling(bool const enable)
+    -> void
+{
+    return monoRenderer.enableFrustumCulling(enable);
+}
+
 } // namespace ape

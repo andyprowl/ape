@@ -23,7 +23,7 @@ auto buildOmnidirectionalDepthShader()
 
 OmniDepthShaderProgram::OmniDepthShaderProgram()
     : ShaderProgram{buildOmnidirectionalDepthShader()}
-    , modelTransformation{*this, "modelTransformation"}
+    , worldTransformation{*this, "worldTransformation"}
     , lightTransformation{*this, "lightTransformation"}
     , lightPosition{*this, "lightPosition"}
 {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Ape/Rendering/Rendering/BodyBoundsRenderer.hpp>
 #include <Ape/Rendering/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/Viewport.hpp>
@@ -7,7 +8,7 @@
 #include <Ape/Rendering/Effect/EffectRenderer.hpp>
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
-#include <Ape/Rendering/Lighting/LightingBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
@@ -34,14 +35,52 @@ class SceneRenderer
 
 public:
 
+    class RendererSet
+    {
+
+    public:
+
+        RendererSet(
+            DepthBodyRenderer depthBodyRenderer,
+            BlinnPhongBodyRenderer blinnPhongBodyRenderer,
+            WireframeBodyRenderer wireframeBodyRenderer,
+            OutlinedBodyRenderer outlinedBodyRenderer,
+            BodyBoundsRenderer boundsRenderer,
+            SkyboxRenderer skyboxRenderer,
+            EffectRenderer effectRenderer)
+            : depthBodyRenderer{std::move(depthBodyRenderer)}
+            , blinnPhongBodyRenderer{std::move(blinnPhongBodyRenderer)}
+            , wireframeBodyRenderer{std::move(wireframeBodyRenderer)}
+            , outlinedBodyRenderer{std::move(outlinedBodyRenderer)}
+            , boundsRenderer{std::move(boundsRenderer)}
+            , skyboxRenderer{std::move(skyboxRenderer)}
+            , effectRenderer{std::move(effectRenderer)}
+        {
+        }
+
+    public:
+
+        DepthBodyRenderer depthBodyRenderer;
+
+        BlinnPhongBodyRenderer blinnPhongBodyRenderer;
+
+        WireframeBodyRenderer wireframeBodyRenderer;
+
+        OutlinedBodyRenderer outlinedBodyRenderer;
+
+        BodyBoundsRenderer boundsRenderer;
+
+        SkyboxRenderer skyboxRenderer;
+
+        EffectRenderer effectRenderer;
+
+    };
+
+public:
+
     SceneRenderer(
-        std::unique_ptr<ShapeDrawer> shapeRenderer,
-        DepthBodyRenderer depthBodyRenderer,
-        LightingBodyRenderer standardBodyRenderer,
-        WireframeBodyRenderer wireframeBodyRenderer,
-        OutlinedBodyRenderer outlinedBodyRenderer,
-        SkyboxRenderer skyboxRenderer,
-        EffectRenderer effectRenderer,
+        std::unique_ptr<ShapeDrawer> shapeDrawer,
+        RendererSet renderers,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
         Window & targetSurface,
@@ -61,6 +100,12 @@ public:
         -> Viewport;
 
     auto setViewport(Viewport const & newViewport)
+        -> void;
+
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
         -> void;
 
 private:
@@ -95,6 +140,9 @@ private:
     auto renderPickedBodies() const
         -> void;
 
+    auto renderBodyBounds() const
+        -> void;
+
     auto renderSkybox() const
         -> void;
 
@@ -103,19 +151,9 @@ private:
 
 private:
 
-    std::unique_ptr<ShapeDrawer> shapeRenderer;
+    std::unique_ptr<ShapeDrawer> shapeDrawer;
 
-    DepthBodyRenderer depthBodyRenderer;
-
-    LightingBodyRenderer standardBodyRenderer;
-
-    WireframeBodyRenderer wireframeBodyRenderer;
-
-    OutlinedBodyRenderer outlinedBodyRenderer;
-
-    SkyboxRenderer skyboxRenderer;
-
-    EffectRenderer effectRenderer;
+    RendererSet renderers;
 
     CameraSelector const * cameraSelector;
 
@@ -130,6 +168,8 @@ private:
     OffscreenSurface offscreenSurface;
 
     glm::vec3 backgroundColor;
+
+    bool renderBoundingBoxes;
 
     glow::VertexArrayObject arrayObject;
 

@@ -54,7 +54,7 @@ auto SkyboxRenderer::setupUniforms(Camera const & camera, glow::CubeTexture cons
 auto SkyboxRenderer::drawCube() const
     -> void
 {
-    auto const arrayObjectBinder = bind(skyboxShape.getArrayObject());
+    auto const arrayObjectBinder = glow::bind(skyboxShape.getArrayObject());
 
     auto const numOfVertices = skyboxShape.getNumOfVertices();
 

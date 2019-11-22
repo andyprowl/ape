@@ -1,9 +1,10 @@
-- Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
 - Implement frustum culling
-    - Implement bounding volumes (AABB and bounding spheres) for shapes
-    - Implement bounding volumes for model parts
-    - Use frustum culling with view camera frustum
-    - Use frustum culling with for shadow map generation (light view frustum)
+ - Use frustum culling with for shadow map generation (light view frustum)
+ - Write tutorial on radar approach to frustum culling for spheres
+ - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
+ - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
+   culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
+   the sub-objects
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
@@ -13,6 +14,7 @@
     - Try to think how the generic pipeline would like if composed declaratively by the user
 - Write tutorial/documentation on gamma correction
 - Write tutorial/documentation on skyboxes
+- Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
 - Try FBX format for 3D models
     - Use FBX SDK for importing the models
 - The "Inversion" post-processing effect no longer seems to work

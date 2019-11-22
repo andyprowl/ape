@@ -13,8 +13,10 @@ namespace ape
 
 class Body;
 class BodyPart;
+class BodyPartMesh;
 class Camera;
 class DepthMapping;
+class RadarFrustumCuller;
 class MonoDepthShaderProgram;
 class LightSystemView;
 class Mesh;
@@ -37,6 +39,12 @@ public:
         DepthMapping & target) const
         -> void;
 
+    auto isFrustumCullingEnabled() const
+        -> bool;
+
+    auto enableFrustumCulling(bool enable)
+        -> void;
+
 private:
 
     auto renderSpotLightSetDepth(
@@ -51,27 +59,39 @@ private:
         DepthMapping & target) const
         -> void;
 
-    template<typename LightType>
+    template<typename LightType, typename LightViewType>
     auto renderLightSetDepth(
         BodySetView const & bodies,
         std::vector<LightType> const & lights,
-        std::vector<glm::mat4> const & lightViews,
+        std::vector<LightViewType> const & lightViews,
         std::vector<MonoDepthMap> & depthMaps) const
         -> void;
 
+    template<typename LightViewType>
     auto renderLightDepth(
         BodySetView const & bodies,
-        glm::mat4 const & lightTransformation,
+        LightViewType const & lightView,
         MonoDepthMap & target) const
         -> void;
 
-    auto renderBody(Body const & body, glm::mat4 const & lightTransformation) const
+    auto renderBody(
+        Body const & body,
+        glm::mat4 const & lightTransformation,
+        RadarFrustumCuller const & culler) const
         -> void;
 
-    auto renderBodyPart(BodyPart const & part, glm::mat4 const & lightTransformation) const
+    auto renderBodyPart(
+        BodyPart const & part,
+        glm::mat4 const & lightTransformation,
+        RadarFrustumCuller const & culler) const
         -> void;
 
-    auto renderMesh(Mesh const & mesh) const
+    auto isVisible(
+        BodyPartMesh const & mesh,
+        RadarFrustumCuller const & culler) const
+        -> bool;
+
+    auto renderMesh(BodyPartMesh const & mesh) const
         -> void;
 
 private:
@@ -79,6 +99,8 @@ private:
     MonoDepthShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    bool performFrustumCulling;
 
 };
 

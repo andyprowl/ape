@@ -21,9 +21,9 @@ struct OmnidirectionalTransformation
 
 };
 
-out vec4 modelPosition;
+out vec4 worldPosition;
 
-uniform mat4 modelTransformation;
+uniform mat4 worldTransformation;
 
 uniform OmnidirectionalTransformation lightTransformation;
 
@@ -35,7 +35,7 @@ void emitVerticesInLightSpace(int layerIndex, mat4 transformation)
     {
         vec4 rawPosition = gl_in[i].gl_Position;
 
-        modelPosition = modelTransformation * rawPosition;
+        worldPosition = worldTransformation * rawPosition;
 
         gl_Position = transformation * rawPosition;
 
