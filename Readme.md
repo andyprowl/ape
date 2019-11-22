@@ -7,10 +7,11 @@
 ### What is this?
 
 A toy 3D engine and companion tutorials I am writing while (and for) learning OpenGL.
+There's probably nothing interesting to see here unless you are me.
 
 ### Building
 
-Generation through CMake:
+Example of generation through CMake:
 
 ```
 cmake ..\Sources
