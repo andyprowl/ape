@@ -13,7 +13,7 @@ public:
 
     Plane(glm::vec3 const & normal, float const offset)
         : normal{glm::normalize(normal)}
-        , offset{offset}
+        , offset{offset / glm::length(normal)}
     {
     }
 

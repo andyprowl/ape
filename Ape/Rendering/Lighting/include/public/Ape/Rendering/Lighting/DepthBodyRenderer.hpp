@@ -6,6 +6,8 @@
 namespace ape
 {
 
+class Camera;
+
 class DepthBodyRenderer
 {
 
@@ -19,6 +21,7 @@ public:
 
     auto render(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;

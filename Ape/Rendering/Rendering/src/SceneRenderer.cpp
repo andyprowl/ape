@@ -165,8 +165,13 @@ auto SceneRenderer::renderDepthMapping()
 {
     auto const & bodies = cameraSelector->getScene().getBodies();
 
+    auto const camera = cameraSelector->getActiveCamera();
+
+    assert(camera != nullptr);
+
     renderers.depthBodyRenderer.render(
         bodies,
+        *camera,
         shadowMapping.lightSystemView,
         shadowMapping.depthMapping);
 }

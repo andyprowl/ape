@@ -15,8 +15,8 @@ class Body;
 class BodyPart;
 class BodyPartMesh;
 class Camera;
+class Culler;
 class DepthMapping;
-class RadarFrustumCuller;
 class MonoDepthShaderProgram;
 class LightSystemView;
 class Mesh;
@@ -35,6 +35,7 @@ public:
 
     auto render(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
@@ -49,12 +50,14 @@ private:
 
     auto renderSpotLightSetDepth(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
 
     auto renderDirectionalLightSetDepth(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
@@ -62,6 +65,7 @@ private:
     template<typename LightType, typename LightViewType>
     auto renderLightSetDepth(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         std::vector<LightType> const & lights,
         std::vector<LightViewType> const & lightViews,
         std::vector<MonoDepthMap> & depthMaps) const
@@ -70,6 +74,7 @@ private:
     template<typename LightViewType>
     auto renderLightDepth(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightViewType const & lightView,
         MonoDepthMap & target) const
         -> void;
@@ -77,18 +82,18 @@ private:
     auto renderBody(
         Body const & body,
         glm::mat4 const & lightTransformation,
-        RadarFrustumCuller const & culler) const
+        Culler const & culler) const
         -> void;
 
     auto renderBodyPart(
         BodyPart const & part,
         glm::mat4 const & lightTransformation,
-        RadarFrustumCuller const & culler) const
+        Culler const & culler) const
         -> void;
 
     auto isVisible(
         BodyPartMesh const & mesh,
-        RadarFrustumCuller const & culler) const
+        Culler const & culler) const
         -> bool;
 
     auto renderMesh(BodyPartMesh const & mesh) const

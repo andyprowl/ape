@@ -319,6 +319,10 @@ GLFWWindow::GLFWWindow(GLFWwindow & handle, bool const isFullScreen)
     , isFullScreenModeOn{isFullScreen}
     , lastGLFWWindowedArea{getPosition(), getSize()}
 {
+    auto const size = getSize();
+
+    glfwSetCursorPos(&handle, size.width / 2, size.height / 2);
+
     windowMap.emplace(&handle, this);
 
     registerEventHandlers();

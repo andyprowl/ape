@@ -13,11 +13,12 @@ DepthBodyRenderer::DepthBodyRenderer(
 
 auto DepthBodyRenderer::render(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
-    monoRenderer.render(bodies, lightSystemView, target);
+    monoRenderer.render(bodies, viewerCamera, lightSystemView, target);
 
     omniRenderer.render(bodies, lightSystemView, target);
 }

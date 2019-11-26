@@ -106,7 +106,7 @@ private:
     auto createRightCamera()
         -> ape::Camera &;
 
-    auto createLighting()
+    auto createLightSystem()
         -> void;
 
     auto createPointLights()
@@ -167,7 +167,7 @@ auto StatefulSceneBuilder::build()
 
     createCameras();
 
-    createLighting();
+    createLightSystem();
 
     createSynchronizers();
 
@@ -599,7 +599,7 @@ auto StatefulSceneBuilder::createRightCamera()
     return scene.addCamera({placement, frustum});
 }
 
-auto StatefulSceneBuilder::createLighting()
+auto StatefulSceneBuilder::createLightSystem()
     -> void
 {
     createPointLights();
