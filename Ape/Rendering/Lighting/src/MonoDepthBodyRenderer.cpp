@@ -153,6 +153,8 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 
     auto const culler = PerspectiveLightCuller{lightView.getCamera(), viewerCamera};
 
+    // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
+    // with a RadarFrustumCuller
     //(void)viewerCamera;
     //auto const culler = RadarFrustumCuller{lightView.getCamera()};
 

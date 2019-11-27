@@ -1,4 +1,4 @@
-#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
 
@@ -8,21 +8,20 @@ namespace ape
 namespace
 {
 
-auto buildOmnidirectionalCubeDepthShader()
+auto buildOmnidirectionalFlatDepthShader()
     -> glow::ShaderProgram
 {
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Depth/Omni.Depth.Cube.Vertex.glsl",
-        "Depth/Omni.Depth.Cube.Geometry.glsl",
-        "Depth/Omni.Depth.Cube.Fragment.glsl");
+        "Depth/Omni.Depth.Flat.Vertex.glsl",
+        "Depth/Omni.Depth.Flat.Fragment.glsl");
 }
 
 } // unnamed namespace
 
-OmniDepthCubeShaderProgram::OmniDepthCubeShaderProgram()
-    : ShaderProgram{buildOmnidirectionalCubeDepthShader()}
+OmniDepthFlatShaderProgram::OmniDepthFlatShaderProgram()
+    : ShaderProgram{buildOmnidirectionalFlatDepthShader()}
     , worldTransformation{*this, "worldTransformation"}
     , lightTransformation{*this, "lightTransformation"}
     , lightPosition{*this, "lightPosition"}
