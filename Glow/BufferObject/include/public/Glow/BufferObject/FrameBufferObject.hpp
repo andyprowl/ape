@@ -6,6 +6,8 @@
 namespace glow
 {
 
+enum class CubeTextureFace;
+
 class CubeTexture;
 class RenderBufferObject;
 class Texture;
@@ -35,6 +37,11 @@ public:
 
     auto attach(CubeTexture const & texture, FrameBufferAttachment attachment)
         -> void;
+
+    auto attach(
+        CubeTexture const & texture,
+        CubeTextureFace face,
+        FrameBufferAttachment attachment);
 
     auto attach(RenderBufferObject const & renderBuffer, FrameBufferAttachment attachment)
         -> void;

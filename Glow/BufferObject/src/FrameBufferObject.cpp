@@ -3,6 +3,7 @@
 #include <Glow/BufferObject/RenderBufferObject.hpp>
 
 #include <Glow/Texture/CubeTexture.hpp>
+#include <Glow/Texture/CubeTextureFace.hpp>
 #include <Glow/Texture/Texture.hpp>
 
 #include <glad/glad.h>
@@ -107,6 +108,18 @@ auto FrameBufferObject::isComplete() const
     return (status == GL_FRAMEBUFFER_COMPLETE);
 }
 
+auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment const attachment)
+    -> void
+{
+    auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const textureId = texture.getId();
+
+    auto const mipmapLevel = 0;
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, GL_TEXTURE_2D, textureId, mipmapLevel);
+}
+
 auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachment const attachment)
     -> void
 {
@@ -119,16 +132,20 @@ auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachmen
     glFramebufferTexture(GL_FRAMEBUFFER, glAttachment, textureId, mipmapLevel);
 }
 
-auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment const attachment)
-    -> void
+auto FrameBufferObject::attach(
+    CubeTexture const & texture,
+    CubeTextureFace const face,
+    FrameBufferAttachment const attachment)
 {
     auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const glFace = convertToOpenGLFace(face);
 
     auto const textureId = texture.getId();
 
     auto const mipmapLevel = 0;
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, GL_TEXTURE_2D, textureId, mipmapLevel);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, glAttachment, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(

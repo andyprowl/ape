@@ -3,6 +3,8 @@
 namespace glow
 {
 
+using GLenum = unsigned int;
+
 enum class CubeTextureFace
 {
     right,
@@ -12,5 +14,8 @@ enum class CubeTextureFace
     back,
     front
 };
+
+auto convertToOpenGLFace(CubeTextureFace face)
+    -> GLenum;
 
 } // namespace glow
