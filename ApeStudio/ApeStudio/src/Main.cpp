@@ -13,7 +13,7 @@
 #include <Ape/Rendering/Effect/EffectCollection.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
@@ -217,7 +217,7 @@ int main(int argc, char *argv[])
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
-    auto omniDepthShader = ape::OmniDepthShaderProgram{};
+    auto omniDepthShader = ape::OmniDepthCubeShaderProgram{};
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 

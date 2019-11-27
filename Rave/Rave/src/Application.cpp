@@ -11,7 +11,7 @@
 #include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
@@ -112,7 +112,7 @@ private:
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
-    ape::OmniDepthShaderProgram omniDepthShader;
+    ape::OmniDepthCubeShaderProgram omniDepthShader;
 
     ape::WireframeShaderProgram wireframeShader;
 

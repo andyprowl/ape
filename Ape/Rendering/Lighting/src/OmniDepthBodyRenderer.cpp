@@ -2,7 +2,7 @@
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -37,7 +37,7 @@ auto asReference(Body * const body)
 } // unnamed namespace
 
 OmniDepthBodyRenderer::OmniDepthBodyRenderer(
-    OmniDepthShaderProgram & shader,
+    OmniDepthCubeShaderProgram & shader,
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}

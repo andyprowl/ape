@@ -1,4 +1,4 @@
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
 
@@ -14,14 +14,14 @@ auto buildOmnidirectionalDepthShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Depth/Omni.Depth.Vertex.glsl",
-        "Depth/Omni.Depth.Geometry.glsl",
-        "Depth/Omni.Depth.Fragment.glsl");
+        "Depth/Omni.Depth.Cube.Vertex.glsl",
+        "Depth/Omni.Depth.Cube.Geometry.glsl",
+        "Depth/Omni.Depth.Cube.Fragment.glsl");
 }
 
 } // unnamed namespace
 
-OmniDepthShaderProgram::OmniDepthShaderProgram()
+OmniDepthCubeShaderProgram::OmniDepthCubeShaderProgram()
     : ShaderProgram{buildOmnidirectionalDepthShader()}
     , worldTransformation{*this, "worldTransformation"}
     , lightTransformation{*this, "lightTransformation"}

@@ -15,7 +15,7 @@ class Camera;
 class DepthMapping;
 class LightSystemView;
 class Mesh;
-class OmniDepthShaderProgram;
+class OmniDepthCubeShaderProgram;
 class PointLight;
 class PointLightView;
 class ShapeDrawer;
@@ -29,7 +29,7 @@ public:
 
 public:
 
-    OmniDepthBodyRenderer(OmniDepthShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    OmniDepthBodyRenderer(OmniDepthCubeShaderProgram & shader, ShapeDrawer const & shapeRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -63,7 +63,7 @@ private:
 
 private:
 
-    OmniDepthShaderProgram * shader;
+    OmniDepthCubeShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
 
