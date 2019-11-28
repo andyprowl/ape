@@ -41,7 +41,8 @@ public:
     auto attach(
         CubeTexture const & texture,
         CubeTextureFace face,
-        FrameBufferAttachment attachment);
+        FrameBufferAttachment attachment)
+        -> void;
 
     auto attach(RenderBufferObject const & renderBuffer, FrameBufferAttachment attachment)
         -> void;

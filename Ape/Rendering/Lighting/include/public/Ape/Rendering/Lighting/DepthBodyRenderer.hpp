@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
 
 namespace ape
 {
@@ -17,7 +17,7 @@ public:
 
 public:
 
-    DepthBodyRenderer(MonoDepthBodyRenderer monoRenderer, OmniDepthBodyRenderer omniRenderer);
+    DepthBodyRenderer(MonoDepthBodyRenderer monoRenderer, OmniDepthCubeBodyRenderer omniRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -36,7 +36,7 @@ private:
 
     MonoDepthBodyRenderer monoRenderer;
     
-    OmniDepthBodyRenderer omniRenderer;
+    OmniDepthCubeBodyRenderer omniRenderer;
 
 };
 

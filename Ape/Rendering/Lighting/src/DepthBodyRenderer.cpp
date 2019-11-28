@@ -5,7 +5,7 @@ namespace ape
 
 DepthBodyRenderer::DepthBodyRenderer(
     MonoDepthBodyRenderer monoRenderer,
-    OmniDepthBodyRenderer omniRenderer)
+    OmniDepthCubeBodyRenderer omniRenderer)
     : monoRenderer{std::move(monoRenderer)}
     , omniRenderer{std::move(omniRenderer)}
 {

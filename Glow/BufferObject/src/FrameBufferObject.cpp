@@ -136,6 +136,7 @@ auto FrameBufferObject::attach(
     CubeTexture const & texture,
     CubeTextureFace const face,
     FrameBufferAttachment const attachment)
+    -> void
 {
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 

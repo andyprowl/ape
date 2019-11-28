@@ -1,4 +1,4 @@
-#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
@@ -36,7 +36,7 @@ auto asReference(Body * const body)
 
 } // unnamed namespace
 
-OmniDepthBodyRenderer::OmniDepthBodyRenderer(
+OmniDepthCubeBodyRenderer::OmniDepthCubeBodyRenderer(
     OmniDepthCubeShaderProgram & shader,
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
@@ -44,7 +44,7 @@ OmniDepthBodyRenderer::OmniDepthBodyRenderer(
 {
 }
 
-auto OmniDepthBodyRenderer::render(
+auto OmniDepthCubeBodyRenderer::render(
     BodySetView const & bodies,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
@@ -59,7 +59,7 @@ auto OmniDepthBodyRenderer::render(
         target.getPointMapping());
 }
 
-auto OmniDepthBodyRenderer::renderLightSetDepth(
+auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     std::vector<PointLight> const & lights,
     std::vector<PointLightView> const & lightViews,
@@ -83,7 +83,7 @@ auto OmniDepthBodyRenderer::renderLightSetDepth(
     }
 }
 
-auto OmniDepthBodyRenderer::renderLightDepth(
+auto OmniDepthCubeBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     PointLightView const & lightView,
     OmniDepthMap & target) const
@@ -103,7 +103,7 @@ auto OmniDepthBodyRenderer::renderLightDepth(
     }
 }
 
-auto OmniDepthBodyRenderer::renderBody(
+auto OmniDepthCubeBodyRenderer::renderBody(
     Body const & body,
     PointLightView const & lightView) const
     -> void
@@ -114,7 +114,7 @@ auto OmniDepthBodyRenderer::renderBody(
     }
 }
 
-auto OmniDepthBodyRenderer::renderBodyPart(
+auto OmniDepthCubeBodyRenderer::renderBodyPart(
     BodyPart const & part,
     PointLightView const & lightView) const
     -> void
@@ -133,7 +133,7 @@ auto OmniDepthBodyRenderer::renderBodyPart(
     }
 }
 
-auto OmniDepthBodyRenderer::renderMesh(Mesh const & mesh) const
+auto OmniDepthCubeBodyRenderer::renderMesh(Mesh const & mesh) const
     -> void
 {
     auto const & shape = mesh.getShape();

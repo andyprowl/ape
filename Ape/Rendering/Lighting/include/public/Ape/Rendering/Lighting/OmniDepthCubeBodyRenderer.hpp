@@ -20,7 +20,7 @@ class PointLight;
 class PointLightView;
 class ShapeDrawer;
 
-class OmniDepthBodyRenderer
+class OmniDepthCubeBodyRenderer
 {
 
 public:
@@ -29,7 +29,9 @@ public:
 
 public:
 
-    OmniDepthBodyRenderer(OmniDepthCubeShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    OmniDepthCubeBodyRenderer(
+        OmniDepthCubeShaderProgram & shader,
+        ShapeDrawer const & shapeRenderer);
 
     auto render(
         BodySetView const & bodies,
