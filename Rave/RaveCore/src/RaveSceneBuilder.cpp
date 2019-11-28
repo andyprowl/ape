@@ -88,6 +88,12 @@ private:
     auto getCastlePositions() const
         -> std::vector<glm::vec3>;
     
+    auto createTaverns()
+        -> void;
+
+    auto getTavernPositions() const
+        -> std::vector<glm::vec3>;
+
     auto createSponzas()
         -> void;
 
@@ -196,6 +202,8 @@ auto StatefulSceneBuilder::createBodies()
     createDynos();
 
     createCastles();
+
+    createTaverns();
 
     createSponzas();
 }
@@ -416,7 +424,7 @@ auto StatefulSceneBuilder::getDragonPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-2.0f, -2.0f, 15.0f},
+        {-2.0f, -2.0f, 8.0f},
         {-8.0f, -2.0f, -7.0f},
         {-2.0f, -2.0f, -15.0f}};
 }
@@ -492,6 +500,40 @@ auto StatefulSceneBuilder::getCastlePositions() const
     return {
         {-20.0f, -2.0f, 10.0f},
         {20.0f, -2.0f, 10.0f}};
+}
+
+auto StatefulSceneBuilder::createTaverns()
+    -> void
+{
+    auto const & model = assets->tavernAssets.models[0];
+
+    auto const positions = getTavernPositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.1f, 0.1f, 0.1f});
+
+    for (auto const & position : positions)
+    {
+        auto const rotationX = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(-90.f),
+            glm::vec3{1.0f, 0.0f, 0.0f});
+
+        auto const rotationY = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(180.f),
+            glm::vec3{0.0f, 1.0f, 0.0f});
+
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling * rotationY * rotationX, model);
+    }
+}
+
+auto StatefulSceneBuilder::getTavernPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {0.0f, 3.9f, 15.0f}};
 }
 
 auto StatefulSceneBuilder::createSponzas()

@@ -1,7 +1,23 @@
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 
+#include <iostream>
+
 namespace ape
 {
+
+namespace
+{
+
+auto printOmnidirectionalFlatMappingStatus(bool const enabled)
+    -> void
+{
+    std::cout
+        << "Omnidirectional shadow flat mapping "
+        << (enabled ? "enabled" : "disabled")
+        << "\n";
+}
+
+} // unnamed namespace
 
 DepthBodyRenderer::DepthBodyRenderer(
     MonoDepthBodyRenderer monoRenderer,
@@ -10,8 +26,9 @@ DepthBodyRenderer::DepthBodyRenderer(
     : monoRenderer{std::move(monoRenderer)}
     , omniCubeRenderer{std::move(omniCubeRenderer)}
     , omniFlatRenderer{std::move(omniFlatRenderer)}
-    , useOmniFlatRenderer{false}
+    , useOmniFlatRenderer{true}
 {
+    printOmnidirectionalFlatMappingStatus(useOmniFlatRenderer);
 }
 
 auto DepthBodyRenderer::render(
@@ -57,6 +74,8 @@ auto DepthBodyRenderer::enableOmniFlatShadowMapping(bool const enable)
     -> void
 {
     useOmniFlatRenderer = enable;
+
+    printOmnidirectionalFlatMappingStatus(useOmniFlatRenderer);
 }
 
 } // namespace ape

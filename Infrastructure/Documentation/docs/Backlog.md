@@ -5,6 +5,7 @@
  - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
    culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
    the sub-objects
+- Use imgui to draw frame duration stats as an overlay
 - Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
