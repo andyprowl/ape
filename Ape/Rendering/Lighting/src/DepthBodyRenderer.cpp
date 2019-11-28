@@ -5,9 +5,12 @@ namespace ape
 
 DepthBodyRenderer::DepthBodyRenderer(
     MonoDepthBodyRenderer monoRenderer,
-    OmniDepthCubeBodyRenderer omniRenderer)
+    OmniDepthCubeBodyRenderer omniCubeRenderer,
+    OmniDepthFlatBodyRenderer omniFlatRenderer)
     : monoRenderer{std::move(monoRenderer)}
-    , omniRenderer{std::move(omniRenderer)}
+    , omniCubeRenderer{std::move(omniCubeRenderer)}
+    , omniFlatRenderer{std::move(omniFlatRenderer)}
+    , useOmniFlatRenderer{false}
 {
 }
 
@@ -20,7 +23,14 @@ auto DepthBodyRenderer::render(
 {
     monoRenderer.render(bodies, viewerCamera, lightSystemView, target);
 
-    omniRenderer.render(bodies, lightSystemView, target);
+    if (useOmniFlatRenderer)
+    {
+        omniFlatRenderer.render(bodies, viewerCamera, lightSystemView, target);
+    }
+    else
+    {
+        omniCubeRenderer.render(bodies, lightSystemView, target);
+    }
 }
 
 auto DepthBodyRenderer::isFrustumCullingEnabled() const
@@ -32,7 +42,21 @@ auto DepthBodyRenderer::isFrustumCullingEnabled() const
 auto DepthBodyRenderer::enableFrustumCulling(bool const enable)
     -> void
 {
-    return monoRenderer.enableFrustumCulling(enable);
+    monoRenderer.enableFrustumCulling(enable);
+
+    omniFlatRenderer.enableFrustumCulling(enable);
+}
+
+auto DepthBodyRenderer::isOmniFlatShadowMappingEnabled() const
+    -> bool
+{
+    return useOmniFlatRenderer;
+}
+
+auto DepthBodyRenderer::enableOmniFlatShadowMapping(bool const enable)
+    -> void
+{
+    useOmniFlatRenderer = enable;
 }
 
 } // namespace ape

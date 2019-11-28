@@ -146,7 +146,7 @@ auto FrameBufferObject::attach(
 
     auto const mipmapLevel = 0;
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, glAttachment, textureId, mipmapLevel);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, glFace, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(

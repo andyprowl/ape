@@ -2,6 +2,7 @@
 
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthFlatBodyRenderer.hpp>
 
 namespace ape
 {
@@ -17,7 +18,10 @@ public:
 
 public:
 
-    DepthBodyRenderer(MonoDepthBodyRenderer monoRenderer, OmniDepthCubeBodyRenderer omniRenderer);
+    DepthBodyRenderer(
+        MonoDepthBodyRenderer monoRenderer,
+        OmniDepthCubeBodyRenderer omniCubeRenderer,
+        OmniDepthFlatBodyRenderer omniFlatRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -32,11 +36,21 @@ public:
     auto enableFrustumCulling(bool enable)
         -> void;
 
+    auto isOmniFlatShadowMappingEnabled() const
+        -> bool;
+
+    auto enableOmniFlatShadowMapping(bool enable)
+        -> void;
+
 private:
 
     MonoDepthBodyRenderer monoRenderer;
     
-    OmniDepthCubeBodyRenderer omniRenderer;
+    OmniDepthCubeBodyRenderer omniCubeRenderer;
+
+    OmniDepthFlatBodyRenderer omniFlatRenderer;
+
+    bool useOmniFlatRenderer;
 
 };
 

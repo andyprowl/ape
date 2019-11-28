@@ -89,7 +89,13 @@ auto OmniDepthCubeBodyRenderer::renderLightDepth(
     OmniDepthMap & target) const
     -> void
 {
-    auto const binder = bind(target.getFrameBuffer());
+    auto & frameBuffer = target.getFrameBuffer();
+
+    auto & depthTexture = target.getTexture();
+
+    auto const binder = bind(frameBuffer);
+
+    frameBuffer.attach(depthTexture, glow::FrameBufferAttachment::depth);
 
     auto const mapSize = target.getSize();
 

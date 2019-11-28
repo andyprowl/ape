@@ -20,6 +20,8 @@
 
 #include <glad/glad.h>
 
+#include <array>
+
 namespace ape
 {
 
@@ -38,6 +40,26 @@ auto asReference(Body * const body)
     return *body;
 }
 
+auto getFaceCamera(
+    PointLightView::FaceCameraSet const & faceCameras,
+    glow::CubeTextureFace const face)
+    -> Camera const &
+{
+    using CameraMemberPtr = Camera PointLightView::FaceCameraSet:: *;
+
+    static auto constexpr const cameras = std::array<CameraMemberPtr, 6u>{{
+        &PointLightView::FaceCameraSet::right,
+        &PointLightView::FaceCameraSet::left,
+        &PointLightView::FaceCameraSet::top,
+        &PointLightView::FaceCameraSet::bottom,
+        &PointLightView::FaceCameraSet::front,
+        &PointLightView::FaceCameraSet::back}};
+
+    auto const cameraMemberPtr = cameras[static_cast<std::size_t>(face)];
+
+    return faceCameras.*cameraMemberPtr;
+}
+
 } // unnamed namespace
 
 OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
@@ -45,7 +67,7 @@ OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
-    , performFrustumCulling{true}
+    , performFrustumCulling{false}
 {
 }
 
@@ -114,13 +136,17 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
 
     auto & depthTexture = target.getTexture();
 
+    auto const & lightCameras = lightView.getFaceCameras();
+
     auto const binder = bind(frameBuffer);
 
     for (auto const face : glow::getCubeTextureFaces())
     {
         frameBuffer.attach(depthTexture, face, glow::FrameBufferAttachment::depth);
 
-        renderLightDepth(bodies, viewerCamera, lightView.getFaceCameras().right, target);
+        auto const & faceCamera = getFaceCamera(lightCameras, face);
+
+        renderLightDepth(bodies, viewerCamera, faceCamera, target);
     }
 }
 
