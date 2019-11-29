@@ -10,12 +10,12 @@ namespace
 auto calculatePlaneIntersection(Plane const & p1, Plane const & p2, Plane const & p3)
     -> glm::vec3
 {
-    const auto num = 
+    auto const num = 
         -p1.offset * glm::cross(p2.normal, p3.normal) +
         -p2.offset * glm::cross(p3.normal, p1.normal) +
         -p3.offset * glm::cross(p1.normal, p2.normal);
 
-    const auto denom = glm::dot(p1.normal, glm::cross(p2.normal, p3.normal));
+    auto const denom = glm::dot(p1.normal, glm::cross(p2.normal, p3.normal));
 
     return num / denom;
 }

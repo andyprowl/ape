@@ -21,7 +21,7 @@ SkyboxRenderer::SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & se
 auto SkyboxRenderer::render(Camera const & camera) const
     -> void
 {
-    const auto skybox = selector->getActiveSkybox();
+    auto const skybox = selector->getActiveSkybox();
 
     if (skybox == nullptr)
     {

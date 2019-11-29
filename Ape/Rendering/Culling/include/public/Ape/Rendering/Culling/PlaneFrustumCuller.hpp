@@ -13,7 +13,12 @@ class PlaneFrustumCuller : public Culler
 
 public:
 
+    explicit PlaneFrustumCuller(Frustum const & frustum);
+
     explicit PlaneFrustumCuller(Camera const & camera);
+
+    auto isFrustumFullyOutside(Frustum const & f) const
+        -> bool;
 
     // virtual (from Culler)
     auto isSphereContained(Sphere const & sphere) const
@@ -24,8 +29,6 @@ public:
         -> bool override;
 
 private:
-
-    Camera const * camera;
 
     Frustum frustum;
 

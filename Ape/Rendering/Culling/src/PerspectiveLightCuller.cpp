@@ -3,6 +3,7 @@
 #include "CameraFrustum.hpp"
 
 #include <Ape/Rendering/Culling/Frustum.hpp>
+#include <Ape/Rendering/Culling/PlaneFrustumCuller.hpp>
 
 #include <Ape/World/Scene/Camera.hpp>
 #include <Ape/World/Shape/Sphere.hpp>
@@ -20,9 +21,9 @@ namespace
 auto makeFrustumPlane(glm::vec3 const & p1, glm::vec3 const & p2, glm::vec3 const & p3)
     -> Plane
 {
-    const auto normal = glm::normalize(glm::cross((p2 - p1), (p3 - p1)));
+    auto const normal = glm::normalize(glm::cross((p2 - p1), (p3 - p1)));
     
-    const auto offset = glm::dot(-p1, normal);
+    auto const offset = glm::dot(-p1, normal);
 
     return {normal, offset};
 }
@@ -36,12 +37,35 @@ public:
         Camera const & lightPerspective,
         Camera const & viewerPerspective)
         : lightPosition{lightPerspective.getView().getPosition()}
+        , lightDirection{lightPerspective.getView().getDirection()}
         , lightFrustum{extractCameraFrustum(lightPerspective)}
         , viewerFrustum{extractCameraFrustum(viewerPerspective)}
     {
     }
 
     auto calculate() const
+        -> ConvexVolume
+    {
+        if (areFrustaSeparated())
+        {
+            return {};
+        }
+
+        return calculateTightCullingVolume();
+    }
+
+private:
+
+    auto areFrustaSeparated() const
+        -> bool
+    {
+        auto const frustumCuller = PlaneFrustumCuller{lightFrustum};
+
+        return frustumCuller.isFrustumFullyOutside(viewerFrustum);
+    }
+
+    auto calculateTightCullingVolume() const
+        -> ConvexVolume
     {
         auto volume = ConvexVolume{};
 
@@ -52,21 +76,18 @@ public:
         return volume;
     }
 
-private:
-
     auto addViewerPerspectiveBounds(ConvexVolume & volume) const
         -> void
     {
+        auto numOfBoundaryPlanesAdded = 0;
+
         for (auto const face : getAllFaces())
         {
-            for (auto const neighborFace : getNeighborFaces(face))
-            {
-                addIfDelimiterEdge(face, neighborFace, volume);
+            addFacePlaneIfOpposingLight(face, volume);
 
-                if (volume.getPlanes().size() == 6u)
-                {
-                    return;
-                }
+            if (numOfBoundaryPlanesAdded < 6u)
+            {
+                numOfBoundaryPlanesAdded += addFittingPlanesInvolvingFace(face, volume);
             }
         }
     }
@@ -80,26 +101,55 @@ private:
         }
     }
 
-    auto addIfDelimiterEdge(
-        Frustum::Face const f1,
-        Frustum::Face const f2,
-        ConvexVolume & volume) const
+    auto addFacePlaneIfOpposingLight(Frustum::Face const f, ConvexVolume & volume) const
         -> void
     {
-        const auto edge = viewerFrustum.getEdge(f1, f2);
+        auto const & plane = viewerFrustum.getPlane(f);
 
-        const auto lightToEdge = edge.first - lightPosition;
+        auto const isOpposing = (glm::dot(plane.normal, lightDirection) < 0.0f);
 
-        const auto isDelimiterEdge = 
-            isPlaneFacingAwayFromLight(f1, lightToEdge) &&
-            !isPlaneFacingAwayFromLight(f2, lightToEdge);
-
-        if (isDelimiterEdge)
+        if (isOpposing)
         {
-            auto const plane = makeFrustumPlane(lightPosition, edge.first, edge.second);
-
             volume.addPlane(plane);
         }
+    }
+
+    auto addFittingPlanesInvolvingFace(Frustum::Face const face, ConvexVolume & volume) const
+        -> int
+    {
+        auto numOfBoundaryPlanesAdded = 0;
+
+        for (auto const neighborFace : getNeighborFaces(face))
+        {
+            auto const edge = viewerFrustum.getEdge(face, neighborFace);
+
+            if (isBoundaryEdge(face, neighborFace, edge))
+            {
+                auto const plane = makeFrustumPlane(lightPosition, edge.first, edge.second);
+
+                volume.addPlane(plane);
+                
+                ++numOfBoundaryPlanesAdded;
+            }
+        }
+
+        return numOfBoundaryPlanesAdded;
+    }
+
+    auto isBoundaryEdge(
+        Frustum::Face const f1,
+        Frustum::Face const f2,
+        std::pair<glm::vec3, glm::vec3> const & edge) const
+        -> bool
+    {
+        auto const lightToEdge = edge.first - lightPosition;
+
+        if (!isPlaneFacingAwayFromLight(f1, lightToEdge))
+        {
+            return false;
+        }
+
+        return !isPlaneFacingAwayFromLight(f2, lightToEdge);
     }
 
     auto isPlaneFacingAwayFromLight(Frustum::Face const f, glm::vec3 const & lightToEdge) const
@@ -113,6 +163,8 @@ private:
 private:
 
     glm::vec3 lightPosition;
+
+    glm::vec3 lightDirection;
 
     Frustum lightFrustum;
 
@@ -129,6 +181,12 @@ PerspectiveLightCuller::PerspectiveLightCuller(
     , viewerPerspective{&viewerPerspective}
     , cullingVolume{makeCullingVolume()}
 {
+}
+
+auto PerspectiveLightCuller::isCullingVolumeEmpty() const
+    -> bool
+{
+    return cullingVolume.getPlanes().empty();
 }
 
 auto PerspectiveLightCuller::isSphereContained(Sphere const & sphere) const

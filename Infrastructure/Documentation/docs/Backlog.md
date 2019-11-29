@@ -1,10 +1,19 @@
-- Implement frustum culling
- - Use frustum culling with for shadow map generation (light view frustum)
+- Implement view frustum culling for regular rendering
  - Write tutorial on radar approach to frustum culling for spheres
  - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
  - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
    culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
    the sub-objects
+- Implement tight culling for shadow mapping
+ - Have a culling manager listening to camera changes that recomputes frusta and use the same one
+   culling manager everywhere, so we don't have to recompute the camera's frustum for every light
+   (or light face)
+    - Use that in the perspective culler too for detecting if the camera's frustum and the light
+      frustum intersect (light frustum also needs to be recomputed only when the light changes)
+ - Do not regenerate shadow maps when light or camera do not move
+    - Actually, try rendering all the objects without culling them and regenerate the shadow maps
+      only when the lights (not camera) move
+        - This won't actually work because we need different resolutions based on camera position
 - Use imgui to draw frame duration stats as an overlay
 - Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Implement occlusion culling

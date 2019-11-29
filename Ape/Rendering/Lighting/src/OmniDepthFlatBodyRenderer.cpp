@@ -157,13 +157,18 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
     OmniDepthMap & target) const
     -> void
 {
-    auto const culler = PerspectiveLightCuller{lightView, viewerCamera};
-
     // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
     // with a RadarFrustumCuller
     //(void)viewerCamera;
     //auto const culler = RadarFrustumCuller{lightView.getCamera()};
-        
+
+    auto const culler = PerspectiveLightCuller{lightView, viewerCamera};
+
+    if (culler.isCullingVolumeEmpty())
+    {
+        return;
+    }
+
     auto const mapSize = target.getSize();
 
     glViewport(0, 0, mapSize.width, mapSize.height);

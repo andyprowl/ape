@@ -40,7 +40,7 @@ public:
         : currentSize{0}
         , storage{}
     {
-        for (const auto & value : values)
+        for (auto const & value : values)
         {
             push_back(value);
         }

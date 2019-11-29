@@ -12,7 +12,7 @@ class ConvexVolume
 
 public:
 
-    static constexpr auto maxNumOfPlanes = 12;
+    static constexpr auto maxNumOfPlanes = 18;
 
     using PlaneSet = basix::StaticVector<Plane, maxNumOfPlanes>;
 

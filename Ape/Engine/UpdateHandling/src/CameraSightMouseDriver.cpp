@@ -40,11 +40,11 @@ auto getInitialAngles(CameraSelector const & selector)
 
     auto const direction = activeCamera->getView().getDirection();
 
-    const auto pitch = asin(direction.y);
+    auto const pitch = asin(direction.y);
 
     auto const yaw = acos(direction.x / cos(pitch)) * ((direction.z < 0) ? -1.0f : 1.0f);
 
-    const auto roll = 0.0f;
+    auto const roll = 0.0f;
 
     return {glm::degrees(yaw), glm::degrees(pitch), glm::degrees(roll)};
 }

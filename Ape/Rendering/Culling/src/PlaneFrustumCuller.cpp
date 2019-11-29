@@ -10,10 +10,49 @@
 namespace ape
 {
 
-PlaneFrustumCuller::PlaneFrustumCuller(Camera const & camera)
-    : camera{&camera}
-    , frustum{extractCameraFrustum(camera)}
+namespace
 {
+
+auto isFrustumBehindPlane(Frustum const & f, Plane const & p)
+    -> bool
+{
+    auto const isVertexInFrontOfPlane = [&p] (glm::vec3 const & v)
+    {
+        return (computeSignedDistance(v, p) >= 0.0f);
+    };
+
+    return basix::noneOf(f.getVertices(), isVertexInFrontOfPlane);
+}
+
+template<typename PlaneContainer>
+auto isFrustumBeyondAtLeastOnePlane(Frustum const & subject, PlaneContainer const & planes)
+    -> bool
+{
+    auto const isSeparatingPlane = [&subject] (Plane const & plane)
+    {
+        return isFrustumBehindPlane(subject, plane);
+    };
+
+    return basix::containsIf(planes, isSeparatingPlane);
+}
+
+} // unnamed namespace
+
+PlaneFrustumCuller::PlaneFrustumCuller(Frustum const & frustum)
+    : frustum{frustum}
+{
+}
+
+PlaneFrustumCuller::PlaneFrustumCuller(Camera const & camera)
+    : frustum{extractCameraFrustum(camera)}
+{
+}
+
+auto PlaneFrustumCuller::isFrustumFullyOutside(Frustum const & f) const
+    -> bool
+{
+    return isFrustumBeyondAtLeastOnePlane(f, frustum.getPlanes())
+        || isFrustumBeyondAtLeastOnePlane(frustum, f.getPlanes());
 }
 
 auto PlaneFrustumCuller::isSphereContained(Sphere const & sphere) const

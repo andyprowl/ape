@@ -1,5 +1,7 @@
 #include <Basix/Signal/ScopedSignalConnection.hpp>
 
+#include <utility>
+
 namespace basix
 {
 
@@ -9,9 +11,8 @@ ScopedSignalConnection::ScopedSignalConnection(std::function<void()> disconnecto
 }
 
 ScopedSignalConnection::ScopedSignalConnection(ScopedSignalConnection && rhs) noexcept
-    : disconnector{std::move(disconnector)}
+    : disconnector{std::exchange(rhs.disconnector, nullptr)}
 {
-    rhs.detach();
 }
 
 auto ScopedSignalConnection::operator = (ScopedSignalConnection && rhs) noexcept
@@ -19,9 +20,7 @@ auto ScopedSignalConnection::operator = (ScopedSignalConnection && rhs) noexcept
 {
     disconnect();
 
-    disconnector = std::move(disconnector);
-
-    rhs.detach();
+    disconnector = std::exchange(rhs.disconnector, nullptr);
 
     return *this;
 }
@@ -29,7 +28,7 @@ auto ScopedSignalConnection::operator = (ScopedSignalConnection && rhs) noexcept
 auto ScopedSignalConnection::detach()
     -> void
 {
-    disconnector = std::function<void()>{};
+    disconnector = nullptr;
 }
 
 ScopedSignalConnection::~ScopedSignalConnection()
@@ -43,6 +42,8 @@ auto ScopedSignalConnection::disconnect()
     if (disconnector)
     {
         disconnector();
+
+        detach();
     }
 }
 

@@ -143,6 +143,18 @@ auto MonoDepthBodyRenderer::renderLightDepth(
     MonoDepthMap & target) const
     -> void
 {
+    // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
+    // with a RadarFrustumCuller
+    //(void)viewerCamera;
+    //auto const culler = RadarFrustumCuller{lightView.getCamera()};
+
+    auto const culler = PerspectiveLightCuller{lightView.getCamera(), viewerCamera};
+
+    if (culler.isCullingVolumeEmpty())
+    {
+        return;
+    }
+
     auto const binder = bind(target.getFrameBuffer());
 
     auto const mapSize = target.getSize();
@@ -150,13 +162,6 @@ auto MonoDepthBodyRenderer::renderLightDepth(
     glViewport(0, 0, mapSize.width, mapSize.height);
 
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    auto const culler = PerspectiveLightCuller{lightView.getCamera(), viewerCamera};
-
-    // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
-    // with a RadarFrustumCuller
-    //(void)viewerCamera;
-    //auto const culler = RadarFrustumCuller{lightView.getCamera()};
 
     for (auto const & body : bodies)
     {

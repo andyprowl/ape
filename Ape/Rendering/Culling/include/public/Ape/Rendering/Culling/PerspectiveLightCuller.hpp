@@ -16,6 +16,9 @@ public:
 
     PerspectiveLightCuller(Camera const & lightPerspective, Camera const & viewerPerspective);
 
+    auto isCullingVolumeEmpty() const
+        -> bool;
+
     // virtual (from Culler)
     auto isSphereContained(Sphere const & sphere) const
         -> ContainmentRelation override;
