@@ -1,6 +1,10 @@
-- Implement view frustum culling for regular rendering
- - Write tutorial on radar approach to frustum culling for spheres
- - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
+- Use imgui to draw frame duration stats as an overlay
+- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
+- Write tutorial on radar approach to frustum culling for spheres
+- Write tutorial/documentation on gamma correction
+- Write tutorial/documentation on skyboxes
+- Write tutorial about view matrix
+- Implement view frustum culling for regular rendering - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
  - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
    culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
    the sub-objects
@@ -14,8 +18,6 @@
     - Actually, try rendering all the objects without culling them and regenerate the shadow maps
       only when the lights (not camera) move
         - This won't actually work because we need different resolutions based on camera position
-- Use imgui to draw frame duration stats as an overlay
-- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
@@ -23,9 +25,6 @@
     - Not sure it is correct that the renderer does the binding and setting of viewport though
     - Maybe it is a naming issue? It simply shouldn't be called "renderer"?
     - Try to think how the generic pipeline would like if composed declaratively by the user
-- Write tutorial/documentation on gamma correction
-- Write tutorial/documentation on skyboxes
-- Write tutorial about view matrix
 - Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
 - Try FBX format for 3D models
     - Use FBX SDK for importing the models
