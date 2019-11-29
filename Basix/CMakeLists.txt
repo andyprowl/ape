@@ -2,6 +2,8 @@ CreatePackage(Basix)
 
 add_subdirectory(CompilerSupport)
 
+add_subdirectory(Container)
+
 add_subdirectory(FileSystem)
 
 add_subdirectory(Mathematics)

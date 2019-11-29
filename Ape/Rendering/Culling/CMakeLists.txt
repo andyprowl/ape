@@ -5,7 +5,8 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
-    Ape::World::Scene)
+    Ape::World::Scene
+    Basix::Container)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}

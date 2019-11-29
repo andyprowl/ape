@@ -134,31 +134,31 @@ public:
     }
 
     auto front()
-        -> T &
+        -> value_type &
     {
         return (*this)[0];
     }
 
     auto front() const
-        -> T const &
+        -> value_type const &
     {
         return (*this)[0];
     }
 
     auto back()
-        -> T &
+        -> value_type &
     {
         return (*this)[currentSize - 1];
     }
 
     auto back() const
-        -> T const &
+        -> value_type const &
     {
         return (*this)[currentSize - 1];
     }
 
     auto at(int const i)
-        -> T &
+        -> value_type &
     {
         throwIfOutOfRange(i);
 
@@ -166,7 +166,7 @@ public:
     }
 
     auto at(int const i) const
-        -> T const &
+        -> value_type const &
     {
         throwIfOutOfRange(i);
 
@@ -174,17 +174,17 @@ public:
     }
 
     auto operator [] (int const i)
-        -> T &
+        -> value_type &
     {
-        auto const p = reinterpret_cast<T *>(&storage[i]);
+        auto const p = reinterpret_cast<iterator>(&storage[i]);
 
         return *(std::launder(p));
     }
 
     auto operator [] (int const i) const
-        -> T const &
+        -> value_type const &
     {
-        auto const p = reinterpret_cast<T const *>(&storage[i]);
+        auto const p = reinterpret_cast<const_iterator>(&storage[i]);
 
         return *(std::launder(p));
     }
@@ -192,25 +192,25 @@ public:
     auto begin()
         -> iterator
     {
-        return reinterpret_cast<T *>(storage.data());
+        return reinterpret_cast<iterator>(storage.data());
     }
 
     auto begin() const
         -> const_iterator
     {
-        return reinterpret_cast<T const *>(storage.data());
+        return reinterpret_cast<const_iterator>(storage.data());
     }
 
     auto end()
         -> iterator
     {
-        return reinterpret_cast<T *>(storage.data() + currentSize);
+        return reinterpret_cast<iterator>(storage.data() + currentSize);
     }
 
     auto end() const
         -> const_iterator
     {
-        return reinterpret_cast<T const *>(storage.data() + currentSize);
+        return reinterpret_cast<const_iterator>(storage.data() + currentSize);
     }
 
 private:
