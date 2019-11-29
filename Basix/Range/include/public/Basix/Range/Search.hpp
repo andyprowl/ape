@@ -36,4 +36,18 @@ auto containsIf(Container const & container, Pred pred)
     return (it != std::cend(container));
 }
 
+template<typename Container, typename Pred>
+auto noneOf(Container const & container, Pred pred)
+    -> bool
+{
+    return !containsIf(container, pred);
+}
+
+template<typename Container, typename Pred>
+auto allOf(Container const & container, Pred pred)
+    -> bool
+{
+    return noneOf(container, std::negate{pred});
+}
+
 } // namespace basix

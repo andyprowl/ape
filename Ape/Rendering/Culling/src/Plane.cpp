@@ -11,7 +11,7 @@ namespace
 auto isNormalized(Plane const & p)
     -> bool
 {
-    return (std::fabs(glm::length(p.normal)) <= 1.0e-6);
+    return (std::fabs(glm::length(p.normal) - 1.0f) <= 1.0e-6);
 }
 
 } // unnamed namespace
@@ -21,7 +21,7 @@ auto computeSignedDistance(glm::vec3 const & point, Plane const & plane)
 {
     assert(isNormalized(plane));
 
-    return (glm::dot(plane.normal, point) - plane.offset);
+    return (glm::dot(plane.normal, point) + plane.offset);
 }
 
 } // namespace ape

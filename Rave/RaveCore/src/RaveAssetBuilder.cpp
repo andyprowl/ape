@@ -369,6 +369,8 @@ auto RaveAssetBuilder::build() const
 
     loadAssets("Castle/Castle.obj", "Castle", collection.castleAssets, collection);
 
+    loadAssets("Tavern/Tavern.obj", "Tavern", collection.tavernAssets, collection);
+
     if (!doNotIncludeSponza)
     {
         loadAssets("Sponza/sponza.obj", "Sponza", collection.sponzaAssets, collection);

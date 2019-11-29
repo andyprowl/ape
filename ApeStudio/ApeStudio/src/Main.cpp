@@ -13,7 +13,8 @@
 #include <Ape/Rendering/Effect/EffectCollection.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
@@ -217,7 +218,9 @@ int main(int argc, char *argv[])
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
-    auto omniDepthShader = ape::OmniDepthShaderProgram{};
+    auto omniDepthCubeShader = ape::OmniDepthCubeShaderProgram{};
+
+    auto omniDepthFlatShader = ape::OmniDepthFlatShaderProgram{};
 
     auto wireframeShader = ape::WireframeShaderProgram{};
 
@@ -249,7 +252,8 @@ int main(int argc, char *argv[])
 
     auto depthBodyRenderer1 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer1},
-        {omniDepthShader, *shapeRenderer1}};
+        {omniDepthCubeShader, *shapeRenderer1},
+        {omniDepthFlatShader, *shapeRenderer1}};
 
     auto standardBodyRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
 
@@ -316,7 +320,8 @@ int main(int argc, char *argv[])
 
     auto depthBodyRenderer2 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer2},
-        {omniDepthShader, *shapeRenderer2}};
+        {omniDepthCubeShader, *shapeRenderer2},
+        {omniDepthFlatShader, *shapeRenderer2}};
 
     auto standardBodyRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
 
@@ -387,7 +392,8 @@ int main(int argc, char *argv[])
 
     auto depthBodyRenderer3 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer3},
-        {omniDepthShader, *shapeRenderer3}};
+        {omniDepthCubeShader, *shapeRenderer3},
+        {omniDepthFlatShader, *shapeRenderer3}};
 
     auto standardBodyRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
 

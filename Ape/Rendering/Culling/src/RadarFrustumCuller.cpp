@@ -15,13 +15,13 @@ RadarFrustumCuller::RadarFrustumCuller(Camera const & camera)
 {
 }
 
-auto RadarFrustumCuller::computeFrustumRelation(Sphere const & sphere) const
+auto RadarFrustumCuller::isSphereContained(Sphere const & sphere) const
     -> ContainmentRelation
 {
     return SphereCuller{*camera, sphere, precalculatedValues}.computeRelation();
 }
 
-auto RadarFrustumCuller::isPointInFrustum(glm::vec3 const & point) const
+auto RadarFrustumCuller::isPointContained(glm::vec3 const & point) const
     -> bool
 {
     return PointCuller{*camera, point, precalculatedValues}.computeContainment();

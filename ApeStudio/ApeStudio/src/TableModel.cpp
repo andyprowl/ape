@@ -106,9 +106,9 @@ auto TableModel::clear()
 {
     setupContents();
 
-    const auto topLeftIndex = createIndex(0, 0);
+    auto const topLeftIndex = createIndex(0, 0);
     
-    const auto bottomRightIndex = createIndex(rowCount() - 1, columnCount() - 1);
+    auto const bottomRightIndex = createIndex(rowCount() - 1, columnCount() - 1);
 
     emit dataChanged(topLeftIndex, bottomRightIndex, {Qt::DisplayRole});
 }
@@ -138,7 +138,7 @@ auto TableModel::setupTimer()
 auto TableModel::onTimeout()
     -> void
 {
-    const auto topLeftIndex = createIndex(0, 0);
+    auto const topLeftIndex = createIndex(0, 0);
 
     emit dataChanged(topLeftIndex, topLeftIndex, {Qt::DisplayRole});
 }

@@ -4,6 +4,7 @@
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 
+#include <Ape/Rendering/Culling/PerspectiveLightCuller.hpp>
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
@@ -49,15 +50,16 @@ MonoDepthBodyRenderer::MonoDepthBodyRenderer(
 
 auto MonoDepthBodyRenderer::render(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
 {
     auto const shaderBinder = bind(*shader);
 
-    renderSpotLightSetDepth(bodies, lightSystemView, target);
+    renderSpotLightSetDepth(bodies, viewerCamera, lightSystemView, target);
 
-    renderDirectionalLightSetDepth(bodies, lightSystemView, target);
+    renderDirectionalLightSetDepth(bodies, viewerCamera, lightSystemView, target);
 }
 
 auto MonoDepthBodyRenderer::isFrustumCullingEnabled() const
@@ -74,6 +76,7 @@ auto MonoDepthBodyRenderer::enableFrustumCulling(bool const enable)
 
 auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
@@ -84,11 +87,12 @@ auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
 
     auto & spotMapping = target.getSpotMapping();
 
-    renderLightSetDepth(bodies, lightSystem.spot, spotView, spotMapping);
+    renderLightSetDepth(bodies, viewerCamera, lightSystem.spot, spotView, spotMapping);
 }
 
 auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
     -> void
@@ -99,12 +103,18 @@ auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
 
     auto & directionalMapping = target.getDirectionalMapping();
 
-    renderLightSetDepth(bodies, lightSystem.directional, directionalView, directionalMapping);
+    renderLightSetDepth(
+        bodies,
+        viewerCamera,
+        lightSystem.directional,
+        directionalView,
+        directionalMapping);
 }
 
 template<typename LightType, typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     std::vector<LightType> const & lights,
     std::vector<LightViewType> const & lightViews,
     std::vector<MonoDepthMap> & depthMaps) const
@@ -121,17 +131,30 @@ auto MonoDepthBodyRenderer::renderLightSetDepth(
 
         auto & depthMap = depthMaps[i];
 
-        renderLightDepth(bodies, lightView, depthMap);
+        renderLightDepth(bodies, viewerCamera, lightView, depthMap);
     }
 }
 
 template<typename LightViewType>
 auto MonoDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
+    Camera const & viewerCamera,
     LightViewType const & lightView,
     MonoDepthMap & target) const
     -> void
 {
+    // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
+    // with a RadarFrustumCuller
+    //(void)viewerCamera;
+    //auto const culler = RadarFrustumCuller{lightView.getCamera()};
+
+    auto const culler = PerspectiveLightCuller{lightView.getCamera(), viewerCamera};
+
+    if (culler.isCullingVolumeEmpty())
+    {
+        return;
+    }
+
     auto const binder = bind(target.getFrameBuffer());
 
     auto const mapSize = target.getSize();
@@ -139,8 +162,6 @@ auto MonoDepthBodyRenderer::renderLightDepth(
     glViewport(0, 0, mapSize.width, mapSize.height);
 
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    auto const culler = RadarFrustumCuller{lightView.getCamera()};
 
     for (auto const & body : bodies)
     {
@@ -153,7 +174,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 auto MonoDepthBodyRenderer::renderBody(
     Body const & body,
     glm::mat4 const & lightTransformation,
-    RadarFrustumCuller const & culler) const
+    Culler const & culler) const
     -> void
 {
     for (auto const & part : body.getParts())
@@ -165,7 +186,7 @@ auto MonoDepthBodyRenderer::renderBody(
 auto MonoDepthBodyRenderer::renderBodyPart(
     BodyPart const & part,
     glm::mat4 const & lightTransformation,
-    RadarFrustumCuller const & culler) const
+    Culler const & culler) const
     -> void
 {
     auto const & worldTransformation = part.getWorldTransformation();
@@ -185,7 +206,7 @@ auto MonoDepthBodyRenderer::renderBodyPart(
 
 auto MonoDepthBodyRenderer::isVisible(
     BodyPartMesh const & mesh,
-    RadarFrustumCuller const & culler) const
+    Culler const & culler) const
     -> bool
 {
     if (!isFrustumCullingEnabled())
@@ -195,7 +216,7 @@ auto MonoDepthBodyRenderer::isVisible(
 
     auto const & boundingSphere = mesh.getBoundingVolumes().getSphere();
 
-    auto const relation = culler.computeFrustumRelation(boundingSphere);
+    auto const relation = culler.isSphereContained(boundingSphere);
 
     return (relation != ContainmentRelation::fullyOutside);
 }

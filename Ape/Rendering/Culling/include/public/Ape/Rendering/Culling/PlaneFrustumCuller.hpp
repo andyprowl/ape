@@ -1,40 +1,34 @@
 #pragma once
 
-#include <Ape/Rendering/Culling/ContainmentRelation.hpp>
-
+#include <Ape/Rendering/Culling/Culler.hpp>
 #include <Ape/Rendering/Culling/Frustum.hpp>
 
 namespace ape
 {
 
 class Camera;
-class Frustum;
-class Sphere;
 
-class PlaneFrustumCuller
+class PlaneFrustumCuller : public Culler
 {
 
 public:
 
+    explicit PlaneFrustumCuller(Frustum const & frustum);
+
     explicit PlaneFrustumCuller(Camera const & camera);
 
-    auto computeFrustumRelation(Sphere const & sphere) const
-        -> ContainmentRelation;
-
-    auto computeFrustumRelation(Frustum const & f) const
-        -> ContainmentRelation;
-        
-    auto isPointInFrustum(glm::vec3 const & point) const
+    auto isFrustumFullyOutside(Frustum const & f) const
         -> bool;
 
+    // virtual (from Culler)
+    auto isSphereContained(Sphere const & sphere) const
+        -> ContainmentRelation override;
+        
+    // virtual (from Culler)
+    auto isPointContained(glm::vec3 const & point) const
+        -> bool override;
+
 private:
-
-    auto extractCameraFrustum() const
-        -> Frustum;
-
-private:
-
-    Camera const * camera;
 
     Frustum frustum;
 

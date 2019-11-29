@@ -10,7 +10,7 @@ namespace ape
 namespace
 {
 
-const auto effectShaderSuffix = ".Fragment.glsl";
+auto const effectShaderSuffix = ".Fragment.glsl";
 
 auto isEffectShaderFile(std::filesystem::directory_entry const & entry)
     -> bool

@@ -70,10 +70,22 @@ OmniDepthMap::OmniDepthMap(basix::Size<int> const & size)
 {
 }
 
+auto OmniDepthMap::getTexture()
+    -> glow::CubeTexture &
+{
+    return texture;
+}
+
 auto OmniDepthMap::getTexture() const
     -> glow::CubeTexture const &
 {
     return texture;
+}
+
+auto OmniDepthMap::getFrameBuffer()
+    -> glow::FrameBufferObject &
+{
+    return frameBuffer;
 }
 
 auto OmniDepthMap::getFrameBuffer() const

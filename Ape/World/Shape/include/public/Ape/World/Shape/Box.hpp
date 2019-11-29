@@ -23,7 +23,8 @@ public:
         leftTopFront,
         leftTopBack,
         leftBottomFront,
-        leftBottomBack};
+        leftBottomBack
+    };
 
 public:
 

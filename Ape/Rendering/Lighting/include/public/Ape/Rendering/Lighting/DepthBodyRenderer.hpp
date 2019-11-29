@@ -1,10 +1,13 @@
 #pragma once
 
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthFlatBodyRenderer.hpp>
 
 namespace ape
 {
+
+class Camera;
 
 class DepthBodyRenderer
 {
@@ -15,10 +18,14 @@ public:
 
 public:
 
-    DepthBodyRenderer(MonoDepthBodyRenderer monoRenderer, OmniDepthBodyRenderer omniRenderer);
+    DepthBodyRenderer(
+        MonoDepthBodyRenderer monoRenderer,
+        OmniDepthCubeBodyRenderer omniCubeRenderer,
+        OmniDepthFlatBodyRenderer omniFlatRenderer);
 
     auto render(
         BodySetView const & bodies,
+        Camera const & viewerCamera,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
         -> void;
@@ -29,11 +36,21 @@ public:
     auto enableFrustumCulling(bool enable)
         -> void;
 
+    auto isOmniFlatShadowMappingEnabled() const
+        -> bool;
+
+    auto enableOmniFlatShadowMapping(bool enable)
+        -> void;
+
 private:
 
     MonoDepthBodyRenderer monoRenderer;
     
-    OmniDepthBodyRenderer omniRenderer;
+    OmniDepthCubeBodyRenderer omniCubeRenderer;
+
+    OmniDepthFlatBodyRenderer omniFlatRenderer;
+
+    bool useOmniFlatRenderer;
 
 };
 

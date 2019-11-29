@@ -108,6 +108,9 @@ public:
     auto enableFrustumCulling(bool enable)
         -> void;
 
+    auto getRenderers()
+        -> RendererSet &;
+
 private:
 
     auto makeShadowMapping() const

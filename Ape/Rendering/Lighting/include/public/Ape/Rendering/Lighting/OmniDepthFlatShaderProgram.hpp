@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Ape/Rendering/Lighting/PointLightViewUniform.hpp>
-
 #include <Glow/Shader/ShaderProgram.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -9,12 +7,12 @@
 namespace ape
 {
 
-class OmniDepthShaderProgram : public glow::ShaderProgram
+class OmniDepthFlatShaderProgram : public glow::ShaderProgram
 {
 
 public:
 
-    OmniDepthShaderProgram();
+    OmniDepthFlatShaderProgram();
 
 public:
 
@@ -28,7 +26,7 @@ public:
     // whereas the transformations we are passing here do.
     // But in this case we also a problem with the name "LightSystemView", because the
     // transformations maintained there also encompass projection.
-    glow::Uniform<PointLightViewTransformation> lightTransformation;
+    glow::Uniform<glm::mat4> lightTransformation;
 
     // TODO: Same as above: is it OK to mention "light" here?
     glow::Uniform<glm::vec3> lightPosition;

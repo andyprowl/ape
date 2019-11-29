@@ -191,7 +191,7 @@ auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
 {
     auto const binder = glow::bind(*this);
 
-    const auto swizzleMask = convertToOpenGLSwizzleMask(mask);
+    auto const swizzleMask = convertToOpenGLSwizzleMask(mask);
 
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask.data());
 

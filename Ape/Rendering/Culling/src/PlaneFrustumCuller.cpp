@@ -1,5 +1,7 @@
 #include <Ape/Rendering/Culling/PlaneFrustumCuller.hpp>
 
+#include "CameraFrustum.hpp"
+
 #include <Ape/World/Scene/Camera.hpp>
 #include <Ape/World/Shape/Sphere.hpp>
 
@@ -11,21 +13,49 @@ namespace ape
 namespace
 {
 
-auto makePlane(glm::vec4 const & v)
-    -> Plane
+auto isFrustumBehindPlane(Frustum const & f, Plane const & p)
+    -> bool
 {
-    return Plane{glm::vec3{v}, v.w};
+    auto const isVertexInFrontOfPlane = [&p] (glm::vec3 const & v)
+    {
+        return (computeSignedDistance(v, p) >= 0.0f);
+    };
+
+    return basix::noneOf(f.getVertices(), isVertexInFrontOfPlane);
+}
+
+template<typename PlaneContainer>
+auto isFrustumBeyondAtLeastOnePlane(Frustum const & subject, PlaneContainer const & planes)
+    -> bool
+{
+    auto const isSeparatingPlane = [&subject] (Plane const & plane)
+    {
+        return isFrustumBehindPlane(subject, plane);
+    };
+
+    return basix::containsIf(planes, isSeparatingPlane);
 }
 
 } // unnamed namespace
 
-PlaneFrustumCuller::PlaneFrustumCuller(Camera const & camera)
-    : camera{&camera}
-    , frustum{extractCameraFrustum()}
+PlaneFrustumCuller::PlaneFrustumCuller(Frustum const & frustum)
+    : frustum{frustum}
 {
 }
 
-auto PlaneFrustumCuller::computeFrustumRelation(Sphere const & sphere) const
+PlaneFrustumCuller::PlaneFrustumCuller(Camera const & camera)
+    : frustum{extractCameraFrustum(camera)}
+{
+}
+
+auto PlaneFrustumCuller::isFrustumFullyOutside(Frustum const & f) const
+    -> bool
+{
+    return isFrustumBeyondAtLeastOnePlane(f, frustum.getPlanes())
+        || isFrustumBeyondAtLeastOnePlane(frustum, f.getPlanes());
+}
+
+auto PlaneFrustumCuller::isSphereContained(Sphere const & sphere) const
     -> ContainmentRelation
 {
     auto relation = ContainmentRelation::fullyInside;
@@ -51,15 +81,7 @@ auto PlaneFrustumCuller::computeFrustumRelation(Sphere const & sphere) const
     return relation;
 }
 
-auto PlaneFrustumCuller::computeFrustumRelation(Frustum const & f) const
-    -> ContainmentRelation
-{
-    // Not yet implemented
-    (void)f;
-    throw std::exception{};
-}
-
-auto PlaneFrustumCuller::isPointInFrustum(glm::vec3 const & point) const
+auto PlaneFrustumCuller::isPointContained(glm::vec3 const & point) const
     -> bool
 {
     auto const & planes = frustum.getPlanes();
@@ -72,20 +94,6 @@ auto PlaneFrustumCuller::isPointInFrustum(glm::vec3 const & point) const
     };
 
     return basix::containsIf(planes, isOnPositiveSide);
-}
-
-auto PlaneFrustumCuller::extractCameraFrustum() const
-    -> Frustum
-{
-    auto const transformation = camera->getTransformation();
-
-    return {
-        makePlane(-transformation[0] + transformation[3]),
-        makePlane(+transformation[0] + transformation[3]),
-        makePlane(-transformation[1] + transformation[3]),
-        makePlane(+transformation[1] + transformation[3]),
-        makePlane(-transformation[2] + transformation[3]),
-        makePlane(+transformation[2] + transformation[3])};
 }
 
 } // namespace ape

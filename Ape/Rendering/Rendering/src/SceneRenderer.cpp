@@ -99,6 +99,12 @@ auto SceneRenderer::enableFrustumCulling(bool const enable)
     renderers.depthBodyRenderer.enableFrustumCulling(enable);
 }
 
+auto SceneRenderer::getRenderers()
+    -> RendererSet &
+{
+    return renderers;
+}
+
 auto SceneRenderer::makeShadowMapping() const
     -> ShadowMapping
 {
@@ -165,8 +171,13 @@ auto SceneRenderer::renderDepthMapping()
 {
     auto const & bodies = cameraSelector->getScene().getBodies();
 
+    auto const camera = cameraSelector->getActiveCamera();
+
+    assert(camera != nullptr);
+
     renderers.depthBodyRenderer.render(
         bodies,
+        *camera,
         shadowMapping.lightSystemView,
         shadowMapping.depthMapping);
 }

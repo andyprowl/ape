@@ -1,29 +1,28 @@
 #pragma once
 
-#include <Ape/Rendering/Culling/ContainmentRelation.hpp>
+#include <Ape/Rendering/Culling/Culler.hpp>
 
 #include <Ape/World/Scene/PerspectiveProjection.hpp>
-
-#include <glm/vec3.hpp>
 
 namespace ape
 {
 
 class Camera;
-class Sphere;
 
-class RadarFrustumCuller
+class RadarFrustumCuller : public Culler
 {
 
 public:
 
     explicit RadarFrustumCuller(Camera const & camera);
 
-    auto computeFrustumRelation(Sphere const & sphere) const
-        -> ContainmentRelation;
+    // virtual (from Culler)
+    auto isSphereContained(Sphere const & sphere) const
+        -> ContainmentRelation override;
 
-    auto isPointInFrustum(glm::vec3 const & point) const
-        -> bool;
+    // virtual (from Culler)
+    auto isPointContained(glm::vec3 const & point) const
+        -> bool override;
 
 private:
 

@@ -136,7 +136,7 @@ auto BlinnPhongBodyRenderer::isVisible(
 
     auto const & boundingSphere = mesh.getBoundingVolumes().getSphere();
 
-    auto const relation = culler.computeFrustumRelation(boundingSphere);
+    auto const relation = culler.isSphereContained(boundingSphere);
 
     return (relation != ContainmentRelation::fullyOutside);
 }

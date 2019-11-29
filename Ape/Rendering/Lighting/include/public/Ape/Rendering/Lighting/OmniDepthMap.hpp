@@ -13,8 +13,14 @@ public:
 
     explicit OmniDepthMap(basix::Size<int> const & size);
 
+    auto getTexture()
+        -> glow::CubeTexture &;
+
     auto getTexture() const
         -> glow::CubeTexture const &;
+
+    auto getFrameBuffer()
+        -> glow::FrameBufferObject &;
 
     auto getFrameBuffer() const
         -> glow::FrameBufferObject const &;

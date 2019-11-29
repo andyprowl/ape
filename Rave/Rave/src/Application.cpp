@@ -11,7 +11,8 @@
 #include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
@@ -46,7 +47,10 @@ public:
         , skyboxSelector{skyboxCollection}
         , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
      // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>()}
-        , depthBodyRenderer{{monoDepthShader, *shapeRenderer}, {omniDepthShader, *shapeRenderer}}
+        , depthBodyRenderer{
+            {monoDepthShader, *shapeRenderer},
+            {omniDepthCubeShader, *shapeRenderer},
+            {omniDepthFlatShader, *shapeRenderer}}
         , standardBodyRenderer{standardShader, *shapeRenderer}
         , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
         , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
@@ -112,7 +116,9 @@ private:
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
-    ape::OmniDepthShaderProgram omniDepthShader;
+    ape::OmniDepthCubeShaderProgram omniDepthCubeShader;
+
+    ape::OmniDepthFlatShaderProgram omniDepthFlatShader;
 
     ape::WireframeShaderProgram wireframeShader;
 

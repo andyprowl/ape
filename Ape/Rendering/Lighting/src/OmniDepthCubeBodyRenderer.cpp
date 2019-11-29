@@ -1,8 +1,8 @@
-#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -36,15 +36,15 @@ auto asReference(Body * const body)
 
 } // unnamed namespace
 
-OmniDepthBodyRenderer::OmniDepthBodyRenderer(
-    OmniDepthShaderProgram & shader,
+OmniDepthCubeBodyRenderer::OmniDepthCubeBodyRenderer(
+    OmniDepthCubeShaderProgram & shader,
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
 {
 }
 
-auto OmniDepthBodyRenderer::render(
+auto OmniDepthCubeBodyRenderer::render(
     BodySetView const & bodies,
     LightSystemView const & lightSystemView,
     DepthMapping & target) const
@@ -59,7 +59,7 @@ auto OmniDepthBodyRenderer::render(
         target.getPointMapping());
 }
 
-auto OmniDepthBodyRenderer::renderLightSetDepth(
+auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     std::vector<PointLight> const & lights,
     std::vector<PointLightView> const & lightViews,
@@ -83,13 +83,19 @@ auto OmniDepthBodyRenderer::renderLightSetDepth(
     }
 }
 
-auto OmniDepthBodyRenderer::renderLightDepth(
+auto OmniDepthCubeBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     PointLightView const & lightView,
     OmniDepthMap & target) const
     -> void
 {
-    auto const binder = bind(target.getFrameBuffer());
+    auto & frameBuffer = target.getFrameBuffer();
+
+    auto & depthTexture = target.getTexture();
+
+    auto const binder = bind(frameBuffer);
+
+    frameBuffer.attach(depthTexture, glow::FrameBufferAttachment::depth);
 
     auto const mapSize = target.getSize();
 
@@ -103,7 +109,7 @@ auto OmniDepthBodyRenderer::renderLightDepth(
     }
 }
 
-auto OmniDepthBodyRenderer::renderBody(
+auto OmniDepthCubeBodyRenderer::renderBody(
     Body const & body,
     PointLightView const & lightView) const
     -> void
@@ -114,7 +120,7 @@ auto OmniDepthBodyRenderer::renderBody(
     }
 }
 
-auto OmniDepthBodyRenderer::renderBodyPart(
+auto OmniDepthCubeBodyRenderer::renderBodyPart(
     BodyPart const & part,
     PointLightView const & lightView) const
     -> void
@@ -133,7 +139,7 @@ auto OmniDepthBodyRenderer::renderBodyPart(
     }
 }
 
-auto OmniDepthBodyRenderer::renderMesh(Mesh const & mesh) const
+auto OmniDepthCubeBodyRenderer::renderMesh(Mesh const & mesh) const
     -> void
 {
     auto const & shape = mesh.getShape();

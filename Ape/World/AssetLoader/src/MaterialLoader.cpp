@@ -55,9 +55,9 @@ auto setSwizzleIfGrayscale(glow::Texture & texture)
         return;
     }
 
-    const auto red = glow::TextureSwizzle::red;
+    auto const red = glow::TextureSwizzle::red;
 
-    const auto one = glow::TextureSwizzle::one;
+    auto const one = glow::TextureSwizzle::one;
 
     texture.setSwizzleMask({red, red, red, one});
 }
@@ -207,7 +207,7 @@ auto MaterialLoader::readAndStoreTexture(
     glow::ColorSpace const colorSpace) const
     -> glow::Texture const &
 {
-    const auto storageType = glow::TextureStorageType::immutable;
+    auto const storageType = glow::TextureStorageType::immutable;
 
     auto readTexture = textureReader.read(path, storageType, colorSpace);
 
