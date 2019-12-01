@@ -8,7 +8,7 @@ namespace basix
 class TaskProfile;
 class TaskProfiler;
 
-class ScopedTaskProfiling
+class [[nodiscard]] ScopedTaskProfiling
 {
 
 public:

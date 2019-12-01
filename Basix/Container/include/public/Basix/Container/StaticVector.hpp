@@ -12,10 +12,6 @@ class StaticVector
 
 public:
 
-    using AlignedStorage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
-
-    using Storage = std::array<AlignedStorage, Capacity>;
-
     using value_type = T;
 
     using iterator = T *;
@@ -176,7 +172,7 @@ public:
     auto operator [] (int const i)
         -> value_type &
     {
-        auto const p = reinterpret_cast<iterator>(&storage[i]);
+        auto const p = reinterpret_cast<value_type *>(&storage[i]);
 
         return *(std::launder(p));
     }
@@ -184,7 +180,7 @@ public:
     auto operator [] (int const i) const
         -> value_type const &
     {
-        auto const p = reinterpret_cast<const_iterator>(&storage[i]);
+        auto const p = reinterpret_cast<value_type const *>(&storage[i]);
 
         return *(std::launder(p));
     }
@@ -215,6 +211,12 @@ public:
 
 private:
 
+    using AlignedStorage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
+
+    using Storage = std::array<AlignedStorage, Capacity>;
+
+private:
+
     auto throwIfFull() const
         -> void
     {
@@ -240,7 +242,7 @@ private:
         {
             auto const p = std::launder(reinterpret_cast<T *>(&storage[i]));
             
-            p->~T();
+            p->~value_type();
         }
     }
 

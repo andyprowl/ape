@@ -6,6 +6,8 @@
 #include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/World/Scene/Scene.hpp>
 
+#include <Basix/Container/CircularBuffer.hpp>
+#include <Basix/Profiling/TaskProfiler.hpp>
 #include <Basix/Signal/ScopedSignalConnection.hpp>
 #include <Basix/Time/Stopwatch.hpp>
 #include <Basix/Time/TimeIntervalTracker.hpp>
@@ -25,6 +27,7 @@ public:
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
+        , lastFrameProfiles{60 * 30} // 30 seconds worth of frame profiles when running at 60 FPS 
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
@@ -39,6 +42,10 @@ public:
         while (!shouldStop())
         {
             processOneFrame();
+
+            lastFrameProfiles.push_back(std::move(profiler.getRootTaskProfile()));
+
+            displayInspectionOverlays();
         }
     }
 
@@ -101,16 +108,18 @@ private:
     auto processOneFrame()
         -> void
     {
+        auto const profiling = profiler.startProfilingTask("Frame processing");
+
         processInput();
 
         render();
-
-        displayFrameStats();
     }
 
     auto processInput()
         -> void
     {
+        auto const profiling = profiler.startProfilingTask("Input handling");
+
         glfwPollEvents();
 
         auto const lastFrameDuration = timeTracker.tick();
@@ -126,6 +135,8 @@ private:
             return;
         }
 
+        auto const profiling = profiler.startProfilingTask("Scene rendering");
+
         renderer->render();
 
         window->swapBuffers();
@@ -139,9 +150,18 @@ private:
         return (size.height > 0);
     }
 
-    auto displayFrameStats() const
+    auto recordFrameProfile()
         -> void
     {
+        auto & profile = profiler.getRootTaskProfile();
+
+        lastFrameProfiles.push_back(std::move(profile));
+    }
+
+    auto displayInspectionOverlays() const
+        -> void
+    {
+        // TODO: display captured frame profiles using ImGui.
     }
 
 private:
@@ -155,6 +175,10 @@ private:
     InputHandler * inputHandler;
 
     basix::TimeIntervalTracker timeTracker;
+
+    basix::TaskProfiler profiler;
+
+    basix::CircularBuffer<basix::TaskProfile> lastFrameProfiles;
 
     basix::ScopedSignalConnection resizeHandlerConnection;
 

@@ -9,7 +9,7 @@ TaskProfile::TaskProfile(
     std::string_view const name,
     std::string_view const description,
     TimePoint const startTime,
-    Milliseconds const duration)
+    Microseconds const duration)
     : name{name}
     , description{description}
     , startTime{startTime}
@@ -38,7 +38,7 @@ auto TaskProfile::getStartTime() const
 }
 
 auto TaskProfile::getDuration() const
-    -> Milliseconds
+    -> Microseconds
 {
     return duration;
 }
@@ -53,7 +53,7 @@ void TaskProfile::setEndTime(TimePoint const endTime)
 {
     using namespace std::chrono;
 
-    duration = duration_cast<milliseconds>(endTime - startTime);
+    duration = duration_cast<microseconds>(endTime - startTime);
 }
 
 auto TaskProfile::getParent() const

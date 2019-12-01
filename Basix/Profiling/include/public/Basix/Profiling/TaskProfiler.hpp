@@ -22,14 +22,14 @@ public:
     {
     }
 
-    auto startProfilingTask(std::string_view const name, std::string_view const description)
+    auto startProfilingTask(std::string_view const name, std::string_view const description = "")
         -> ScopedTaskProfiling
     {
         return startProfilingTask<TaskProfile>(name, description);
     }
 
     template<typename ProfileType>
-    auto startProfilingTask(std::string_view const name, std::string_view const description)
+    auto startProfilingTask(std::string_view const name, std::string_view const description = "")
         -> ScopedTaskProfiling
     {
         static_assert(
@@ -38,7 +38,7 @@ public:
 
         auto profile = std::make_unique<ProfileType>(name, description, ProfileType::Clock::now());
 
-        if (rootProfile == nullptr)
+        if (activeProfile == nullptr)
         {
             rootProfile = std::move(profile);
 

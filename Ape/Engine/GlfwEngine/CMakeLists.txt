@@ -13,4 +13,6 @@ AddPrivateDependencies(
     3rdParty::glfw
     Ape::Engine::Initialization
     Ape::Engine::UpdateHandling
+    Basix::Container
+    Basix::Profiling
     Basix::Time)

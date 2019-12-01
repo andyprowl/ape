@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Basix/Container/CircularBufferIterator.hpp>
+
 #include <stdexcept>
 #include <vector>
 
@@ -14,23 +16,59 @@ public:
 
     using value_type = T;
 
-    using iterator = T *;
+    using iterator = CircularBufferIterator<T>;
 
-    using const_iterator = T const *;
+    using const_iterator = CircularBufferIterator<T const>;
 
 public:
 
-    CircularBuffer(std::size_t const maxSize)
-        : maxSize{maxSize}
+    explicit CircularBuffer(int const maxSize)
+        : storage{new AlignedStorage[maxSize + 1]}
+        , numOfElements{0}
+        , maxNumOfElements{maxSize}
         , firstIndex{0}
     {
-        storage.reserve(maxSize);
+    }
+
+    CircularBuffer(CircularBuffer && rhs) noexcept
+        : storage{std::exchange(rhs.storage, nullptr)}
+        , numOfElements{std::exchange(rhs.numOfElements, 0)}
+        , maxNumOfElements{std::exchange(rhs.maxNumOfElements, 0)}
+        , firstIndex{std::exchange(rhs.firstIndex, 0)}
+    {
+    }
+
+    auto operator = (CircularBuffer && rhs) noexcept
+        -> CircularBuffer &
+    {
+        storage = std::exchange(rhs.storage, nullptr);
+        
+        numOfElements = std::exchange(rhs.numOfElements, 0);
+        
+        maxNumOfElements = std::exchange(rhs.maxNumOfElements, 0);
+        
+        firstIndex = std::exchange(rhs.firstIndex, 0);
+
+        return *this;
+    }
+
+    ~CircularBuffer()
+    {
+        destroyAllElements();
+
+        delete[] storage;
     }
 
     auto size() const
         -> int
     {
-        return static_cast<int>(storage.size());
+        return numOfElements;
+    }
+
+    auto capacity() const
+        -> int
+    {
+        return maxNumOfElements;
     }
 
     auto empty() const
@@ -42,7 +80,7 @@ public:
     auto full() const
         -> bool
     {
-        return (size() == maxSize);
+        return (size() == maxNumOfElements);
     }
 
     auto push_back(value_type const & value)
@@ -60,7 +98,7 @@ public:
     auto clear()
         -> void
     {
-        storage.clear();
+        destroyAllElements();
 
         firstIndex = 0;
     }
@@ -74,14 +112,9 @@ public:
     auto front() const
         -> value_type const &
     {
-        if (full())
-        {
-            return storage[firstIndex];
-        }
-        else
-        {
-            return storage.back();
-        }
+        auto const p = reinterpret_cast<value_type *>(&storage[firstIndex]);
+
+        return *(std::launder(p));
     }
 
     auto back()
@@ -93,17 +126,19 @@ public:
     auto back() const
         -> value_type const &
     {
-        auto const lastElementIndex = (firstIndex + maxSize - 1) % maxSize;
+        auto const storageSize = maxNumOfElements + 1;
 
-        return storage[lastElementIndex];
+        auto const lastIndex = (firstIndex + (numOfElements - 1)) % storageSize;
+
+        auto const p = reinterpret_cast<value_type *>(&storage[lastIndex]);
+
+        return *(std::launder(p));
     }
 
     auto at(int const i)
         -> value_type &
     {
-        throwIfOutOfRange(i);
-
-        return (*this)[i];
+        return const_cast<value_type &>(asConst().at(i));
     }
 
     auto at(int const i) const
@@ -123,9 +158,13 @@ public:
     auto operator [] (int const i) const
         -> value_type const &
     {
-        auto const index = (firstIndex + i) % maxSize;
+        auto const storageSize = maxNumOfElements + 1;
 
-        return storage[index];
+        auto const index = (firstIndex + i) % storageSize;
+
+        auto const p = reinterpret_cast<value_type *>(&storage[index]);
+
+        return *(std::launder(p));
     }
 
     auto begin()
@@ -137,7 +176,9 @@ public:
     auto begin() const
         -> const_iterator
     {
-        return std::next(std::begin(storage), firstIndex);
+        auto const storageSize = maxNumOfElements + 1;
+
+        return {storage, storageSize, firstIndex};
     }
 
     auto end()
@@ -149,10 +190,16 @@ public:
     auto end() const
         -> const_iterator
     {
-        auto const lastElementIndex = (firstIndex + maxSize - 1) % maxSize;
+        auto const storageSize = maxNumOfElements + 1;
 
-        return std::next(std::begin(storage), lastElementIndex);
+        auto const onePastLastElementIndex = (firstIndex + numOfElements) % storageSize;
+
+        return {storage, storageSize, onePastLastElementIndex};
     }
+
+private:
+
+    using AlignedStorage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
 
 private:
 
@@ -162,13 +209,21 @@ private:
     {
         if (!full())
         {
-            storage.push_back(value);
+            new (&storage[numOfElements++]) T{std::forward<T>(value)};
         }
         else
         {
-            storage[firstIndex] = value;
+            auto const storageSize = maxNumOfElements + 1;
 
-            firstIndex = (firstIndex + 1) % maxSize;
+            auto const insertionIndex = (firstIndex + maxNumOfElements) % storageSize;
+
+            new (&storage[insertionIndex]) T{std::forward<T>(value)};
+
+            auto const first = std::launder(reinterpret_cast<T *>(&storage[firstIndex]));
+            
+            first->~value_type();
+
+            firstIndex = (firstIndex + 1) % storageSize;
         }
     }
 
@@ -187,13 +242,28 @@ private:
         return *this;
     }
 
+    auto destroyAllElements()
+        -> void
+    {
+        for (auto i = firstIndex; i < numOfElements; ++i)
+        {
+            auto const index = i % maxNumOfElements;
+
+            auto const p = std::launder(reinterpret_cast<T *>(&storage[index]));
+            
+            p->~value_type();
+        }
+    }
+
 private:
 
-    int maxSize;
+    AlignedStorage * storage;
+
+    int numOfElements;
+
+    int maxNumOfElements;
 
     int firstIndex;
-
-    std::vector<T> storage;
 
 };
 

@@ -19,7 +19,7 @@ public:
 
     using TimePoint = Clock::time_point;
 
-    using Milliseconds = std::chrono::milliseconds;
+    using Microseconds = std::chrono::microseconds;
 
 public:
 
@@ -27,7 +27,7 @@ public:
         std::string_view name,
         std::string_view description,
         TimePoint startTime = TimePoint{},
-        Milliseconds duration = {});
+        Microseconds duration = {});
 
     auto getName() const
         -> std::string_view;
@@ -45,7 +45,7 @@ public:
         -> void;
 
     auto getDuration() const
-        -> Milliseconds;
+        -> Microseconds;
 
     auto getParent() const
         -> TaskProfile *;
@@ -64,7 +64,7 @@ private:
 
     TimePoint startTime;
 
-    Milliseconds duration;
+    Microseconds duration;
 
     TaskProfile * parent;
 
