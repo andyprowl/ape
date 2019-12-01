@@ -10,6 +10,8 @@ add_subdirectory(Mathematics)
 
 add_subdirectory(Meta)
 
+add_subdirectory(Profiling)
+
 add_subdirectory(Range)
 
 add_subdirectory(Signal)

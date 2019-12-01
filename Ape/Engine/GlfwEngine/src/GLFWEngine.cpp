@@ -7,7 +7,6 @@
 #include <Ape/World/Scene/Scene.hpp>
 
 #include <Basix/Signal/ScopedSignalConnection.hpp>
-#include <Basix/Time/FrequencyTracker.hpp>
 #include <Basix/Time/Stopwatch.hpp>
 #include <Basix/Time/TimeIntervalTracker.hpp>
 
@@ -26,11 +25,12 @@ public:
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
-        , rateTracker{timeTracker, 500}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
-        setViewport();
+        auto const size = window.getSize();
+
+        setViewport(size);
     }
 
     auto start()
@@ -59,32 +59,6 @@ private:
         });
     }
 
-    auto shouldStop() const
-        -> bool
-    {
-        return (stopBeforeNextIteration || window->isClosing());
-    }
-
-    auto processOneFrame()
-        -> void
-    {
-        processInput();
-
-        render();
-
-        recordFrameDuration();
-
-        reportFramesPerSecond();
-    }
-
-    auto setViewport()
-        -> void
-    {
-        auto const size = window->getSize();
-
-        return setViewport(size);
-    }
-
     auto setViewport(basix::Size<int> const & size)
         -> void
     {
@@ -93,8 +67,16 @@ private:
             return;
         }
 
-        renderer->setViewport({{0, 0}, size});
+        auto const origin = basix::Position{0, 0};
 
+        renderer->setViewport({origin, size});
+
+        updateAllCameraAspectRatio();
+    }
+
+    auto updateAllCameraAspectRatio()
+        -> void
+    {
         auto const aspectRatio = window->getAspectRatio();
 
         auto & scene = getScene(*renderer);
@@ -110,12 +92,28 @@ private:
         }
     }
 
+    auto shouldStop() const
+        -> bool
+    {
+        return (stopBeforeNextIteration || window->isClosing());
+    }
+
+    auto processOneFrame()
+        -> void
+    {
+        processInput();
+
+        render();
+
+        displayFrameStats();
+    }
+
     auto processInput()
         -> void
     {
         glfwPollEvents();
 
-        auto const lastFrameDuration = timeTracker.getLastIntervalDuration();
+        auto const lastFrameDuration = timeTracker.tick();
 
         inputHandler->onFrame(lastFrameDuration);
     }
@@ -141,16 +139,9 @@ private:
         return (size.height > 0);
     }
 
-    auto recordFrameDuration()
+    auto displayFrameStats() const
         -> void
     {
-        timeTracker.tick();
-    }
-
-    auto reportFramesPerSecond()
-        -> void
-    {
-        rateTracker.update();
     }
 
 private:
@@ -164,8 +155,6 @@ private:
     InputHandler * inputHandler;
 
     basix::TimeIntervalTracker timeTracker;
-
-    basix::FrequencyTracker rateTracker;
 
     basix::ScopedSignalConnection resizeHandlerConnection;
 

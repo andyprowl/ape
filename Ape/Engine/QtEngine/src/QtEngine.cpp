@@ -34,8 +34,6 @@ public:
         auto const size = window.getSize();
 
         setViewport(size);
-
-        updateSelectedCameraAspectRatio(size);
     }
 
     auto start()
@@ -43,15 +41,7 @@ public:
     {
         loopTimerConnection = connect(&heartbeat, &QTimer::timeout, [this] 
         {
-            auto const lastFrameDuration = timeTracker.tick();
-
-            inputHandler->onFrame(lastFrameDuration);
-
-            window->makeCurrent();
-
-            renderer->render();
-
-            window->swapBuffers();
+            processOneFrame();
         });
     
         // The timer's callback will be invoked whenever the application is idle.
@@ -72,9 +62,17 @@ private:
         return window->onResize.registerHandler([this] (basix::Size<int> const & newSize)
         {
             setViewport(newSize);
-
-            updateSelectedCameraAspectRatio(newSize);
         });
+    }
+
+    auto setViewport(basix::Size<int> const & size)
+        -> void
+    {
+        auto const origin = basix::Position{0, 0};
+
+        renderer->setViewport({origin, size});
+
+        updateSelectedCameraAspectRatio(size);
     }
 
     auto updateSelectedCameraAspectRatio(basix::Size<int> const & size)
@@ -98,13 +96,31 @@ private:
 
         perspective->setAspectRatio(aspectRatio);
     }
-
-    auto setViewport(basix::Size<int> const & size)
+    
+    auto processOneFrame()
         -> void
     {
-        auto const origin = basix::Position{0, 0};
+        processInput();
+        
+        render();
+    }
+        
+    auto processInput()
+        -> void
+    {
+        auto const lastFrameDuration = timeTracker.tick();
 
-        renderer->setViewport({origin, size});
+        inputHandler->onFrame(lastFrameDuration);
+    }
+
+    auto render()
+        -> void
+    {
+        window->makeCurrent();
+
+        renderer->render();
+
+        window->swapBuffers();
     }
 
 private:
