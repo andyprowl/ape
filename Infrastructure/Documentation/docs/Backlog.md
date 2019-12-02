@@ -75,8 +75,8 @@
 - QtCreator workflow for setting things up is particularly unwieldy. Make it easier
 - Refactor handling of Texture readout - should probably be part of AssetLoader, not GpuResource
     - Readout of texture introduces dependency on stb
-- Let QtEngine and GLFWEngine own the renderer and its context, and enforce current window when
+- Let QtEngine and GlfwEngine own the renderer and its context, and enforce current window when
   constructing them
-- Try and generalize GLFWEngine-based and Qt's event-based approaches
+- Try and generalize GlfwEngine-based and Qt's event-based approaches
 - Add CMake install target also handling correct deployment of dependencies
 - Support flat shapes/meshes

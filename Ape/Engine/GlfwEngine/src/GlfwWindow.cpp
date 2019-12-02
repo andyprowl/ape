@@ -1,6 +1,6 @@
-#include <Ape/Engine/GlfwEngine/GLFWWindow.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
 
-#include "GLFW.hpp"
+#include "Glfw.hpp"
 
 #include <unordered_map>
 
@@ -10,7 +10,7 @@ namespace ape
 namespace
 {
 
-auto windowMap = std::unordered_map<GLFWwindow *, GLFWWindow *>{};
+auto windowMap = std::unordered_map<GLFWwindow *, GlfwWindow *>{};
 
 auto onResize(GLFWwindow * const handle, int const width, int const height)
     -> void
@@ -128,17 +128,17 @@ auto makeFullScreenGLFWWindow(std::string_view title)
 
 } // unnamed namespace
 
-GLFWWindow::GLFWWindow(std::string_view title, CreateAsFullscreen const)
-    : GLFWWindow{makeFullScreenGLFWWindow(title), true}
+GlfwWindow::GlfwWindow(std::string_view title, CreateAsFullscreen const)
+    : GlfwWindow{makeFullScreenGLFWWindow(title), true}
 {
 }
 
-GLFWWindow::GLFWWindow(std::string_view title, basix::Size<int> const & size)
-    : GLFWWindow{makeRegularGLFWWindow(title, size), false}
+GlfwWindow::GlfwWindow(std::string_view title, basix::Size<int> const & size)
+    : GlfwWindow{makeRegularGLFWWindow(title, size), false}
 {
 }
 
-GLFWWindow::GLFWWindow(GLFWWindow && rhs) noexcept
+GlfwWindow::GlfwWindow(GlfwWindow && rhs) noexcept
     : handle{rhs.handle}
     , isFullScreenModeOn{rhs.isFullScreenModeOn}
     , lastGLFWWindowedArea{rhs.lastGLFWWindowedArea}
@@ -148,8 +148,8 @@ GLFWWindow::GLFWWindow(GLFWWindow && rhs) noexcept
     rhs.handle = nullptr;
 }
 
-auto GLFWWindow::operator = (GLFWWindow && rhs) noexcept
-    -> GLFWWindow &
+auto GlfwWindow::operator = (GlfwWindow && rhs) noexcept
+    -> GlfwWindow &
 {
     windowMap[handle] = this;
 
@@ -164,10 +164,16 @@ auto GLFWWindow::operator = (GLFWWindow && rhs) noexcept
     return *this;
 }
 
-GLFWWindow::~GLFWWindow() = default;
+GlfwWindow::~GlfwWindow() = default;
+
+auto GlfwWindow::getGlfwHandle() const
+    -> GLFWwindow *
+{
+    return handle;
+}
 
 // virtual (from Window)
-auto GLFWWindow::getAspectRatio() const
+auto GlfwWindow::getAspectRatio() const
     -> float
 {
     auto width = int{};
@@ -180,7 +186,7 @@ auto GLFWWindow::getAspectRatio() const
 }
 
 // virtual (from Window)
-auto GLFWWindow::getSize() const
+auto GlfwWindow::getSize() const
     -> basix::Size<int>
 {
     auto width = int{};
@@ -193,7 +199,7 @@ auto GLFWWindow::getSize() const
 }
 
 // virtual (from Window)
-auto GLFWWindow::getPosition() const
+auto GlfwWindow::getPosition() const
     -> basix::Position<int>
 {
     auto x = int{};
@@ -206,7 +212,7 @@ auto GLFWWindow::getPosition() const
 }
 
 // virtual (from Window)
-auto GLFWWindow::getMousePosition() const
+auto GlfwWindow::getMousePosition() const
     -> basix::Position<int>
 {
     auto x = double{};
@@ -218,13 +224,13 @@ auto GLFWWindow::getMousePosition() const
     return {static_cast<int>(x), static_cast<int>(y)};
 }
 
-auto GLFWWindow::isFullScreen() const
+auto GlfwWindow::isFullScreen() const
     -> bool
 {
     return isFullScreenModeOn;
 }
 
-auto GLFWWindow::setFullScreen()
+auto GlfwWindow::setFullScreen()
     -> void
 {
     if (isFullScreen())
@@ -245,7 +251,7 @@ auto GLFWWindow::setFullScreen()
     onResize.fire(basix::Size<int>{mode->width, mode->height});
 }
 
-auto GLFWWindow::exitFullScreen()
+auto GlfwWindow::exitFullScreen()
     -> void
 {
     if (!isFullScreen())
@@ -266,55 +272,55 @@ auto GLFWWindow::exitFullScreen()
     onResize.fire(lastGLFWWindowedArea.size);
 }
 
-auto GLFWWindow::isKeyPressed(Key const key) const
+auto GlfwWindow::isKeyPressed(Key const key) const
     -> bool
 {
     return (glfwGetKey(handle, static_cast<int>(key)) == GLFW_PRESS);
 }
 
-auto GLFWWindow::swapBuffers()
+auto GlfwWindow::swapBuffers()
     -> void
 {
     glfwSwapBuffers(handle);
 }
 
-auto GLFWWindow::isMouseCaptured() const
+auto GlfwWindow::isMouseCaptured() const
     -> bool
 {
     return (glfwGetInputMode(handle, GLFW_CURSOR) == GLFW_CURSOR_DISABLED);
 }
 
-auto GLFWWindow::captureMouse()
+auto GlfwWindow::captureMouse()
     -> void
 {
     glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-auto GLFWWindow::releaseMouse()
+auto GlfwWindow::releaseMouse()
     -> void
 {
     glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 }
 
-auto GLFWWindow::makeCurrent()
+auto GlfwWindow::makeCurrent()
     -> void
 {
     glfwMakeContextCurrent(handle);
 }
 
-auto GLFWWindow::close()
+auto GlfwWindow::close()
     -> void
 {
     glfwSetWindowShouldClose(handle, true);
 }
 
-auto GLFWWindow::isClosing()
+auto GlfwWindow::isClosing()
     -> bool
 {
     return glfwWindowShouldClose(handle);
 }
 
-GLFWWindow::GLFWWindow(GLFWwindow & handle, bool const isFullScreen)
+GlfwWindow::GlfwWindow(GLFWwindow & handle, bool const isFullScreen)
     : handle{&handle}
     , isFullScreenModeOn{isFullScreen}
     , lastGLFWWindowedArea{getPosition(), getSize()}
@@ -328,7 +334,7 @@ GLFWWindow::GLFWWindow(GLFWwindow & handle, bool const isFullScreen)
     registerEventHandlers();
 }
 
-auto GLFWWindow::registerEventHandlers()
+auto GlfwWindow::registerEventHandlers()
     -> void
 {
     glfwSetScrollCallback(handle, ape::onMouseWheel);

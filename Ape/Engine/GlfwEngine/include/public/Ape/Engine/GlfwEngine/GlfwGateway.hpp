@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Engine/GlfwEngine/GLFWWindow.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
 
 #include <memory>
 #include <string_view>
@@ -10,7 +10,7 @@ namespace ape
 
 class Ape;
 
-class GLFWGateway
+class GlfwGateway
 {
 
 public:
@@ -26,20 +26,20 @@ public:
 
 public:
 
-    GLFWGateway(int majorVersion, int minorVersion, bool enableDebugOutput);
+    GlfwGateway(int majorVersion, int minorVersion, bool enableDebugOutput);
 
-    GLFWGateway(GLFWGateway && rhs) noexcept;
+    GlfwGateway(GlfwGateway && rhs) noexcept;
 
-    auto operator = (GLFWGateway && rhs) noexcept
-        -> GLFWGateway &;
+    auto operator = (GlfwGateway && rhs) noexcept
+        -> GlfwGateway &;
 
-    ~GLFWGateway();
+    ~GlfwGateway();
 
     auto createWindow(std::string_view title, CreateAsFullscreen)
-        -> GLFWWindow;
+        -> GlfwWindow;
 
     auto createWindow(std::string_view title, basix::Size<int> const & size)
-        -> GLFWWindow;
+        -> GlfwWindow;
 
 private:
 

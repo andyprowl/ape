@@ -9,6 +9,7 @@ AddPublicDependencies(
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
+    3rdParty::DearImGui
     3rdParty::Glad
     3rdParty::glfw
     Ape::Engine::Initialization
@@ -16,3 +17,7 @@ AddPrivateDependencies(
     Basix::Container
     Basix::Profiling
     Basix::Time)
+
+AddPrivateDefinitions(
+    ${PROJECT_NAME}
+    IMGUI_IMPL_OPENGL_LOADER_GLAD)

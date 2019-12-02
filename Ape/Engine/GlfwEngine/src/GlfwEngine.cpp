@@ -1,4 +1,10 @@
-#include <Ape/Engine/GlfwEngine/GLFWEngine.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwEngine.hpp>
+
+#include "Glfw.hpp"
+#include "GlfwImGuiBinding.hpp"
+#include "OpenGLImGuiBinding.hpp"
+
+#include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
 
 #include <Ape/Engine/UpdateHandling/InputHandler.hpp>
 
@@ -12,28 +18,47 @@
 #include <Basix/Time/Stopwatch.hpp>
 #include <Basix/Time/TimeIntervalTracker.hpp>
 
-#include "GLFW.hpp"
+#include <DearImGui/imgui.h>
 
 namespace ape
 {
 
-class GLFWEngine::Impl
+class GlfwEngine::Impl
 {
 
 public:
 
-    Impl(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
+    Impl(GlfwWindow & window, SceneRenderer & renderer, InputHandler & inputHandler)
         : window{&window}
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
-        , lastFrameProfiles{60 * 30} // 30 seconds worth of frame profiles when running at 60 FPS 
+        , lastFrameProfiles{60 * 30} // 30 seconds worth of frame profiles when running at 60 FPS
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
         auto const size = window.getSize();
 
         setViewport(size);
+
+        IMGUI_CHECKVERSION();
+
+        ImGui::CreateContext();
+
+        [[maybe_unused]]
+        auto & io = ImGui::GetIO();
+
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+        // Setup Dear ImGui style
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsClassic();
+
+        // Setup Platform/Renderer bindings
+        ImGui_ImplGlfw_InitForOpenGL(window.getGlfwHandle(), true);
+
+        ImGui_ImplOpenGL3_Init("#version 450");
     }
 
     auto start()
@@ -43,7 +68,7 @@ public:
         {
             processOneFrame();
 
-            lastFrameProfiles.push_back(std::move(profiler.getRootTaskProfile()));
+            recordFrameProfile();
 
             displayInspectionOverlays();
         }
@@ -162,13 +187,51 @@ private:
         -> void
     {
         // TODO: display captured frame profiles using ImGui.
+
+        static float f = 0.0f;
+        static int counter = 0;
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        ImGui::Begin("Hello, world!");
+
+        ImGui::Text("This is some useful text.");
+
+        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+
+        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+        ImGui::ColorEdit3("clear color", (float*)&clear_color);
+
+        if (ImGui::Button("Button"))
+            counter++;
+
+        ImGui::SameLine();
+        ImGui::Text("counter = %d", counter);
+
+        ImGui::Text(
+            "Application average %.3f ms/frame (%.1f FPS)",
+            1000.0f / ImGui::GetIO().Framerate,
+            ImGui::GetIO().Framerate);
+
+        ImGui::End();
+
+        // Rendering
+        ImGui::Render();
+        int display_w, display_h;
+        glfwGetFramebufferSize(window->getGlfwHandle(), &display_w, &display_h);
+        glViewport(0, 0, display_w, display_h);
+        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+        glClear(GL_COLOR_BUFFER_BIT);
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 
 private:
 
     basix::Stopwatch stopwatch;
     
-    Window * window;
+    GlfwWindow * window;
 
     SceneRenderer * renderer;
 
@@ -186,25 +249,25 @@ private:
 
 };
 
-GLFWEngine::GLFWEngine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler)
+GlfwEngine::GlfwEngine(GlfwWindow & window, SceneRenderer & renderer, InputHandler & inputHandler)
     : impl{std::make_unique<Impl>(window, renderer, inputHandler)}
 {
 }
 
-GLFWEngine::GLFWEngine(GLFWEngine &&) noexcept = default;
+GlfwEngine::GlfwEngine(GlfwEngine &&) noexcept = default;
 
-auto GLFWEngine::operator = (GLFWEngine &&) noexcept
-    -> GLFWEngine & = default;
+auto GlfwEngine::operator = (GlfwEngine &&) noexcept
+    -> GlfwEngine & = default;
 
-GLFWEngine::~GLFWEngine() = default;
+GlfwEngine::~GlfwEngine() = default;
 
-auto GLFWEngine::start()
+auto GlfwEngine::start()
     -> void
 {
     return impl->start();
 }
 
-auto GLFWEngine::stop()
+auto GlfwEngine::stop()
     -> void
 {
     return impl->stop();

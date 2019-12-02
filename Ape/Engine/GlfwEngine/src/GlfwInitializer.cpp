@@ -1,6 +1,6 @@
-#include "GLFWInitializer.hpp"
+#include "GlfwInitializer.hpp"
 
-#include "GLFW.hpp"
+#include "Glfw.hpp"
 
 namespace ape
 {
@@ -24,20 +24,20 @@ auto initGLFW(int const majorVersion, int const minorVersion)
 
 } // unnamed namespace
 
-GLFWInitializer::GLFWInitializer(int const majorVersion, int const minorVersion)
+GlfwInitializer::GlfwInitializer(int const majorVersion, int const minorVersion)
     : isInitialized{true}
 {
     initGLFW(majorVersion, minorVersion);
 }
 
-GLFWInitializer::GLFWInitializer(GLFWInitializer && rhs) noexcept
+GlfwInitializer::GlfwInitializer(GlfwInitializer && rhs) noexcept
     : isInitialized{rhs.isInitialized}
 {
     rhs.isInitialized = false;
 }
 
-auto GLFWInitializer::operator = (GLFWInitializer && rhs) noexcept
-    -> GLFWInitializer &
+auto GlfwInitializer::operator = (GlfwInitializer && rhs) noexcept
+    -> GlfwInitializer &
 {
     isInitialized = rhs.isInitialized;
 
@@ -46,7 +46,7 @@ auto GLFWInitializer::operator = (GLFWInitializer && rhs) noexcept
     return *this;
 }
 
-GLFWInitializer::~GLFWInitializer()
+GlfwInitializer::~GlfwInitializer()
 {
     if (isInitialized)
     {

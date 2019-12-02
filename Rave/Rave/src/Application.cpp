@@ -6,8 +6,8 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 #include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
 
-#include <Ape/Engine/GlfwEngine/GLFWEngine.hpp>
-#include <Ape/Engine/GlfwEngine/GLFWGateway.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwEngine.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwGateway.hpp>
 #include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
@@ -104,9 +104,9 @@ public:
 
 private:
 
-    ape::GLFWGateway gateway;
+    ape::GlfwGateway gateway;
 
-    ape::GLFWWindow window;
+    ape::GlfwWindow window;
 
     RaveAssetCollection assets;
 
@@ -160,7 +160,7 @@ private:
 
     RaveInputHandler inputHandler;
 
-    ape::GLFWEngine engine;
+    ape::GlfwEngine engine;
 
 };
 

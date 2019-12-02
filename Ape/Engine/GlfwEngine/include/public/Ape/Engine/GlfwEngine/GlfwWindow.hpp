@@ -9,7 +9,7 @@ struct GLFWwindow;
 namespace ape
 {
 
-class GLFWWindow : public Window
+class GlfwWindow : public Window
 {
 
 public:
@@ -25,21 +25,24 @@ public:
 
 public:
 
-    GLFWWindow(std::string_view title, CreateAsFullscreen);
+    GlfwWindow(std::string_view title, CreateAsFullscreen);
 
-    GLFWWindow(std::string_view title, basix::Size<int> const & size);
+    GlfwWindow(std::string_view title, basix::Size<int> const & size);
 
-    GLFWWindow(GLFWWindow const & rhs) = delete;
+    GlfwWindow(GlfwWindow const & rhs) = delete;
 
-    GLFWWindow(GLFWWindow && rhs) noexcept;
+    GlfwWindow(GlfwWindow && rhs) noexcept;
 
-    auto operator = (GLFWWindow const & rhs)
-        -> GLFWWindow & = delete;
+    auto operator = (GlfwWindow const & rhs)
+        -> GlfwWindow & = delete;
 
-    auto operator = (GLFWWindow && rhs) noexcept
-        -> GLFWWindow &;
+    auto operator = (GlfwWindow && rhs) noexcept
+        -> GlfwWindow &;
 
-    ~GLFWWindow();
+    ~GlfwWindow();
+
+    auto getGlfwHandle() const
+        -> GLFWwindow *;
 
     // virtual (from Window)
     auto getAspectRatio() const
@@ -124,7 +127,7 @@ private:
 
 private:
 
-    GLFWWindow(GLFWwindow & handle, bool isFullScreen);
+    GlfwWindow(GLFWwindow & handle, bool isFullScreen);
 
     auto registerEventHandlers()
         -> void;

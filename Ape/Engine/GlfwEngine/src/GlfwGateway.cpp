@@ -1,14 +1,14 @@
-#include <Ape/Engine/GlfwEngine/GLFWGateway.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwGateway.hpp>
 
-#include "GLFW.hpp"
-#include "GLFWInitializer.hpp"
+#include "Glfw.hpp"
+#include "GlfwInitializer.hpp"
 
 #include <Ape/Engine/Initialization/OpenGLLoader.hpp>
 
 namespace ape
 {
 
-class GLFWGateway::Impl
+class GlfwGateway::Impl
 {
 
 public:
@@ -20,9 +20,9 @@ public:
     }
 
     auto createWindow(std::string_view title, CreateAsFullscreen)
-        -> GLFWWindow
+        -> GlfwWindow
     {
-        auto window = GLFWWindow{title, GLFWWindow::CreateAsFullscreen{}};
+        auto window = GlfwWindow{title, GlfwWindow::CreateAsFullscreen{}};
 
         window.makeCurrent();
 
@@ -32,9 +32,9 @@ public:
     }
 
     auto createWindow(std::string_view title, basix::Size<int> const & size)
-        -> GLFWWindow
+        -> GlfwWindow
     {
-        auto window = GLFWWindow{title, size};
+        auto window = GlfwWindow{title, size};
 
         window.makeCurrent();
 
@@ -45,13 +45,13 @@ public:
 
 private:
 
-    GLFWInitializer glfwInitializer;
+    GlfwInitializer glfwInitializer;
 
     OpenGLLoader loader;
 
 };
 
-GLFWGateway::GLFWGateway(
+GlfwGateway::GlfwGateway(
     int const majorVersion,
     int const minorVersion,
     bool const enableDebugOutput)
@@ -59,21 +59,21 @@ GLFWGateway::GLFWGateway(
 {
 }
 
-GLFWGateway::GLFWGateway(GLFWGateway && rhs) noexcept = default;
+GlfwGateway::GlfwGateway(GlfwGateway && rhs) noexcept = default;
 
-auto GLFWGateway::operator = (GLFWGateway && rhs) noexcept
-    -> GLFWGateway & = default;
+auto GlfwGateway::operator = (GlfwGateway && rhs) noexcept
+    -> GlfwGateway & = default;
 
-GLFWGateway::~GLFWGateway() = default;
+GlfwGateway::~GlfwGateway() = default;
 
-auto GLFWGateway::createWindow(std::string_view title, CreateAsFullscreen)
-    -> GLFWWindow
+auto GlfwGateway::createWindow(std::string_view title, CreateAsFullscreen)
+    -> GlfwWindow
 {
     return impl->createWindow(title, CreateAsFullscreen{});
 }
 
-auto GLFWGateway::createWindow(std::string_view title, basix::Size<int> const & size)
-    -> GLFWWindow
+auto GlfwGateway::createWindow(std::string_view title, basix::Size<int> const & size)
+    -> GlfwWindow
 {
     return impl->createWindow(title, size);
 }
