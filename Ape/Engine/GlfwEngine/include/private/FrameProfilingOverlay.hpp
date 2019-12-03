@@ -57,6 +57,9 @@ private:
     auto updateFrameProcessingTaskProfile(basix::TaskProfile const & profile)
         -> int;
 
+    auto plotFrameProfileHistogram(int numOfFramesToPlot, float histogramWidth)
+        -> void;
+
 private:
 
     basix::Position<int> initialPosition;

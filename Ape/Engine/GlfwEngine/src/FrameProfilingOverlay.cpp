@@ -15,14 +15,37 @@ namespace ape
 namespace
 {
 
+class HistogramSpan
+{
+
+public:
+
+    using FrameProfileBuffer = FrameProfilingOverlay::FrameProfileBuffer;
+
+public:
+
+    HistogramSpan(FrameProfileBuffer const & profileBuffer, int const spanSize)
+        : profileBuffer{&profileBuffer}
+        , baseIndex{profileBuffer.size() - spanSize}
+    {
+    }
+
+public:
+
+    FrameProfileBuffer const * profileBuffer;
+
+    int baseIndex;
+
+};
+
 auto frameProfileGetter(void * const data, int const index)
     -> float
 {
     using FrameProfileBuffer = FrameProfilingOverlay::FrameProfileBuffer;
 
-    auto const & profileBuffer = *(reinterpret_cast<FrameProfileBuffer const *>(data));
+    auto const & span = *(reinterpret_cast<HistogramSpan *>(data));
 
-    auto const & profile = profileBuffer[index];
+    auto const & profile = (*span.profileBuffer)[span.baseIndex + index];
 
     auto const durationInMicroseconds = profile.getDuration().count();
 
@@ -77,7 +100,13 @@ auto FrameProfilingOverlay::getSelectedFrameProfile() const
         return nullptr;
     }
 
-    auto const & selectedProfile = (*frameProfileBuffer)[selectedFrameIndex];
+    auto const numOfFramesPlotted = std::min(maxNumOfPlottedFrames, frameProfileBuffer->size());
+
+    auto const firstPlottedFrameIndexInBuffer = frameProfileBuffer->size() - numOfFramesPlotted;
+
+    auto const selectedFrameIndexInBuffer = firstPlottedFrameIndexInBuffer + selectedFrameIndex;
+
+    auto const & selectedProfile = (*frameProfileBuffer)[selectedFrameIndexInBuffer];
 
     return &selectedProfile;
 }
@@ -137,18 +166,7 @@ auto FrameProfilingOverlay::updateFrameProfileHistogram()
 
     ImGui::PushStyleColor(ImGuiCol_PlotHistogramHovered, {1.0f, 0.3f, 1.0f, 1.0f});
 
-    ImGui::PlotHistogram(
-        "Frame time histogram",
-        frameProfileGetter,
-        const_cast<void *>(static_cast<void const *>(frameProfileBuffer)),
-        numOfFramesToPlot,
-        frameProfileBuffer->size() - numOfFramesToPlot,
-        nullptr,
-        0.0f,
-        static_cast<float>(frameDurationCapInMs),
-        {availableWindowSpace.x, lastHistogramHeight},
-        nullptr,
-        &selectedFrameIndex);
+    plotFrameProfileHistogram(numOfFramesToPlot, availableWindowSpace.x);
 
     ImGui::PopStyleColor();
 
@@ -218,6 +236,27 @@ auto FrameProfilingOverlay::updateFrameProcessingTaskProfile(basix::TaskProfile 
     ImGui::TreePop();
 
     return numOfItems;
+}
+
+auto FrameProfilingOverlay::plotFrameProfileHistogram(
+    int const numOfFramesToPlot,
+    float const histogramWidth)
+    -> void
+{
+    auto span = HistogramSpan{*frameProfileBuffer, numOfFramesToPlot};
+
+    ImGui::PlotHistogram(
+        "Frame time histogram",
+        frameProfileGetter,
+        static_cast<void *>(&span),
+        numOfFramesToPlot,
+        0,
+        nullptr,
+        0.0f,
+        static_cast<float>(frameDurationCapInMs),
+        {histogramWidth, lastHistogramHeight},
+        nullptr,
+        &selectedFrameIndex);
 }
 
 } // namespace ape
