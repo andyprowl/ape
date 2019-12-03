@@ -15,7 +15,7 @@ ImGuiWindow::ImGuiWindow(
     std::string_view const title,
     basix::Position<int> const & initialPosition,
     basix::Size<int> const & initialSize)
-    : ImGuiWindow{title}
+    : isValid{true}
 {
     ImGui::SetNextWindowPos(
         {static_cast<float>(initialPosition.x), static_cast<float>(initialPosition.y)},
@@ -24,6 +24,8 @@ ImGuiWindow::ImGuiWindow(
     ImGui::SetNextWindowSize(
         {static_cast<float>(initialSize.width), static_cast<float>(initialSize.height)},
         ImGuiCond_Once);
+
+    ImGui::Begin(title.data());
 }
 
 ImGuiWindow::ImGuiWindow(ImGuiWindow && rhs) noexcept

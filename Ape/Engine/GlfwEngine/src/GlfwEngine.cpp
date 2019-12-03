@@ -76,7 +76,7 @@ private:
     {
         auto const initialPosition =  basix::Position<int>{10, 10};
 
-        auto const initialSize = basix::Size<int>{window->getSize().width - 20, 300};
+        auto const initialSize = basix::Size<int>{window->getSize().width - 20, 250};
 
         return {initialPosition, initialSize, lastFrameProfiles};
     }
