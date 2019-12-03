@@ -112,18 +112,13 @@ private:
 
         ImGui::CreateContext();
 
-        [[maybe_unused]]
-        auto & io = ImGui::GetIO();
-
-        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
         ImGui::StyleColorsDark();
-        //ImGui::StyleColorsClassic();
 
         ImGui::GetStyle().Alpha = 0.2f;
 
-        auto const fontFilePath = R"(C:\Code\Projects\imgui\source\misc\fonts\ProggyClean.ttf)";
+        auto const fontFilePath = resourceFolder "/fonts/ProggyClean.ttf";
+
+        auto & io = ImGui::GetIO();
 
         io.Fonts->AddFontFromFileTTF(fontFilePath, 26);
 
