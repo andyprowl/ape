@@ -34,10 +34,6 @@ public:
     auto getProfile(int const index) const
         -> basix::TaskProfile const &
     {
-        static auto set = false;
-
-        static auto oddPass = true;
-
         if (histogramType == HistogramType::stationary)
         {
             return *(frameProfiles->data() + index);
@@ -71,14 +67,18 @@ auto frameProfileGetter(void * const data, int const index)
 } // unnamed namespace
 
 FrameProfilingOverlay::FrameProfilingOverlay(
-    Window & parentWindow,
+    basix::Position<int> const & initialPosition,
+    basix::Size<int> const & initialSize,
     FrameProfileBuffer const & lastFrameProfiles)
-    : parentWindow{&parentWindow}
+    : initialPosition{initialPosition}
+    , initialSize{initialSize}
     , lastFrameProfiles{&lastFrameProfiles}
     , doNotRecordFrameProfiles{false}
     , histogramType{HistogramType::circular}
     , maxNumOfPlottedFrames{lastFrameProfiles.capacity() / 2}
     , frameDurationCapInMs{50}
+    , selectedFrameIndex{-1}
+    , selectedFrameProfile{nullptr}
 {
 }
 
@@ -95,7 +95,7 @@ auto FrameProfilingOverlay::update()
 
     updateFrameDurationCap();
 
-    plotFrameProfileHistogram();
+    updateFrameProfileHistogram();
 }
 
 auto FrameProfilingOverlay::isFrameProfilingPaused() const
@@ -104,14 +104,16 @@ auto FrameProfilingOverlay::isFrameProfilingPaused() const
     return doNotRecordFrameProfiles;
 }
 
+auto FrameProfilingOverlay::getSelectedFrameProfile() const
+    -> basix::TaskProfile const *
+{
+    return selectedFrameProfile;
+}
+
 auto FrameProfilingOverlay::makeWindow() const
     -> ImGuiWindow
 {
-    auto const position = basix::Position<int>{10, 10};
-
-    auto const size = basix::Size<int>{parentWindow->getSize().width - 20, 200};
-
-    auto window = ImGuiWindow{"FrameProfiling", position, size};
+    auto window = ImGuiWindow{"FrameProfiling", initialPosition, initialSize};
 
     ImGui::Begin("Frame profiling");
 
@@ -122,6 +124,13 @@ auto FrameProfilingOverlay::updatePauseProfiling()
     -> void
 {
     ImGui::Checkbox("Pause frame profiling", &doNotRecordFrameProfiles);
+
+    if (!doNotRecordFrameProfiles)
+    {
+        selectedFrameIndex = -1;
+
+        selectedFrameProfile = nullptr;
+    }
 }
 
 auto FrameProfilingOverlay::updateHistogramType()
@@ -150,14 +159,20 @@ auto FrameProfilingOverlay::updateFrameDurationCap()
     ImGui::SliderInt("Frame duration cap (in ms)", &frameDurationCapInMs, 1, 100);
 }
 
-auto FrameProfilingOverlay::plotFrameProfileHistogram() const
+auto FrameProfilingOverlay::updateFrameProfileHistogram()
     -> void
 {
+    if (!doNotRecordFrameProfiles)
+    {
+    }
+
     auto profileView = FrameProfileView{*lastFrameProfiles, histogramType};
 
     auto const numOfFramesToPlot = std::min(maxNumOfPlottedFrames, lastFrameProfiles->size());
 
     auto const availableWindowSpace = ImGui::GetContentRegionAvail();
+
+    ImGui::PushStyleColor(ImGuiCol_PlotHistogramHovered, {1.0f, 0.3f, 1.0f, 1.0f});
 
     ImGui::PlotHistogram(
         "Frame time histogram",
@@ -168,7 +183,18 @@ auto FrameProfilingOverlay::plotFrameProfileHistogram() const
         nullptr,
         0.0f,
         static_cast<float>(frameDurationCapInMs),
-        {availableWindowSpace.x, availableWindowSpace.y});
+        {availableWindowSpace.x, availableWindowSpace.y},
+        nullptr,
+        &selectedFrameIndex);
+
+    ImGui::PopStyleColor();
+
+    if ((selectedFrameIndex >= 0) && ImGui::IsItemClicked())
+    {
+        selectedFrameProfile = &(*lastFrameProfiles)[selectedFrameIndex];
+
+        doNotRecordFrameProfiles = true;
+    }
 }
 
 } // namespace ape

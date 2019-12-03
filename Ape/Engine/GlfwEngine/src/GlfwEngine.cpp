@@ -36,7 +36,7 @@ public:
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
-        , frameProfilingOverlay{window, lastFrameProfiles}
+        , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , doNotRecordFrameProfiles{false}
         , stopBeforeNextIteration{false}
@@ -70,6 +70,16 @@ public:
     }
 
 private:
+
+    auto makeFrameProfilingOverlay() const
+        -> FrameProfilingOverlay
+    {
+        auto const initialPosition =  basix::Position<int>{10, 10};
+
+        auto const initialSize = basix::Size<int>{window->getSize().width - 20, 300};
+
+        return {initialPosition, initialSize, lastFrameProfiles};
+    }
     
     auto registerWindowResizeHandler()
         -> basix::ScopedSignalConnection
@@ -112,6 +122,10 @@ private:
         //ImGui::StyleColorsClassic();
 
         ImGui::GetStyle().Alpha = 0.2f;
+
+        auto const fontFilePath = R"(C:\Code\Projects\imgui\source\misc\fonts\ProggyClean.ttf)";
+
+        io.Fonts->AddFontFromFileTTF(fontFilePath, 26);
 
         ImGui_ImplGlfw_InitForOpenGL(window->getGlfwHandle(), true);
 

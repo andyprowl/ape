@@ -5766,7 +5766,7 @@ bool ImGui::ListBox(const char* label, int* current_item, bool (*items_getter)(v
 // - PlotHistogram()
 //-------------------------------------------------------------------------
 
-void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 frame_size)
+void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 frame_size, int* hovered_index, int* selected_index)
 {
     ImGuiWindow* window = GetCurrentWindow();
     if (window->SkipItems)
@@ -5817,8 +5817,14 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
         int res_w = ImMin((int)frame_size.x, values_count) + ((plot_type == ImGuiPlotType_Lines) ? -1 : 0);
         int item_count = values_count + ((plot_type == ImGuiPlotType_Lines) ? -1 : 0);
 
+        if (hovered_index != nullptr)
+        {
+            *hovered_index = -1;
+        }
+
         // Tooltip on hover
         int v_hovered = -1;
+        int v_selected = (selected_index != nullptr) ? *selected_index : -1;
         if (hovered && inner_bb.Contains(g.IO.MousePos))
         {
             const float t = ImClamp((g.IO.MousePos.x - inner_bb.Min.x) / (inner_bb.Max.x - inner_bb.Min.x), 0.0f, 0.9999f);
@@ -5832,6 +5838,21 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
             else if (plot_type == ImGuiPlotType_Histogram)
                 SetTooltip("%d: %8.4g", v_idx, v0);
             v_hovered = v_idx;
+
+            if (IsItemClicked())
+            {
+                v_selected = v_idx;
+            }
+
+            if (hovered_index != nullptr)
+            {
+                *hovered_index = v_hovered;
+            }
+
+            if (selected_index != nullptr)
+            {
+                *selected_index = v_selected;
+            }
         }
 
         const float t_step = 1.0f / (float)res_w;
@@ -5844,6 +5865,7 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
 
         const ImU32 col_base = GetColorU32((plot_type == ImGuiPlotType_Lines) ? ImGuiCol_PlotLines : ImGuiCol_PlotHistogram);
         const ImU32 col_hovered = GetColorU32((plot_type == ImGuiPlotType_Lines) ? ImGuiCol_PlotLinesHovered : ImGuiCol_PlotHistogramHovered);
+        const ImU32 col_selected = GetColorU32((plot_type == ImGuiPlotType_Lines) ? ImGuiCol_PlotLinesSelected : ImGuiCol_PlotHistogramSelected);
 
         for (int n = 0; n < res_w; n++)
         {
@@ -5856,15 +5878,20 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
             // NB: Draw calls are merged together by the DrawList system. Still, we should render our batch are lower level to save a bit of CPU.
             ImVec2 pos0 = ImLerp(inner_bb.Min, inner_bb.Max, tp0);
             ImVec2 pos1 = ImLerp(inner_bb.Min, inner_bb.Max, (plot_type == ImGuiPlotType_Lines) ? tp1 : ImVec2(tp1.x, histogram_zero_line_t));
+
+            const ImU32 color = (v_hovered == v1_idx) 
+                ? col_hovered 
+                : ((v_selected == v1_idx) ? col_selected : col_base);
+
             if (plot_type == ImGuiPlotType_Lines)
             {
-                window->DrawList->AddLine(pos0, pos1, v_hovered == v1_idx ? col_hovered : col_base);
+                window->DrawList->AddLine(pos0, pos1, color);
             }
             else if (plot_type == ImGuiPlotType_Histogram)
             {
                 if (pos1.x >= pos0.x + 2.0f)
                     pos1.x -= 1.0f;
-                window->DrawList->AddRectFilled(pos0, pos1, v_hovered == v1_idx ? col_hovered : col_base);
+                window->DrawList->AddRectFilled(pos0, pos1, color);
             }
 
             t0 = t1;
@@ -5895,26 +5922,26 @@ static float Plot_ArrayGetter(void* data, int idx)
     return v;
 }
 
-void ImGui::PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride)
+void ImGui::PlotLines(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride, int* hovered_index, int* selected_index)
 {
     ImGuiPlotArrayGetterData data(values, stride);
-    PlotEx(ImGuiPlotType_Lines, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Lines, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hovered_index, selected_index);
 }
 
-void ImGui::PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+void ImGui::PlotLines(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int* hovered_index, int* selected_index)
 {
-    PlotEx(ImGuiPlotType_Lines, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Lines, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hovered_index, selected_index);
 }
 
-void ImGui::PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride)
+void ImGui::PlotHistogram(const char* label, const float* values, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int stride, int* hovered_index, int* selected_index)
 {
     ImGuiPlotArrayGetterData data(values, stride);
-    PlotEx(ImGuiPlotType_Histogram, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Histogram, label, &Plot_ArrayGetter, (void*)&data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hovered_index, selected_index);
 }
 
-void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size)
+void ImGui::PlotHistogram(const char* label, float (*values_getter)(void* data, int idx), void* data, int values_count, int values_offset, const char* overlay_text, float scale_min, float scale_max, ImVec2 graph_size, int* hovered_index, int* selected_index)
 {
-    PlotEx(ImGuiPlotType_Histogram, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size);
+    PlotEx(ImGuiPlotType_Histogram, label, values_getter, data, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size, hovered_index, selected_index);
 }
 
 //-------------------------------------------------------------------------
