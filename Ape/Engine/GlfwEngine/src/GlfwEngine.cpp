@@ -1,7 +1,9 @@
 #include <Ape/Engine/GlfwEngine/GlfwEngine.hpp>
 
+#include "FrameProfilingOverlay.hpp"
 #include "Glfw.hpp"
 #include "GlfwImGuiBinding.hpp"
+#include "ImGuiFrame.hpp"
 #include "OpenGLImGuiBinding.hpp"
 
 #include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
@@ -23,25 +25,6 @@
 namespace ape
 {
 
-namespace
-{
-
-auto frameProfileGetter(void * const data, int const index)
-    -> float
-{
-    using FrameProfileBuffer = basix::CircularBuffer<basix::TaskProfile>;
-
-    auto const & profiles = *(reinterpret_cast<FrameProfileBuffer *>(data));
-
-    auto const & profile = profiles[index];
-
-    auto const durationInMicroseconds = profile.getDuration().count();
-
-    return durationInMicroseconds / 1'000.f;
-}
-
-} // unnamed namespace
-
 class GlfwEngine::Impl
 {
 
@@ -53,7 +36,9 @@ public:
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
+        , frameProfilingOverlay{window, lastFrameProfiles}
         , resizeHandlerConnection{registerWindowResizeHandler()}
+        , doNotRecordFrameProfiles{false}
         , stopBeforeNextIteration{false}
     {
         auto const size = window.getSize();
@@ -72,7 +57,7 @@ public:
 
             recordFrameProfile();
 
-            displayInspectionOverlays();
+            updateInspectionOverlays();
 
             window->swapBuffers();
         }
@@ -125,6 +110,8 @@ private:
 
         ImGui::StyleColorsDark();
         //ImGui::StyleColorsClassic();
+
+        ImGui::GetStyle().Alpha = 0.2f;
 
         ImGui_ImplGlfw_InitForOpenGL(window->getGlfwHandle(), true);
 
@@ -201,42 +188,24 @@ private:
     auto recordFrameProfile()
         -> void
     {
+        if (doNotRecordFrameProfiles)
+        {
+            return;
+        }
+
         auto & profile = profiler.getRootTaskProfile();
 
         lastFrameProfiles.push_back(std::move(profile));
     }
 
-    auto displayInspectionOverlays() const
+    auto updateInspectionOverlays()
         -> void
     {
-        ImGui_ImplOpenGL3_NewFrame();
+        auto const newFrame = ImGuiFrame{};
 
-        ImGui_ImplGlfw_NewFrame();
-        
-        ImGui::NewFrame();
+        frameProfilingOverlay.update();
 
-        ImGui::Begin("Hello, world!");
-
-        auto const size = window->getSize();
-
-        ImGui::PlotHistogram(
-            "Frame time histogram",
-            frameProfileGetter,
-            const_cast<void *>(static_cast<void const *>(&lastFrameProfiles)),
-            lastFrameProfiles.size(),
-            0,
-            nullptr,
-            0.0f,
-            100.0f,
-            ImVec2{size.width - 50.f, 150.0f});
-
-        ImGui::SetWindowSize({size.width - 50.f, 0.0f});
-
-        ImGui::End();
-
-        ImGui::Render();
-
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        doNotRecordFrameProfiles = frameProfilingOverlay.isFrameProfilingPaused();
     }
 
 private:
@@ -255,7 +224,11 @@ private:
 
     basix::CircularBuffer<basix::TaskProfile> lastFrameProfiles;
 
+    FrameProfilingOverlay frameProfilingOverlay;
+
     basix::ScopedSignalConnection resizeHandlerConnection;
+
+    bool doNotRecordFrameProfiles;
 
     bool stopBeforeNextIteration;
 

@@ -23,7 +23,7 @@ public:
 public:
 
     explicit CircularBuffer(int const maxSize)
-        : storage{new AlignedStorage[maxSize + 1u]}
+        : storage{new AlignedStorage[static_cast<std::size_t>(maxSize) + 1u]}
         , numOfElements{0}
         , maxNumOfElements{maxSize}
         , firstIndex{0}
@@ -112,7 +112,7 @@ public:
     auto front() const
         -> value_type const &
     {
-        auto const p = reinterpret_cast<value_type *>(&storage[firstIndex]);
+        auto const p = reinterpret_cast<value_type const *>(&storage[firstIndex]);
 
         return *(std::launder(p));
     }
@@ -130,7 +130,7 @@ public:
 
         auto const lastIndex = (firstIndex + (numOfElements - 1)) % storageSize;
 
-        auto const p = reinterpret_cast<value_type *>(&storage[lastIndex]);
+        auto const p = reinterpret_cast<value_type const *>(&storage[lastIndex]);
 
         return *(std::launder(p));
     }
@@ -162,7 +162,7 @@ public:
 
         auto const index = (firstIndex + i) % storageSize;
 
-        auto const p = reinterpret_cast<value_type *>(&storage[index]);
+        auto const p = reinterpret_cast<value_type const *>(&storage[index]);
 
         return *(std::launder(p));
     }
@@ -197,9 +197,23 @@ public:
         return {storage, storageSize, onePastLastElementIndex};
     }
 
+    auto data()
+        -> value_type *
+    {
+        return const_cast<value_type *>(asConst().data());
+    }
+
+    auto data() const
+        -> value_type const *
+    {
+        auto const p = reinterpret_cast<value_type const *>(&storage[0]);
+
+        return std::launder(p);
+    }
+
 private:
 
-    using AlignedStorage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
+    using AlignedStorage = std::aligned_storage_t<sizeof(value_type), alignof(value_type)>;
 
 private:
 

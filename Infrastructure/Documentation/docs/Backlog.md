@@ -1,4 +1,6 @@
 - Use imgui to draw frame duration stats as an overlay
+- Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
+ - How did we remove them last time?
 - Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Write tutorial on radar approach to frustum culling for spheres
 - Write tutorial/documentation on gamma correction

@@ -132,7 +132,7 @@ public:
     auto front()
         -> value_type &
     {
-        return (*this)[0];
+        return const_cast<value_type &>(asConst().front());
     }
 
     auto front() const
@@ -144,7 +144,7 @@ public:
     auto back()
         -> value_type &
     {
-        return (*this)[currentSize - 1];
+        return const_cast<value_type &>(asConst().back());
     }
 
     auto back() const
@@ -156,9 +156,7 @@ public:
     auto at(int const i)
         -> value_type &
     {
-        throwIfOutOfRange(i);
-
-        return (*this)[i];
+        return const_cast<value_type *>(asConst().at(i));
     }
 
     auto at(int const i) const
@@ -172,9 +170,7 @@ public:
     auto operator [] (int const i)
         -> value_type &
     {
-        auto const p = reinterpret_cast<value_type *>(&storage[i]);
-
-        return *(std::launder(p));
+        return const_cast<value_type &>(asConst()[i]);
     }
 
     auto operator [] (int const i) const
@@ -211,7 +207,7 @@ public:
 
 private:
 
-    using AlignedStorage = typename std::aligned_storage<sizeof(T), alignof(T)>::type;
+    using AlignedStorage = std::aligned_storage_t<sizeof(value_type), alignof(value_type)>;
 
     using Storage = std::array<AlignedStorage, Capacity>;
 
@@ -233,6 +229,12 @@ private:
         {
             throw std::out_of_range{"Out-of-bounds access"};
         }
+    }
+
+    auto asConst() const
+        -> StaticVector const &
+    {
+        return *this;
     }
 
     auto destroyAllElements()

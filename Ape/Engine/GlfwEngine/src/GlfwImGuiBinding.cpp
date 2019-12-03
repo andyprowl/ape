@@ -53,14 +53,14 @@
 #define GLFW_HAS_VULKAN               (GLFW_VERSION_MAJOR * 1000 + GLFW_VERSION_MINOR * 100 >= 3200) // 3.2+ glfwCreateWindowSurface
 
 // Data
-enum GlfwClientApi
+enum class GlfwClientApi
 {
     GlfwClientApi_Unknown,
     GlfwClientApi_OpenGL,
     GlfwClientApi_Vulkan
 };
 static GLFWwindow*          g_Window = NULL;    // Main window
-static GlfwClientApi        g_ClientApi = GlfwClientApi_Unknown;
+static GlfwClientApi        g_ClientApi = GlfwClientApi::GlfwClientApi_Unknown;
 static double               g_Time = 0.0;
 static bool                 g_MouseJustPressed[5] = { false, false, false, false, false };
 static GLFWcursor*          g_MouseCursors[ImGuiMouseCursor_COUNT] = {};
@@ -199,12 +199,12 @@ static bool ImGui_ImplGlfw_Init(GLFWwindow* window, bool install_callbacks, Glfw
 
 bool ImGui_ImplGlfw_InitForOpenGL(GLFWwindow* window, bool install_callbacks)
 {
-    return ImGui_ImplGlfw_Init(window, install_callbacks, GlfwClientApi_OpenGL);
+    return ImGui_ImplGlfw_Init(window, install_callbacks, GlfwClientApi::GlfwClientApi_OpenGL);
 }
 
 bool ImGui_ImplGlfw_InitForVulkan(GLFWwindow* window, bool install_callbacks)
 {
-    return ImGui_ImplGlfw_Init(window, install_callbacks, GlfwClientApi_Vulkan);
+    return ImGui_ImplGlfw_Init(window, install_callbacks, GlfwClientApi::GlfwClientApi_Vulkan);
 }
 
 void ImGui_ImplGlfw_Shutdown()
@@ -223,7 +223,7 @@ void ImGui_ImplGlfw_Shutdown()
         glfwDestroyCursor(g_MouseCursors[cursor_n]);
         g_MouseCursors[cursor_n] = NULL;
     }
-    g_ClientApi = GlfwClientApi_Unknown;
+    g_ClientApi = GlfwClientApi::GlfwClientApi_Unknown;
 }
 
 static void ImGui_ImplGlfw_UpdateMousePosAndButtons()

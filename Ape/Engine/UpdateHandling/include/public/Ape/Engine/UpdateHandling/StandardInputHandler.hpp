@@ -77,7 +77,7 @@ private:
     auto registerFocusLostHandlerConnection()
         -> basix::ScopedSignalConnection;
 
-    auto processInputCaptureToggling(ape::Key const key, KeyModifier const modifier) const
+    auto processInputCaptureToggling(ape::Key const key, KeyModifier const modifier)
         -> void;
 
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
@@ -120,7 +120,7 @@ private:
     SceneRenderer * renderer;
 
     CameraManipulator cameraManipulator;
-        
+
     SkyboxSelector * skyboxSelector;
 
     EffectSelector * effectSelector;

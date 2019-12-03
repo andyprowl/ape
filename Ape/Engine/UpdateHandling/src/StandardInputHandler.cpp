@@ -150,7 +150,7 @@ auto StandardInputHandler::registerFocusLostHandlerConnection()
 
 auto StandardInputHandler::processInputCaptureToggling(
     ape::Key const key, 
-    KeyModifier const modifier) const
+    KeyModifier const modifier)
     -> void
 {
     if ((key != ape::Key::keyI) || (modifier != KeyModifier::none))
@@ -161,10 +161,14 @@ auto StandardInputHandler::processInputCaptureToggling(
     if (handledWindow->isMouseCaptured())
     {
         handledWindow->releaseMouse();
+
+        cameraManipulator.deactivate();
     }
     else
     {
         handledWindow->captureMouse();
+
+        cameraManipulator.activate();
     }
 }
 
