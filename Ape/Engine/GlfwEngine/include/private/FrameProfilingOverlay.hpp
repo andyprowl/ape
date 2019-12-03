@@ -17,19 +17,13 @@ class FrameProfilingOverlay
 public:
 
     using FrameProfileBuffer = basix::CircularBuffer<basix::TaskProfile>;
-    
-    enum class HistogramType
-    {
-        circular,
-        stationary
-    };
 
 public:
 
     FrameProfilingOverlay(
         basix::Position<int> const & initialPosition,
         basix::Size<int> const & initialSize,
-        FrameProfileBuffer const & lastFrameProfiles);
+        FrameProfileBuffer const & frameProfileBuffer);
 
     auto update()
         -> void;
@@ -48,9 +42,6 @@ private:
     auto updatePauseProfiling()
         -> void;
 
-    auto updateHistogramType()
-        -> void;
-
     auto updateMaxNumOfPlottedFrames()
         -> void;
 
@@ -66,19 +57,15 @@ private:
 
     basix::Size<int> initialSize;
 
-    basix::CircularBuffer<basix::TaskProfile> const * lastFrameProfiles;
+    FrameProfileBuffer const * frameProfileBuffer;
 
     bool doNotRecordFrameProfiles;
-
-    HistogramType histogramType;
 
     int maxNumOfPlottedFrames;
 
     int frameDurationCapInMs;
 
     int selectedFrameIndex;
-
-    basix::TaskProfile const * selectedFrameProfile;
 
 };
 

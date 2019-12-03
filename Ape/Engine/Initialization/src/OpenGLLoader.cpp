@@ -21,6 +21,11 @@ auto GLAPIENTRY onOpenGLError(
     void const * const /*userParam*/)
     -> void
 {
+    if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+    {
+        return;
+    }
+
     std::cout 
         << "OpenGL callback invoked! "
         << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "")

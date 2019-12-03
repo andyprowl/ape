@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cassert>
+#include <iterator>
 #include <type_traits>
 #include <utility>
 
@@ -17,6 +18,14 @@ public:
 
     using value_type = T;
 
+    using difference_type = ptrdiff_t;
+
+    using reference = T &;
+    
+    using pointer = T *;
+
+    using iterator_category = std::random_access_iterator_tag;
+
 public:
 
     CircularBufferIterator(AlignedStorage * const storage, int const storageSize, int const index)
@@ -29,13 +38,25 @@ public:
     auto operator * ()
         -> T &
     {
-        auto const p = reinterpret_cast<value_type *>(&storage[index]);
+        return const_cast<T &>(*(asConst()));
+    }
+
+    auto operator * () const
+        -> T const &
+    {
+        auto const p = reinterpret_cast<value_type const *>(&storage[index]);
 
         return *(std::launder(p));
     }
 
     auto operator -> ()
         -> T *
+    {
+        return const_cast<T *>(asConst().operator -> ());
+    }
+
+    auto operator -> () const
+        -> T const *
     {
         return &(*this);
     }
@@ -71,6 +92,20 @@ public:
     }
 
     template<typename U>
+    auto operator - (CircularBufferIterator<U> const rhs) const
+        -> difference_type
+    {
+        if (index >= rhs.index)
+        {
+            return (index - rhs.index);
+        }
+        else
+        {
+            return (rhs.index + (storageSize - index));
+        }
+    }
+
+    template<typename U>
     auto operator == (CircularBufferIterator<U> const & rhs) const
         -> bool
     {
@@ -90,6 +125,14 @@ public:
         assert(storage == rhs.storage);
 
         return (index != rhs.index);
+    }
+
+private:
+
+    auto asConst() const
+        -> CircularBufferIterator const &
+    {
+        return *this;
     }
 
 private:

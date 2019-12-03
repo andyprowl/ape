@@ -5811,6 +5811,8 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
 
     RenderFrame(frame_bb.Min, frame_bb.Max, GetColorU32(ImGuiCol_FrameBg), true, style.FrameRounding);
 
+    const bool isClicked = IsItemClicked();
+
     const int values_count_min = (plot_type == ImGuiPlotType_Lines) ? 2 : 1;
     if (values_count >= values_count_min)
     {
@@ -5839,7 +5841,7 @@ void ImGui::PlotEx(ImGuiPlotType plot_type, const char* label, float (*values_ge
                 SetTooltip("%d: %8.4g", v_idx, v0);
             v_hovered = v_idx;
 
-            if (IsItemClicked())
+            if (isClicked)
             {
                 v_selected = v_idx;
             }
