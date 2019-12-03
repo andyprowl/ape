@@ -4,11 +4,10 @@
 
 #include <Ape/Rendering/Windowing/Window.hpp>
 
-#include <Basix/Range/Search.hpp>
-
 #include <DearImGui/imgui.h>
 
 #include <algorithm>
+#include <cassert>
 
 namespace ape
 {
@@ -39,7 +38,9 @@ FrameProfilingOverlay::FrameProfilingOverlay(
     : initialPosition{initialPosition}
     , initialSize{initialSize}
     , frameProfileBuffer{&frameProfileBuffer}
-    , doNotRecordFrameProfiles{false}
+    , lastHistogramHeight{0.0f}
+    , lastWindowHeight{0.0f}
+    , isProfilingPaused{false}
     , maxNumOfPlottedFrames{frameProfileBuffer.capacity() / 2}
     , frameDurationCapInMs{50}
     , selectedFrameIndex{-1}
@@ -58,12 +59,14 @@ auto FrameProfilingOverlay::update()
     updateFrameDurationCap();
 
     updateFrameProfileHistogram();
+
+    updateFrameProfileDetails();
 }
 
 auto FrameProfilingOverlay::isFrameProfilingPaused() const
     -> bool
 {
-    return doNotRecordFrameProfiles;
+    return isProfilingPaused;
 }
 
 auto FrameProfilingOverlay::getSelectedFrameProfile() const
@@ -82,17 +85,21 @@ auto FrameProfilingOverlay::getSelectedFrameProfile() const
 auto FrameProfilingOverlay::makeWindow() const
     -> ImGuiWindow
 {
-    return ImGuiWindow{"FrameProfiling", initialPosition, initialSize};
+    return ImGuiWindow{"Frame Profiling", initialPosition, initialSize};
 }
 
 auto FrameProfilingOverlay::updatePauseProfiling()
     -> void
 {
-    ImGui::Checkbox("Pause frame profiling", &doNotRecordFrameProfiles);
+    auto const wasProfilingPaused = isProfilingPaused;
 
-    if (!doNotRecordFrameProfiles)
+    ImGui::Checkbox("Pause frame profiling", &isProfilingPaused);
+
+    if (wasProfilingPaused && !isProfilingPaused)
     {
         selectedFrameIndex = -1;
+
+        ImGui::SetWindowSize({0.0f, lastWindowHeight});
     }
 }
 
@@ -117,13 +124,16 @@ auto FrameProfilingOverlay::updateFrameDurationCap()
 auto FrameProfilingOverlay::updateFrameProfileHistogram()
     -> void
 {
-    if (!doNotRecordFrameProfiles)
-    {
-    }
-
     auto const numOfFramesToPlot = std::min(maxNumOfPlottedFrames, frameProfileBuffer->size());
 
-    auto const availableWindowSpace = ImGui::GetContentRegionAvail();
+    auto availableWindowSpace = ImGui::GetContentRegionAvail();
+    
+    if (selectedFrameIndex < 0)
+    {
+        lastHistogramHeight = availableWindowSpace.y - ImGui::GetFrameHeightWithSpacing();
+
+        lastWindowHeight = ImGui::GetWindowHeight();
+    }
 
     ImGui::PushStyleColor(ImGuiCol_PlotHistogramHovered, {1.0f, 0.3f, 1.0f, 1.0f});
 
@@ -136,7 +146,7 @@ auto FrameProfilingOverlay::updateFrameProfileHistogram()
         nullptr,
         0.0f,
         static_cast<float>(frameDurationCapInMs),
-        {availableWindowSpace.x, availableWindowSpace.y},
+        {availableWindowSpace.x, lastHistogramHeight},
         nullptr,
         &selectedFrameIndex);
 
@@ -144,8 +154,70 @@ auto FrameProfilingOverlay::updateFrameProfileHistogram()
 
     if ((selectedFrameIndex >= 0) && ImGui::IsItemClicked())
     {
-        doNotRecordFrameProfiles = true;
+        isProfilingPaused = true;
     }
+}
+
+auto FrameProfilingOverlay::updateFrameProfileDetails()
+    -> void
+{
+    static auto resize = true;
+
+    if (selectedFrameIndex < 0)
+    {
+        ImGui::Text("No frame selected");
+
+        resize = true;
+
+        return;
+    }
+    
+    auto const selectedProfile = getSelectedFrameProfile();
+
+    assert(selectedProfile != nullptr);
+
+    auto const numOfTreeItems = updateFrameProcessingTaskProfile(*selectedProfile);
+
+    if (resize)
+    {
+        auto const itemHeight = ImGui::GetItemRectSize().y;
+
+        ImGui::SetWindowSize({0.0f, lastWindowHeight + numOfTreeItems * itemHeight});
+
+        resize = false;
+    }
+}
+
+auto FrameProfilingOverlay::updateFrameProcessingTaskProfile(basix::TaskProfile const & profile)
+    -> int
+{
+    ImGui::Columns(2, "Timings", true);
+
+    ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+    auto const isExpanded = ImGui::TreeNode(profile.getName().data());
+
+    ImGui::NextColumn();
+
+    ImGui::Text("%f ms", profile.getDuration().count() / 1'000.f);
+
+    ImGui::NextColumn();
+
+    if (!isExpanded)
+    {
+        return 1;
+    }
+
+    auto numOfItems = 1;
+
+    for (auto const & subProfile : profile.getSubProfiles())
+    {
+        numOfItems += updateFrameProcessingTaskProfile(*subProfile);
+    }
+
+    ImGui::TreePop();
+
+    return numOfItems;
 }
 
 } // namespace ape

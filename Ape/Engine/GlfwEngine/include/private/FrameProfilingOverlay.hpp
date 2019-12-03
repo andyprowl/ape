@@ -51,6 +51,12 @@ private:
     auto updateFrameProfileHistogram()
         -> void;
 
+    auto updateFrameProfileDetails()
+        -> void;
+
+    auto updateFrameProcessingTaskProfile(basix::TaskProfile const & profile)
+        -> int;
+
 private:
 
     basix::Position<int> initialPosition;
@@ -59,7 +65,11 @@ private:
 
     FrameProfileBuffer const * frameProfileBuffer;
 
-    bool doNotRecordFrameProfiles;
+    float lastHistogramHeight;
+
+    float lastWindowHeight;
+
+    bool isProfilingPaused;
 
     int maxNumOfPlottedFrames;
 

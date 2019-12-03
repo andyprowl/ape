@@ -117,6 +117,11 @@ auto CameraSightMouseDriver::onFrame()
 auto CameraSightMouseDriver::onMouseWheel(basix::Offset<int> const offset)
     -> void
 {
+    if (!isActive())
+    {
+        return;
+    }
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     if (activeCamera == nullptr)
