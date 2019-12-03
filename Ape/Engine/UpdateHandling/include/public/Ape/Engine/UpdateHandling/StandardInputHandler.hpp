@@ -77,6 +77,9 @@ private:
     auto registerFocusLostHandlerConnection()
         -> basix::ScopedSignalConnection;
 
+    auto processInputCaptureToggling(ape::Key const key, KeyModifier const modifier) const
+        -> void;
+
     auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
         -> void;
 

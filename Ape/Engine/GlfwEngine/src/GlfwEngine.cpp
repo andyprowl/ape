@@ -23,6 +23,25 @@
 namespace ape
 {
 
+namespace
+{
+
+auto frameProfileGetter(void * const data, int const index)
+    -> float
+{
+    using FrameProfileBuffer = basix::CircularBuffer<basix::TaskProfile>;
+
+    auto const & profiles = *(reinterpret_cast<FrameProfileBuffer *>(data));
+
+    auto const & profile = profiles[index];
+
+    auto const durationInMicroseconds = profile.getDuration().count();
+
+    return durationInMicroseconds / 1'000.f;
+}
+
+} // unnamed namespace
+
 class GlfwEngine::Impl
 {
 
@@ -33,7 +52,7 @@ public:
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
-        , lastFrameProfiles{60 * 30} // 30 seconds worth of frame profiles when running at 60 FPS
+        , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
@@ -41,24 +60,7 @@ public:
 
         setViewport(size);
 
-        IMGUI_CHECKVERSION();
-
-        ImGui::CreateContext();
-
-        [[maybe_unused]]
-        auto & io = ImGui::GetIO();
-
-        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-        // Setup Dear ImGui style
-        ImGui::StyleColorsDark();
-        //ImGui::StyleColorsClassic();
-
-        // Setup Platform/Renderer bindings
-        ImGui_ImplGlfw_InitForOpenGL(window.getGlfwHandle(), true);
-
-        ImGui_ImplOpenGL3_Init("#version 450");
+        setupImGui();
     }
 
     auto start()
@@ -71,6 +73,8 @@ public:
             recordFrameProfile();
 
             displayInspectionOverlays();
+
+            window->swapBuffers();
         }
     }
 
@@ -104,6 +108,27 @@ private:
         renderer->setViewport({origin, size});
 
         updateAllCameraAspectRatio();
+    }
+
+    auto setupImGui()
+        -> void
+    {
+        IMGUI_CHECKVERSION();
+
+        ImGui::CreateContext();
+
+        [[maybe_unused]]
+        auto & io = ImGui::GetIO();
+
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+        //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+        ImGui::StyleColorsDark();
+        //ImGui::StyleColorsClassic();
+
+        ImGui_ImplGlfw_InitForOpenGL(window->getGlfwHandle(), true);
+
+        ImGui_ImplOpenGL3_Init("#version 450");
     }
 
     auto updateAllCameraAspectRatio()
@@ -163,8 +188,6 @@ private:
         auto const profiling = profiler.startProfilingTask("Scene rendering");
 
         renderer->render();
-
-        window->swapBuffers();
     }
 
     auto isWindowReady() const
@@ -186,44 +209,33 @@ private:
     auto displayInspectionOverlays() const
         -> void
     {
-        // TODO: display captured frame profiles using ImGui.
-
-        static float f = 0.0f;
-        static int counter = 0;
-
         ImGui_ImplOpenGL3_NewFrame();
+
         ImGui_ImplGlfw_NewFrame();
+        
         ImGui::NewFrame();
 
         ImGui::Begin("Hello, world!");
 
-        ImGui::Text("This is some useful text.");
+        auto const size = window->getSize();
 
-        ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+        ImGui::PlotHistogram(
+            "Frame time histogram",
+            frameProfileGetter,
+            const_cast<void *>(static_cast<void const *>(&lastFrameProfiles)),
+            lastFrameProfiles.size(),
+            0,
+            nullptr,
+            0.0f,
+            100.0f,
+            ImVec2{size.width - 50.f, 150.0f});
 
-        ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-        ImGui::ColorEdit3("clear color", (float*)&clear_color);
-
-        if (ImGui::Button("Button"))
-            counter++;
-
-        ImGui::SameLine();
-        ImGui::Text("counter = %d", counter);
-
-        ImGui::Text(
-            "Application average %.3f ms/frame (%.1f FPS)",
-            1000.0f / ImGui::GetIO().Framerate,
-            ImGui::GetIO().Framerate);
+        ImGui::SetWindowSize({size.width - 50.f, 0.0f});
 
         ImGui::End();
 
-        // Rendering
         ImGui::Render();
-        int display_w, display_h;
-        glfwGetFramebufferSize(window->getGlfwHandle(), &display_w, &display_h);
-        glViewport(0, 0, display_w, display_h);
-        glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-        glClear(GL_COLOR_BUFFER_BIT);
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     }
 

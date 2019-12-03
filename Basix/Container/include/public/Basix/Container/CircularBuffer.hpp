@@ -23,7 +23,7 @@ public:
 public:
 
     explicit CircularBuffer(int const maxSize)
-        : storage{new AlignedStorage[maxSize + 1]}
+        : storage{new AlignedStorage[maxSize + 1u]}
         , numOfElements{0}
         , maxNumOfElements{maxSize}
         , firstIndex{0}

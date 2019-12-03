@@ -60,6 +60,8 @@ auto StandardInputHandler::onFrame(std::chrono::nanoseconds frameDuration)
 auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     -> void
 {
+    processInputCaptureToggling(key, modifier);
+
     processFullScreenToggling(key, modifier);
 
     processFrustumCullingToggling(key, modifier);
@@ -144,6 +146,26 @@ auto StandardInputHandler::registerFocusLostHandlerConnection()
     {
         onFocusLost();
     });
+}
+
+auto StandardInputHandler::processInputCaptureToggling(
+    ape::Key const key, 
+    KeyModifier const modifier) const
+    -> void
+{
+    if ((key != ape::Key::keyI) || (modifier != KeyModifier::none))
+    {
+        return;
+    }
+
+    if (handledWindow->isMouseCaptured())
+    {
+        handledWindow->releaseMouse();
+    }
+    else
+    {
+        handledWindow->captureMouse();
+    }
 }
 
 auto StandardInputHandler::processFullScreenToggling(
