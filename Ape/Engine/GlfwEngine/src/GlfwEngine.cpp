@@ -35,12 +35,15 @@ public:
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
+        , profiler{}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , doNotRecordFrameProfiles{false}
         , stopBeforeNextIteration{false}
     {
+        renderer.setProfiler(&profiler);
+
         auto const size = window.getSize();
 
         setViewport(size);

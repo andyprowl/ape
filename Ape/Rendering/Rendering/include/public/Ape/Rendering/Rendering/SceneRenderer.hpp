@@ -18,6 +18,15 @@
 
 #include <memory>
 #include <stdexcept>
+#include <string_view>
+
+namespace basix
+{
+
+class ScopedTaskProfiling;
+class TaskProfiler;
+
+} // namespace basix
 
 namespace ape
 {
@@ -111,6 +120,12 @@ public:
     auto getRenderers()
         -> RendererSet &;
 
+    auto getProfiler() const
+        -> basix::TaskProfiler *;
+
+    auto setProfiler(basix::TaskProfiler * newProfiler)
+        -> void;
+
 private:
 
     auto makeShadowMapping() const
@@ -152,6 +167,9 @@ private:
     auto renderOffscreenSurfaceToScreen() const
         -> void;
 
+    auto startProfilingTask(std::string_view name, std::string_view description) const
+        -> basix::ScopedTaskProfiling;
+
 private:
 
     std::unique_ptr<ShapeDrawer> shapeDrawer;
@@ -175,6 +193,8 @@ private:
     bool renderBoundingBoxes;
 
     glow::VertexArrayObject arrayObject;
+
+    basix::TaskProfiler * profiler;
 
 };
 

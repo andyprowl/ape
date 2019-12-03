@@ -13,6 +13,12 @@ class [[nodiscard]] ScopedTaskProfiling
 
 public:
 
+    ScopedTaskProfiling()
+        : completer{nullptr}
+        , profile{nullptr}
+    {
+    }
+
     ScopedTaskProfiling(TaskProfiler & profiler, TaskProfile & profile)
         : completer{&profiler}
         , profile{&profile}

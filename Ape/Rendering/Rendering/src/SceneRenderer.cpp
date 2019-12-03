@@ -12,6 +12,8 @@
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
+#include <Basix/Profiling/TaskProfiler.hpp>
+
 #include <glad/glad.h>
 
 #include <algorithm>
@@ -38,6 +40,7 @@ SceneRenderer::SceneRenderer(
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
     , renderBoundingBoxes{false}
+    , profiler{nullptr}
 {
     setupDrawingMode();
 }
@@ -105,6 +108,18 @@ auto SceneRenderer::getRenderers()
     return renderers;
 }
 
+auto SceneRenderer::getProfiler() const
+    -> basix::TaskProfiler *
+{
+    return profiler;
+}
+
+auto SceneRenderer::setProfiler(basix::TaskProfiler * const newProfiler)
+    -> void
+{
+    profiler = newProfiler;
+}
+
 auto SceneRenderer::makeShadowMapping() const
     -> ShadowMapping
 {
@@ -118,6 +133,8 @@ auto SceneRenderer::makeShadowMapping() const
 auto SceneRenderer::setupDrawingMode() const
     -> void
 {
+    auto const profiling = startProfilingTask("Drawing mode setup", "");
+
     glEnable(GL_DEPTH_TEST);
 
     glEnable(GL_STENCIL_TEST);
@@ -155,6 +172,8 @@ auto SceneRenderer::hasActiveCamera() const
 auto SceneRenderer::renderSceneToOffscreenSurface()
     -> void
 {
+    auto const profiling = startProfilingTask("Offscreen rendering", "");
+
     // Since OpenGL 4 there always has to be at least one bound VAO when performing drawing
     // operations. Because the shape renderer may not use per-shape VAOs, we bind to a common
     // VAO here.
@@ -169,6 +188,8 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
 auto SceneRenderer::renderDepthMapping()
     -> void
 {
+    auto const profiling = startProfilingTask("Depth mapping", "");
+
     auto const & bodies = cameraSelector->getScene().getBodies();
 
     auto const camera = cameraSelector->getActiveCamera();
@@ -221,6 +242,8 @@ auto SceneRenderer::renderNonPickedBodies() const
         return;
     }
 
+    auto const profiling = startProfilingTask("Non-selected body rendering", "");
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);
@@ -244,6 +267,8 @@ auto SceneRenderer::renderPickedBodies() const
         return;
     }
 
+    auto const profiling = startProfilingTask("Selected body rendering", "");
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);
@@ -265,6 +290,8 @@ auto SceneRenderer::renderBodyBounds() const
         return;
     }
 
+    auto const profiling = startProfilingTask("Bounding box rendering", "");
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);
@@ -277,6 +304,8 @@ auto SceneRenderer::renderBodyBounds() const
 auto SceneRenderer::renderSkybox() const
     -> void
 {
+    auto const profiling = startProfilingTask("Skybox rendering", "");
+
     auto const activeCamera = cameraSelector->getActiveCamera();
 
     assert(activeCamera != nullptr);
@@ -287,6 +316,8 @@ auto SceneRenderer::renderSkybox() const
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     -> void
 {
+    auto const profiling = startProfilingTask("Post-processing effects", "");
+
     targetSurface->makeCurrent();
 
     setupViewport();
@@ -294,6 +325,19 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     auto const & texture = offscreenSurface.getColorBuffer();
 
     renderers.effectRenderer.render(texture);
+}
+
+auto SceneRenderer::startProfilingTask(
+    std::string_view const name,
+    std::string_view const description) const
+    -> basix::ScopedTaskProfiling
+{
+    if (profiler == nullptr)
+    {
+        return {};
+    }
+
+    return profiler->startProfilingTask(name, description);
 }
 
 auto getCamera(SceneRenderer const & renderer)
