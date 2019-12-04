@@ -4,6 +4,7 @@
 #include "Glfw.hpp"
 #include "GlfwImGuiBinding.hpp"
 #include "ImGuiFrame.hpp"
+#include "LightSystemOverlay.hpp"
 #include "OpenGLImGuiBinding.hpp"
 
 #include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
@@ -38,6 +39,7 @@ public:
         , profiler{}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
+        , lightSystemOverlay{makeLightSystemOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , doNotRecordFrameProfiles{false}
         , stopBeforeNextIteration{false}
@@ -82,6 +84,16 @@ private:
         auto const initialSize = basix::Size<int>{window->getSize().width - 20, 250};
 
         return {initialPosition, initialSize, lastFrameProfiles};
+    }
+
+    auto makeLightSystemOverlay() const
+        -> LightSystemOverlay
+    {
+        auto const initialPosition =  basix::Position<int>{10, 260};
+
+        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 650};
+
+        return {initialPosition, initialSize, getScene(*renderer).getLightSystem()};
     }
     
     auto registerWindowResizeHandler()
@@ -218,6 +230,8 @@ private:
         frameProfilingOverlay.update();
 
         doNotRecordFrameProfiles = frameProfilingOverlay.isFrameProfilingPaused();
+
+        lightSystemOverlay.update();
     }
 
 private:
@@ -237,6 +251,8 @@ private:
     basix::CircularBuffer<basix::TaskProfile> lastFrameProfiles;
 
     FrameProfilingOverlay frameProfilingOverlay;
+
+    LightSystemOverlay lightSystemOverlay;
 
     basix::ScopedSignalConnection resizeHandlerConnection;
 

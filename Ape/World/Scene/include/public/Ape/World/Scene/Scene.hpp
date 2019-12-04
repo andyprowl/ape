@@ -54,10 +54,10 @@ public:
     auto addCamera(Camera camera)
         -> Camera &;
 
-    auto getLighting()
+    auto getLightSystem()
         -> LightSystem &;
 
-    auto getLighting() const
+    auto getLightSystem() const
         -> LightSystem const &;
 
 public:

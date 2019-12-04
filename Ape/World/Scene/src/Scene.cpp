@@ -99,13 +99,13 @@ auto Scene::addCamera(Camera camera)
     return addedCamera;
 }
 
-auto Scene::getLighting()
+auto Scene::getLightSystem()
     -> LightSystem &
 {
     return lightSystem;
 }
 
-auto Scene::getLighting() const
+auto Scene::getLightSystem() const
     -> LightSystem const &
 {
     return lightSystem;

@@ -28,7 +28,7 @@ public:
 
     LightSystemView(LightSystem const & lightSystem, basix::Size<int> const & viewSize);
     
-    auto getLighting() const
+    auto getLightSystem() const
         -> LightSystem const &;
 
     auto getPointView() const

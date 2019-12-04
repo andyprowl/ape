@@ -127,12 +127,6 @@ public:
     {
     }
 
-    auto get() const
-        -> ValueType
-    {
-        return {position.get(), attenuation.get(), color.get(), isTurnedOn.get()};
-    }
-
     auto set(ValueType const & light)
         -> void
     {
@@ -183,18 +177,6 @@ public:
         , attenuation{program, prefix + ".attenuation"}
         , isTurnedOn{program, prefix + ".isTurnedOn"}
     {
-    }
-
-    auto get() const
-        -> ValueType
-    {
-        return {
-            position.get(),
-            direction.get(),
-            {glm::acos(innerCutoffCosine.get()), glm::acos(outerCutoffCosine.get())},
-            attenuation.get(),
-            color.get(),
-            isTurnedOn.get()};
     }
 
     auto set(ValueType const & light)
@@ -257,12 +239,6 @@ public:
     {
     }
 
-    auto get() const
-        -> ValueType
-    {
-        return {direction.get(), color.get(), isTurnedOn.get()};
-    }
-
     auto set(ValueType const & light)
         -> void
     {
@@ -306,12 +282,6 @@ public:
         , spot{program, prefix + ".spot"}
         , directional{program, prefix + ".directional"}
     {
-    }
-
-    auto get() const
-        -> ValueType
-    {
-        return {point.get(), spot.get(), directional.get()};
     }
 
     auto set(ValueType const & lightSystem)

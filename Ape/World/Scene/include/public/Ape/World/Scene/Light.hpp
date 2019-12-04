@@ -4,6 +4,9 @@
 
 #include <glm/vec3.hpp>
 
+#include <string>
+#include <string_view>
+
 namespace ape
 {
 
@@ -41,7 +44,10 @@ public:
 
 public:
 
-    Light(Color const & color, bool isTurnedOn);
+    Light(std::string name, Color const & color, bool isTurnedOn);
+
+    auto getName() const
+        -> std::string_view;
 
     auto getColor() const
         -> Color;
@@ -66,6 +72,8 @@ public:
     mutable basix::Signal<auto () -> void> onLightChanged;
 
 private:
+
+    std::string name;
 
     Color color;
 

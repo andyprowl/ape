@@ -54,7 +54,7 @@ auto OmniDepthCubeBodyRenderer::render(
     
     renderLightSetDepth(
         bodies,
-        lightSystemView.getLighting().point,
+        lightSystemView.getLightSystem().point,
         lightSystemView.getPointView(),
         target.getPointMapping());
 }

@@ -4,13 +4,14 @@ namespace ape
 {
 
 SpotLight::SpotLight(
+    std::string name,
     glm::vec3 const & position,
     glm::vec3 const & direction,
     CutoffAngle const & cutoff,
     Attenuation const & attenuation,
     Color const & color,
     bool const isTurnedOn)
-    : Light{color, isTurnedOn}
+    : Light{std::move(name), color, isTurnedOn}
     , position{position}
     , direction{direction}
     , cutoff{cutoff}

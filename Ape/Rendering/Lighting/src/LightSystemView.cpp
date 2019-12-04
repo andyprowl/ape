@@ -51,7 +51,7 @@ LightSystemView::LightSystemView(
 {
 }
 
-auto LightSystemView::getLighting() const
+auto LightSystemView::getLightSystem() const
     -> LightSystem const &
 {
     return *lightSystem;

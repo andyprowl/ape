@@ -14,6 +14,7 @@ class PointLight : public Light
 public:
 
     PointLight(
+        std::string name,
         glm::vec3 const & position,
         Attenuation const & attenuation,
         Color const & color,

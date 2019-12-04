@@ -12,7 +12,11 @@ class DirectionalLight : public Light
 
 public:
 
-    DirectionalLight(glm::vec3 const & direction, Color const & color, bool isTurnedOn);
+    DirectionalLight(
+        std::string name,
+        glm::vec3 const & direction,
+        Color const & color,
+        bool isTurnedOn);
 
     auto getDirection() const
         -> glm::vec3;

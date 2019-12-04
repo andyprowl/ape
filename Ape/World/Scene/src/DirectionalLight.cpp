@@ -4,10 +4,11 @@ namespace ape
 {
 
 DirectionalLight::DirectionalLight(
+    std::string name,
     glm::vec3 const & direction,
     Color const & color,
     bool const isTurnedOn)
-    : Light{color, isTurnedOn}
+    : Light{std::move(name), color, isTurnedOn}
     , direction{direction}
 {
 }

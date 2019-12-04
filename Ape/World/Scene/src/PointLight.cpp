@@ -4,11 +4,12 @@ namespace ape
 {
 
 PointLight::PointLight(
+    std::string name,
     glm::vec3 const & position,
     Attenuation const & attenuation,
     Color const & color,
     bool const isTurnedOn)
-    : Light{color, isTurnedOn}
+    : Light{std::move(name), color, isTurnedOn}
     , position{position}
     , attenuation{attenuation}
 {

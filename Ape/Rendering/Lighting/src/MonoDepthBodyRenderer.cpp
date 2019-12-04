@@ -81,7 +81,7 @@ auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
     DepthMapping & target) const
     -> void
 {
-    auto const & lightSystem = lightSystemView.getLighting();
+    auto const & lightSystem = lightSystemView.getLightSystem();
 
     auto const & spotView = lightSystemView.getSpotView();
 
@@ -97,7 +97,7 @@ auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     DepthMapping & target) const
     -> void
 {
-    auto const & lightSystem = lightSystemView.getLighting();
+    auto const & lightSystem = lightSystemView.getLightSystem();
 
     auto const & directionalView = lightSystemView.getDirectionalView();
 

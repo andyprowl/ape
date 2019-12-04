@@ -35,6 +35,7 @@ public:
 public:
 
     SpotLight(
+        std::string name,
         glm::vec3 const & position,
         glm::vec3 const & direction,
         CutoffAngle const & cutoff,

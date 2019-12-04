@@ -123,7 +123,7 @@ auto SceneRenderer::setProfiler(basix::TaskProfiler * const newProfiler)
 auto SceneRenderer::makeShadowMapping() const
     -> ShadowMapping
 {
-    auto const & lightSystem = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
 
     auto const depthMapSize = basix::Size<int>{1024, 1024};
 
@@ -248,7 +248,7 @@ auto SceneRenderer::renderNonPickedBodies() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lightSystem = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
 
     renderers.blinnPhongBodyRenderer.render(
         nonSelectedBodies,
@@ -273,7 +273,7 @@ auto SceneRenderer::renderPickedBodies() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lightSystem = cameraSelector->getScene().getLighting();
+    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
 
     renderers.outlinedBodyRenderer.render(
         selectedBodies,

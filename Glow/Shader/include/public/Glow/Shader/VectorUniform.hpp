@@ -13,6 +13,10 @@ public:
 
     using ValueType = std::vector<typename T::ValueType>;
 
+    template<typename T>
+    using EnableIfGettable = std::enable_if_t<
+        std::is_same_v<decltype(std::declval<T>().get(), 0), int>>;
+
 public:
 
     VectorUniform(ShaderProgram & program, std::string prefix)
@@ -61,6 +65,7 @@ public:
         static_cast<Derived *>(this)->onSizeChanged(newSize);
     }
 
+    template<typename T = ValueType, EnableIfGettable<T> * = nullptr>
     auto get() const
         -> ValueType
     {

@@ -83,7 +83,7 @@ auto OmniDepthFlatBodyRenderer::render(
     renderLightSetDepth(
         bodies,
         viewerCamera,
-        lightSystemView.getLighting().point,
+        lightSystemView.getLightSystem().point,
         lightSystemView.getPointView(),
         target.getPointMapping());
 }

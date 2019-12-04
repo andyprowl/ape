@@ -3,10 +3,17 @@
 namespace ape
 {
 
-Light::Light(Color const & color, bool const isTurnedOn)
-    : color{color}
+Light::Light(std::string name, Color const & color, bool const isTurnedOn)
+    : name{std::move(name)}
+    , color{color}
     , isOn{isTurnedOn}
 {
+}
+
+auto Light::getName() const
+    -> std::string_view
+{
+    return name;
 }
 
 auto Light::getColor() const
