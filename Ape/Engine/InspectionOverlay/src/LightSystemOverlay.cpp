@@ -1,6 +1,6 @@
-#include "LightSystemOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/LightSystemOverlay.hpp>
 
-#include "ImGuiWindow.hpp"
+#include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
 #include <Ape/World/Scene/LightSystem.hpp>
 

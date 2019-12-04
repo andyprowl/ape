@@ -1,4 +1,4 @@
-#include "LightOnOffStatusUpdaterOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/LightOnOffStatusUpdaterOverlay.hpp>
 
 #include <Ape/World/Scene/Light.hpp>
 

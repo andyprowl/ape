@@ -1,8 +1,6 @@
-#include "FrameProfilingOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/FrameProfilingOverlay.hpp>
 
-#include "ImGuiWindow.hpp"
-
-#include <Ape/Rendering/Windowing/Window.hpp>
+#include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
 #include <DearImGui/imgui.h>
 

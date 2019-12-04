@@ -1,10 +1,10 @@
 #pragma once
 
-#include "LightAttenuationUpdaterOverlay.hpp"
-#include "LightColorUpdaterOverlay.hpp"
-#include "LightOnOffStatusUpdaterOverlay.hpp"
-#include "LightPositionUpdaterOverlay.hpp"
-#include "LightSystemOverlayPane.hpp"
+#include <Ape/Engine/InspectionOverlay/LightAttenuationUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightColorUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightOnOffStatusUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightPositionUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightSystemOverlayPane.hpp>
 
 #include <Ape/World/Scene/PointLight.hpp>
 

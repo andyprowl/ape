@@ -13,6 +13,7 @@ AddPrivateDependencies(
     3rdParty::Glad
     3rdParty::glfw
     Ape::Engine::Initialization
+    Ape::Engine::InspectionOverlay
     Ape::Engine::UpdateHandling
     Basix::Container
     Basix::Profiling

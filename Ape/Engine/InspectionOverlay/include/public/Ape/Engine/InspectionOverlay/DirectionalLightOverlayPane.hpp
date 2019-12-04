@@ -1,9 +1,9 @@
 #pragma once
 
-#include "LightColorUpdaterOverlay.hpp"
-#include "LightDirectionUpdaterOverlay.hpp"
-#include "LightOnOffStatusUpdaterOverlay.hpp"
-#include "LightSystemOverlayPane.hpp"
+#include <Ape/Engine/InspectionOverlay/LightColorUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightDirectionUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightOnOffStatusUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightSystemOverlayPane.hpp>
 
 #include <Ape/World/Scene/DirectionalLight.hpp>
 

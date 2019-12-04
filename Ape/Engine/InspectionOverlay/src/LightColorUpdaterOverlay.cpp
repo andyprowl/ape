@@ -1,4 +1,4 @@
-#include "LightColorUpdaterOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/LightColorUpdaterOverlay.hpp>
 
 #include <Ape/World/Scene/Light.hpp>
 

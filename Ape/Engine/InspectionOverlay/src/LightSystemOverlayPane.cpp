@@ -1,4 +1,4 @@
-#include "LightSystemOverlayPane.hpp"
+#include <Ape/Engine/InspectionOverlay/LightSystemOverlayPane.hpp>
 
 #include <Ape/World/Scene/DirectionalLight.hpp>
 #include <Ape/World/Scene/PointLight.hpp>

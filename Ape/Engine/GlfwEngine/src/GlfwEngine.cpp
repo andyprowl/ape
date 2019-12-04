@@ -1,14 +1,14 @@
 #include <Ape/Engine/GlfwEngine/GlfwEngine.hpp>
 
-#include "FrameProfilingOverlay.hpp"
 #include "Glfw.hpp"
 #include "GlfwImGuiBinding.hpp"
 #include "ImGuiFrame.hpp"
-#include "LightSystemOverlay.hpp"
 #include "OpenGLImGuiBinding.hpp"
 
 #include <Ape/Engine/GlfwEngine/GlfwWindow.hpp>
 
+#include <Ape/Engine/InspectionOverlay/FrameProfilingOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightSystemOverlay.hpp>
 #include <Ape/Engine/UpdateHandling/InputHandler.hpp>
 
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>

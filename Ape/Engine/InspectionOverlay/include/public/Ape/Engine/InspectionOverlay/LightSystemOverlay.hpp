@@ -1,8 +1,8 @@
 #pragma once
 
-#include "DirectionalLightOverlayPane.hpp"
-#include "PointLightOverlayPane.hpp"
-#include "SpotLightOverlayPane.hpp"
+#include <Ape/Engine/InspectionOverlay/DirectionalLightOverlayPane.hpp>
+#include <Ape/Engine/InspectionOverlay/PointLightOverlayPane.hpp>
+#include <Ape/Engine/InspectionOverlay/SpotLightOverlayPane.hpp>
 
 #include <Basix/Mathematics/Position.hpp>
 #include <Basix/Mathematics/Size.hpp>

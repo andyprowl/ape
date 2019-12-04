@@ -1,4 +1,4 @@
-#include "SpotLightCutoffUpdaterOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/SpotLightCutoffUpdaterOverlay.hpp>
 
 #include <DearImGui/imgui.h>
 

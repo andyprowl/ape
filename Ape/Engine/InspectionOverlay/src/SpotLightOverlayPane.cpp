@@ -1,4 +1,4 @@
-#include "PointLightOverlayPane.hpp"
+#include <Ape/Engine/InspectionOverlay/SpotLightOverlayPane.hpp>
 
 #include <DearImGui/imgui.h>
 
@@ -7,7 +7,7 @@
 namespace ape
 {
 
-auto PointLightOverlayPane::updateSelectedLightProperties()
+auto SpotLightOverlayPane::updateSelectedLightProperties()
     -> void
 {
     auto const light = getSelectedLight();
@@ -20,10 +20,12 @@ auto PointLightOverlayPane::updateSelectedLightProperties()
 
     attenuationUpdater.updateLightAttenuation(*light);
 
+    cutoffUpdater.updateLightCutoff(*light);
+
     updateViewProperties(*light);
 }
 
-auto PointLightOverlayPane::updateViewProperties(PointLight & light)
+auto SpotLightOverlayPane::updateViewProperties(SpotLight & light)
     -> void
 {
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
@@ -34,6 +36,8 @@ auto PointLightOverlayPane::updateViewProperties(PointLight & light)
     }
 
     positionUpdater.updateLightPosition(light);
+
+    directionUpdater.updateLightDirection(light);
 
     ImGui::TreePop();
 }

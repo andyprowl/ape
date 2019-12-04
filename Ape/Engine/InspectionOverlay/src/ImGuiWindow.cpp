@@ -1,4 +1,4 @@
-#include "ImGuiWindow.hpp"
+#include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
 #include <DearImGui/imgui.h>
 

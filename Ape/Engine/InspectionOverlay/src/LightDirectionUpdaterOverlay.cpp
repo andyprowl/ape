@@ -1,4 +1,4 @@
-#include "LightDirectionUpdaterOverlay.hpp"
+#include <Ape/Engine/InspectionOverlay/LightDirectionUpdaterOverlay.hpp>
 
 #include <Ape/World/Scene/DirectionalLight.hpp>
 #include <Ape/World/Scene/SpotLight.hpp>
