@@ -10,9 +10,9 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 9
-map_Bump -bm 0.140017 C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Nor_mirror2.jpg
-map_Kd C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
-map_Ks C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg
 
 newmtl Game_dragon
 Ns 68.823543
@@ -23,9 +23,9 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 1
-map_Bump -bm 0.140017 C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Nor_mirror2.jpg
-map_Kd C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
-map_Ks C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg
 
 newmtl Game_dragon.001
 Ns 68.823543
@@ -36,6 +36,6 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 1
-map_Bump -bm 0.140017 C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Nor_mirror2.jpg
-map_Kd C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
-map_Ks C:\\Code\\Projects\\Ape\\Sources\\Rave\\RaveCore\\resources\\Models\\Dragon\\textures\\Dragon_Bump_Col2.jpg
+map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kd textures\\Dragon_Bump_Col2.jpg
+map_Ks textures\\Dragon_Bump_Col2.jpg

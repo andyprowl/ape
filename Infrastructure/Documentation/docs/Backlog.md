@@ -1,12 +1,15 @@
-- Use imgui to draw frame duration stats as an overlay
+- Make inspection overlay visible/hidden through special keys
+ - Update handler is going to have to depend on it somehow
+- Use GPU timer queries to profile frames
+ - Display profiled frames with ImGui overlays
 - Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
- - How did we remove them last time?
-- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
+ - Last time we removed them by tweaking shadow bias
 - Write tutorial on radar approach to frustum culling for spheres
+ - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
 - Write tutorial/documentation on gamma correction
 - Write tutorial/documentation on skyboxes
 - Write tutorial about view matrix
-- Implement view frustum culling for regular rendering - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
+- Implement view frustum culling for regular rendering
  - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
    culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of
    the sub-objects
@@ -20,6 +23,7 @@
     - Actually, try rendering all the objects without culling them and regenerate the shadow maps
       only when the lights (not camera) move
         - This won't actually work because we need different resolutions based on camera position
+- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Implement occlusion culling
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
