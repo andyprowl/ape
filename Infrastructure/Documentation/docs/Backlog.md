@@ -1,7 +1,9 @@
-- Make inspection overlay visible/hidden through special keys
- - Update handler is going to have to depend on it somehow
 - Use GPU timer queries to profile frames
  - Display profiled frames with ImGui overlays
+- Make inspection overlay visible/hidden through special keys
+ - Update handler is going to have to depend on it somehow
+- Associate object label to depth map (cube) textures
+- Add support for vcpkg
 - Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
  - Last time we removed them by tweaking shadow bias
 - Write tutorial on radar approach to frustum culling for spheres

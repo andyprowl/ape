@@ -36,27 +36,33 @@ auto checkShaderLinkingOutcome(int const shaderId)
 
 } // unnamed namespace
 
-ShaderProgram::ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader)
-    : ShaderProgram{std::move(vertexShader), std::nullopt, std::move(fragmentShader)}
+ShaderProgram::ShaderProgram(
+    VertexShader vertexShader,
+    FragmentShader fragmentShader,
+    std::string_view const label)
+    : ShaderProgram{std::move(vertexShader), std::nullopt, std::move(fragmentShader), label}
 {
 }
 
 ShaderProgram::ShaderProgram(
     VertexShader vertexShader,
     std::optional<GeometryShader> geometryShader,
-    FragmentShader fragmentShader)
+    FragmentShader fragmentShader,
+    std::string_view const label)
     : resource{glCreateProgram(), glDeleteProgram}
     , vertexShader{std::move(vertexShader)}
     , geometryShader{std::move(geometryShader)}
     , fragmentShader{std::move(fragmentShader)}
 {
     link();
+
+    setLabel(label);
 }
 
 auto ShaderProgram::bind() const
     -> void
 {
-    auto const id = resource.get();
+    auto const id = getId();
 
     glUseProgram(id);
 
@@ -67,6 +73,12 @@ auto ShaderProgram::unbind() const
     -> void
 {
     glUseProgram(0);
+}
+
+auto ShaderProgram::getId() const
+    -> GpuResource::Id
+{
+    return resource.get();
 }
 
 auto ShaderProgram::getVertexShader() const
@@ -85,6 +97,12 @@ auto ShaderProgram::getFragmentShader() const
     -> FragmentShader const &
 {
     return fragmentShader;
+}
+
+auto ShaderProgram::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_PROGRAM, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
 auto ShaderProgram::link()

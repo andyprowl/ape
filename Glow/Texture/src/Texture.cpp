@@ -118,6 +118,11 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 } // unnamed namespace
 
 Texture::Texture(TextureDescriptor const & descriptor)
+    : Texture{descriptor, ""}
+{
+}
+
+Texture::Texture(TextureDescriptor const & descriptor, std::string_view const label)
     : resource{makeOpenGLTextureObject(descriptor)}
     , size{descriptor.image.size}
     , internalFormat{descriptor.internalFormat}
@@ -125,6 +130,7 @@ Texture::Texture(TextureDescriptor const & descriptor)
     , pixelType{descriptor.image.pixelType}
     , wrapping{descriptor.wrapping}
 {
+    setLabel(label);
 }
 
 auto Texture::getId() const
@@ -196,6 +202,12 @@ auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
     glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask.data());
 
     assert(glGetError() == GL_NO_ERROR);
+}
+
+auto Texture::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
 auto Texture::recreateMutableStorage()

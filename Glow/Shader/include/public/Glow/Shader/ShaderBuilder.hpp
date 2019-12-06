@@ -1,10 +1,12 @@
 #pragma once
 
+#include <Glow/Shader/ShaderPath.hpp>
 #include <Glow/Shader/ShaderPreprocessor.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/ShaderReader.hpp>
 
 #include <filesystem>
+#include <string_view>
 #include <vector>
 
 namespace glow
@@ -29,23 +31,25 @@ public:
         -> ShaderPreprocessor const &;
 
     auto buildProgram(
-        std::filesystem::path const & vertexShaderPath,
-        std::filesystem::path const & fragmentShaderPath) const
+        VertexShaderPath const & vertexShaderPath,
+        FragmentShaderPath const & fragmentShaderPath,
+        std::string_view label = "") const
         -> ShaderProgram;
 
     auto buildProgram(
-        std::filesystem::path const & vertexShaderPath,
-        std::filesystem::path const & geometryShaderPath,
-        std::filesystem::path const & fragmentShaderPath) const
+        VertexShaderPath const & vertexShaderPath,
+        GeometryShaderPath const & geometryShaderPath,
+        FragmentShaderPath const & fragmentShaderPath,
+        std::string_view label = "") const
         -> ShaderProgram;
 
-    auto buildVertexShader(std::filesystem::path const & path) const
+    auto buildVertexShader(std::filesystem::path const & path, std::string_view label = "") const
         -> VertexShader;
 
-    auto buildGeometryShader(std::filesystem::path const & path) const
+    auto buildGeometryShader(std::filesystem::path const & path, std::string_view label = "") const
         -> GeometryShader;
 
-    auto buildFragmentShader(std::filesystem::path const & path) const
+    auto buildFragmentShader(std::filesystem::path const & path, std::string_view label = "") const
         -> FragmentShader;
 
     auto preprocessShader(std::filesystem::path const & path) const
@@ -54,7 +58,7 @@ public:
 private:
 
     template<typename ShaderType>
-    auto buildShader(std::filesystem::path const & path) const
+    auto buildShader(std::filesystem::path const & path, std::string_view label) const
         -> ShaderType;
 
 private:

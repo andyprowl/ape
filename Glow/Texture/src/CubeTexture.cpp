@@ -96,8 +96,14 @@ auto makeOpenGLTextureObject(CubeTextureDescriptor const & descriptor)
 } // unnamed namespace
 
 CubeTexture::CubeTexture(CubeTextureDescriptor const & descriptor)
+    : CubeTexture{descriptor, ""}
+{
+}
+
+CubeTexture::CubeTexture(CubeTextureDescriptor const & descriptor, std::string_view const label)
     : resource{makeOpenGLTextureObject(descriptor)}
 {
+    setLabel(label);
 }
 
 auto CubeTexture::getId() const
@@ -126,6 +132,12 @@ auto CubeTexture::unbind() const
     -> void
 {
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+auto CubeTexture::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
 } // namespace glow

@@ -14,8 +14,9 @@ auto buildOmnidirectionalFlatDepthShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Depth/Omni.Depth.Flat.Vertex.glsl",
-        "Depth/Omni.Depth.Flat.Fragment.glsl");
+        glow::VertexShaderPath{"Depth/Omni.Depth.Flat.Vertex.glsl"},
+        glow::FragmentShaderPath{"Depth/Omni.Depth.Flat.Fragment.glsl"},
+        "Omni.Depth.Flat");
 }
 
 } // unnamed namespace

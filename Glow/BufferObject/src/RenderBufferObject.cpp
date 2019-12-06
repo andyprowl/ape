@@ -25,9 +25,16 @@ auto createRenderBufferResource()
 } // unnamed namespace
 
 RenderBufferObject::RenderBufferObject(basix::Size<int> const size)
+    : RenderBufferObject{size, ""}
+{
+}
+
+RenderBufferObject::RenderBufferObject(basix::Size<int> const size, std::string_view const label)
     : BufferObject{createRenderBufferResource()}
 {
     setStorage(size);
+
+    setLabel(label);
 }
 
 auto RenderBufferObject::bind() const
@@ -52,6 +59,12 @@ auto RenderBufferObject::setStorage(basix::Size<int> const size)
     auto const binder = glow::bind(*this);
 
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.width, size.height);
+}
+
+auto RenderBufferObject::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_RENDERBUFFER, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
 } // namespace glow

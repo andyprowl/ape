@@ -5,6 +5,8 @@
 
 #include <Glow/GpuResource/GpuResource.hpp>
 
+#include <string_view>
+
 namespace glow
 {
 
@@ -18,6 +20,8 @@ class Texture
 public:
 
     explicit Texture(TextureDescriptor const & descriptor);
+
+    Texture(TextureDescriptor const & descriptor, std::string_view label);
 
     auto getId() const
         -> GpuResource::Id;
@@ -44,6 +48,9 @@ public:
         -> void;
 
     auto setSwizzleMask(TextureSwizzleMask const & mask)
+        -> void;
+
+    auto setLabel(std::string_view label)
         -> void;
 
 private:

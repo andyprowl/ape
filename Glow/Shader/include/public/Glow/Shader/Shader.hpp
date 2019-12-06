@@ -53,11 +53,14 @@ public:
         -> Type;
 
     auto release()
-        -> unsigned int;
+        -> GpuResource::Id;
+
+    auto setLabel(std::string_view label)
+        -> void;
 
 protected:
 
-    explicit Shader(Type type, std::string_view sourceCode);
+    Shader(Type type, std::string_view sourceCode, std::string_view label = "");
 
 private:
 

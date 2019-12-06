@@ -14,9 +14,10 @@ auto buildOmnidirectionalCubeDepthShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Depth/Omni.Depth.Cube.Vertex.glsl",
-        "Depth/Omni.Depth.Cube.Geometry.glsl",
-        "Depth/Omni.Depth.Cube.Fragment.glsl");
+        glow::VertexShaderPath{"Depth/Omni.Depth.Cube.Vertex.glsl"},
+        glow::GeometryShaderPath{"Depth/Omni.Depth.Cube.Geometry.glsl"},
+        glow::FragmentShaderPath{"Depth/Omni.Depth.Cube.Fragment.glsl"},
+        "Omni.Depth.Cube");
 }
 
 } // unnamed namespace

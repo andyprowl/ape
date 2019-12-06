@@ -13,7 +13,12 @@ class GeometryShader : public Shader
 public:
 
     explicit GeometryShader(std::string_view sourceCode)
-        : Shader{Shader::Type::geometry, sourceCode}
+        : GeometryShader{sourceCode, ""}
+    {
+    }
+
+    GeometryShader(std::string_view const sourceCode, std::string_view const label)
+        : Shader{Shader::Type::geometry, sourceCode, label}
     {
     }
 

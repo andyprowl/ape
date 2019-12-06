@@ -44,18 +44,25 @@ class ShaderProgram
 
 public:
 
-    ShaderProgram(VertexShader vertexShader, FragmentShader fragmentShader);
+    ShaderProgram(
+        VertexShader vertexShader,
+        FragmentShader fragmentShader,
+        std::string_view label = "");
 
     ShaderProgram(
         VertexShader vertexShader,
         std::optional<GeometryShader> geometryShader,
-        FragmentShader fragmentShader);
+        FragmentShader fragmentShader,
+        std::string_view label = "");
 
     auto bind() const
         -> void;
 
     auto unbind() const
         -> void;
+
+    auto getId() const
+        -> GpuResource::Id;
 
     template<typename T>
     auto getUniform(std::string_view name) const
@@ -76,6 +83,9 @@ public:
 
     auto getFragmentShader() const
         -> FragmentShader const &;
+
+    auto setLabel(std::string_view label)
+        -> void;
 
 private:
 

@@ -17,6 +17,8 @@ public:
 
     explicit CubeTexture(CubeTextureDescriptor const & descriptor);
 
+    CubeTexture(CubeTextureDescriptor const & descriptor, std::string_view label);
+
     auto getId() const
         -> GpuResource::Id;
 
@@ -27,6 +29,9 @@ public:
         -> void;
 
     auto unbind() const
+        -> void;
+
+    auto setLabel(std::string_view label)
         -> void;
 
 private:

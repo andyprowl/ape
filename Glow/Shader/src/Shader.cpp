@@ -85,7 +85,7 @@ auto Shader::getId() const
 auto Shader::compile(std::string_view sourceCode)
     -> void
 {
-    auto const id = resource.get();
+    auto const id = getId();
 
     auto const code = sourceCode.data();
 
@@ -101,7 +101,7 @@ auto Shader::compile(std::string_view sourceCode)
 auto Shader::getSourceCode() const
     -> std::string
 {
-    auto const id = resource.get();
+    auto const id = getId();
 
     auto sourceLength = 0;
 
@@ -117,7 +117,7 @@ auto Shader::getSourceCode() const
 auto Shader::getType() const
     -> Type
 {
-    auto const id = resource.get();
+    auto const id = getId();
 
     auto type = 0;
 
@@ -127,17 +127,25 @@ auto Shader::getType() const
 }
 
 auto Shader::release()
-    -> unsigned int
+    -> GpuResource::Id
 {
     return resource.release();
 }
 
-Shader::Shader(Type const type, std::string_view sourceCode)
+auto Shader::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_SHADER, getId(), static_cast<GLsizei>(label.size()), label.data());
+}
+
+Shader::Shader(Type const type, std::string_view const sourceCode, std::string_view const label)
     : resource{createShaderResource(type)}
 {
     compile(sourceCode);
 
     assert(getType() == type);
+
+    setLabel(label);
 }
 
 auto Shader::createShaderResource(Type const type) const

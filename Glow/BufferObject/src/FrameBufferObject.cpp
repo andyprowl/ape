@@ -68,8 +68,14 @@ auto createFrameBufferResource()
 } // unnamed namespace
 
 FrameBufferObject::FrameBufferObject()
+    : FrameBufferObject{""}
+{
+}
+
+FrameBufferObject::FrameBufferObject(std::string_view const label)
     : BufferObject{createFrameBufferResource()}
 {
+    setLabel(label);
 }
 
 auto FrameBufferObject::bind() const
@@ -173,6 +179,12 @@ auto FrameBufferObject::resetDrawTarget()
     -> void
 {
     glDrawBuffer(GL_NONE);
+}
+
+auto FrameBufferObject::setLabel(std::string_view const label)
+    -> void
+{
+    glObjectLabel(GL_FRAMEBUFFER, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
 } // namespace glow

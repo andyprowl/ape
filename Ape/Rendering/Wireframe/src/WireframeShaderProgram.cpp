@@ -14,9 +14,10 @@ auto buildWireframeShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Wireframe/Wire.Vertex.glsl",
-        "Wireframe/Wire.Geometry.glsl",
-        "Wireframe/Wire.Fragment.glsl");
+        glow::VertexShaderPath{"Wireframe/Wire.Vertex.glsl"},
+        glow::GeometryShaderPath{"Wireframe/Wire.Geometry.glsl"},
+        glow::FragmentShaderPath{"Wireframe/Wire.Fragment.glsl"},
+        "Wire");
 }
 
 } // unnamed namespace

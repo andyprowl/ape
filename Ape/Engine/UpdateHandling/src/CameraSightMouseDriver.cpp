@@ -88,7 +88,7 @@ auto CameraSightMouseDriver::deactivate()
 auto CameraSightMouseDriver::onFrame()
     -> void
 {
-    auto const offset = mouseMovementTracker.updatePosition(window->getMousePosition());
+    auto const mouseOffset = mouseMovementTracker.updatePosition(window->getMousePosition());
 
     if (!isActive())
     {
@@ -102,14 +102,14 @@ auto CameraSightMouseDriver::onFrame()
         return;
     }
 
-    if ((offset.deltaX == 0) || (offset.deltaY == 0))
+    if ((mouseOffset.deltaX == 0) || (mouseOffset.deltaY == 0))
     {
         return;
     }
 
     auto const angularOffset = basix::Offset{
-        offset.deltaX * sensitivity,
-        -offset.deltaY * sensitivity};
+        mouseOffset.deltaX * sensitivity,
+        -mouseOffset.deltaY * sensitivity};
 
     moveBy(*activeCamera, angularOffset);
 }

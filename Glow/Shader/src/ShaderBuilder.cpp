@@ -3,6 +3,40 @@
 namespace glow
 {
 
+namespace
+{
+
+auto makeProgramShaderLabel(std::string_view const programLabel, std::string suffix)
+    -> std::string
+{
+    if (programLabel.empty())
+    {
+        return "";
+    }
+
+    return std::string{programLabel} + std::move(suffix);
+}
+
+auto makeProgramVertexShaderLabel(std::string_view const programLabel)
+    -> std::string
+{
+    return makeProgramShaderLabel(programLabel, ".Vertex");
+}
+
+auto makeProgramGeometryShaderLabel(std::string_view const programLabel)
+    -> std::string
+{
+    return makeProgramShaderLabel(programLabel, ".Geometry");
+}
+
+auto makeProgramFragmentShaderLabel(std::string_view const programLabel)
+    -> std::string
+{
+    return makeProgramShaderLabel(programLabel, ".Fragment");
+}
+
+} // unnamed namespace
+
 ShaderBuilder::ShaderBuilder()
     : ShaderBuilder{{}}
 {
@@ -33,52 +67,62 @@ auto ShaderBuilder::getPreprocessor() const
 }
 
 auto ShaderBuilder::buildProgram(
-    std::filesystem::path const & vertexShaderPath,
-    std::filesystem::path const & fragmentShaderPath) const
+    VertexShaderPath const & vertexShaderPath,
+    FragmentShaderPath const & fragmentShaderPath,
+    std::string_view const label) const
     -> ShaderProgram
 {
     return {
-        buildVertexShader(vertexShaderPath),
-        buildFragmentShader(fragmentShaderPath)};
+        buildVertexShader(vertexShaderPath, makeProgramVertexShaderLabel(label)),
+        buildFragmentShader(fragmentShaderPath, makeProgramFragmentShaderLabel(label))};
 }
 
 auto ShaderBuilder::buildProgram(
-    std::filesystem::path const & vertexShaderPath,
-    std::filesystem::path const & geometryShaderPath,
-    std::filesystem::path const & fragmentShaderPath) const
+    VertexShaderPath const & vertexShaderPath,
+    GeometryShaderPath const & geometryShaderPath,
+    FragmentShaderPath const & fragmentShaderPath,
+    std::string_view const label) const
     -> ShaderProgram
 {
     return {
-        buildVertexShader(vertexShaderPath),
-        buildGeometryShader(geometryShaderPath),
-        buildFragmentShader(fragmentShaderPath)};
+        buildVertexShader(vertexShaderPath, makeProgramVertexShaderLabel(label)),
+        buildGeometryShader(geometryShaderPath, makeProgramGeometryShaderLabel(label)),
+        buildFragmentShader(fragmentShaderPath, makeProgramFragmentShaderLabel(label))};
 }
 
-auto ShaderBuilder::buildVertexShader(std::filesystem::path const & path) const
+auto ShaderBuilder::buildVertexShader(
+    std::filesystem::path const & path,
+    std::string_view const label) const
     -> VertexShader
 {
-    return buildShader<VertexShader>(path);
+    return buildShader<VertexShader>(path, label);
 }
 
-auto ShaderBuilder::buildGeometryShader(std::filesystem::path const & path) const
+auto ShaderBuilder::buildGeometryShader(
+    std::filesystem::path const & path,
+    std::string_view const label) const
     -> GeometryShader
 {
-    return buildShader<GeometryShader>(path);
+    return buildShader<GeometryShader>(path, label);
 }
 
-auto ShaderBuilder::buildFragmentShader(std::filesystem::path const & path) const
+auto ShaderBuilder::buildFragmentShader(
+    std::filesystem::path const & path,
+    std::string_view const label) const
     -> FragmentShader
 {
-    return buildShader<FragmentShader>(path);
+    return buildShader<FragmentShader>(path, label);
 }
 
 template<typename ShaderType>
-auto ShaderBuilder::buildShader(std::filesystem::path const & path) const
+auto ShaderBuilder::buildShader(
+    std::filesystem::path const & path,
+    std::string_view const label) const
     -> ShaderType
 {
     auto sourceCode = preprocessShader(path);
 
-    return ShaderType{std::move(sourceCode)};
+    return ShaderType{std::move(sourceCode), label};
 }
 
 auto ShaderBuilder::preprocessShader(std::filesystem::path const & path) const

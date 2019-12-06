@@ -14,8 +14,9 @@ auto buildStandardShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        "Skybox/Skybox.Vertex.glsl",
-        "Skybox/Skybox.Fragment.glsl");
+        glow::VertexShaderPath{"Skybox/Skybox.Vertex.glsl"},
+        glow::FragmentShaderPath{"Skybox/Skybox.Fragment.glsl"},
+        "Skybox");
 }
 
 } // unnamed namespace

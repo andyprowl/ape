@@ -13,7 +13,10 @@ auto buildDepthShader()
 {
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
-    return builder.buildProgram("Depth/Mono.Depth.Vertex.glsl", "Depth/Mono.Depth.Fragment.glsl");
+    return builder.buildProgram(
+        glow::VertexShaderPath{"Depth/Mono.Depth.Vertex.glsl"},
+        glow::FragmentShaderPath{"Depth/Mono.Depth.Fragment.glsl"},
+        "Mono.Depth");
 }
 
 } // unnamed namespace

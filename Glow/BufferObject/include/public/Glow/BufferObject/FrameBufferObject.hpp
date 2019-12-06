@@ -3,6 +3,8 @@
 #include <Glow/BufferObject/BufferObject.hpp>
 #include <Glow/BufferObject/FrameBufferAttachment.hpp>
 
+#include <string_view>
+
 namespace glow
 {
 
@@ -18,6 +20,8 @@ class FrameBufferObject : public BufferObject
 public:
 
     FrameBufferObject();
+
+    explicit FrameBufferObject(std::string_view label);
 
     auto bind() const
         -> void;
@@ -51,6 +55,9 @@ public:
         -> void;
 
     auto resetDrawTarget()
+        -> void;
+
+    auto setLabel(std::string_view label)
         -> void;
 
 };
