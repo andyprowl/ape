@@ -3,7 +3,7 @@
 #include <Basix/Container/CircularBuffer.hpp>
 #include <Basix/Mathematics/Position.hpp>
 #include <Basix/Mathematics/Size.hpp>
-#include <Basix/Profiling/TaskProfile.hpp>
+#include <Basix/Profiling/ProfiledTask.hpp>
 
 namespace ape
 {
@@ -16,7 +16,7 @@ class FrameProfilingOverlay
 
 public:
 
-    using FrameProfileBuffer = basix::CircularBuffer<basix::TaskProfile>;
+    using FrameProfileBuffer = basix::CircularBuffer<basix::ProfiledTask>;
 
 public:
 
@@ -32,7 +32,7 @@ public:
         -> bool;
 
     auto getSelectedFrameProfile() const
-        -> basix::TaskProfile const *;
+        -> basix::ProfiledTask const *;
 
 private:
 
@@ -54,7 +54,7 @@ private:
     auto updateFrameProfileDetails()
         -> void;
 
-    auto updateFrameProcessingTaskProfile(basix::TaskProfile const & profile)
+    auto updateFrameProcessingSubTask(basix::ProfiledTask const & profile)
         -> int;
 
     auto plotFrameProfileHistogram(int numOfFramesToPlot, float histogramWidth)

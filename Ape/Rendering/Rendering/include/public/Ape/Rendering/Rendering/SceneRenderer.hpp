@@ -23,8 +23,8 @@
 namespace basix
 {
 
-class ScopedTaskProfiling;
-class TaskProfiler;
+class CpuTimeTaskProfiler;
+class ScopedCpuTimeProfiling;
 
 } // namespace basix
 
@@ -121,9 +121,9 @@ public:
         -> RendererSet &;
 
     auto getProfiler() const
-        -> basix::TaskProfiler *;
+        -> basix::CpuTimeTaskProfiler *;
 
-    auto setProfiler(basix::TaskProfiler * newProfiler)
+    auto setProfiler(basix::CpuTimeTaskProfiler * newProfiler)
         -> void;
 
 private:
@@ -168,7 +168,7 @@ private:
         -> void;
 
     auto startProfilingTask(std::string_view name, std::string_view description) const
-        -> basix::ScopedTaskProfiling;
+        -> basix::ScopedCpuTimeProfiling;
 
 private:
 
@@ -194,7 +194,7 @@ private:
 
     glow::VertexArrayObject arrayObject;
 
-    basix::TaskProfiler * profiler;
+    basix::CpuTimeTaskProfiler * profiler;
 
 };
 

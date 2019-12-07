@@ -2,6 +2,8 @@
 
 #include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
+#include <Basix/Profiling/CpuTimeMetrics.hpp>
+
 #include <DearImGui/imgui.h>
 
 #include <algorithm>
@@ -45,7 +47,9 @@ auto frameProfileGetter(void * const data, int const index)
 
     auto const & profile = (*span.profileBuffer)[span.baseIndex + index];
 
-    auto const durationInMicroseconds = profile.getDuration().count();
+    auto const & metrics = static_cast<basix::CpuTimeMetrics &>(profile.getMetrics());
+
+    auto const durationInMicroseconds = metrics.cpuTiming.getDuration().count();
 
     return durationInMicroseconds / 1'000.f;
 }
@@ -91,7 +95,7 @@ auto FrameProfilingOverlay::isFrameProfilingPaused() const
 }
 
 auto FrameProfilingOverlay::getSelectedFrameProfile() const
-    -> basix::TaskProfile const *
+    -> basix::ProfiledTask const *
 {
     if (selectedFrameIndex < 0)
     {
@@ -192,7 +196,7 @@ auto FrameProfilingOverlay::updateFrameProfileDetails()
 
     assert(selectedProfile != nullptr);
 
-    auto const numOfTreeItems = updateFrameProcessingTaskProfile(*selectedProfile);
+    auto const numOfTreeItems = updateFrameProcessingSubTask(*selectedProfile);
 
     if (resize)
     {
@@ -204,7 +208,7 @@ auto FrameProfilingOverlay::updateFrameProfileDetails()
     }
 }
 
-auto FrameProfilingOverlay::updateFrameProcessingTaskProfile(basix::TaskProfile const & profile)
+auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask const & profile)
     -> int
 {
     ImGui::Columns(2, "Timings", true);
@@ -215,7 +219,9 @@ auto FrameProfilingOverlay::updateFrameProcessingTaskProfile(basix::TaskProfile 
 
     ImGui::NextColumn();
 
-    ImGui::Text("%f ms", profile.getDuration().count() / 1'000.f);
+    auto const & metrics = static_cast<basix::CpuTimeMetrics &>(profile.getMetrics());
+
+    ImGui::Text("%f ms", metrics.cpuTiming.getDuration().count() / 1'000.f);
 
     ImGui::NextColumn();
 
@@ -226,9 +232,9 @@ auto FrameProfilingOverlay::updateFrameProcessingTaskProfile(basix::TaskProfile 
 
     auto numOfItems = 1;
 
-    for (auto const & subProfile : profile.getSubProfiles())
+    for (auto const & subTask : profile.getSubTasks())
     {
-        numOfItems += updateFrameProcessingTaskProfile(*subProfile);
+        numOfItems += updateFrameProcessingSubTask(subTask);
     }
 
     ImGui::TreePop();

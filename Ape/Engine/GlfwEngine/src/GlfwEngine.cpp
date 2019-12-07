@@ -16,7 +16,7 @@
 #include <Ape/World/Scene/Scene.hpp>
 
 #include <Basix/Container/CircularBuffer.hpp>
-#include <Basix/Profiling/TaskProfiler.hpp>
+#include <Basix/Profiling/CpuTimeTaskProfiler.hpp>
 #include <Basix/Signal/ScopedSignalConnection.hpp>
 #include <Basix/Time/Stopwatch.hpp>
 #include <Basix/Time/TimeIntervalTracker.hpp>
@@ -169,7 +169,7 @@ private:
     auto processOneFrame()
         -> void
     {
-        auto const profiling = profiler.startProfilingTask("Frame processing");
+        auto const profiling = profiler.startTimingNewTask("Frame processing");
 
         processInput();
 
@@ -179,7 +179,7 @@ private:
     auto processInput()
         -> void
     {
-        auto const profiling = profiler.startProfilingTask("Input handling");
+        auto const profiling = profiler.startTimingNewTask("Input handling");
 
         glfwPollEvents();
 
@@ -196,7 +196,7 @@ private:
             return;
         }
 
-        auto const profiling = profiler.startProfilingTask("Scene rendering");
+        auto const profiling = profiler.startTimingNewTask("Scene rendering");
 
         renderer->render();
     }
@@ -217,7 +217,7 @@ private:
             return;
         }
 
-        auto & profile = profiler.getRootTaskProfile();
+        auto & profile = profiler.getProfiledTask();
 
         lastFrameProfiles.push_back(std::move(profile));
     }
@@ -246,9 +246,9 @@ private:
 
     basix::TimeIntervalTracker timeTracker;
 
-    basix::TaskProfiler profiler;
+    basix::CpuTimeTaskProfiler profiler;
 
-    basix::CircularBuffer<basix::TaskProfile> lastFrameProfiles;
+    basix::CircularBuffer<basix::ProfiledTask> lastFrameProfiles;
 
     FrameProfilingOverlay frameProfilingOverlay;
 

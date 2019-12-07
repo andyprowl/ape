@@ -12,7 +12,7 @@
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
-#include <Basix/Profiling/TaskProfiler.hpp>
+#include <Basix/Profiling/CpuTimeTaskProfiler.hpp>
 
 #include <glad/glad.h>
 
@@ -109,12 +109,12 @@ auto SceneRenderer::getRenderers()
 }
 
 auto SceneRenderer::getProfiler() const
-    -> basix::TaskProfiler *
+    -> basix::CpuTimeTaskProfiler *
 {
     return profiler;
 }
 
-auto SceneRenderer::setProfiler(basix::TaskProfiler * const newProfiler)
+auto SceneRenderer::setProfiler(basix::CpuTimeTaskProfiler * const newProfiler)
     -> void
 {
     profiler = newProfiler;
@@ -330,14 +330,14 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
 auto SceneRenderer::startProfilingTask(
     std::string_view const name,
     std::string_view const description) const
-    -> basix::ScopedTaskProfiling
+    -> basix::ScopedCpuTimeProfiling
 {
     if (profiler == nullptr)
     {
         return {};
     }
 
-    return profiler->startProfilingTask(name, description);
+    return profiler->startTimingNewTask(name, description);
 }
 
 auto getCamera(SceneRenderer const & renderer)
