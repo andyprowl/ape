@@ -8,6 +8,8 @@ add_subdirectory(FileSystem)
 
 add_subdirectory(Mathematics)
 
+add_subdirectory(Memory)
+
 add_subdirectory(Meta)
 
 add_subdirectory(Profiling)
