@@ -23,18 +23,14 @@ public:
     auto openNewTask(ProfiledTask task)
         -> ScopedTaskCloser
     {
-        if (rootTask == nullptr)
+        if (currentTask == nullptr)
         {
-            assert(currentTask == nullptr);
-
             rootTask = std::make_unique<ProfiledTask>(std::move(task));
 
             currentTask = rootTask.get();
         }
         else
         {
-            assert(currentTask != nullptr);
-
             currentTask = &(currentTask->addSubTask(std::move(task)));
         }
 

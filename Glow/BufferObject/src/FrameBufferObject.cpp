@@ -2,6 +2,7 @@
 
 #include <Glow/BufferObject/RenderBufferObject.hpp>
 
+#include <Glow/GpuResource/ScopedBinder.hpp>
 #include <Glow/Texture/CubeTexture.hpp>
 #include <Glow/Texture/CubeTextureFace.hpp>
 #include <Glow/Texture/Texture.hpp>
@@ -184,6 +185,10 @@ auto FrameBufferObject::resetDrawTarget()
 auto FrameBufferObject::setLabel(std::string_view const label)
     -> void
 {
+    // NVidia drivers cause an invalid operation error when setting the label of the framebuffer if
+    // it is not bound.
+    auto const binder = glow::bind(*this);
+
     glObjectLabel(GL_FRAMEBUFFER, getId(), static_cast<GLsizei>(label.size()), label.data());
 }
 
