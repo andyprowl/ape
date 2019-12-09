@@ -2,6 +2,8 @@
 
 #include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
+#include <Ape/Rendering/GpuProfiling/GpuTimeMetrics.hpp>
+
 #include <Basix/Profiling/CpuTimeMetrics.hpp>
 
 #include <DearImGui/imgui.h>
@@ -38,6 +40,12 @@ public:
 
 };
 
+auto asMilliseconds(std::chrono::nanoseconds const duration)
+    -> float
+{
+    return duration.count() / 1'000'000.f;
+}
+
 auto frameProfileGetter(void * const data, int const index)
     -> float
 {
@@ -47,11 +55,9 @@ auto frameProfileGetter(void * const data, int const index)
 
     auto const & profile = (*span.profileBuffer)[span.baseIndex + index];
 
-    auto const & metrics = static_cast<basix::CpuTimeMetrics &>(profile.getMetrics());
+    auto const & metrics = static_cast<basix::CpuTimeMetrics &>(*profile.getMetrics()[0]);
 
-    auto const durationInMicroseconds = metrics.cpuTiming.getDuration().count();
-
-    return durationInMicroseconds / 1'000.f;
+    return asMilliseconds(metrics.duration);
 }
 
 } // unnamed namespace
@@ -211,7 +217,7 @@ auto FrameProfilingOverlay::updateFrameProfileDetails()
 auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask const & profile)
     -> int
 {
-    ImGui::Columns(2, "Timings", true);
+    ImGui::Columns(3, "Timings", true);
 
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
@@ -219,12 +225,18 @@ auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask con
 
     ImGui::NextColumn();
 
-    auto const & metrics = static_cast<basix::CpuTimeMetrics &>(profile.getMetrics());
+    auto const & cpuMetrics = static_cast<basix::CpuTimeMetrics &>(*profile.getMetrics()[0]);
 
-    ImGui::Text("%f ms", metrics.cpuTiming.getDuration().count() / 1'000.f);
+    ImGui::Text("%f ms", asMilliseconds(cpuMetrics.duration));
+    
+    ImGui::NextColumn();
+    
+    auto const & gpuMetrics = static_cast<GpuTimeMetrics &>(*profile.getMetrics()[1]);
+
+    ImGui::Text("%f ms", asMilliseconds(gpuMetrics.getDuration()));
 
     ImGui::NextColumn();
-
+    
     if (!isExpanded)
     {
         return 1;

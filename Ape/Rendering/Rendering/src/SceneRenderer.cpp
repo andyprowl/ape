@@ -1,5 +1,6 @@
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 #include <Ape/Rendering/Windowing/Window.hpp>
 
 #include <Ape/World/Model/Material.hpp>
@@ -11,8 +12,6 @@
 #include <Ape/World/Shape/Shape.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-
-#include <Basix/Profiling/CpuTimeTaskProfiler.hpp>
 
 #include <glad/glad.h>
 
@@ -109,12 +108,12 @@ auto SceneRenderer::getRenderers()
 }
 
 auto SceneRenderer::getProfiler() const
-    -> basix::CpuTimeTaskProfiler *
+    -> TaskTimeProfiler *
 {
     return profiler;
 }
 
-auto SceneRenderer::setProfiler(basix::CpuTimeTaskProfiler * const newProfiler)
+auto SceneRenderer::setProfiler(TaskTimeProfiler * const newProfiler)
     -> void
 {
     profiler = newProfiler;
@@ -330,7 +329,7 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
 auto SceneRenderer::startProfilingTask(
     std::string_view const name,
     std::string_view const description) const
-    -> basix::ScopedCpuTimeProfiling
+    -> ScopedTimeProfiling
 {
     if (profiler == nullptr)
     {

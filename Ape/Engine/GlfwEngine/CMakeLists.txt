@@ -15,6 +15,7 @@ AddPrivateDependencies(
     Ape::Engine::Initialization
     Ape::Engine::InspectionOverlay
     Ape::Engine::UpdateHandling
+    Ape::Rendering::GpuProfiling
     Basix::Container
     Basix::Profiling
     Basix::Time)

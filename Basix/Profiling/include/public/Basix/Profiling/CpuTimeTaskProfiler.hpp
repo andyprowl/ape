@@ -1,21 +1,26 @@
 #pragma once
 
-#include <Basix/Profiling/ProfiledTaskBuilder.hpp>
+#include <Basix/Profiling/CpuTimeMetricsCollector.hpp>
 #include <Basix/Profiling/ScopedCpuTimeProfiling.hpp>
+#include <Basix/Profiling/TaskProfiler.hpp>
 
 namespace basix
 {
 
-class CpuTimeTaskProfiler : private ProfiledTaskBuilder
+class CpuTimeTaskProfiler : public TaskProfiler
 {
 
 public:
 
     auto startTimingNewTask(std::string_view name, std::string_view description = "")
-        -> ScopedCpuTimeProfiling;
+        -> ScopedCpuTimeProfiling
+    {
+        return TaskProfiler::openNewTaskProfile(name, description, CpuTimeMetricsCollector{});
+    }
 
-    auto getProfiledTask()
-        -> ProfiledTask &;
+private:
+
+    TaskProfiler * taskBuilder;
 
 };
 

@@ -20,14 +20,6 @@
 #include <stdexcept>
 #include <string_view>
 
-namespace basix
-{
-
-class CpuTimeTaskProfiler;
-class ScopedCpuTimeProfiling;
-
-} // namespace basix
-
 namespace ape
 {
 
@@ -37,6 +29,8 @@ class BodySelector;
 class Camera;
 class CameraSelector;
 class Scene;
+class ScopedTimeProfiling;
+class TaskTimeProfiler;
 class Window;
 
 class SceneRenderer
@@ -121,9 +115,9 @@ public:
         -> RendererSet &;
 
     auto getProfiler() const
-        -> basix::CpuTimeTaskProfiler *;
+        -> TaskTimeProfiler *;
 
-    auto setProfiler(basix::CpuTimeTaskProfiler * newProfiler)
+    auto setProfiler(TaskTimeProfiler * newProfiler)
         -> void;
 
 private:
@@ -168,7 +162,7 @@ private:
         -> void;
 
     auto startProfilingTask(std::string_view name, std::string_view description) const
-        -> basix::ScopedCpuTimeProfiling;
+        -> ScopedTimeProfiling;
 
 private:
 
@@ -194,7 +188,7 @@ private:
 
     glow::VertexArrayObject arrayObject;
 
-    basix::CpuTimeTaskProfiler * profiler;
+    TaskTimeProfiler * profiler;
 
 };
 

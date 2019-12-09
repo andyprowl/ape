@@ -16,12 +16,14 @@ public:
 
     using SubTaskContainer = std::vector<ProfiledTask>;
 
+    using MetricsContainer = std::vector<std::unique_ptr<TaskProfileMetrics>>;
+
 public:
 
     ProfiledTask(
         std::string_view name,
-        std::string_view description,
-        std::unique_ptr<TaskProfileMetrics> metrics);
+        std::string_view description = "",
+        MetricsContainer newMetrics = {});
 
     ProfiledTask(ProfiledTask const & rhs);
 
@@ -51,15 +53,18 @@ public:
         -> ProfiledTask &;
 
     auto getMetrics() const
-        -> TaskProfileMetrics &;
+        -> MetricsContainer const &;
 
-    auto setMetrics(std::unique_ptr<TaskProfileMetrics> newMetrics)
+    auto setMetrics(MetricsContainer newMetrics)
         -> void;
 
 private:
 
     auto setSelfAsParentOfSubTasks()
         -> void;
+
+    auto cloneMetrics() const
+        -> MetricsContainer;
 
 private:
 
@@ -71,7 +76,7 @@ private:
 
     SubTaskContainer subTasks;
 
-    std::unique_ptr<TaskProfileMetrics> metrics;
+    MetricsContainer metrics;
 
 };
 

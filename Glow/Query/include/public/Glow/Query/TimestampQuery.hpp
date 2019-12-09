@@ -2,6 +2,9 @@
 
 #include <Glow/Query/Query.hpp>
 
+#include <chrono>
+#include <optional>
+
 namespace glow
 {
 
@@ -10,8 +13,20 @@ class TimestampQuery : public Query
 
 public:
 
-    auto setCurrentTimeIntoResult()
+    using Nanoseconds = std::chrono::nanoseconds;
+
+public:
+
+    TimestampQuery();
+
+    auto scheduleTimestampRecording()
         -> void;
+
+    auto waitForResultAndFetch() const
+        -> Nanoseconds;
+
+    auto fetchResultIfAvailable() const
+        -> std::optional<Nanoseconds>;
 
 };
 

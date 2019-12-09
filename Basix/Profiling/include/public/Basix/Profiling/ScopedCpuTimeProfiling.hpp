@@ -1,21 +1,20 @@
 #pragma once
 
-#include <Basix/Profiling/CpuTimer.hpp>
-#include <Basix/Profiling/ScopedTaskCloser.hpp>
+#include <Basix/Profiling/CpuTimeMetricsCollector.hpp>
+#include <Basix/Profiling/ScopedTaskProfiling.hpp>
 
 namespace basix
 {
 
-class [[nodiscard]] ScopedCpuTimeProfiling : private ScopedTaskCloser, private CpuTimer
+class ScopedCpuTimeProfiling : public ScopedTaskProfiling<CpuTimeMetricsCollector>
 {
 
 public:
 
-    ScopedCpuTimeProfiling() = default;
+    using ScopedTaskProfiling::ScopedTaskProfiling;
 
-    ScopedCpuTimeProfiling(ScopedTaskCloser taskCloser, CpuTimer timer)
-        : ScopedTaskCloser{std::move(taskCloser)}
-        , CpuTimer{std::move(timer)}
+    ScopedCpuTimeProfiling(ScopedTaskProfiling profiling)
+        : ScopedTaskProfiling{std::move(profiling)}
     {
     }
 

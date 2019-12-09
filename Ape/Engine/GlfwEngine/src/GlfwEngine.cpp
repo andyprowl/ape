@@ -11,12 +11,12 @@
 #include <Ape/Engine/InspectionOverlay/LightSystemOverlay.hpp>
 #include <Ape/Engine/UpdateHandling/InputHandler.hpp>
 
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/World/Scene/Scene.hpp>
 
 #include <Basix/Container/CircularBuffer.hpp>
-#include <Basix/Profiling/CpuTimeTaskProfiler.hpp>
 #include <Basix/Signal/ScopedSignalConnection.hpp>
 #include <Basix/Time/Stopwatch.hpp>
 #include <Basix/Time/TimeIntervalTracker.hpp>
@@ -217,7 +217,9 @@ private:
             return;
         }
 
-        auto & profile = profiler.getProfiledTask();
+        profiler.fetchGpuTimingResults();
+
+        auto & profile = profiler.getRootProfiledTask();
 
         lastFrameProfiles.push_back(std::move(profile));
     }
@@ -246,7 +248,7 @@ private:
 
     basix::TimeIntervalTracker timeTracker;
 
-    basix::CpuTimeTaskProfiler profiler;
+    TaskTimeProfiler profiler;
 
     basix::CircularBuffer<basix::ProfiledTask> lastFrameProfiles;
 

@@ -2,13 +2,15 @@
 
 #include <Basix/Profiling/ProfiledTask.hpp>
 
+#include <Basix/Range/Transform.hpp>
+
 namespace basix
 {
 
 ProfiledTask::ProfiledTask(
     std::string_view const name,
     std::string_view const description,
-    std::unique_ptr<TaskProfileMetrics> metrics)
+    MetricsContainer metrics)
     : name{name}
     , description{description}
     , parent{nullptr}
@@ -22,7 +24,7 @@ ProfiledTask::ProfiledTask(ProfiledTask const & rhs)
     , description{rhs.description}
     , parent{rhs.parent}
     , subTasks{rhs.subTasks}
-    , metrics{rhs.metrics->clone()}
+    , metrics{rhs.cloneMetrics()}
 {
     setSelfAsParentOfSubTasks();
 }
@@ -48,7 +50,7 @@ auto ProfiledTask::operator = (ProfiledTask const & rhs)
     
     subTasks = rhs.subTasks;
     
-    metrics = rhs.metrics->clone();
+    metrics = rhs.cloneMetrics();
 
     setSelfAsParentOfSubTasks();
 
@@ -108,12 +110,12 @@ auto ProfiledTask::addSubTask(ProfiledTask task)
 }
 
 auto ProfiledTask::getMetrics() const
-    -> TaskProfileMetrics &
+    -> MetricsContainer const &
 {
-    return *metrics;
+    return metrics;
 }
 
-auto ProfiledTask::setMetrics(std::unique_ptr<TaskProfileMetrics> newMetrics)
+auto ProfiledTask::setMetrics(MetricsContainer newMetrics)
     -> void
 {
     metrics = std::move(newMetrics);
@@ -126,6 +128,15 @@ auto ProfiledTask::setSelfAsParentOfSubTasks()
     {
         subTask.parent = this;
     }
+}
+
+auto ProfiledTask::cloneMetrics() const
+    -> MetricsContainer
+{
+    return transform(metrics, [] (std::unique_ptr<TaskProfileMetrics> const & m)
+    {
+        return m->clone();
+    });
 }
 
 } // namespace basix

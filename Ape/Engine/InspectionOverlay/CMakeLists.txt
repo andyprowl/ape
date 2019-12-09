@@ -10,6 +10,7 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::DearImGui
     3rdParty::Glad
+    Ape::Rendering::GpuProfiling
     Basix::Container
     Basix::Profiling
     Basix::Time)

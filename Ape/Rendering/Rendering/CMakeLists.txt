@@ -19,7 +19,7 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
+    Ape::Rendering::GpuProfiling
     Ape::Rendering::Windowing
-    Basix::Profiling
     Basix::CompilerSupport
     Basix::Text)
