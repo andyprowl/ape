@@ -14,6 +14,8 @@ public:
 
     using Nanoseconds = std::chrono::nanoseconds;
 
+    using ResultType = Nanoseconds;
+
 public:
 
     ElapsedTimeQuery();

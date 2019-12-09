@@ -13,6 +13,10 @@ class Query
 
 public:
 
+    using ResultType = std::uint64_t;
+
+public:
+
     auto getId() const
         -> GpuResource::Id;
 
@@ -20,10 +24,10 @@ public:
         -> bool;
 
     auto waitForResultAndFetch() const
-        -> std::uint64_t;
+        -> ResultType;
 
     auto fetchResultIfAvailable() const
-        -> std::optional<std::uint64_t>;
+        -> std::optional<ResultType>;
 
 protected:
     

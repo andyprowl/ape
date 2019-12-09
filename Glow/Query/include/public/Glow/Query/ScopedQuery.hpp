@@ -44,6 +44,9 @@ private:
     auto activateQuery() const
         -> void;
 
+    auto deactivateQuery() const
+        -> void;
+
 private:
 
     ScopedQueryType type;

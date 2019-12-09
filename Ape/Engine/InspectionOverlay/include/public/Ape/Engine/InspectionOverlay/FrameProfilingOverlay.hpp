@@ -57,6 +57,15 @@ private:
     auto updateFrameProcessingSubTask(basix::ProfiledTask const & profile)
         -> int;
 
+    auto updateFrameProcessingSubTaskOwnMetrics(basix::ProfiledTask const & profile)
+        -> bool;
+
+    auto updateCpuTimeMetrics(basix::ProfiledTask const & profile)
+        -> void;
+
+    auto updateGpuTimeMetrics(basix::ProfiledTask const & profile)
+        -> void;
+
     auto plotFrameProfileHistogram(int numOfFramesToPlot, float histogramWidth)
         -> void;
 

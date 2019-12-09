@@ -9,6 +9,7 @@
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 #include <Ape/Rendering/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
@@ -29,7 +30,6 @@ class BodySelector;
 class Camera;
 class CameraSelector;
 class Scene;
-class ScopedTimeProfiling;
 class TaskTimeProfiler;
 class Window;
 
@@ -136,11 +136,14 @@ private:
 
     auto renderSceneToOffscreenSurface()
         -> void;
+    
+    auto renderSceneToScreenSurface()
+        -> void;
 
     auto renderDepthMapping()
         -> void;
 
-    auto renderSceneBodiesToOffscreenSurface()
+    auto renderSceneBodies()
         -> void;
 
     auto clearTargetBuffers()
@@ -160,9 +163,6 @@ private:
 
     auto renderOffscreenSurfaceToScreen() const
         -> void;
-
-    auto startProfilingTask(std::string_view name, std::string_view description) const
-        -> ScopedTimeProfiling;
 
 private:
 
@@ -185,6 +185,8 @@ private:
     glm::vec3 backgroundColor;
 
     bool renderBoundingBoxes;
+
+    bool usePostProcessingEffects;
 
     glow::VertexArrayObject arrayObject;
 

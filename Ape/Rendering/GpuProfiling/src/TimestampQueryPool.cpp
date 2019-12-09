@@ -3,17 +3,17 @@
 namespace ape
 {
 
-static auto const disableGpuTimeProfiling = false;
-
-TimestampQueryPool::TimestampQueryPool(int const numOfPreCreatedQueries)
-    : queries{numOfPreCreatedQueries}
+namespace
 {
-}
+
+auto const disableTimestampQueryPlacement = false;
+
+} // unnamed namespace
 
 auto TimestampQueryPool::placeTimestampRecordingRequest(ResultReceiver resultReceiver)
     -> void
 {
-    if (disableGpuTimeProfiling)
+    if (disableTimestampQueryPlacement)
     {
         return;
     }
@@ -23,36 +23,6 @@ auto TimestampQueryPool::placeTimestampRecordingRequest(ResultReceiver resultRec
     query.scheduleTimestampRecording();
 
     recordings.emplace_back(std::move(query), std::move(resultReceiver));
-}
-
-auto TimestampQueryPool::fetchAndStoreAllResults()
-    -> void
-{
-    for (auto & recording : recordings)
-    {
-        auto const result = recording.query.waitForResultAndFetch();
-
-        recording.resultReceiver(result);
-
-        queries.push_back(std::move(recording.query));
-    }
-    
-    recordings.clear();
-}
-
-auto TimestampQueryPool::fetchAvailableQuery()
-    -> glow::TimestampQuery
-{
-    if (queries.empty())
-    {
-        return glow::TimestampQuery{};
-    }
-
-    auto query = std::move(queries.back());
-
-    queries.pop_back();
-
-    return query;
 }
 
 } // namespace ape

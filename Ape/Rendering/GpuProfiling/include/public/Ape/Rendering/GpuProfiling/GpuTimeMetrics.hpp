@@ -17,44 +17,23 @@ public:
 public:
 
     GpuTimeMetrics()
-        : GpuTimeMetrics{Nanoseconds{}, Nanoseconds{}}
+        : GpuTimeMetrics{Nanoseconds{}}
     {
     }
 
-    GpuTimeMetrics(Nanoseconds const startTimestamp, Nanoseconds const duration)
-        : startTimestamp{startTimestamp}
-        , duration{duration}
+    explicit GpuTimeMetrics(Nanoseconds const duration)
+        : duration{duration}
     {
     }
 
     // virtual (from TaskProfileMetrics)
     auto clone() const
-        -> std::unique_ptr<TaskProfileMetrics> override
+        -> std::unique_ptr<basix::TaskProfileMetrics> override
     {
-        return std::make_unique<GpuTimeMetrics>(startTimestamp, duration);
+        return std::make_unique<GpuTimeMetrics>(duration);
     }
 
-    auto setStartTimestamp(Nanoseconds const newStartTimestamp)
-        -> void
-    {
-        startTimestamp = newStartTimestamp;
-    }
-
-    auto setEndTimestamp(Nanoseconds const newEndTimestamp)
-        -> void
-    {
-        duration = (newEndTimestamp - startTimestamp);
-    }
-
-    auto getDuration() const
-        -> Nanoseconds
-    {
-        return duration;
-    }
-
-private:
-
-    Nanoseconds startTimestamp;
+public:
 
     Nanoseconds duration;
 

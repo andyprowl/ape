@@ -14,20 +14,19 @@ namespace glow
 namespace
 {
 
-using AtomicQueryPointer = std::atomic<ScopedQuery const *>;
+using AtomicResourceId = std::atomic<GpuResource::Id>;
 
-auto && activeQueries = std::array<AtomicQueryPointer, 6u>{{nullptr}};
+auto const nullId = GpuResource::Id{};
+
+auto && activeQueries = std::array<AtomicResourceId, 6u>{{nullId}};
 
 auto getActiveQueryMarker(const ScopedQueryType type)
-    -> AtomicQueryPointer &
+    -> AtomicResourceId &
 {
-    auto const glType = convertToOpenGLQueryType(type);
-
-    return activeQueries[glType];
+    return activeQueries[static_cast<std::size_t>(type)];
 }
 
 } // unnamed namespace
-
 
 ScopedQuery::ScopedQuery(ScopedQueryType const type)
     : type{type}
@@ -54,6 +53,8 @@ auto ScopedQuery::end()
     auto const glType = convertToOpenGLQueryType(type);
 
     glEndQuery(glType);
+
+    deactivateQuery();
 }
 
 auto ScopedQuery::getType() const
@@ -65,11 +66,9 @@ auto ScopedQuery::getType() const
 auto ScopedQuery::isActive() const
     -> bool
 {
-    auto const glType = convertToOpenGLQueryType(type);
+    auto & activeQuery = getActiveQueryMarker(type);
 
-    auto & activeQuery = activeQueries[glType];
-
-    return (activeQuery == this);
+    return (activeQuery == getId());
 }
 
 auto ScopedQuery::activateQuery() const
@@ -77,14 +76,31 @@ auto ScopedQuery::activateQuery() const
 {
     auto & activeQuery = getActiveQueryMarker(type);
 
-    auto expectedActiveQuery = basix::null_ptr<ScopedQuery const>;
+    auto expectedActiveQueryId = nullId;
 
-    auto const canActivate = activeQuery.compare_exchange_strong(expectedActiveQuery, this);
+    auto const id = getId();
+
+    auto const canActivate = activeQuery.compare_exchange_strong(expectedActiveQueryId, id);
 
     if (!canActivate)
     {
         throw QueryOfSameTypeStillActive{};
     }
+
+    assert(activeQuery == id);
+}
+
+auto ScopedQuery::deactivateQuery() const
+    -> void
+{
+    auto & activeQuery = getActiveQueryMarker(type);
+
+    auto expectedActiveQueryId = getId();
+
+    [[maybe_unused]]
+    auto const deactivated = activeQuery.compare_exchange_strong(expectedActiveQueryId, nullId);
+
+    assert(deactivated);
 }
 
 } // namespace glow

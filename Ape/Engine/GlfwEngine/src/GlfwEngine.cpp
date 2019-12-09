@@ -169,7 +169,7 @@ private:
     auto processOneFrame()
         -> void
     {
-        auto const profiling = profiler.startTimingNewTask("Frame processing");
+        auto const profiling = profiler.startTimingCpuGpuTask("Frame processing");
 
         processInput();
 
@@ -179,7 +179,7 @@ private:
     auto processInput()
         -> void
     {
-        auto const profiling = profiler.startTimingNewTask("Input handling");
+        auto const profiling = profiler.startTimingCpuTask("Input handling");
 
         glfwPollEvents();
 
@@ -196,7 +196,7 @@ private:
             return;
         }
 
-        auto const profiling = profiler.startTimingNewTask("Scene rendering");
+        auto const profiling = profiler.startTimingCpuGpuTask("Scene rendering");
 
         renderer->render();
     }

@@ -39,9 +39,9 @@ SceneRenderer::SceneRenderer(
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
     , renderBoundingBoxes{false}
+    , usePostProcessingEffects{false}
     , profiler{nullptr}
 {
-    setupDrawingMode();
 }
 
 auto SceneRenderer::render()
@@ -54,9 +54,16 @@ auto SceneRenderer::render()
 
     setupDrawingMode();
 
-    renderSceneToOffscreenSurface();
+    if (usePostProcessingEffects)
+    {
+        renderSceneToOffscreenSurface();
 
-    renderOffscreenSurfaceToScreen();
+        renderOffscreenSurfaceToScreen();
+    }
+    else
+    {
+        renderSceneToScreenSurface();
+    }
 }
 
 auto SceneRenderer::getCameraSelector() const
@@ -132,7 +139,7 @@ auto SceneRenderer::makeShadowMapping() const
 auto SceneRenderer::setupDrawingMode() const
     -> void
 {
-    auto const profiling = startProfilingTask("Drawing mode setup", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Drawing mode setup", "");
 
     glEnable(GL_DEPTH_TEST);
 
@@ -171,7 +178,7 @@ auto SceneRenderer::hasActiveCamera() const
 auto SceneRenderer::renderSceneToOffscreenSurface()
     -> void
 {
-    auto const profiling = startProfilingTask("Offscreen rendering", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Offscreen rendering", "");
 
     // Since OpenGL 4 there always has to be at least one bound VAO when performing drawing
     // operations. Because the shape renderer may not use per-shape VAOs, we bind to a common
@@ -180,14 +187,34 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
     {
         renderDepthMapping();
 
-        renderSceneBodiesToOffscreenSurface();
+        auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
+
+        renderSceneBodies();
+    });
+}
+
+auto SceneRenderer::renderSceneToScreenSurface()
+    -> void
+{
+    auto const profiling = profiler->startTimingCpuGpuTask("Direct rendering", "");
+
+    // Since OpenGL 4 there always has to be at least one bound VAO when performing drawing
+    // operations. Because the shape renderer may not use per-shape VAOs, we bind to a common
+    // VAO here.
+    with(arrayObject, [this]
+    {
+        renderDepthMapping();
+
+        targetSurface->makeCurrent();
+
+        renderSceneBodies();
     });
 }
 
 auto SceneRenderer::renderDepthMapping()
     -> void
 {
-    auto const profiling = startProfilingTask("Depth mapping", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Depth mapping", "");
 
     auto const & bodies = cameraSelector->getScene().getBodies();
 
@@ -202,10 +229,10 @@ auto SceneRenderer::renderDepthMapping()
         shadowMapping.depthMapping);
 }
 
-auto SceneRenderer::renderSceneBodiesToOffscreenSurface()
+auto SceneRenderer::renderSceneBodies()
     -> void
 {
-    auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
+    auto const profiling = profiler->startTimingCpuGpuTask("Scene body rendering", "");
 
     setupViewport();
 
@@ -241,7 +268,7 @@ auto SceneRenderer::renderNonPickedBodies() const
         return;
     }
 
-    auto const profiling = startProfilingTask("Non-selected body rendering", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Non-selected body rendering", "");
 
     auto const activeCamera = cameraSelector->getActiveCamera();
 
@@ -266,7 +293,7 @@ auto SceneRenderer::renderPickedBodies() const
         return;
     }
 
-    auto const profiling = startProfilingTask("Selected body rendering", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Selected body rendering", "");
 
     auto const activeCamera = cameraSelector->getActiveCamera();
 
@@ -289,7 +316,7 @@ auto SceneRenderer::renderBodyBounds() const
         return;
     }
 
-    auto const profiling = startProfilingTask("Bounding box rendering", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Bounding box rendering", "");
 
     auto const activeCamera = cameraSelector->getActiveCamera();
 
@@ -303,7 +330,7 @@ auto SceneRenderer::renderBodyBounds() const
 auto SceneRenderer::renderSkybox() const
     -> void
 {
-    auto const profiling = startProfilingTask("Skybox rendering", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Skybox rendering", "");
 
     auto const activeCamera = cameraSelector->getActiveCamera();
 
@@ -315,7 +342,7 @@ auto SceneRenderer::renderSkybox() const
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     -> void
 {
-    auto const profiling = startProfilingTask("Post-processing effects", "");
+    auto const profiling = profiler->startTimingCpuGpuTask("Post-processing effects", "");
 
     targetSurface->makeCurrent();
 
@@ -324,19 +351,6 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     auto const & texture = offscreenSurface.getColorBuffer();
 
     renderers.effectRenderer.render(texture);
-}
-
-auto SceneRenderer::startProfilingTask(
-    std::string_view const name,
-    std::string_view const description) const
-    -> ScopedTimeProfiling
-{
-    if (profiler == nullptr)
-    {
-        return {};
-    }
-
-    return profiler->startTimingNewTask(name, description);
 }
 
 auto getCamera(SceneRenderer const & renderer)

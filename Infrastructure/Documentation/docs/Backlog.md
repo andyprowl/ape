@@ -3,6 +3,8 @@
 - Make inspection overlay visible/hidden through special keys
  - Update handler is going to have to depend on it somehow
 - Associate object label to depth map (cube) textures
+- Associate object label to frame buffers
+- Use Pimpl for SceneRenderers (lots of annoying dependencies and forward-declarations)
 - Add support for vcpkg
 - Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
  - Last time we removed them by tweaking shadow bias

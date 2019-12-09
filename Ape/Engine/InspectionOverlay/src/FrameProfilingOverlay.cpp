@@ -217,26 +217,8 @@ auto FrameProfilingOverlay::updateFrameProfileDetails()
 auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask const & profile)
     -> int
 {
-    ImGui::Columns(3, "Timings", true);
+    auto const isExpanded = updateFrameProcessingSubTaskOwnMetrics(profile);
 
-    ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
-
-    auto const isExpanded = ImGui::TreeNode(profile.getName().data());
-
-    ImGui::NextColumn();
-
-    auto const & cpuMetrics = static_cast<basix::CpuTimeMetrics &>(*profile.getMetrics()[0]);
-
-    ImGui::Text("%f ms", asMilliseconds(cpuMetrics.duration));
-    
-    ImGui::NextColumn();
-    
-    auto const & gpuMetrics = static_cast<GpuTimeMetrics &>(*profile.getMetrics()[1]);
-
-    ImGui::Text("%f ms", asMilliseconds(gpuMetrics.getDuration()));
-
-    ImGui::NextColumn();
-    
     if (!isExpanded)
     {
         return 1;
@@ -252,6 +234,56 @@ auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask con
     ImGui::TreePop();
 
     return numOfItems;
+}
+
+auto FrameProfilingOverlay::updateFrameProcessingSubTaskOwnMetrics(
+    basix::ProfiledTask const & profile)
+    -> bool
+{
+    ImGui::Columns(3, "Timings", true);
+
+    ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
+
+    auto const isExpanded = ImGui::TreeNode(profile.getName().data());
+
+    ImGui::NextColumn();
+
+    updateCpuTimeMetrics(profile);
+    
+    updateGpuTimeMetrics(profile);
+
+    return isExpanded;
+}
+
+auto FrameProfilingOverlay::updateCpuTimeMetrics(basix::ProfiledTask const & profile)
+    -> void
+{
+    auto const & metrics = profile.getMetrics();
+
+    auto const & cpuMetrics = static_cast<basix::CpuTimeMetrics &>(*metrics[0]);
+
+    ImGui::Text("%f ms", asMilliseconds(cpuMetrics.duration));
+    
+    ImGui::NextColumn();
+}
+
+auto FrameProfilingOverlay::updateGpuTimeMetrics(basix::ProfiledTask const & profile)
+    -> void
+{
+    auto const & metrics = profile.getMetrics();
+
+    if (metrics.size() >= 2u)
+    {
+        auto const & timestampGpuMetrics = static_cast<GpuTimeMetrics &>(*metrics[1]);
+
+        ImGui::Text("%f ms", asMilliseconds(timestampGpuMetrics.duration));
+    }
+    else
+    {
+        ImGui::Text("-");
+    }
+
+    ImGui::NextColumn();
 }
 
 auto FrameProfilingOverlay::plotFrameProfileHistogram(

@@ -29,7 +29,7 @@ auto Query::getId() const
 }
 
 auto Query::waitForResultAndFetch() const
-    -> std::uint64_t
+    -> ResultType
 {
     auto const id = getId();
 
@@ -41,7 +41,7 @@ auto Query::waitForResultAndFetch() const
 }
 
 auto Query::fetchResultIfAvailable() const
-    -> std::optional<std::uint64_t>
+    -> std::optional<ResultType>
 {
     auto const id = getId();
 

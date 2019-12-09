@@ -16,7 +16,10 @@ public:
 
 public:
 
-    CpuTimeMetrics() = default;
+    CpuTimeMetrics()
+        : CpuTimeMetrics{Nanoseconds{}}
+    {
+    }
 
     explicit CpuTimeMetrics(Nanoseconds const duration)
         : duration{duration}
