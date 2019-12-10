@@ -41,7 +41,6 @@ public:
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , lightSystemOverlay{makeLightSystemOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
-        , doNotRecordFrameProfiles{false}
         , stopBeforeNextIteration{false}
     {
         renderer.setProfiler(&profiler);
@@ -58,13 +57,9 @@ public:
     {
         while (!shouldStop())
         {
+            recordLastFrameProfile();
+
             processOneFrame();
-
-            recordFrameProfile();
-
-            updateInspectionOverlays();
-
-            window->swapBuffers();
         }
     }
 
@@ -166,6 +161,24 @@ private:
         return (stopBeforeNextIteration || window->isClosing());
     }
 
+    auto recordLastFrameProfile()
+        -> void
+    {
+        if (profiler.isProfilingDisabled())
+        {
+            return;
+        }
+
+        auto & profile = profiler.getRootProfiledTask();
+
+        if (profile.getMetrics().empty())
+        {
+            return;
+        }
+
+        lastFrameProfiles.push_back(std::move(profile));
+    }
+
     auto processOneFrame()
         -> void
     {
@@ -174,12 +187,18 @@ private:
         processInput();
 
         render();
+
+        updateInspectionOverlays();
+
+        swapBuffers();
+
+        fetchGpuTimeQueryResults();
     }
 
     auto processInput()
         -> void
     {
-        auto const profiling = profiler.startTimingCpuTask("Input handling");
+        auto const profiling = profiler.startTimingCpuGpuTask("Input handling");
 
         glfwPollEvents();
 
@@ -201,6 +220,22 @@ private:
         renderer->render();
     }
 
+    auto swapBuffers()
+        -> void
+    {
+        auto const profiling = profiler.startTimingCpuGpuTask("Swapping buffers");
+
+        window->swapBuffers();
+    }
+
+    auto fetchGpuTimeQueryResults()
+        -> void
+    {
+        auto const profiling = profiler.startTimingCpuGpuTask("Time query result fetching");
+
+        profiler.fetchGpuTimingResults();
+    }
+
     auto isWindowReady() const
         -> bool
     {
@@ -209,29 +244,25 @@ private:
         return (size.height > 0);
     }
 
-    auto recordFrameProfile()
-        -> void
-    {
-        if (doNotRecordFrameProfiles)
-        {
-            return;
-        }
-
-        profiler.fetchGpuTimingResults();
-
-        auto & profile = profiler.getRootProfiledTask();
-
-        lastFrameProfiles.push_back(std::move(profile));
-    }
-
     auto updateInspectionOverlays()
         -> void
     {
+        auto const profiling = profiler.startTimingCpuGpuTask("Inspection overlay update");
+
         auto const newFrame = ImGuiFrame{};
 
         frameProfilingOverlay.update();
 
-        doNotRecordFrameProfiles = frameProfilingOverlay.isFrameProfilingPaused();
+        auto const doNotRecordFrameProfiles = frameProfilingOverlay.isFrameProfilingPaused();
+
+        if (doNotRecordFrameProfiles)
+        {
+            profiler.disableProfiling();
+        }
+        else
+        {
+            profiler.enableProfiling();
+        }
 
         lightSystemOverlay.update();
     }
@@ -257,8 +288,6 @@ private:
     LightSystemOverlay lightSystemOverlay;
 
     basix::ScopedSignalConnection resizeHandlerConnection;
-
-    bool doNotRecordFrameProfiles;
 
     bool stopBeforeNextIteration;
 
