@@ -58,6 +58,8 @@ public:
         while (!shouldStop())
         {
             recordLastFrameProfile();
+        
+            updateProfilingOptions();
 
             processOneFrame();
         }
@@ -175,8 +177,6 @@ private:
         swapBuffers();
 
         fetchGpuTimeQueryResults();
-
-        updateProfilingOptions();
     }
 
     auto recordLastFrameProfile()
@@ -195,6 +195,28 @@ private:
         }
 
         lastFrameProfiles.push_back(std::move(profile));
+    }
+
+    auto updateProfilingOptions()
+        -> void
+    {
+        if (frameProfilingOverlay.isProfilingPaused())
+        {
+            profiler.disableProfiling();
+
+            return;
+        }
+
+        profiler.enableCpuProfiling();
+
+        if (frameProfilingOverlay.isGpuTimeCollectionEnabled())
+        {
+            profiler.enableGpuProfiling();
+        }
+        else
+        {
+            profiler.disableGpuProfiling();
+        }
     }
 
     auto processInput()
@@ -234,24 +256,6 @@ private:
         -> void
     {
         profiler.fetchGpuTimingResults();
-    }
-
-    auto updateProfilingOptions()
-        -> void
-    {
-        if (frameProfilingOverlay.isProfilingPaused())
-        {
-            profiler.disableProfiling();
-        }
-        else
-        {
-            profiler.enableCpuProfiling();
-
-            if (frameProfilingOverlay.isGpuTimeCollectionEnabled())
-            {
-                profiler.enableGpuProfiling();
-            }
-        }
     }
 
     auto isWindowReady() const
