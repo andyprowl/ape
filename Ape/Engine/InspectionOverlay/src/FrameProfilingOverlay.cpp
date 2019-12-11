@@ -74,7 +74,7 @@ FrameProfilingOverlay::FrameProfilingOverlay(
     , frameProfileBuffer{&frameProfileBuffer}
     , lastHistogramHeight{0.0f}
     , lastWindowHeight{0.0f}
-    , isProfilingPaused{false}
+    , pauseProfiling{false}
     , collectGpuTimeMetrics{true}
     , maxNumOfPlottedFrames{frameProfileBuffer.capacity() / 2}
     , frameDurationCapInMs{50}
@@ -117,6 +117,18 @@ auto FrameProfilingOverlay::getSelectedFrameProfile() const
     return &selectedProfile;
 }
 
+auto FrameProfilingOverlay::isProfilingPaused() const
+    -> bool
+{
+    return pauseProfiling;
+}
+
+auto FrameProfilingOverlay::isGpuTimeCollectionEnabled() const
+    -> bool
+{
+    return collectGpuTimeMetrics;
+}
+
 auto FrameProfilingOverlay::makeWindow() const
     -> ImGuiWindow
 {
@@ -126,49 +138,19 @@ auto FrameProfilingOverlay::makeWindow() const
 auto FrameProfilingOverlay::updateProfilingOptions()
     -> void
 {
-    auto const wasProfilingPaused = isProfilingPaused;
+    auto const wasProfilingPaused = isProfilingPaused();
     
     auto const windowWidth = ImGui::GetWindowSize().x;
 
-    updatePauseProfiling();
+    ImGui::Checkbox("Pause frame profiling", &pauseProfiling);
+    
+    ImGui::Checkbox("Collect GPU time metrics", &collectGpuTimeMetrics);
 
-    updateCollectGpuTimeMetrics();
-
-    if (wasProfilingPaused && !isProfilingPaused)
+    if (wasProfilingPaused && !isProfilingPaused())
     {
         selectedFrameIndex = -1;
 
         ImGui::SetWindowSize({windowWidth, lastWindowHeight});
-    }
-}
-
-auto FrameProfilingOverlay::updatePauseProfiling()
-    -> void
-{
-    ImGui::Checkbox("Pause frame profiling", &isProfilingPaused);
-
-    if (isProfilingPaused)
-    {
-        frameProfiler->disableProfiling();
-    }
-    else
-    {
-        frameProfiler->enableProfiling();
-    }
-}
-
-auto FrameProfilingOverlay::updateCollectGpuTimeMetrics()
-    -> void
-{
-    ImGui::Checkbox("Collect GPU time metrics", &collectGpuTimeMetrics);
-
-    if (collectGpuTimeMetrics && !isProfilingPaused)
-    {
-        frameProfiler->enableGpuProfiling();
-    }
-    else
-    {
-        frameProfiler->disableGpuProfiling();
     }
 }
 
@@ -212,7 +194,7 @@ auto FrameProfilingOverlay::updateFrameProfileHistogram()
 
     if ((selectedFrameIndex >= 0) && ImGui::IsItemClicked())
     {
-        isProfilingPaused = true;
+        pauseProfiling = true;
     }
 }
 

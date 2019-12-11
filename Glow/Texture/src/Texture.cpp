@@ -213,6 +213,8 @@ auto Texture::setLabel(std::string_view const label)
 auto Texture::recreateMutableStorage()
     -> void
 {
+    auto const binder = glow::bind(*this);
+
     auto const openGLImageFormat = convertToOpenGLImageFormat(imageFormat);
 
     auto const openGLInternalFormat = convertToOpenGLInternalFormat(internalFormat);

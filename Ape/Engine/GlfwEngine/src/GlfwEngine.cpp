@@ -36,14 +36,14 @@ public:
         , renderer{&renderer}
         , inputHandler{&inputHandler}
         , timeTracker{stopwatch}
-        , frontProfiler{}
+        , profiler{}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , lightSystemOverlay{makeLightSystemOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
-        renderer.setProfiler(&frontProfiler);
+        renderer.setProfiler(&profiler);
 
         auto const size = window.getSize();
 
@@ -57,9 +57,9 @@ public:
     {
         while (!shouldStop())
         {
-            processOneFrame();
+            recordLastFrameProfile();
 
-            swapProfilers();
+            processOneFrame();
         }
     }
 
@@ -78,7 +78,7 @@ private:
 
         auto const initialSize = basix::Size<int>{window->getSize().width - 20, 280};
 
-        return {initialPosition, initialSize, frontProfiler, lastFrameProfiles};
+        return {initialPosition, initialSize, profiler, lastFrameProfiles};
     }
 
     auto makeLightSystemOverlay() const
@@ -161,25 +161,10 @@ private:
         return (stopBeforeNextIteration || window->isClosing());
     }
 
-    auto recordLastFrameProfile()
-        -> void
-    {
-        auto & profile = backProfiler.getRootProfiledTask();
-
-        if (profile.getMetrics().empty())
-        {
-            return;
-        }
-
-        lastFrameProfiles.push_back(std::move(profile));
-    }
-
     auto processOneFrame()
         -> void
     {
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Frame processing");
-
-        recordLastFrameProfile();
+        auto const profiling = profiler.startTimingCpuGpuTask("Frame processing");
 
         processInput();
 
@@ -190,18 +175,32 @@ private:
         swapBuffers();
 
         fetchGpuTimeQueryResults();
+
+        updateProfilingOptions();
     }
 
-    auto swapProfilers()
+    auto recordLastFrameProfile()
         -> void
     {
-        std::swap(frontProfiler, backProfiler);
+        if (!profiler.isCpuProfilingEnabled() && !profiler.isGpuProfilingEnabled())
+        {
+            return;
+        }
+
+        auto & profile = profiler.getRootProfiledTask();
+
+        if (profile.getMetrics().empty())
+        {
+            return;
+        }
+
+        lastFrameProfiles.push_back(std::move(profile));
     }
 
     auto processInput()
         -> void
     {
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Input handling");
+        auto const profiling = profiler.startTimingCpuGpuTask("Input handling");
 
         glfwPollEvents();
 
@@ -218,7 +217,7 @@ private:
             return;
         }
 
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Scene rendering");
+        auto const profiling = profiler.startTimingCpuGpuTask("Scene rendering");
 
         renderer->render();
     }
@@ -226,7 +225,7 @@ private:
     auto swapBuffers()
         -> void
     {
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Swapping buffers");
+        auto const profiling = profiler.startTimingCpuGpuTask("Swapping buffers");
 
         window->swapBuffers();
     }
@@ -234,9 +233,25 @@ private:
     auto fetchGpuTimeQueryResults()
         -> void
     {
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Time query result fetching");
+        profiler.fetchGpuTimingResults();
+    }
 
-        frontProfiler.fetchGpuTimingResults();
+    auto updateProfilingOptions()
+        -> void
+    {
+        if (frameProfilingOverlay.isProfilingPaused())
+        {
+            profiler.disableProfiling();
+        }
+        else
+        {
+            profiler.enableCpuProfiling();
+
+            if (frameProfilingOverlay.isGpuTimeCollectionEnabled())
+            {
+                profiler.enableGpuProfiling();
+            }
+        }
     }
 
     auto isWindowReady() const
@@ -250,7 +265,7 @@ private:
     auto updateInspectionOverlays()
         -> void
     {
-        auto const profiling = frontProfiler.startTimingCpuGpuTask("Inspection overlay update");
+        auto const profiling = profiler.startTimingCpuGpuTask("Inspection overlay update");
 
         auto const newFrame = ImGuiFrame{};
 
@@ -271,9 +286,9 @@ private:
 
     basix::TimeIntervalTracker timeTracker;
 
-    TaskTimeProfiler frontProfiler;
+    TaskTimeProfiler profiler;
 
-    TaskTimeProfiler backProfiler;
+    //TaskTimeProfiler backProfiler;
 
     basix::CircularBuffer<basix::ProfiledTask> lastFrameProfiles;
 

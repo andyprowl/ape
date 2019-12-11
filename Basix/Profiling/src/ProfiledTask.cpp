@@ -32,7 +32,7 @@ ProfiledTask::ProfiledTask(ProfiledTask const & rhs)
 ProfiledTask::ProfiledTask(ProfiledTask && rhs) noexcept
     : name{rhs.name}
     , description{rhs.description}
-    , parent{std::move(rhs.parent)}
+    , parent{rhs.parent}
     , subTasks{std::move(rhs.subTasks)}
     , metrics{std::move(rhs.metrics)}
 {
@@ -64,7 +64,7 @@ auto ProfiledTask::operator = (ProfiledTask && rhs) noexcept
     
     description = rhs.description;
     
-    parent = std::move(rhs.parent);
+    parent = rhs.parent;
     
     subTasks = std::move(rhs.subTasks);
     

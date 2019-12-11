@@ -33,18 +33,18 @@ public:
     auto getSelectedFrameProfile() const
         -> basix::ProfiledTask const *;
 
+    auto isProfilingPaused() const
+        -> bool;
+
+    auto isGpuTimeCollectionEnabled() const
+        -> bool;
+
 private:
 
     auto makeWindow() const
         -> ImGuiWindow;
 
     auto updateProfilingOptions()
-        -> void;
-
-    auto updatePauseProfiling()
-        -> void;
-
-    auto updateCollectGpuTimeMetrics()
         -> void;
 
     auto updateMaxNumOfPlottedFrames()
@@ -88,7 +88,7 @@ private:
 
     float lastWindowHeight;
 
-    bool isProfilingPaused;
+    bool pauseProfiling;
 
     bool collectGpuTimeMetrics;
 
