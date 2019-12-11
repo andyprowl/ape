@@ -86,11 +86,30 @@ private:
         std::index_sequence<Is...>) const
         -> ProfiledTask::MetricsContainer
     {
-        auto metrics = ProfiledTask::MetricsContainer{};
+        auto metricsSet = ProfiledTask::MetricsContainer{};
 
-        Swallow{(metrics.push_back(std::get<Is>(collectors).extractMetrics()), 0)...};
+        Swallow{(metricsSet.push_back(extractMetrics(std::get<Is>(collectors))), 0)...};
 
-        return metrics;
+        return metricsSet;
+    }
+
+    template<typename MetricsCollector>
+    auto extractMetrics(MetricsCollector & collector) const
+        -> std::unique_ptr<TaskProfileMetrics>
+    {
+        return collector.extractMetrics();
+    }
+
+    template<typename MetricsCollector>
+    auto extractMetrics(std::optional<MetricsCollector> & collector) const
+        -> std::unique_ptr<TaskProfileMetrics>
+    {
+        if (!collector)
+        {
+            return nullptr;
+        }
+
+        return collector->extractMetrics();
     }
 
 private:

@@ -9,6 +9,7 @@ namespace ape
 {
 
 class ImGuiWindow;
+class TaskTimeProfiler;
 class Window;
 
 class FrameProfilingOverlay
@@ -23,13 +24,11 @@ public:
     FrameProfilingOverlay(
         basix::Position<int> const & initialPosition,
         basix::Size<int> const & initialSize,
+        TaskTimeProfiler & frameProfiler,
         FrameProfileBuffer const & frameProfileBuffer);
 
     auto update()
         -> void;
-
-    auto isFrameProfilingPaused() const
-        -> bool;
 
     auto getSelectedFrameProfile() const
         -> basix::ProfiledTask const *;
@@ -39,7 +38,13 @@ private:
     auto makeWindow() const
         -> ImGuiWindow;
 
+    auto updateProfilingOptions()
+        -> void;
+
     auto updatePauseProfiling()
+        -> void;
+
+    auto updateCollectGpuTimeMetrics()
         -> void;
 
     auto updateMaxNumOfPlottedFrames()
@@ -75,6 +80,8 @@ private:
 
     basix::Size<int> initialSize;
 
+    TaskTimeProfiler * frameProfiler;
+
     FrameProfileBuffer const * frameProfileBuffer;
 
     float lastHistogramHeight;
@@ -82,6 +89,8 @@ private:
     float lastWindowHeight;
 
     bool isProfilingPaused;
+
+    bool collectGpuTimeMetrics;
 
     int maxNumOfPlottedFrames;
 

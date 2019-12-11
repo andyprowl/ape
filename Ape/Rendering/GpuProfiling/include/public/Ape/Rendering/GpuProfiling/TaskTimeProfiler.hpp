@@ -17,7 +17,13 @@ class TaskTimeProfiler : public basix::TaskProfiler
 public:
 
     TaskTimeProfiler()
-        : doNotProfile{false}
+        : TaskTimeProfiler{true, true}
+    {
+    }
+
+    explicit TaskTimeProfiler(bool const collectCpuTime, bool const collectGpuTime)
+        : collectCpuTime{collectCpuTime}
+        , collectGpuTime{collectGpuTime}
     {
     }
 
@@ -26,9 +32,9 @@ public:
         std::string_view const description = "")
         -> basix::ScopedCpuTimeProfiling
     {
-        if (doNotProfile)
+        if (!collectCpuTime)
         {
-            return {};
+            return basix::ScopedCpuTimeProfiling{};
         }
 
         return TaskProfiler::openNewTaskProfile(
@@ -43,7 +49,7 @@ public:
         std::string_view const description = "")
         -> ScopedCpuGpuTimeProfiling<QueryType>
     {
-        if (doNotProfile)
+        if (!collectCpuTime && !collectGpuTime)
         {
             return {};
         }
@@ -53,23 +59,23 @@ public:
             return TaskProfiler::openNewTaskProfile(
                 name,
                 description,
-                basix::CpuTimeMetricsCollector{},
-                GpuTimestampMetricsCollector{timestampQueryPool});
+                makeCpuTimeMetricsCollector(),
+                makeGpuTimestampMetricsCollector());
         }
         else
         {
             return TaskProfiler::openNewTaskProfile(
                 name,
                 description,
-                basix::CpuTimeMetricsCollector{},
-                GpuElapsedTimeMetricsCollector{elapsedTimeQueryPool});
+                makeCpuTimeMetricsCollector(),
+                makeGpuElapsedTimeMetricsCollector());
         }
     }
 
     auto fetchGpuTimingResults()
         -> void
     {
-        if (doNotProfile)
+        if (!collectGpuTime)
         {
             return;
         }
@@ -79,27 +85,105 @@ public:
         elapsedTimeQueryPool.fetchAndStoreAllResults();
     }
 
-    auto disableProfiling()
+    auto isCpuProfilingEnabled() const
+        -> bool
+    {
+        return collectCpuTime;
+    }
+
+    auto isGpuProfilingEnabled() const
+        -> bool
+    {
+        return collectGpuTime;
+    }
+
+    auto enableCpuProfiling()
         -> void
     {
-        doNotProfile = true;
+        collectCpuTime = true;
+    }
+
+    auto disableCpuProfiling()
+        -> void
+    {
+        collectCpuTime = false;
+    }
+
+    auto enableGpuProfiling()
+        -> void
+    {
+        collectGpuTime = true;
+    }
+
+    auto disableGpuProfiling()
+        -> void
+    {
+        collectGpuTime = false;
     }
 
     auto enableProfiling()
         -> void
     {
-        doNotProfile = false;
+        collectCpuTime = true;
+
+        collectGpuTime = true;
     }
 
-    auto isProfilingDisabled() const
-        -> bool
+    auto disableProfiling()
+        -> void
     {
-        return doNotProfile;
+        collectCpuTime = false;
+
+        collectGpuTime = false;
     }
 
 private:
 
-    bool doNotProfile;
+    auto makeCpuTimeMetricsCollector()
+        -> std::optional<basix::CpuTimeMetricsCollector>
+    {
+        if (isCpuProfilingEnabled())
+        {
+            return basix::CpuTimeMetricsCollector{};
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+
+    auto makeGpuTimestampMetricsCollector()
+        -> std::optional<GpuTimestampMetricsCollector>
+    {
+        if (isGpuProfilingEnabled())
+        {
+            return GpuTimestampMetricsCollector{timestampQueryPool};
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+
+    auto makeGpuElapsedTimeMetricsCollector()
+        -> std::optional<GpuElapsedTimeMetricsCollector>
+    {
+        if (isGpuProfilingEnabled())
+        {
+            return GpuElapsedTimeMetricsCollector{elapsedTimeQueryPool};
+        }
+        else
+        {
+            return std::nullopt;
+        }
+    }
+
+
+private:
+
+    bool collectCpuTime;
+
+    bool collectGpuTime;
 
     TimestampQueryPool timestampQueryPool;
 

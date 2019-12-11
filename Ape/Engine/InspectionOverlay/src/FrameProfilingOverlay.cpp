@@ -3,6 +3,7 @@
 #include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
 #include <Ape/Rendering/GpuProfiling/GpuTimeMetrics.hpp>
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 
 #include <Basix/Profiling/CpuTimeMetrics.hpp>
 
@@ -65,13 +66,16 @@ auto frameProfileGetter(void * const data, int const index)
 FrameProfilingOverlay::FrameProfilingOverlay(
     basix::Position<int> const & initialPosition,
     basix::Size<int> const & initialSize,
+    TaskTimeProfiler & frameProfiler,
     FrameProfileBuffer const & frameProfileBuffer)
     : initialPosition{initialPosition}
     , initialSize{initialSize}
+    , frameProfiler{&frameProfiler}
     , frameProfileBuffer{&frameProfileBuffer}
     , lastHistogramHeight{0.0f}
     , lastWindowHeight{0.0f}
     , isProfilingPaused{false}
+    , collectGpuTimeMetrics{true}
     , maxNumOfPlottedFrames{frameProfileBuffer.capacity() / 2}
     , frameDurationCapInMs{50}
     , selectedFrameIndex{-1}
@@ -83,7 +87,7 @@ auto FrameProfilingOverlay::update()
 {
     auto const window = makeWindow();
 
-    updatePauseProfiling();
+    updateProfilingOptions();
 
     updateMaxNumOfPlottedFrames();
 
@@ -92,12 +96,6 @@ auto FrameProfilingOverlay::update()
     updateFrameProfileHistogram();
 
     updateFrameProfileDetails();
-}
-
-auto FrameProfilingOverlay::isFrameProfilingPaused() const
-    -> bool
-{
-    return isProfilingPaused;
 }
 
 auto FrameProfilingOverlay::getSelectedFrameProfile() const
@@ -125,18 +123,52 @@ auto FrameProfilingOverlay::makeWindow() const
     return ImGuiWindow{"Frame Profiling", initialPosition, initialSize};
 }
 
-auto FrameProfilingOverlay::updatePauseProfiling()
+auto FrameProfilingOverlay::updateProfilingOptions()
     -> void
 {
     auto const wasProfilingPaused = isProfilingPaused;
+    
+    auto const windowWidth = ImGui::GetWindowSize().x;
 
-    ImGui::Checkbox("Pause frame profiling", &isProfilingPaused);
+    updatePauseProfiling();
+
+    updateCollectGpuTimeMetrics();
 
     if (wasProfilingPaused && !isProfilingPaused)
     {
         selectedFrameIndex = -1;
 
-        ImGui::SetWindowSize({0.0f, lastWindowHeight});
+        ImGui::SetWindowSize({windowWidth, lastWindowHeight});
+    }
+}
+
+auto FrameProfilingOverlay::updatePauseProfiling()
+    -> void
+{
+    ImGui::Checkbox("Pause frame profiling", &isProfilingPaused);
+
+    if (isProfilingPaused)
+    {
+        frameProfiler->disableProfiling();
+    }
+    else
+    {
+        frameProfiler->enableProfiling();
+    }
+}
+
+auto FrameProfilingOverlay::updateCollectGpuTimeMetrics()
+    -> void
+{
+    ImGui::Checkbox("Collect GPU time metrics", &collectGpuTimeMetrics);
+
+    if (collectGpuTimeMetrics && !isProfilingPaused)
+    {
+        frameProfiler->enableGpuProfiling();
+    }
+    else
+    {
+        frameProfiler->disableGpuProfiling();
     }
 }
 
@@ -272,7 +304,7 @@ auto FrameProfilingOverlay::updateGpuTimeMetrics(basix::ProfiledTask const & pro
 {
     auto const & metrics = profile.getMetrics();
 
-    if (metrics.size() >= 2u)
+    if ((metrics.size() >= 2u) && (metrics[1] != nullptr))
     {
         auto const & timestampGpuMetrics = static_cast<GpuTimeMetrics &>(*metrics[1]);
 

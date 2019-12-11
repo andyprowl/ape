@@ -16,8 +16,8 @@ class ScopedCpuGpuTimeProfiling;
 template<>
 class ScopedCpuGpuTimeProfiling<GpuTimeQueryType::timestamp>
     : public basix::ScopedTaskProfiling<
-        basix::CpuTimeMetricsCollector,
-        GpuTimestampMetricsCollector>
+        std::optional<basix::CpuTimeMetricsCollector>,
+        std::optional<GpuTimestampMetricsCollector>>
 {
 
 public:
@@ -34,8 +34,8 @@ public:
 template<>
 class ScopedCpuGpuTimeProfiling<GpuTimeQueryType::elapsedTime>
     : public basix::ScopedTaskProfiling<
-        basix::CpuTimeMetricsCollector,
-        GpuElapsedTimeMetricsCollector>
+        std::optional<basix::CpuTimeMetricsCollector>,
+        std::optional<GpuElapsedTimeMetricsCollector>>
 {
 
 public:
