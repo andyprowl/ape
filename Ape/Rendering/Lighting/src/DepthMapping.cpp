@@ -15,9 +15,9 @@ auto makePointLightDepthMapping(
     basix::Size<int> const & mapSize)
     -> std::vector<OmniDepthMap>
 {
-    return basix::transform(lights, [&mapSize] (auto const & /*light*/)
+    return basix::transform(lights, [&mapSize] (PointLight const & light)
     {
-        return OmniDepthMap{mapSize};
+        return OmniDepthMap{mapSize, std::string{light.getName()} + ".DepthMap"};
     });
 }
 
@@ -27,9 +27,9 @@ auto makeOrientedLightDepthMapping(
     basix::Size<int> const & mapSize)
     -> std::vector<MonoDepthMap>
 {
-    return basix::transform(lights, [&mapSize] (auto const & /*light*/)
+    return basix::transform(lights, [&mapSize] (auto const & light)
     {
-        return MonoDepthMap{mapSize};
+        return MonoDepthMap{mapSize, std::string{light.getName()} + ".DepthMap"};
     });
 }
 

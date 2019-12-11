@@ -3,6 +3,8 @@
 #include <Glow/BufferObject/FrameBufferObject.hpp>
 #include <Glow/Texture/CubeTexture.hpp>
 
+#include <string_view>
+
 namespace ape
 {
 
@@ -12,6 +14,8 @@ class OmniDepthMap
 public:
 
     explicit OmniDepthMap(basix::Size<int> const & size);
+
+    OmniDepthMap(basix::Size<int> const & size, std::string_view const label);
 
     auto getTexture()
         -> glow::CubeTexture &;

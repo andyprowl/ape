@@ -11,7 +11,7 @@ namespace ape
 namespace
 {
 
-auto makeDepthMapTexture(basix::Size<int> const & size)
+auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const labelPrefix)
     -> glow::Texture
 {
     auto image = glow::TextureImage{
@@ -27,13 +27,13 @@ auto makeDepthMapTexture(basix::Size<int> const & size)
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::immutable};
 
-    return glow::Texture{descriptor};
+    return glow::Texture{descriptor, std::string{labelPrefix} + ".Texture"};
 }
 
-auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture)
+auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture, std::string_view const labelPrefix)
     -> glow::FrameBufferObject
 {
-    auto frameBuffer = glow::FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{std::string{labelPrefix} + ".Framebuffer"};
 
     auto const binder = glow::bind(frameBuffer);
 
@@ -51,8 +51,13 @@ auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture)
 } // unnamed namespace
 
 MonoDepthMap::MonoDepthMap(basix::Size<int> const & size)
-    : texture{makeDepthMapTexture(size)}
-    , frameBuffer{makeDepthMapFrameBuffer(texture)}
+    : MonoDepthMap{size, ""}
+{
+}
+
+MonoDepthMap::MonoDepthMap(basix::Size<int> const & size, std::string_view const label)
+    : texture{makeDepthMapTexture(size, label)}
+    , frameBuffer{makeDepthMapFrameBuffer(texture, label)}
     , size{size}
 {
 }

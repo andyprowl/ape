@@ -29,7 +29,9 @@ auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
         makeOmniDepthMapFaceImage(size)};
 }
 
-auto makeOmniDepthMapTexture(basix::Size<int> const & size)
+auto makeOmniDepthMapTexture(
+    basix::Size<int> const & size,
+    std::string_view const labelPrefix)
     -> glow::CubeTexture
 {
     auto imageSet = makeOmniDepthMapImageSet(size);
@@ -40,13 +42,15 @@ auto makeOmniDepthMapTexture(basix::Size<int> const & size)
         glow::TextureInternalFormat::depth32,
         glow::TextureWrapping::clampToEdge};
 
-    return glow::CubeTexture{descriptor};
+    return glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};
 }
 
-auto makeOmniDepthMapFrameBuffer(glow::CubeTexture & depthMapTexture)
+auto makeOmniDepthMapFrameBuffer(
+    glow::CubeTexture & depthMapTexture,
+    std::string_view const labelPrefix)
     -> glow::FrameBufferObject
 {
-    auto frameBuffer = glow::FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{std::string{labelPrefix} + ".Framebuffer"};
 
     auto const binder = glow::bind(frameBuffer);
 
@@ -64,8 +68,13 @@ auto makeOmniDepthMapFrameBuffer(glow::CubeTexture & depthMapTexture)
 } // unnamed namespace
 
 OmniDepthMap::OmniDepthMap(basix::Size<int> const & size)
-    : texture{makeOmniDepthMapTexture(size)}
-    , frameBuffer{makeOmniDepthMapFrameBuffer(texture)}
+    : OmniDepthMap{size, ""}
+{
+}
+
+OmniDepthMap::OmniDepthMap(basix::Size<int> const & size, std::string_view const label)
+    : texture{makeOmniDepthMapTexture(size, label)}
+    , frameBuffer{makeOmniDepthMapFrameBuffer(texture, label)}
     , size{size}
 {
 }
