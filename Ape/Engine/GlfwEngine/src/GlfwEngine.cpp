@@ -11,6 +11,7 @@
 #include <Ape/Engine/InspectionOverlay/LightSystemOverlay.hpp>
 #include <Ape/Engine/UpdateHandling/InputHandler.hpp>
 
+#include <Ape/Rendering/GpuProfiling/FrameRateCalculator.hpp>
 #include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Windowing/Window.hpp>
@@ -38,6 +39,7 @@ public:
         , timeTracker{stopwatch}
         , profiler{}
         , lastFrameProfiles{60 * 10} // 10 seconds worth of frame profiles when running at 60 FPS
+        , frameRateCalculator{lastFrameProfiles, 4}
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , lightSystemOverlay{makeLightSystemOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
@@ -80,7 +82,7 @@ private:
 
         auto const initialSize = basix::Size<int>{window->getSize().width - 20, 280};
 
-        return {initialPosition, initialSize, profiler, lastFrameProfiles};
+        return {initialPosition, initialSize, profiler, lastFrameProfiles, frameRateCalculator};
     }
 
     auto makeLightSystemOverlay() const
@@ -195,6 +197,8 @@ private:
         }
 
         lastFrameProfiles.push_back(std::move(profile));
+
+        frameRateCalculator.update();
     }
 
     auto updateProfilingOptions()
@@ -292,9 +296,9 @@ private:
 
     TaskTimeProfiler profiler;
 
-    //TaskTimeProfiler backProfiler;
-
     basix::CircularBuffer<basix::ProfiledTask> lastFrameProfiles;
+
+    FrameRateCalculator frameRateCalculator;
 
     FrameProfilingOverlay frameProfilingOverlay;
 

@@ -8,6 +8,7 @@
 namespace ape
 {
 
+class FrameRateCalculator;
 class ImGuiWindow;
 class TaskTimeProfiler;
 class Window;
@@ -25,7 +26,8 @@ public:
         basix::Position<int> const & initialPosition,
         basix::Size<int> const & initialSize,
         TaskTimeProfiler & frameProfiler,
-        FrameProfileBuffer const & frameProfileBuffer);
+        FrameProfileBuffer const & frameProfileBuffer,
+        FrameRateCalculator const & frameRateCalculator);
 
     auto update()
         -> void;
@@ -43,6 +45,9 @@ private:
 
     auto makeWindow() const
         -> ImGuiWindow;
+
+    auto updateAverageFrameRate()
+        -> void;
 
     auto updateProfilingOptions()
         -> void;
@@ -83,6 +88,8 @@ private:
     TaskTimeProfiler * frameProfiler;
 
     FrameProfileBuffer const * frameProfileBuffer;
+
+    FrameRateCalculator const * frameRateCalculator;
 
     float lastHistogramHeight;
 

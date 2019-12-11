@@ -2,6 +2,7 @@
 
 #include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
+#include <Ape/Rendering/GpuProfiling/FrameRateCalculator.hpp>
 #include <Ape/Rendering/GpuProfiling/GpuTimeMetrics.hpp>
 #include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 
@@ -67,11 +68,13 @@ FrameProfilingOverlay::FrameProfilingOverlay(
     basix::Position<int> const & initialPosition,
     basix::Size<int> const & initialSize,
     TaskTimeProfiler & frameProfiler,
-    FrameProfileBuffer const & frameProfileBuffer)
+    FrameProfileBuffer const & frameProfileBuffer,
+    FrameRateCalculator const & frameRateCalculator)
     : initialPosition{initialPosition}
     , initialSize{initialSize}
     , frameProfiler{&frameProfiler}
     , frameProfileBuffer{&frameProfileBuffer}
+    , frameRateCalculator{&frameRateCalculator}
     , lastHistogramHeight{0.0f}
     , lastWindowHeight{0.0f}
     , pauseProfiling{false}
@@ -86,6 +89,8 @@ auto FrameProfilingOverlay::update()
     -> void
 {
     auto const window = makeWindow();
+
+    updateAverageFrameRate();
 
     updateProfilingOptions();
 
@@ -133,6 +138,31 @@ auto FrameProfilingOverlay::makeWindow() const
     -> ImGuiWindow
 {
     return ImGuiWindow{"Frame Profiling", initialPosition, initialSize};
+}
+
+auto FrameProfilingOverlay::updateAverageFrameRate()
+    -> void
+{
+    auto const averageDuration = frameRateCalculator->getAverageFrameDurationInMs();
+
+    if (averageDuration > 0.0f)
+    {
+        auto const averageFrameRate = 1'000.0 / averageDuration;
+
+        ImGui::Text("Average FPS: %f", averageFrameRate);
+
+        ImGui::SameLine();
+
+        ImGui::Text("\tAverage frame duration: %f", averageDuration);
+    }
+    else
+    {
+        ImGui::Text("Average FPS: -");
+
+        ImGui::SameLine();
+
+        ImGui::Text("\tAverage frame duration: -");
+    }
 }
 
 auto FrameProfilingOverlay::updateProfilingOptions()

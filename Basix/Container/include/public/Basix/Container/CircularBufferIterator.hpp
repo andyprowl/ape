@@ -58,7 +58,7 @@ public:
     auto operator -> () const
         -> T const *
     {
-        return &(*this);
+        return &(*(*this));
     }
 
     auto operator ++ ()
@@ -77,18 +77,34 @@ public:
         return *this;
     }
 
-    auto operator + (std::size_t const n) const
+    auto operator + (difference_type const n) const
         -> CircularBufferIterator
     {
         auto const newIndex = (index + (n % storageSize) + storageSize) % storageSize;
 
-        return {storage, storageSize, newIndex};
+        return {storage, storageSize, static_cast<int>(newIndex)};
     }
 
-    auto operator - (std::size_t const n) const
+    auto operator - (difference_type const n) const
         -> CircularBufferIterator
     {
         return (*this + (-n));
+    }
+
+    auto operator += (difference_type const n)
+        -> CircularBufferIterator
+    {
+        *this = *this + n;
+
+        return *this;
+    }
+
+    auto operator -= (difference_type const n)
+        -> CircularBufferIterator
+    {
+        *this = *this - n;
+
+        return *this;
     }
 
     template<typename U>
