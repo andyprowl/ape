@@ -21,6 +21,7 @@ class MonoDepthShaderProgram;
 class LightSystemView;
 class Mesh;
 class ShapeDrawer;
+class TaskTimeProfiler;
 
 class MonoDepthBodyRenderer
 {
@@ -44,6 +45,9 @@ public:
         -> bool;
 
     auto enableFrustumCulling(bool enable)
+        -> void;
+
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
 private:
@@ -104,6 +108,8 @@ private:
     MonoDepthShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    TaskTimeProfiler * profiler;
 
     bool performFrustumCulling;
 

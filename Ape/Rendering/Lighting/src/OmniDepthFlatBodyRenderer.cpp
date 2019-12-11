@@ -6,6 +6,7 @@
 
 #include <Ape/Rendering/Culling/PerspectiveLightCuller.hpp>
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -67,6 +68,7 @@ OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , profiler{nullptr}
     , performFrustumCulling{false}
 {
 }
@@ -78,6 +80,8 @@ auto OmniDepthFlatBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
+    auto const profiling = profiler->startTimingCpuGpuTask("Omnidirectional flat shadow mapping");
+
     auto const shaderBinder = bind(*shader);
     
     renderLightSetDepth(
@@ -98,6 +102,12 @@ auto OmniDepthFlatBodyRenderer::enableFrustumCulling(bool const enable)
     -> void
 {
     performFrustumCulling = enable;
+}
+
+auto OmniDepthFlatBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+    -> void
+{
+    profiler = &newProfiler;
 }
 
 auto OmniDepthFlatBodyRenderer::renderLightSetDepth(

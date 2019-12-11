@@ -120,10 +120,12 @@ auto SceneRenderer::getProfiler() const
     return profiler;
 }
 
-auto SceneRenderer::setProfiler(TaskTimeProfiler * const newProfiler)
+auto SceneRenderer::setProfiler(TaskTimeProfiler & newProfiler)
     -> void
 {
-    profiler = newProfiler;
+    profiler = &newProfiler;
+
+    renderers.depthBodyRenderer.setProfiler(newProfiler);
 }
 
 auto SceneRenderer::makeShadowMapping() const

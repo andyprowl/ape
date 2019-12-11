@@ -78,4 +78,14 @@ auto DepthBodyRenderer::enableOmniFlatShadowMapping(bool const enable)
     printOmnidirectionalFlatMappingStatus(useOmniFlatRenderer);
 }
 
+auto DepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+    -> void
+{
+    monoRenderer.setProfiler(newProfiler);
+
+    omniCubeRenderer.setProfiler(newProfiler);
+
+    omniFlatRenderer.setProfiler(newProfiler);
+}
+
 } // namespace ape

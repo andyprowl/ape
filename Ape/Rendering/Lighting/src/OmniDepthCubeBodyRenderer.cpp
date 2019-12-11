@@ -4,6 +4,8 @@
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
+
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
 #include <Ape/World/Scene/Body.hpp>
@@ -41,6 +43,7 @@ OmniDepthCubeBodyRenderer::OmniDepthCubeBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , profiler{nullptr}
 {
 }
 
@@ -50,6 +53,8 @@ auto OmniDepthCubeBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
+    auto const profiling = profiler->startTimingCpuGpuTask("Omnidirectional cube shadow mapping");
+
     auto const shaderBinder = bind(*shader);
     
     renderLightSetDepth(
@@ -57,6 +62,12 @@ auto OmniDepthCubeBodyRenderer::render(
         lightSystemView.getLightSystem().point,
         lightSystemView.getPointView(),
         target.getPointMapping());
+}
+
+auto OmniDepthCubeBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+    -> void
+{
+    profiler = &newProfiler;
 }
 
 auto OmniDepthCubeBodyRenderer::renderLightSetDepth(

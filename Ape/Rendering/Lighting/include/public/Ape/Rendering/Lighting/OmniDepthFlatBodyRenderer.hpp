@@ -21,6 +21,7 @@ class OmniDepthFlatShaderProgram;
 class PointLight;
 class PointLightView;
 class ShapeDrawer;
+class TaskTimeProfiler;
 
 class OmniDepthFlatBodyRenderer
 {
@@ -46,6 +47,9 @@ public:
         -> bool;
 
     auto enableFrustumCulling(bool enable)
+        -> void;
+
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
 private:
@@ -94,6 +98,8 @@ private:
     OmniDepthFlatShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    TaskTimeProfiler * profiler;
 
     bool performFrustumCulling;
 

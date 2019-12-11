@@ -16,6 +16,7 @@ AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
     Ape::Rendering::Culling
+    Ape::Rendering::GpuProfiling
     Ape::World::Shape
     Basix::CompilerSupport
     Basix::Text)

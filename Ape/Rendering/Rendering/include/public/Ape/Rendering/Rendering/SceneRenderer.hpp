@@ -117,7 +117,7 @@ public:
     auto getProfiler() const
         -> TaskTimeProfiler *;
 
-    auto setProfiler(TaskTimeProfiler * newProfiler)
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
 private:

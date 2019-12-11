@@ -19,6 +19,7 @@ class OmniDepthCubeShaderProgram;
 class PointLight;
 class PointLightView;
 class ShapeDrawer;
+class TaskTimeProfiler;
 
 class OmniDepthCubeBodyRenderer
 {
@@ -37,6 +38,9 @@ public:
         BodySetView const & bodies,
         LightSystemView const & lightSystemView,
         DepthMapping & target) const
+        -> void;
+
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
 private:
@@ -68,6 +72,8 @@ private:
     OmniDepthCubeShaderProgram * shader;
 
     ShapeDrawer const * shapeRenderer;
+
+    TaskTimeProfiler * profiler;
 
 };
 

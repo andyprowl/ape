@@ -8,6 +8,7 @@ namespace ape
 {
 
 class Camera;
+class TaskTimeProfiler;
 
 class DepthBodyRenderer
 {
@@ -40,6 +41,9 @@ public:
         -> bool;
 
     auto enableOmniFlatShadowMapping(bool enable)
+        -> void;
+
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
 private:

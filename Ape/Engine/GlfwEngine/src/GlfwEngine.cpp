@@ -45,7 +45,7 @@ public:
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , stopBeforeNextIteration{false}
     {
-        renderer.setProfiler(&profiler);
+        renderer.setProfiler(profiler);
 
         auto const size = window.getSize();
 
@@ -226,7 +226,7 @@ private:
     auto processInput()
         -> void
     {
-        auto const profiling = profiler.startTimingCpuGpuTask("Input handling");
+        auto const profiling = profiler.startTimingCpuTask("Input handling");
 
         glfwPollEvents();
 
@@ -248,6 +248,18 @@ private:
         renderer->render();
     }
 
+    auto updateInspectionOverlays()
+        -> void
+    {
+        auto const profiling = profiler.startTimingCpuGpuTask("Inspection overlay update");
+
+        auto const newFrame = ImGuiFrame{};
+
+        frameProfilingOverlay.update();
+
+        lightSystemOverlay.update();
+    }
+
     auto swapBuffers()
         -> void
     {
@@ -259,6 +271,8 @@ private:
     auto fetchGpuTimeQueryResults()
         -> void
     {
+        auto const profiling = profiler.startTimingCpuGpuTask("Fetching GPU timing results");
+
         profiler.fetchGpuTimingResults();
     }
 
@@ -268,18 +282,6 @@ private:
         auto const size = window->getSize();
 
         return (size.height > 0);
-    }
-
-    auto updateInspectionOverlays()
-        -> void
-    {
-        auto const profiling = profiler.startTimingCpuGpuTask("Inspection overlay update");
-
-        auto const newFrame = ImGuiFrame{};
-
-        frameProfilingOverlay.update();
-
-        lightSystemOverlay.update();
     }
 
 private:

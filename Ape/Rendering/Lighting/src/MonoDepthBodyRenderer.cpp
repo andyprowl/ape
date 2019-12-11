@@ -6,6 +6,7 @@
 
 #include <Ape/Rendering/Culling/PerspectiveLightCuller.hpp>
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
+#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -44,6 +45,7 @@ MonoDepthBodyRenderer::MonoDepthBodyRenderer(
     ShapeDrawer const & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
+    , profiler{nullptr}
     , performFrustumCulling{true}
 {
 }
@@ -55,6 +57,8 @@ auto MonoDepthBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
+    auto const profiling = profiler->startTimingCpuGpuTask("Monodirectional shadow mapping");
+
     auto const shaderBinder = bind(*shader);
 
     renderSpotLightSetDepth(bodies, viewerCamera, lightSystemView, target);
@@ -74,6 +78,12 @@ auto MonoDepthBodyRenderer::enableFrustumCulling(bool const enable)
     performFrustumCulling = enable;
 }
 
+auto MonoDepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+    -> void
+{
+    profiler = &newProfiler;
+}
+
 auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
@@ -81,6 +91,8 @@ auto MonoDepthBodyRenderer::renderSpotLightSetDepth(
     DepthMapping & target) const
     -> void
 {
+    auto const profiling = profiler->startTimingCpuGpuTask("Spot light shadow mapping");
+
     auto const & lightSystem = lightSystemView.getLightSystem();
 
     auto const & spotView = lightSystemView.getSpotView();
@@ -97,6 +109,8 @@ auto MonoDepthBodyRenderer::renderDirectionalLightSetDepth(
     DepthMapping & target) const
     -> void
 {
+    auto const profiling = profiler->startTimingCpuGpuTask("Directional light shadow mapping");
+
     auto const & lightSystem = lightSystemView.getLightSystem();
 
     auto const & directionalView = lightSystemView.getDirectionalView();
