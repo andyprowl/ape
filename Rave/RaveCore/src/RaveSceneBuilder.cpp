@@ -36,8 +36,17 @@ private:
 
     auto createContainers()
         -> void;
+    
+    auto createRotatedContainers()
+        -> void;
 
-    auto getContainerPositions() const
+    auto getRotatedContainerPositions() const
+        -> std::vector<glm::vec3>;
+
+    auto createNonRotatedContainers()
+        -> void;
+
+    auto getNonRotatedContainerPositions() const
         -> std::vector<glm::vec3>;
 
     auto createLamps()
@@ -244,9 +253,17 @@ auto StatefulSceneBuilder::createGroundTile(int const row, int const col, ape::M
 auto StatefulSceneBuilder::createContainers()
     -> void
 {
+    createRotatedContainers();
+
+    createNonRotatedContainers();
+}
+
+auto StatefulSceneBuilder::createRotatedContainers()
+    -> void
+{
     auto const & model = assets->generalAssets.models[2];
 
-    auto const positions = getContainerPositions();
+    auto const positions = getRotatedContainerPositions();
 
     auto const numOfBodies = scene.getNumOfBodies();
 
@@ -270,7 +287,7 @@ auto StatefulSceneBuilder::createContainers()
     }
 }
 
-auto StatefulSceneBuilder::getContainerPositions() const
+auto StatefulSceneBuilder::getRotatedContainerPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -285,6 +302,31 @@ auto StatefulSceneBuilder::getContainerPositions() const
         {1.5f, 2.0f, -2.5f},
         {1.5f, 0.2f, -1.5f},
         {-1.3f, 1.0f, -1.5f}};
+}
+
+auto StatefulSceneBuilder::createNonRotatedContainers()
+    -> void
+{
+    auto const & model = assets->generalAssets.models[2];
+
+    auto const positions = getNonRotatedContainerPositions();
+
+    auto const numOfBodies = scene.getNumOfBodies();
+
+    for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
+
+        addBody(translation, model);
+    }
+}
+
+auto StatefulSceneBuilder::getNonRotatedContainerPositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {0.0f, -1.5f, 6.0f},
+        {2.0f, -1.5f, 6.0f}};
 }
 
 auto StatefulSceneBuilder::createLamps()

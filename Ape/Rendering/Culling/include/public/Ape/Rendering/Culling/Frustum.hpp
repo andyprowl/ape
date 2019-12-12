@@ -54,6 +54,14 @@ public:
         return {getVertex(edge.first), getVertex(edge.second)};
     }
 
+    auto getFace(Face const f) const
+        -> std::array<glm::vec3, 4u>
+    {
+        auto const & face = ape::getFace(f);
+
+        return {getVertex(face[0]), getVertex(face[1]), getVertex(face[2]), getVertex(face[3])};
+    }
+
 private:
 
     auto makeVertices() const

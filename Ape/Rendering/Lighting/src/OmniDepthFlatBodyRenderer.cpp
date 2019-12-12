@@ -69,7 +69,7 @@ OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
     , profiler{nullptr}
-    , performFrustumCulling{false}
+    , performFrustumCulling{true}
 {
 }
 

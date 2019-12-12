@@ -106,7 +106,11 @@ private:
     {
         auto const & plane = viewerFrustum.getPlane(f);
 
-        auto const isOpposing = (glm::dot(plane.normal, lightDirection) < 0.0f);
+        auto const vertexOnFace = viewerFrustum.getVertex(ape::getFace(f).front());
+
+        auto const lightToFace = vertexOnFace - lightPosition;
+
+        auto const isOpposing = (glm::dot(plane.normal, lightToFace) < 0.0f);
 
         if (isOpposing)
         {
@@ -208,7 +212,7 @@ auto PerspectiveLightCuller::isSphereContained(Sphere const & sphere) const
         }
         else if (distance < radius)
         {
-            return ContainmentRelation::partlyInside;
+            relation = ContainmentRelation::partlyInside;
         }
     }
 

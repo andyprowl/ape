@@ -58,7 +58,7 @@ inline auto getEdge(Hexahedron::Face const face1, Hexahedron::Face const face2)
     static auto const invalid = std::make_pair(static_cast<Vertex>(-1), static_cast<Vertex>(-1));
 
     // Edge vertices are provided in clockwise ordering
-    static auto const sharingTable = std::array<std::array<std::pair<Vertex, Vertex>, 6u>, 6u>{{
+    static auto const edgeTable = std::array<std::array<std::pair<Vertex, Vertex>, 6u>, 6u>{{
         // Face::right
         {{
             invalid, // Face::right
@@ -114,7 +114,60 @@ inline auto getEdge(Hexahedron::Face const face1, Hexahedron::Face const face2)
             invalid, // Face::back
         }}}};
 
-    return sharingTable[static_cast<std::size_t>(face1)][static_cast<std::size_t>(face2)];
+    return edgeTable[static_cast<std::size_t>(face1)][static_cast<std::size_t>(face2)];
+}
+
+inline auto getFace(Hexahedron::Face const face)
+    -> std::array<Hexahedron::Vertex, 4u> const &
+{
+    using Vertex = Hexahedron::Vertex;
+
+    // Face vertices are provided in clockwise ordering
+    static auto const vertexTable = std::array<std::array<Vertex, 4u>, 6u>{{
+        // Face::right
+        {{
+            Vertex::rightTopFront,
+            Vertex::rightTopBack,
+            Vertex::rightBottomBack,
+            Vertex::rightBottomFront
+        }},
+        // Face::left
+        {{
+            Vertex::leftTopBack,
+            Vertex::leftTopFront,
+            Vertex::leftBottomFront,
+            Vertex::leftBottomBack
+        }},
+        // Face::top
+        {{
+            Vertex::leftTopBack,
+            Vertex::rightTopBack,
+            Vertex::rightTopFront,
+            Vertex::leftTopFront
+        }},
+        // Face::bottom
+        {{
+            Vertex::leftBottomFront,
+            Vertex::rightBottomFront,
+            Vertex::rightBottomBack,
+            Vertex::leftBottomBack
+        }},
+        // Face::front
+        {{
+            Vertex::leftTopFront,
+            Vertex::rightTopFront,
+            Vertex::rightBottomFront,
+            Vertex::leftBottomFront
+        }},
+        // Face::back
+        {{
+            Vertex::rightTopBack,
+            Vertex::leftTopBack,
+            Vertex::leftBottomBack,
+            Vertex::rightBottomBack
+        }}}};
+
+    return vertexTable[static_cast<std::size_t>(face)];
 }
 
 inline auto getAllFaces()

@@ -74,7 +74,7 @@ auto PlaneFrustumCuller::isSphereContained(Sphere const & sphere) const
         }
         else if (distance < radius)
         {
-            return ContainmentRelation::partlyInside;
+            relation = ContainmentRelation::partlyInside;
         }
     }
 
