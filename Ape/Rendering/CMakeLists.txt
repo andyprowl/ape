@@ -4,14 +4,10 @@ add_subdirectory(Culling)
 
 add_subdirectory(Effect)
 
-add_subdirectory(GpuProfiling)
-
 add_subdirectory(Lighting)
 
 add_subdirectory(Rendering)
 
 add_subdirectory(Skybox)
-
-add_subdirectory(Windowing)
 
 add_subdirectory(Wireframe)

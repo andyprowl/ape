@@ -1,6 +1,7 @@
 #include <Ape/Engine/UpdateHandling/CameraManipulator.hpp>
 
-#include <Ape/Rendering/Windowing/Window.hpp>
+#include <Ape/Engine/Windowing/Window.hpp>
+
 #include <Ape/World/Scene/CameraSelector.hpp>
 #include <Ape/World/Scene/Scene.hpp>
 

@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer1},
         {omniDepthFlatShader, *shapeRenderer1}};
 
-    auto standardBodyRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
+    auto blinnPhongRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -263,7 +263,7 @@ int main(int argc, char *argv[])
         wireframeStyleProvider};
 
     auto outlinedBodyRenderer1 = ape::OutlinedBodyRenderer{
-        standardBodyRenderer1,
+        blinnPhongRenderer1,
         wireframeBodyRenderer1};
 
     auto boundsRenderer1 = ape::BodyBoundsRenderer{boundsShader};
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
         std::move(shapeRenderer1),
         ape::SceneRenderer::RendererSet{
             std::move(depthBodyRenderer1),
-            std::move(standardBodyRenderer1),
+            std::move(blinnPhongRenderer1),
             std::move(wireframeBodyRenderer1),
             std::move(outlinedBodyRenderer1),
             std::move(boundsRenderer1),
@@ -305,7 +305,7 @@ int main(int argc, char *argv[])
 
     auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
 
-    engine1.start();
+    engine1.run();
 
     /// ---
 
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer2},
         {omniDepthFlatShader, *shapeRenderer2}};
 
-    auto standardBodyRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
+    auto blinnPhongRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
 
     auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -331,7 +331,7 @@ int main(int argc, char *argv[])
         wireframeStyleProvider};
 
     auto outlinedBodyRenderer2 = ape::OutlinedBodyRenderer{
-        standardBodyRenderer2,
+        blinnPhongRenderer2,
         wireframeBodyRenderer2};
     
     auto boundsRenderer2 = ape::BodyBoundsRenderer{boundsShader};
@@ -348,7 +348,7 @@ int main(int argc, char *argv[])
         std::move(shapeRenderer2),
         ape::SceneRenderer::RendererSet{
             std::move(depthBodyRenderer2),
-            std::move(standardBodyRenderer2),
+            std::move(blinnPhongRenderer2),
             std::move(wireframeBodyRenderer2),
             std::move(outlinedBodyRenderer2),
             std::move(boundsRenderer2),
@@ -377,7 +377,7 @@ int main(int argc, char *argv[])
 
     cameraSelector2.activateNextCamera();
 
-    engine2.start();
+    engine2.run();
     
     /// ---
     
@@ -395,7 +395,7 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer3},
         {omniDepthFlatShader, *shapeRenderer3}};
 
-    auto standardBodyRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
+    auto blinnPhongRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
 
     auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -403,7 +403,7 @@ int main(int argc, char *argv[])
         wireframeStyleProvider};
 
     auto outlinedBodyRenderer3 = ape::OutlinedBodyRenderer{
-        standardBodyRenderer3,
+        blinnPhongRenderer3,
         wireframeBodyRenderer3};
 
     auto boundsRenderer3 = ape::BodyBoundsRenderer{boundsShader};
@@ -420,7 +420,7 @@ int main(int argc, char *argv[])
         std::move(shapeRenderer3),
         ape::SceneRenderer::RendererSet{
             std::move(depthBodyRenderer3),
-            std::move(standardBodyRenderer3),
+            std::move(blinnPhongRenderer3),
             std::move(wireframeBodyRenderer3),
             std::move(outlinedBodyRenderer3),
             std::move(boundsRenderer3),
@@ -449,7 +449,7 @@ int main(int argc, char *argv[])
 
     cameraSelector3.activatePreviousCamera();
 
-    engine3.start();
+    engine3.run();
     
     // ---
 

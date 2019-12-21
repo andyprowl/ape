@@ -105,6 +105,8 @@ private:
 
     int selectedFrameIndex;
 
+    bool doFrameViewResizing;
+
 };
 
 } // namespace ape

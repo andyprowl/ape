@@ -1,7 +1,7 @@
 #pragma once
 
+#include <Ape/Engine/Engine/InputHandler.hpp>
 #include <Ape/Engine/UpdateHandling/CameraManipulator.hpp>
-#include <Ape/Engine/UpdateHandling/InputHandler.hpp>
 
 #include <Basix/Signal/ScopedSignalConnection.hpp>
 
@@ -46,6 +46,14 @@ public:
     auto onFrame(std::chrono::nanoseconds frameDuration)
         -> void override;
 
+    // virtual (from InputHandler)
+    auto getEngine() const
+        -> Engine & override;
+
+    // virtual (from InputHandler)
+    auto setEngine(Engine & newEngine)
+        -> void override;
+
 protected:
 
     virtual auto onKeyPress(Key key, KeyModifier modifier)
@@ -77,10 +85,13 @@ private:
     auto registerFocusLostHandlerConnection()
         -> basix::ScopedSignalConnection;
 
-    auto processInputCaptureToggling(ape::Key const key, KeyModifier const modifier)
+    auto processInputCaptureToggling(ape::Key key, KeyModifier const modifier)
         -> void;
 
-    auto processFullScreenToggling(ape::Key const key, KeyModifier modifier) const
+    auto processInspectionOverlayToggling(ape::Key key, KeyModifier modifier) const
+        -> void;
+
+    auto processFullScreenToggling(ape::Key key, KeyModifier modifier) const
         -> void;
 
     auto processFrustumCullingToggling(ape::Key key, ape::KeyModifier modifier) const
@@ -124,6 +135,8 @@ private:
     SkyboxSelector * skyboxSelector;
 
     EffectSelector * effectSelector;
+
+    Engine * engine;
 
     basix::ScopedSignalConnection keyPressHandlerConnection;
 

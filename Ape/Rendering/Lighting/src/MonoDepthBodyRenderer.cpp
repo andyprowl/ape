@@ -6,7 +6,7 @@
 
 #include <Ape/Rendering/Culling/PerspectiveLightCuller.hpp>
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
-#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
+#include <Ape/Engine/FrameProfiling/TaskTimeProfiler.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>

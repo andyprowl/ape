@@ -1,7 +1,7 @@
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 
-#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
-#include <Ape/Rendering/Windowing/Window.hpp>
+#include <Ape/Engine/FrameProfiling/TaskTimeProfiler.hpp>
+#include <Ape/Engine/Windowing/Window.hpp>
 
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/ModelPart.hpp>
@@ -39,11 +39,12 @@ SceneRenderer::SceneRenderer(
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
     , renderBoundingBoxes{false}
-    , usePostProcessingEffects{false}
+    , usePostProcessingEffects{true}
     , profiler{nullptr}
 {
 }
 
+// virtual (from Renderer)
 auto SceneRenderer::render()
     -> void
 {
@@ -51,6 +52,8 @@ auto SceneRenderer::render()
     {
         return;
     }
+
+    targetSurface->makeCurrent();
 
     setupDrawingMode();
 
@@ -66,24 +69,14 @@ auto SceneRenderer::render()
     }
 }
 
-auto SceneRenderer::getCameraSelector() const
-    -> CameraSelector const &
-{
-    return *cameraSelector;
-}
-
-auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
-    -> void
-{
-    cameraSelector = &newSelector;
-}
-
+// virtual (from Renderer)
 auto SceneRenderer::getViewport() const
     -> Viewport
 {
     return viewport;
 }
 
+// virtual (from Renderer)
 auto SceneRenderer::setViewport(Viewport const & newViewport)
     -> void
 {
@@ -92,6 +85,36 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
     offscreenSurface.setSize(viewport.size);
 
     shadowMapping.lightSystemView.setViewSize(viewport.size);
+}
+
+// virtual (from Renderer)
+auto SceneRenderer::getCameraSelector() const
+    -> CameraSelector const &
+{
+    return *cameraSelector;
+}
+
+// virtual (from Renderer)
+auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
+    -> void
+{
+    cameraSelector = &newSelector;
+}
+
+// virtual (from Renderer)
+auto SceneRenderer::getProfiler() const
+    -> TaskTimeProfiler *
+{
+    return profiler;
+}
+
+// virtual (from Renderer)
+auto SceneRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+    -> void
+{
+    profiler = &newProfiler;
+
+    renderers.depthBodyRenderer.setProfiler(newProfiler);
 }
 
 auto SceneRenderer::isFrustumCullingEnabled() const
@@ -112,20 +135,6 @@ auto SceneRenderer::getRenderers()
     -> RendererSet &
 {
     return renderers;
-}
-
-auto SceneRenderer::getProfiler() const
-    -> TaskTimeProfiler *
-{
-    return profiler;
-}
-
-auto SceneRenderer::setProfiler(TaskTimeProfiler & newProfiler)
-    -> void
-{
-    profiler = &newProfiler;
-
-    renderers.depthBodyRenderer.setProfiler(newProfiler);
 }
 
 auto SceneRenderer::makeShadowMapping() const

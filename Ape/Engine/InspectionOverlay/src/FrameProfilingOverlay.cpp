@@ -2,9 +2,9 @@
 
 #include <Ape/Engine/InspectionOverlay/ImGuiWindow.hpp>
 
-#include <Ape/Rendering/GpuProfiling/FrameRateCalculator.hpp>
-#include <Ape/Rendering/GpuProfiling/GpuTimeMetrics.hpp>
-#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
+#include <Ape/Engine/FrameProfiling/FrameRateCalculator.hpp>
+#include <Ape/Engine/FrameProfiling/GpuTimeMetrics.hpp>
+#include <Ape/Engine/FrameProfiling/TaskTimeProfiler.hpp>
 
 #include <Basix/Profiling/CpuTimeMetrics.hpp>
 
@@ -82,6 +82,7 @@ FrameProfilingOverlay::FrameProfilingOverlay(
     , maxNumOfPlottedFrames{frameProfileBuffer.capacity() / 2}
     , frameDurationCapInMs{50}
     , selectedFrameIndex{-1}
+    , doFrameViewResizing{true}
 {
 }
 
@@ -231,13 +232,11 @@ auto FrameProfilingOverlay::updateFrameProfileHistogram()
 auto FrameProfilingOverlay::updateFrameProfileDetails()
     -> void
 {
-    static auto resize = true;
-
     if (selectedFrameIndex < 0)
     {
         ImGui::Text("No frame selected");
 
-        resize = true;
+        doFrameViewResizing = true;
 
         return;
     }
@@ -248,13 +247,13 @@ auto FrameProfilingOverlay::updateFrameProfileDetails()
 
     auto const numOfTreeItems = updateFrameProcessingSubTask(*selectedProfile);
 
-    if (resize)
+    if (doFrameViewResizing)
     {
         auto const itemHeight = ImGui::GetItemRectSize().y;
 
         ImGui::SetWindowSize({0.0f, lastWindowHeight + numOfTreeItems * itemHeight});
 
-        resize = false;
+        doFrameViewResizing = false;
     }
 }
 

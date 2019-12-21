@@ -8,8 +8,6 @@
 namespace ape::qt
 {
 
-class Ape;
-
 class QtGateway
 {
 

@@ -4,7 +4,7 @@
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
-#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
+#include <Ape/Engine/FrameProfiling/TaskTimeProfiler.hpp>
 
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Model/ModelPart.hpp>

@@ -13,9 +13,9 @@ set_source_files_properties(${MODEL_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 AddPublicDependencies(
     ${PROJECT_NAME}
     Ape::Engine::UpdateHandling
+    Ape::Engine::Windowing
     Ape::Rendering::Effect
     Ape::Rendering::Rendering
     Ape::Rendering::Skybox
-    Ape::Rendering::Windowing
     Ape::World::AssetLoader
     Basix::CompilerSupport)

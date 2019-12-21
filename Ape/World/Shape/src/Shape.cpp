@@ -25,7 +25,7 @@ auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
 
     auto const vertexBufferSize = vertices.size() * sizeof(ShapeVertex);
 
-    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
+    glBufferStorage(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), 0);
 
     glow::sendVertexLayoutToGpu<ShapeVertex>();
 
@@ -39,11 +39,11 @@ auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
 
     ebo.bind();
 
-    glBufferData(
+    glBufferStorage(
         GL_ELEMENT_ARRAY_BUFFER,
         indices.size() * sizeof(unsigned int),
         indices.data(),
-        GL_STATIC_DRAW);
+        0);
 
     return ebo;
 }

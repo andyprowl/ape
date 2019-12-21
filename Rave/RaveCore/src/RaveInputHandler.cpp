@@ -2,8 +2,9 @@
 
 #include <Rave/RaveCore/RaveScene.hpp>
 
+#include <Ape/Engine/Engine/Engine.hpp>
+#include <Ape/Engine/Windowing/Window.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
-#include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
 #include <Ape/World/Scene/CameraSelector.hpp>
@@ -124,6 +125,8 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     }
     else if (key == ape::Key::keyEscape)
     {
+        getEngine().pause();
+
         getWindow().close();
     }
 }

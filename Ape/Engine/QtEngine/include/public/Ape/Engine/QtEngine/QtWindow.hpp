@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/Rendering/Windowing/Window.hpp>
+#include <Ape/Engine/Windowing/Window.hpp>
 
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
@@ -124,6 +124,14 @@ protected:
 
     // virtual (from QOpenGLWidget)
     auto keyReleaseEvent(QKeyEvent * e)
+        -> void override;
+
+    // virtual (from QOpenGLWidget)
+    auto mousePressEvent(QMouseEvent * e)
+        -> void override;
+
+    // virtual (from QOpenGLWidget)
+    auto mouseReleaseEvent(QMouseEvent * e)
         -> void override;
 
     // virtual (from QOpenGLWidget)

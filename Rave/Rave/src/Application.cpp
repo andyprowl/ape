@@ -99,7 +99,7 @@ public:
 
         inputHandler.getCameraManipulator().activate();
 
-        engine.start();
+        engine.run();
     }
 
 private:

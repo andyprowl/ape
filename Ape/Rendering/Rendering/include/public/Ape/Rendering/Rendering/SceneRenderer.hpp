@@ -3,16 +3,16 @@
 #include <Ape/Rendering/Rendering/BodyBoundsRenderer.hpp>
 #include <Ape/Rendering/Rendering/OffscreenSurface.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
-#include <Ape/Rendering/Rendering/Viewport.hpp>
 
 #include <Ape/Rendering/Effect/EffectRenderer.hpp>
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
-#include <Ape/Rendering/GpuProfiling/TaskTimeProfiler.hpp>
 #include <Ape/Rendering/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 
+#include <Ape/Engine/Engine/Renderer.hpp>
+#include <Ape/Engine/Windowing/Viewport.hpp>
 #include <Ape/World/Shape/ShapeDrawer.hpp>
 
 #include <Glow/BufferObject/VertexArrayObject.hpp>
@@ -33,7 +33,7 @@ class Scene;
 class TaskTimeProfiler;
 class Window;
 
-class SceneRenderer
+class SceneRenderer : public Renderer
 {
 
 public:
@@ -90,19 +90,32 @@ public:
         Viewport const & viewport,
         glm::vec3 const & backgroundColor);
 
+    // virtual (from Renderer)
     auto render()
-        -> void;
+        -> void override;
 
-    auto getCameraSelector() const
-        -> CameraSelector const &;
-
-    auto setCameraSelector(CameraSelector const & newSelector)
-        -> void;
-    
+    // virtual (from Renderer)
     auto getViewport() const
         -> Viewport;
 
+    // virtual (from Renderer)
     auto setViewport(Viewport const & newViewport)
+        -> void;
+
+    // virtual (from Renderer)
+    auto getCameraSelector() const
+        -> CameraSelector const & override;
+
+    // virtual (from Renderer)
+    auto setCameraSelector(CameraSelector const & newSelector)
+        -> void;
+
+    // virtual (from Renderer)
+    auto getProfiler() const
+        -> TaskTimeProfiler *;
+
+    // virtual (from Renderer)
+    auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
     auto isFrustumCullingEnabled() const
@@ -113,12 +126,6 @@ public:
 
     auto getRenderers()
         -> RendererSet &;
-
-    auto getProfiler() const
-        -> TaskTimeProfiler *;
-
-    auto setProfiler(TaskTimeProfiler & newProfiler)
-        -> void;
 
 private:
 

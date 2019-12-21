@@ -1,6 +1,9 @@
 #pragma once
 
-#include <QObject>
+#include <Ape/Engine/Engine/Engine.hpp>
+#include <ape/Engine/QtEngine/QtEventFrameLoop.hpp>
+#include <Ape/Engine/QtEngine/QtEventSystem.hpp>
+#include <Ape/Engine/QtEngine/QtImGuiEventDispatcher.hpp>
 
 #include <memory>
 
@@ -8,46 +11,48 @@ namespace ape
 {
 
 class InputHandler;
-class SceneRenderer;
-class Window;
+class Renderer;
 
 } // namespace ape
 
 namespace ape::qt
 {
 
-class QtEngine
+class QtWindow;
+
+class QtEngine : public Engine
 {
 
 public:
 
-    QtEngine(Window & window, SceneRenderer & renderer, InputHandler & inputHandler);
-
-    QtEngine(QtEngine const &) = delete;
-
-    QtEngine(QtEngine &&) noexcept;
-
-    auto operator = (QtEngine const &) 
-        -> QtEngine & = delete;
-
-    auto operator = (QtEngine &&) noexcept
-        -> QtEngine &;
-
-    ~QtEngine();
-
-    auto start()
-        -> void;
-
-    auto stop()
-        -> void;
+    QtEngine(QtWindow & window, Renderer & renderer, InputHandler & inputHandler);
 
 private:
 
-    class Impl;
+    class EngineObjects
+    {
+
+    public:
+
+        QtEventSystem eventSystem;
+
+        QtImGuiEventDispatcher imGuiDispatcher;
+
+        QtEventFrameLoop frameLoop;
+
+    };
 
 private:
 
-    std::unique_ptr<Impl> impl;
+    QtEngine(
+        QtWindow & window,
+        Renderer & renderer,
+        InputHandler & inputHandler,
+        std::unique_ptr<EngineObjects> engineObjects);
+
+private:
+
+    std::shared_ptr<EngineObjects const> engineObjects;
 
 };
 

@@ -1,13 +1,17 @@
 #include <Ape/Engine/UpdateHandling/StandardInputHandler.hpp>
 
+#include <Ape/Engine/Engine/Engine.hpp>
+#include <Ape/Engine/Windowing/Window.hpp>
+
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
-#include <Ape/Rendering/Windowing/Window.hpp>
 #include <Ape/World/Scene/CameraSelector.hpp>
 #include <Ape/World/Scene/Scene.hpp>
 
 #include <Basix/Mathematics/Position.hpp>
+
+#include <cassert>
 
 namespace ape
 {
@@ -24,6 +28,7 @@ StandardInputHandler::StandardInputHandler(
     , cameraManipulator{cameraSelector, handledWindow, manipulatorSensitivity}
     , skyboxSelector{&skyboxSelector}
     , effectSelector{&effectSelector}
+    , engine{nullptr}
     , keyPressHandlerConnection{registerKeyboardHandlerConnection()}
     , mouseWheelHandlerConnection{registerMouseWheelHandlerConnection()}
     , focusAcquiredHandlerConnection{registerFocusAcquiredHandlerConnection()}
@@ -56,11 +61,29 @@ auto StandardInputHandler::onFrame(std::chrono::nanoseconds frameDuration)
     cameraManipulator.onFrame(frameDuration);
 }
 
+// virtual (from InputHandler)
+auto StandardInputHandler::getEngine() const
+    -> Engine &
+{
+    assert(engine != nullptr);
+
+    return *engine;
+}
+
+// virtual (from InputHandler)
+auto StandardInputHandler::setEngine(Engine & newEngine)
+    -> void
+{
+    engine = &newEngine;
+}
+
 // virtual
 auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
     -> void
 {
     processInputCaptureToggling(key, modifier);
+
+    processInspectionOverlayToggling(key, modifier);
 
     processFullScreenToggling(key, modifier);
 
@@ -169,6 +192,26 @@ auto StandardInputHandler::processInputCaptureToggling(
         handledWindow->captureMouse();
 
         cameraManipulator.activate();
+    }
+}
+
+auto StandardInputHandler::processInspectionOverlayToggling(
+    ape::Key const key, 
+    KeyModifier const modifier) const
+    -> void
+{
+    if ((key != ape::Key::keyI) || (modifier != KeyModifier::control))
+    {
+        return;
+    }
+
+    if (engine->isInspectionOverlayVisible())
+    {
+        engine->hideInspectionOverlay();
+    }
+    else
+    {
+        engine->showInspectionOverlay();
     }
 }
 

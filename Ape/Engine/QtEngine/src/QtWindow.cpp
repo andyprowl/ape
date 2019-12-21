@@ -2,9 +2,9 @@
 
 #include <Ape/Engine/Initialization/OpenGLLoader.hpp>
 #include <Ape/Engine/UpdateHandling/StandardInputHandler.hpp>
+#include <Ape/Engine/Windowing/Keyboard.hpp>
 
-#include <Ape/Rendering/Windowing/Keyboard.hpp>
-
+#include <DearImGui/imgui.h>
 #include <QResizeEvent>
 #include <QTimer>
 
@@ -290,6 +290,52 @@ auto QtWindow::keyReleaseEvent(QKeyEvent * const e)
     {
         onKeyboard.fire(key, KeyAction::release, modifier);
     });
+}
+
+// virtual (from QOpenGLWidget)
+auto QtWindow::mousePressEvent(QMouseEvent * const e)
+    -> void
+{
+    switch (e->button())
+    {
+        case Qt::MouseButton::LeftButton:
+        {
+            ImGui::GetIO().MouseDown[0] = true;
+        }
+
+        case Qt::MouseButton::RightButton:
+        {
+            ImGui::GetIO().MouseDown[1] = true;
+        }
+    }
+
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        QOpenGLWidget::mousePressEvent(e);
+    }
+}
+
+// virtual (from QOpenGLWidget)
+auto QtWindow::mouseReleaseEvent(QMouseEvent * const e)
+    -> void
+{
+    switch (e->button())
+    {
+        case Qt::MouseButton::LeftButton:
+        {
+            ImGui::GetIO().MouseDown[0] = false;
+        }
+
+        case Qt::MouseButton::RightButton:
+        {
+            ImGui::GetIO().MouseDown[1] = false;
+        }
+    }
+
+    if (!ImGui::GetIO().WantCaptureMouse)
+    {
+        QOpenGLWidget::mouseReleaseEvent(e);
+    }
 }
 
 // virtual (from QOpenGLWidget)

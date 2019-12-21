@@ -1,5 +1,10 @@
 #pragma once
 
+#include <ape/Engine/Engine/BusyFrameLoop.hpp>
+#include <Ape/Engine/Engine/Engine.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwEventSystem.hpp>
+#include <Ape/Engine/GlfwEngine/GlfwImGuiEventDispatcher.hpp>
+
 #include <memory>
 
 namespace ape
@@ -7,40 +12,41 @@ namespace ape
 
 class GlfwWindow;
 class InputHandler;
-class SceneRenderer;
+class Renderer;
 
-class GlfwEngine
+class GlfwEngine : public Engine
 {
 
 public:
 
-    GlfwEngine(GlfwWindow & window, SceneRenderer & renderer, InputHandler & inputHandler);
-
-    GlfwEngine(GlfwEngine const &) = delete;
-
-    GlfwEngine(GlfwEngine &&) noexcept;
-
-    auto operator = (GlfwEngine const &) 
-        -> GlfwEngine & = delete;
-
-    auto operator = (GlfwEngine &&) noexcept
-        -> GlfwEngine &;
-
-    ~GlfwEngine();
-
-    auto start()
-        -> void;
-
-    auto stop()
-        -> void;
+    GlfwEngine(GlfwWindow & window, Renderer & renderer, InputHandler & inputHandler);
 
 private:
 
-    class Impl;
+    class EngineObjects
+    {
+
+    public:
+
+        GlfwEventSystem eventSystem;
+
+        GlfwImGuiEventDispatcher imGuiDispatcher;
+
+        BusyFrameLoop frameLoop;
+
+    };
 
 private:
 
-    std::unique_ptr<Impl> impl;
+    GlfwEngine(
+        GlfwWindow & window,
+        Renderer & renderer,
+        InputHandler & inputHandler,
+        std::unique_ptr<EngineObjects> engineObjects);
+
+private:
+
+    std::shared_ptr<EngineObjects const> engineObjects;
 
 };
 

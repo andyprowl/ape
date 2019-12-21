@@ -5,6 +5,7 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
+    Ape::Engine::Engine
     Ape::World::Model
     Ape::World::Scene
     Basix::Range
@@ -13,7 +14,7 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
+    Ape::Engine::Windowing
     Ape::Rendering::Rendering
     Ape::Rendering::Skybox
-    Ape::Rendering::Windowing
     Basix::CompilerSupport)

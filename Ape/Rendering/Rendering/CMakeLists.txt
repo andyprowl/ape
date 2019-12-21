@@ -5,8 +5,8 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     3rdParty::glm
+    Ape::Engine::Engine
     Ape::Rendering::Effect
-    Ape::Rendering::GpuProfiling
     Ape::Rendering::Lighting
     Ape::Rendering::Skybox
     Ape::Rendering::Wireframe
@@ -20,6 +20,7 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
-    Ape::Rendering::Windowing
+    Ape::Engine::FrameProfiling
+    Ape::Engine::Windowing
     Basix::CompilerSupport
     Basix::Text)

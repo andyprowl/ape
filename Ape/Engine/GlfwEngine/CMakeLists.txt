@@ -4,22 +4,12 @@ AddLibrary(${PROJECT_NAME})
 
 AddPublicDependencies(
     ${PROJECT_NAME}
-    Ape::Rendering::Rendering
-    Ape::Rendering::Windowing)
+    Ape::Engine::Engine
+    Ape::Engine::Initialization
+    Ape::Engine::Windowing)
 
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::DearImGui
     3rdParty::Glad
-    3rdParty::glfw
-    Ape::Engine::Initialization
-    Ape::Engine::InspectionOverlay
-    Ape::Engine::UpdateHandling
-    Ape::Rendering::GpuProfiling
-    Basix::Container
-    Basix::Profiling
-    Basix::Time)
-
-AddPrivateDefinitions(
-    ${PROJECT_NAME}
-    IMGUI_IMPL_OPENGL_LOADER_GLAD)
+    3rdParty::glfw)
