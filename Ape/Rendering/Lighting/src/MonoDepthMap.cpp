@@ -3,6 +3,8 @@
 #include <Glow/GpuResource/ScopedBinder.hpp>
 #include <Glow/Texture/TextureStorageType.hpp>
 
+#include <glad/glad.h>
+
 #include <cassert>
 
 namespace ape
@@ -10,6 +12,16 @@ namespace ape
 
 namespace
 {
+
+auto enableShadowSampling(glow::Texture & texture)
+    -> void
+{
+    auto const binder = glow::bind(texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+}
 
 auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const labelPrefix)
     -> glow::Texture
@@ -27,7 +39,11 @@ auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const l
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::immutable};
 
-    return glow::Texture{descriptor, std::string{labelPrefix} + ".Texture"};
+    auto texture = glow::Texture{descriptor, std::string{labelPrefix} + ".Texture"};
+
+    enableShadowSampling(texture);
+
+    return texture;
 }
 
 auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture, std::string_view const labelPrefix)

@@ -3,6 +3,8 @@
 #include <Glow/GpuResource/ScopedBinder.hpp>
 #include <Glow/Texture/TextureStorageType.hpp>
 
+#include <glad/glad.h>
+
 #include <cassert>
 
 namespace ape
@@ -29,6 +31,16 @@ auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
         makeOmniDepthMapFaceImage(size)};
 }
 
+auto enableShadowSampling(glow::CubeTexture & texture)
+    -> void
+{
+    auto const binder = glow::bind(texture);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+}
+
 auto makeOmniDepthMapTexture(
     basix::Size<int> const & size,
     std::string_view const labelPrefix)
@@ -42,7 +54,11 @@ auto makeOmniDepthMapTexture(
         glow::TextureInternalFormat::depth32,
         glow::TextureWrapping::clampToEdge};
 
-    return glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};
+    auto texture = glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};
+
+    enableShadowSampling(texture);
+
+    return texture;
 }
 
 auto makeOmniDepthMapFrameBuffer(

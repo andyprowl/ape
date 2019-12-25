@@ -157,11 +157,11 @@ struct LightSystemView
 struct DepthMapping
 {
 
-    samplerCube point[MAX_NUM_OF_POINT_LIGHTS];
+    samplerCubeShadow point[MAX_NUM_OF_POINT_LIGHTS];
 
-    sampler2D spot[MAX_NUM_OF_SPOT_LIGHTS];
+    sampler2DShadow spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    sampler2D directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    sampler2DShadow directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -221,7 +221,8 @@ vec3 getSampledBumpedNormal()
     vec3 normalInTangentSpace = getMappedNormalInTangentSpace();
 
     // TODO: Figure out how to properly handle normal maps with alpha channels and "null" texels
-    // such as (0, 0, 0, 0)
+    // such as (0, 0, 0, 0). Doing this should not be necessary and the problem should likely be
+    // solved at the origin (i.e. model contains normal maps which are not normal maps).
     if (normalInTangentSpace.z < 0.0)
     {
         return vertex.normal;
@@ -259,7 +260,7 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
 
 float sampleShadowWithPercentageCloserFiltering(
     vec3 depthMapPosition,
-    sampler2D depthMap,
+    sampler2DShadow depthMap,
     float bias)
 {
     float currentDepth = depthMapPosition.z;
@@ -272,9 +273,13 @@ float sampleShadowWithPercentageCloserFiltering(
     {
         for (int y = -1; y <= 1; ++y)
         {
-            float pcfDepth = texture(depthMap, depthMapPosition.xy + vec2(x, y) * texelSize).r;
+            vec2 offsets = vec2(x, y) * texelSize;
 
-            shadow += ((currentDepth - bias) > pcfDepth) ? 0.0 : 1.0;
+            vec3 samplingCoords = vec3(depthMapPosition.xy + offsets, currentDepth - bias);
+
+            float pcfDepth = texture(depthMap, samplingCoords).r;
+
+            shadow += currentDepth;
         }
     }
 
@@ -283,19 +288,17 @@ float sampleShadowWithPercentageCloserFiltering(
     return shadow;
 }
 
-float sampleSingleShadowValue(vec3 depthMapPosition, sampler2D depthMap, float bias)
+float sampleSingleShadowValue(vec3 depthMapPosition, sampler2DShadow depthMap, float bias)
 {
-    float closestDepth = texture(depthMap, depthMapPosition.xy).r;
+    depthMapPosition.z -= bias;
 
-    float currentDepth = depthMapPosition.z;
-    
-    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
+    return texture(depthMap, depthMapPosition).r;
 }
 
 float calculateMonodirectionalShadowFactor(
     vec3 lightDirection,
     vec4 lightSpacePosition,
-    sampler2D depthMap)
+    sampler2DShadow depthMap)
 {
     vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
@@ -313,7 +316,7 @@ float calculateMonodirectionalShadowFactor(
     }
 }
 
-float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depthMap)
+float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow depthMap)
 {
     // TODO: This can be different for each light! This is a hack.
     // The far plane should either be passed a part of the light uniform or the algorithm should be
@@ -322,13 +325,13 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depth
 
     vec3 lightToVertex = vertex.position - lightPosition;
 
-    float closestDepth = texture(depthMap, lightToVertex).r * farPlaneDistance;
-
-    float currentDepth = length(lightToVertex);
+    float currentDepthNormalized = length(lightToVertex) / farPlaneDistance;
 
     float bias = 0.002;
 
-    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
+    vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
+
+    return texture(depthMap, coords).r;
 }
 
 vec3 computeAmbientLight(LightColor color)

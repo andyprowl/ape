@@ -26,6 +26,12 @@ auto GLAPIENTRY onOpenGLError(
         return;
     }
 
+    // Hack: ignore warning about undefined behavior of unused samplers
+    if (type == 0x824e)
+    {
+        return;
+    }
+
     std::cout 
         << "OpenGL callback invoked! "
         << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "")
