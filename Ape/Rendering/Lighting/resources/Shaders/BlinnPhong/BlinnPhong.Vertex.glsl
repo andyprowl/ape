@@ -206,6 +206,7 @@ void main()
 
     vertex.normal = normalize(transform.normal * normalAttribute);
 
+    // TODO: shouldn't we use normal matrix here instead of world matrix?
     vertex.tangent = normalize(vec3(transform.model * vec4(tangentAttribute, 0.0)));
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);

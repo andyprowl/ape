@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 #include <vector>
 
@@ -34,6 +35,9 @@ private:
 
     auto importVertices(aiMesh const & mesh) const
         -> std::vector<ShapeVertex>;
+
+    auto importTangent(aiMesh const & mesh, int vertexIndex) const
+        -> glm::vec3;
 
     auto importTextureCoordinates(aiMesh const & mesh, int vertexIndex) const
         -> glm::vec2;

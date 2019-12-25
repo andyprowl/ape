@@ -196,7 +196,7 @@ uniform bool usePercentageCloserFiltering = false;
 
 uniform bool useNormalMapping = true;
 
-uniform bool renderNormals = false;
+uniform bool renderNormals = true;
 
 vec3 getMappedNormalInTangentSpace()
 {
@@ -294,7 +294,12 @@ float calculateMonodirectionalShadowFactor(
 
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
-    float bias = max(0.0002 * (1.0 - abs(dot(getNormal(), lightDirection))), 0.000005);
+    //float bias = max(0.0002 * (1.0 - abs(dot(getNormal(), lightDirection))), 0.000005);
+
+    // TODO: EXPERIMENTAL
+    float cosTheta = 1.0 - abs(dot(getNormal(), normalize(lightDirection)));
+    float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+    bias = clamp(bias, 0.0, 0.001);
 
     depthMapPositionAndTestDepth.z -= bias;
 
@@ -340,11 +345,21 @@ vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
         return vec3(0.0, 0.0, 0.0);
     }
 
-    float diffusion = max(dot(getNormal(), lightDirection), 0.0);
+    float diffusion = dot(getNormal(), lightDirection);
+
+    // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
+    // to the light direction) we do not want the surface to be illuminated. Because of this, we
+    // multiply the diffusion by the dot product of light and (non-bumped) surface normal.
+
+    // TODO: EXPERIMENTAL!!
+    //float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
+    float correctedDiffusion = diffusion;
+
+    float cappedDiffusion = max(correctedDiffusion, 0.0);
 
     vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
-    return color.diffuse * (diffusion * diffuseColor);
+    return color.diffuse * (cappedDiffusion * diffuseColor);
 }
 
 float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
@@ -367,7 +382,12 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
 
         float shininess = material.shininess * shininessAdjuster;
 
-        return pow(max(dot(getNormal(), halfwayDirection), 0.0), shininess);
+        float factor = dot(getNormal(), halfwayDirection);
+
+        // TODO: THIS IS ONLY EXPERIMENTAL!!
+        //factor *= dot(vertex.normal, lightDirection);
+
+        return pow(max(factor, 0.0), shininess);
     }
 }
 
@@ -382,8 +402,15 @@ vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
 
     float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
 
+    // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
+    // to the light direction) we do not want the surface to be illuminated. Because of this, we
+    // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
+
+    //float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
+
     vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
 
+    //return color.specular * (correctedReflectivity * specularColor);
     return color.specular * (reflectivity * specularColor);
 }
 
