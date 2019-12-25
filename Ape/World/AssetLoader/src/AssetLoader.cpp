@@ -31,7 +31,9 @@ auto AssetLoader::load(
 {
     auto importer = Assimp::Importer{};
 
-    auto const scene = importer.ReadFile(path.string(), aiProcess_Triangulate); 
+    auto const postProcessing = aiProcess_Triangulate | aiProcess_CalcTangentSpace;
+
+    auto const scene = importer.ReadFile(path.string(), postProcessing); 
 
     if (scene == nullptr)
     {

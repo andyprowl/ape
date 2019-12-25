@@ -24,6 +24,8 @@ public:
 
     ape::AssetRepository tavernAssets;
 
+    ape::AssetRepository houseAssets;
+
     ape::AssetRepository sponzaAssets;
 
     std::vector<ape::Shape *> shapes;

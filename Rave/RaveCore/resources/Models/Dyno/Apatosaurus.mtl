@@ -10,5 +10,5 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd textures/diffuse.png
-map_Bump textures/bump.png
+map_Kn textures/bump.png
 map_Ks textures/specular.png

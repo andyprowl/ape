@@ -8,6 +8,8 @@
 
 #include <Glow/Texture/TextureReader.hpp>
 
+#include <Basix/Memory/Null.hpp>
+
 namespace rave
 {
 
@@ -77,7 +79,13 @@ private:
     auto createTrivialModelFromMesh(ape::Mesh const & mesh)
         -> ape::Model &;
 
-    auto createTextureFromLocalFile(std::string filename)
+    auto createColorTextureFromLocalFile(std::string filename)
+        -> glow::Texture &;
+
+    auto createDataTextureFromLocalFile(std::string filename)
+        -> glow::Texture &;
+
+    auto createTextureFromLocalFile(std::string filename, glow::ColorSpace colorSpace)
         -> glow::Texture &;
 
 private:
@@ -151,15 +159,22 @@ auto StatefulAssetBuilder::createConcreteGroundMaterial()
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
-    auto const & texture = createTextureFromLocalFile("ConcreteGround.jpg");
+    auto const & colorTexture = createColorTextureFromLocalFile("PavementHerringbone.Diffuse.png");
 
-    auto const & diffuseMap = &texture;
+    auto const & diffuseMap = colorTexture;
 
-    auto const & specularMap = &texture;
+    auto const & specularMap = colorTexture;
+
+    auto const & normalMap = createDataTextureFromLocalFile("PavementHerringbone.Normal.png");
 
     auto const shininess = 32.0f;
 
-    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    return assets.materials.emplace_back(
+        ambientColor,
+        &diffuseMap,
+        &specularMap,
+        &normalMap,
+        shininess);
 }
 
 auto StatefulAssetBuilder::createWoodenFloorMaterial()
@@ -167,15 +182,22 @@ auto StatefulAssetBuilder::createWoodenFloorMaterial()
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
     
-    auto const & texture = createTextureFromLocalFile("WoodenFloor.jpg");
+    auto const & colorTexture = createColorTextureFromLocalFile("WoodenFloor.Diffuse.png");
 
-    auto const & diffuseMap = &texture;
+    auto const & diffuseMap = colorTexture;
 
-    auto const & specularMap = &texture;
+    auto const & specularMap = colorTexture;
 
+    auto const & normalMap = createDataTextureFromLocalFile("WoodenFloor.Normal.png");
+    
     auto const shininess = 16.0f;
 
-    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    return assets.materials.emplace_back(
+        ambientColor,
+        &diffuseMap,
+        &specularMap,
+        &normalMap,
+        shininess);
 }
 
 auto StatefulAssetBuilder::createContainerModel()
@@ -195,13 +217,20 @@ auto StatefulAssetBuilder::createContainerMaterial()
 {
     auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
 
-    auto const & diffuseMap = createTextureFromLocalFile("Container.Diffuse.png");
+    auto const & diffuseMap = createColorTextureFromLocalFile("Container.Diffuse.png");
 
-    auto const & specularMap = createTextureFromLocalFile("Container.Specular.png");
+    auto const & specularMap = createColorTextureFromLocalFile("Container.Specular.png");
+
+    auto const & normalMap = createDataTextureFromLocalFile("Container.Normal.png");
 
     auto const shininess = 32.0f;
 
-    return assets.materials.emplace_back(ambientColor, &diffuseMap, &specularMap, shininess);
+    return assets.materials.emplace_back(
+        ambientColor,
+        &diffuseMap,
+        &specularMap,
+        &normalMap,
+        shininess);
 }
 
 auto StatefulAssetBuilder::createLampModel()
@@ -221,15 +250,22 @@ auto StatefulAssetBuilder::createLampMaterial()
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-    auto const & texture = createTextureFromLocalFile("Lamp.png");
+    auto const & texture = createColorTextureFromLocalFile("Lamp.png");
 
     auto diffuseMap = &texture;
 
     auto specularMap = &texture;
 
+    auto const normalMap = basix::nullPtr<glow::Texture>;
+
     auto const shininess = 32.0f;
 
-    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    return assets.materials.emplace_back(
+        ambientColor,
+        diffuseMap,
+        specularMap,
+        normalMap,
+        shininess);
 }
 
 auto StatefulAssetBuilder::createFlashlightModel()
@@ -249,15 +285,22 @@ auto StatefulAssetBuilder::createFlashlightMaterial()
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
 
-    auto const & texture = createTextureFromLocalFile("Flashlight.png");
+    auto const & texture = createColorTextureFromLocalFile("Flashlight.png");
 
     auto const diffuseMap = &texture;
 
     auto const specularMap = &texture;
 
+    auto const normalMap = basix::nullPtr<glow::Texture>;
+
     auto const shininess = 32.0f;
 
-    return assets.materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    return assets.materials.emplace_back(
+        ambientColor,
+        diffuseMap,
+        specularMap,
+        normalMap,
+        shininess);
 }
 
 auto StatefulAssetBuilder::createSingleMeshModel(
@@ -283,16 +326,28 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
     return assets.models.emplace_back(std::move(model));
 }
 
-auto StatefulAssetBuilder::createTextureFromLocalFile(std::string filename)
+auto StatefulAssetBuilder::createColorTextureFromLocalFile(std::string filename)
+    -> glow::Texture &
+{
+    return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::perceptual);
+}
+
+auto StatefulAssetBuilder::createDataTextureFromLocalFile(std::string filename)
+    -> glow::Texture &
+{
+    return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::linear);
+}
+
+auto StatefulAssetBuilder::createTextureFromLocalFile(
+    std::string filename,
+    glow::ColorSpace const colorSpace)
     -> glow::Texture &
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 
     auto const storageType = glow::TextureStorageType::immutable;
 
-    auto const colorSpace = glow::ColorSpace::perceptual;
-
-    auto texture = textureReader.read(filepath, storageType, colorSpace);
+    auto texture = textureReader.read(filepath, storageType, colorSpace, filepath.string());
 
     return assets.textures.emplace_back(std::move(texture));
 }
@@ -370,6 +425,8 @@ auto RaveAssetBuilder::build() const
     loadAssets("Castle/Castle.obj", "Castle", collection.castleAssets, collection);
 
     loadAssets("Tavern/Tavern.obj", "Tavern", collection.tavernAssets, collection);
+
+    loadAssets("House/House.obj", "House", collection.houseAssets, collection);
 
     if (!doNotIncludeSponza)
     {

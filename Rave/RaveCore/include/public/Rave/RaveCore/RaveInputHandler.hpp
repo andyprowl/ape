@@ -76,6 +76,9 @@ private:
     auto togglePercentageCloserFiltering() const
         -> void;
 
+    auto toggleNormalMapping() const
+        -> void;
+
     auto togglePickedObjects() const
         -> void;
 

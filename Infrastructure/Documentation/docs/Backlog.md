@@ -1,11 +1,7 @@
-- Use GPU timer queries to profile frames
- - Display profiled frames with ImGui overlays
-- Make inspection overlay visible/hidden through special keys
- - Update handler is going to have to depend on it somehow
-- Associate object label to depth map (cube) textures
+- Assimp does not accept map_bump for normal maps: currently replaced manually in .OBJ files with 
+  map_Kn, but we need to figure out what the correct solution is
 - Associate object label to frame buffers
-- Use Pimpl for SceneRenderers (lots of annoying dependencies and forward-declarations)
-- Add support for vcpkg
+- Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)
 - Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
  - Last time we removed them by tweaking shadow bias
 - Write tutorial on radar approach to frustum culling for spheres
@@ -13,6 +9,7 @@
 - Write tutorial/documentation on gamma correction
 - Write tutorial/documentation on skyboxes
 - Write tutorial about view matrix
+- Add support for vcpkg
 - Implement view frustum culling for regular rendering
  - Aggregate body part mesh bounding volumes into part/aggregate bounding volumes (BHV) and modify
    culling to first test the aggregate, and if it is entirely inside the frustum, skip testing of

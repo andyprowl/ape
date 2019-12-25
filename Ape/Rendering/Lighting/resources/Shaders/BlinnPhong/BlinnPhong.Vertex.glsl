@@ -18,6 +18,8 @@ struct Vertex
 
     vec3 normal;
 
+    vec3 tangent;
+
     vec2 textureCoords;
 
 };
@@ -45,9 +47,17 @@ struct Material
 
     vec3 ambient;
 
-    sampler2D diffuse;
+    bool hasDiffuseMap;
 
-    sampler2D specular;
+    sampler2D diffuseMap;
+
+    bool hasSpecularMap;
+
+    sampler2D specularMap;
+
+    bool hasNormalMap;
+
+    sampler2D normalMap;
 
     float shininess;
 
@@ -168,7 +178,9 @@ layout (location = 0) in vec3 positionAttribute;
 
 layout (location = 1) in vec3 normalAttribute;
 
-layout (location = 2) in vec2 textureCoordsAttribute;
+layout (location = 2) in vec3 tangentAttribute;
+
+layout (location = 3) in vec2 textureCoordsAttribute;
 
 out Vertex vertex;
 
@@ -193,6 +205,8 @@ void main()
     vertex.position = vec3(worldPosition);
 
     vertex.normal = normalize(transform.normal * normalAttribute);
+
+    vertex.tangent = normalize(vec3(transform.model * vec4(tangentAttribute, 0.0)));
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
 

@@ -52,6 +52,12 @@ public:
         return *this;
     }
 
+    auto getUnit() const
+        -> int
+    {
+        return textureUnit;
+    }
+
 public:
 
     int textureUnit;

@@ -31,6 +31,12 @@ auto translate(glm::vec3 const & offset)
     return glm::translate(glm::mat4{1.0f}, offset);
 }
 
+auto transform(glm::vec3 const & v, glm::mat3 const & transformation)
+    -> glm::vec3
+{
+    return glm::vec3{transformation * v};
+}
+
 auto transform(glm::vec3 const & v, glm::mat4 const & transformation)
     -> glm::vec3
 {
@@ -96,16 +102,21 @@ private:
     auto getBottomFace() const
         -> Face
     {
+        auto const normal = glm::vec3{0.0f, -1.0f, 0.0f};
+
+        auto const tangent = glm::vec3{1.0f, 0.0f, 0.0f};
+
         return {{
-            makeVertex({-0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}),
-            makeVertex({0.5f, 0.0f, -0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}),
-            makeVertex({0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}),
-            makeVertex({-0.5f, 0.0f, 0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f})}};
+            makeVertex({-0.5f, 0.0f, -0.5f}, normal, tangent, {0.0f, 0.0f}),
+            makeVertex({0.5f, 0.0f, -0.5f}, normal, tangent, {1.0f, 0.0f}),
+            makeVertex({0.5f, 0.0f, 0.5f}, normal, tangent, {1.0f, 1.0f}),
+            makeVertex({-0.5f, 0.0f, 0.5f}, normal, tangent, {0.0f, 1.0f})}};
     }
 
     auto makeVertex(
         Position const& relativePosition,
         glm::vec3 const& outboundNormal,
+        glm::vec3 const& tangent,
         glm::vec2 const& textureCoords) const
         -> ShapeVertex
     {
@@ -115,7 +126,7 @@ private:
 
         auto const normal = glm::normalize(normalModifier * outboundNormal);
 
-        return {center + relativePosition, normal, textureCoords};
+        return {center + relativePosition, normal, tangent, textureCoords};
     }
 
     auto addScaledFace(Face const & face, glm::mat4 const & transformation)
@@ -123,13 +134,17 @@ private:
     {
         auto scaling = scale(size);
 
+        auto const linearTransformation = glm::mat3{transformation};
+
         for (auto const & v : face)
         {
             auto const position = transform(v.position, scaling * transformation);
 
-            auto const normal = glm::normalize(transform(v.normal, transformation));
+            auto const normal = glm::normalize(transform(v.normal, linearTransformation));
 
-            vertices.emplace_back(position, normal, v.textureCoordinates);
+            auto const tangent = glm::normalize(transform(v.tangent, linearTransformation));
+
+            vertices.emplace_back(position, normal, tangent, v.textureCoordinates);
         }
 
         pushFaceIndices();

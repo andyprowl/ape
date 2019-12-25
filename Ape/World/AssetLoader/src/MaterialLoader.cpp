@@ -105,6 +105,8 @@ auto MaterialLoader::computeNumOfTextures(aiScene const & scene) const
         numOfTextures += scene.mMaterials[i]->GetTextureCount(aiTextureType_DIFFUSE);
 
         numOfTextures += scene.mMaterials[i]->GetTextureCount(aiTextureType_SPECULAR);
+
+        numOfTextures += scene.mMaterials[i]->GetTextureCount(aiTextureType_NORMALS);
     }
 
     return numOfTextures;
@@ -119,15 +121,19 @@ auto MaterialLoader::importMaterial(
 
     auto const specularMaps = importTextures(material, aiTextureType_SPECULAR, directory);
 
+    auto const normalMaps = importTextures(material, aiTextureType_NORMALS, directory);
+
     auto const diffuseMap = diffuseMaps.empty() ? nullptr : diffuseMaps[0];
 
     auto const specularMap = specularMaps.empty() ? nullptr : specularMaps[0];
+
+    auto const normalMap = normalMaps.empty() ? nullptr : normalMaps[0];
 
     auto const ambientColor = getAmbientColor(material);
 
     auto const shininess = getShininess(material);
 
-    assets->materials.emplace_back(ambientColor, diffuseMap, specularMap, shininess);
+    assets->materials.emplace_back(ambientColor, diffuseMap, specularMap, normalMap, shininess);
 }
 
 auto MaterialLoader::getAmbientColor(aiMaterial const & material) const
@@ -209,7 +215,7 @@ auto MaterialLoader::readAndStoreTexture(
 {
     auto const storageType = glow::TextureStorageType::immutable;
 
-    auto readTexture = textureReader.read(path, storageType, colorSpace);
+    auto readTexture = textureReader.read(path, storageType, colorSpace, path.string());
 
     setSwizzleIfGrayscale(readTexture);
 

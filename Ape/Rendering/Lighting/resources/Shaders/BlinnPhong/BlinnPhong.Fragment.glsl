@@ -17,6 +17,8 @@ struct Vertex
     vec3 position;
 
     vec3 normal;
+    
+    vec3 tangent;
 
     vec2 textureCoords;
 
@@ -45,9 +47,17 @@ struct Material
 
     vec3 ambient;
 
-    sampler2D diffuse;
+    bool hasDiffuseMap;
 
-    sampler2D specular;
+    sampler2D diffuseMap;
+
+    bool hasSpecularMap;
+
+    sampler2D specularMap;
+
+    bool hasNormalMap;
+
+    sampler2D normalMap;
 
     float shininess;
 
@@ -180,9 +190,63 @@ uniform LightSystemView lightSystemView;
 
 uniform DepthMapping depthMapping;
 
-uniform bool usePhongModel;
+uniform bool usePhongModel = false;
 
-uniform bool usePercentageCloserFiltering;
+uniform bool usePercentageCloserFiltering = false;
+
+uniform bool useNormalMapping = true;
+
+uniform bool renderNormals = false;
+
+vec3 getMappedNormalInTangentSpace()
+{
+    vec3 sampledNormal = vec3(texture(material.normalMap, vertex.textureCoords));
+
+    return normalize(sampledNormal * 2.0 - vec3(1.0, 1.0, 1.0));
+}
+
+mat3 computeTangentToWorldTransform()
+{
+    vec3 normal = normalize(vertex.normal);
+
+    vec3 tangent = normalize(vertex.tangent - dot(vertex.tangent, normal) * normal);
+
+    vec3 bitangent = normalize(cross(normal, tangent));
+
+    return mat3(tangent, bitangent, normal);
+}
+
+vec3 getSampledBumpedNormal()
+{
+    vec3 normalInTangentSpace = getMappedNormalInTangentSpace();
+
+    // TODO: Figure out how to properly handle normal maps with alpha channels and "null" texels
+    // such as (0, 0, 0, 0)
+    if (normalInTangentSpace.z < 0.0)
+    {
+        return vertex.normal;
+    }
+
+    mat3 tangentToWorld = computeTangentToWorldTransform();
+
+    vec3 normalInWorldSpace = tangentToWorld * normalInTangentSpace;
+
+    return normalize(normalInWorldSpace);
+}
+
+vec3 getNormal()
+{
+    if (material.hasNormalMap && useNormalMapping)
+    {
+        vec3 bumpedNormal = getSampledBumpedNormal();
+
+        return bumpedNormal;
+    }
+    else
+    {
+        return vertex.normal;
+    }
+}
 
 float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
 {    
@@ -237,7 +301,7 @@ float calculateMonodirectionalShadowFactor(
 
     vec3 depthMapPosition = lightProjectionPosition * 0.5 + 0.5;
 
-    float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
+    float bias = max(0.0002 * (1.0 - abs(dot(getNormal(), lightDirection))), 0.000005);
 
     if (usePercentageCloserFiltering)
     {
@@ -269,16 +333,21 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depth
 
 vec3 computeAmbientLight(LightColor color)
 {
-    vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
+    vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
     return color.ambient * material.ambient * diffuseColor;
 }
 
 vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
 {
-    float diffusion = max(dot(vertex.normal, lightDirection), 0.0);
+    if (!material.hasDiffuseMap)
+    {
+        return vec3(0.0, 0.0, 0.0);
+    }
 
-    vec3 diffuseColor = vec3(texture(material.diffuse, vertex.textureCoords));
+    float diffusion = max(dot(getNormal(), lightDirection), 0.0);
+
+    vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
     return color.diffuse * (diffusion * diffuseColor);
 }
@@ -289,7 +358,7 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
     {
         // Uses classical Phong model
 
-        vec3 reflectDirection = reflect(-lightDirection, vertex.normal);
+        vec3 reflectDirection = reflect(-lightDirection, getNormal());
 
         return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     }
@@ -303,17 +372,22 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
 
         float shininess = material.shininess * shininessAdjuster;
 
-        return pow(max(dot(vertex.normal, halfwayDirection), 0.0), shininess);
+        return pow(max(dot(getNormal(), halfwayDirection), 0.0), shininess);
     }
 }
 
 vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
 {
+    if (!material.hasSpecularMap)
+    {
+        return vec3(0.0, 0.0, 0.0);
+    }
+
     vec3 viewDirection = normalize(camera.position - vertex.position);
 
     float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
 
-    vec3 specularColor = vec3(texture(material.specular, vertex.textureCoords));
+    vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
 
     return color.specular * (reflectivity * specularColor);
 }
@@ -461,7 +535,7 @@ vec3 computeDirectionalLighting()
     return color;
 }
 
-void main()
+void renderLighting()
 {
     vec3 pointLighting = computePointLighting();
 
@@ -470,4 +544,16 @@ void main()
     vec3 directionalLighting = computeDirectionalLighting();
 
     fragmentColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
+}
+
+void main()
+{
+    if (renderNormals)
+    {
+        fragmentColor = vec4(getNormal() * 0.5 + 0.5, 1.0);
+    }
+    else
+    {
+        renderLighting();
+    }
 }

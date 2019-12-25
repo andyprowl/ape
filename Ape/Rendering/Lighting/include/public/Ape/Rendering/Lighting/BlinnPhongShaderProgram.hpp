@@ -39,6 +39,8 @@ public:
 
     glow::Uniform<bool> usePercentageCloserFiltering;
 
+    glow::Uniform<bool> useNormalMapping;
+
 };
 
 } // namespace ape

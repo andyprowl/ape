@@ -29,10 +29,11 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , cameraPosition{*this, "camera.position"}
     , lightSystem{*this, "lightSystem"}
     , lightSystemView{*this, "lightSystemView"}
-    , material{*this, "material", 0, 1}
-    , depthMapping{*this, "depthMapping", 2}
+    , material{*this, "material", 0, 1, 2}
+    , depthMapping{*this, "depthMapping", 3}
     , usePhongModel{*this, "usePhongModel", false}
     , usePercentageCloserFiltering{*this, "usePercentageCloserFiltering", false}
+    , useNormalMapping{*this, "useNormalMapping", true}
 {
 }
 

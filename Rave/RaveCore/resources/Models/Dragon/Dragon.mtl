@@ -10,7 +10,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 9
-map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kn -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
 map_Kd textures\\Dragon_Bump_Col2.jpg
 map_Ks textures\\Dragon_Bump_Col2.jpg
 
@@ -23,7 +23,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 1
-map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kn -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
 map_Kd textures\\Dragon_Bump_Col2.jpg
 map_Ks textures\\Dragon_Bump_Col2.jpg
 
@@ -36,6 +36,6 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 0.000000
 illum 1
-map_Bump -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
+map_Kn -bm 0.140017 textures\\Dragon_Nor_mirror2.jpg
 map_Kd textures\\Dragon_Bump_Col2.jpg
 map_Ks textures\\Dragon_Bump_Col2.jpg

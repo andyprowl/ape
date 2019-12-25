@@ -80,9 +80,11 @@ auto MeshLoader::importVertices(aiMesh const & mesh) const
 
         auto const normal = makeVector(mesh.mNormals[i]);
 
+        auto const tangent = makeVector(mesh.mTangents[i]);
+
         auto const textureCoords = importTextureCoordinates(mesh, i);
 
-        vertices.emplace_back(position, normal, textureCoords);
+        vertices.emplace_back(position, normal, tangent, textureCoords);
     }
 
     return vertices;

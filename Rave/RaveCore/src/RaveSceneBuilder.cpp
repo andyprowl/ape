@@ -34,6 +34,17 @@ private:
     auto createGroundTile(int row, int col, ape::Model const & model)
         -> ape::Body &;
 
+    auto createWall(
+        int row,
+        int col,
+        glm::vec2 const & offset,
+        glm::mat4 const & rotation,
+        ape::Model const & model)
+        -> ape::Body &;
+
+    auto createWalls()
+        -> void;
+
     auto createContainers()
         -> void;
     
@@ -101,6 +112,12 @@ private:
         -> void;
 
     auto getTavernPositions() const
+        -> std::vector<glm::vec3>;
+    
+    auto createHouses()
+        -> void;
+
+    auto getHousePositions() const
         -> std::vector<glm::vec3>;
 
     auto createSponzas()
@@ -197,25 +214,29 @@ auto StatefulSceneBuilder::createBodies()
 
     createGroundTiles();
 
-    createContainers();
+    createWalls();
+
+    //createContainers();
 
     createLamps();
 
     createFlashlights();
 
-    createNanosuits();
+    //createNanosuits();
 
-    createDragons();
+    //createDragons();
 
-    createSpaceships();
+    //createSpaceships();
 
-    createDynos();
+    //createDynos();
 
-    createCastles();
+    //createCastles();
 
     createTaverns();
 
-    createSponzas();
+    createHouses();
+
+    //createSponzas();
 }
 
 auto StatefulSceneBuilder::createGroundTiles()
@@ -248,6 +269,48 @@ auto StatefulSceneBuilder::createGroundTile(int const row, int const col, ape::M
     ape::setPosition(body, position);
 
     return scene.addBody(std::move(body));
+}
+
+auto StatefulSceneBuilder::createWalls()
+    -> void
+{
+    auto & concrete = assets->generalAssets.models[0];
+
+    auto const rotationAroundX = glm::rotate(
+        glm::mat4{1.0f},
+        glm::radians(-90.0f),
+        glm::vec3{1.0f, 0.0f, 0.0f});
+
+    auto const rotationAroundZ = glm::rotate(
+        glm::mat4{1.0f},
+        glm::radians(-90.0f),
+        glm::vec3{0.0f, 0.0f, 1.0f});
+
+    for (auto i = -5; i < +5; ++i)
+    {
+        createWall(i, -5, {0.0f, -2.5f}, rotationAroundX, concrete);
+
+        createWall(i, +4, {0.0f, +2.5f}, rotationAroundX, concrete);
+
+        createWall(-5, i, {-2.5f, 0.0f}, rotationAroundZ, concrete);
+
+        createWall(+4, i, {+2.5f, 0.0f}, rotationAroundZ, concrete);
+    }
+}
+
+auto StatefulSceneBuilder::createWall(
+    int const row,
+    int const col,
+    glm::vec2 const & offset,
+    glm::mat4 const & rotation,
+    ape::Model const & model)
+    -> ape::Body &
+{
+    auto const position = glm::vec3{row * 5.0f + offset.x, 0.5, col * 5.0f + offset.y};
+
+    auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+    return addBody(translation * rotation, model);
 }
 
 auto StatefulSceneBuilder::createContainers()
@@ -325,8 +388,8 @@ auto StatefulSceneBuilder::getNonRotatedContainerPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {0.0f, -1.5f, 6.0f},
-        {2.0f, -1.5f, 6.0f}};
+        {0.0f, -1.5f, 7.5f},
+        {2.0f, -1.5f, 7.5f}};
 }
 
 auto StatefulSceneBuilder::createLamps()
@@ -356,7 +419,8 @@ auto StatefulSceneBuilder::getPointLampPositions() const
         {0.0f, 10.0f, -5.0f},
         {0.0f, 3.0f, -40.0f},
         {0.0f, 0.0f, -35.0f},
-        {0.0f, 3.0f, -30.0f}};
+        {0.0f, 3.0f, -30.0f},
+        {-5.0f, 3.0f, -15.0f}};
 }
 
 auto StatefulSceneBuilder::createFlashlights()
@@ -467,9 +531,9 @@ auto StatefulSceneBuilder::getDragonPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-2.0f, -2.0f, 8.0f},
+        {-3.9f, -2.0f, 7.5f},
         {-8.0f, -2.0f, -7.0f},
-        {-2.0f, -2.0f, -15.0f}};
+        {-7.0f, -2.0f, -17.0f}};
 }
 
 auto StatefulSceneBuilder::createSpaceships()
@@ -493,7 +557,7 @@ auto StatefulSceneBuilder::getSpaceshipPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-0.0f, 6.0f, -5.0f}};
+        {-0.0f, 6.0f, -2.0f}};
 }
 
 auto StatefulSceneBuilder::createDynos()
@@ -505,11 +569,18 @@ auto StatefulSceneBuilder::createDynos()
 
     auto const scaling = glm::scale(glm::mat4{1.0f}, {1.0f, 1.0f, 1.0f});
 
-    for (auto const & position : positions)
+    for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
+        auto const & position = positions[i];
+
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling, model);
+        auto const rotation = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(i * 45.0f),
+            {0.0f, 1.0, 0.0f});
+
+        addBody(translation * scaling * rotation, model);
     }
 }
 
@@ -517,7 +588,8 @@ auto StatefulSceneBuilder::getDynoPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {10.0f, -2.0f, -5.0f}};
+        {5.0f, -2.0f, 6.0f},
+        {7.0f, -2.0f, -5.0f}};
 }
 
 auto StatefulSceneBuilder::createCastles()
@@ -561,14 +633,9 @@ auto StatefulSceneBuilder::createTaverns()
             glm::radians(-90.f),
             glm::vec3{1.0f, 0.0f, 0.0f});
 
-        auto const rotationY = glm::rotate(
-            glm::mat4{1.0f},
-            glm::radians(180.f),
-            glm::vec3{0.0f, 1.0f, 0.0f});
-
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling * rotationY * rotationX, model);
+        addBody(translation * scaling * rotationX, model);
     }
 }
 
@@ -576,7 +643,36 @@ auto StatefulSceneBuilder::getTavernPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {0.0f, 3.9f, 15.0f}};
+        {0.0f, 3.9f, -15.0f}};
+}
+
+auto StatefulSceneBuilder::createHouses()
+    -> void
+{
+    auto const & model = assets->houseAssets.models[0];
+
+    auto const positions = getHousePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.01f, 0.01f, 0.01f});
+
+    for (auto const & position : positions)
+    {
+        auto const rotationY = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(180.f),
+            glm::vec3{0.0f, 1.0f, 0.0f});
+
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling * rotationY, model);
+    }
+}
+
+auto StatefulSceneBuilder::getHousePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {0.0f, -2.0f, 15.0f}};
 }
 
 auto StatefulSceneBuilder::createSponzas()

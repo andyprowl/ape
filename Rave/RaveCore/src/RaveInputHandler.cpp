@@ -111,6 +111,10 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     {
         togglePercentageCloserFiltering();
     }
+    else if ((key == ape::Key::keyN) && (modifier == ape::KeyModifier::none))
+    {
+        toggleNormalMapping();
+    }
     else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
     {
         togglePickedObjects();
@@ -223,6 +227,14 @@ auto RaveInputHandler::togglePercentageCloserFiltering() const
     standardShader->bind();
 
     standardShader->usePercentageCloserFiltering = !standardShader->usePercentageCloserFiltering;
+}
+
+auto RaveInputHandler::toggleNormalMapping() const
+    -> void
+{
+    standardShader->bind();
+
+    standardShader->useNormalMapping = !standardShader->useNormalMapping;
 }
 
 auto RaveInputHandler::togglePickedObjects() const

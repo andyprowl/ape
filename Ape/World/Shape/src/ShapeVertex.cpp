@@ -9,11 +9,12 @@ namespace
 {
 
 auto getVertexLayout()
-    -> glow::VertexLayout<3>
+    -> glow::VertexLayout<4>
 {
     return {
         encodeComponentLayout(ShapeVertex, position),
         encodeComponentLayout(ShapeVertex, normal),
+        encodeComponentLayout(ShapeVertex, tangent),
         encodeComponentLayout(ShapeVertex, textureCoordinates)};
 }
 

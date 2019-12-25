@@ -10,7 +10,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\door_winds_N.jpg
+map_Kn textures\\door_winds_N.jpg
 map_Kd textures\\door_winds.jpg
 
 newmtl Material__11
@@ -22,7 +22,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\leyawiinmetalstrip03_n.png
+map_Kn textures\\leyawiinmetalstrip03_n.png
 map_Kd textures\\leyawiinmetalstrip03.png
 
 newmtl Material__2
@@ -34,7 +34,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\wood panel06_n.png
+map_Kn textures\\wood panel06_n.png
 map_Kd textures\\wood panel06.png
 
 newmtl Material__3
@@ -46,7 +46,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\skingradstone02_n.png
+map_Kn textures\\skingradstone02_n.png
 map_Kd textures\\skingradstone02.png
 
 newmtl Material__4
@@ -58,7 +58,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\Woodenplanks_n.png
+map_Kn textures\\Woodenplanks_n.png
 map_Kd textures\\woodenplanks.png
 
 newmtl Material__5
@@ -70,7 +70,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\wallplastertan02_n.png
+map_Kn textures\\wallplastertan02_n.png
 map_Kd textures\\wallplastertan02.png
 
 newmtl Material__6
@@ -82,7 +82,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\Slate-Bump_NRM.jpg
+map_Kn textures\\Slate-Bump_NRM.jpg
 map_Kd textures\\Slate-color.jpg
 
 newmtl Material__7
@@ -94,7 +94,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\leyawiinucwallint01_n.png
+map_Kn textures\\leyawiinucwallint01_n.png
 map_Kd textures\\leyawiinucwallint01.png
 
 newmtl Material__8
@@ -106,7 +106,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\cheydinhalfloortile02_n.png
+map_Kn textures\\cheydinhalfloortile02_n.png
 map_Kd textures\\cheydinhalfloortile02.png
 
 newmtl Material__9
@@ -118,5 +118,5 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Bump textures\\M1Urust2BUM.jpg
+map_Kn textures\\M1Urust2BUM.jpg
 map_Kd textures\\M1Urust2.jpg

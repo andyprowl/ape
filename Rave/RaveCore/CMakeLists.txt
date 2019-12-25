@@ -18,4 +18,5 @@ AddPublicDependencies(
     Ape::Rendering::Rendering
     Ape::Rendering::Skybox
     Ape::World::AssetLoader
-    Basix::CompilerSupport)
+    Basix::CompilerSupport
+    Basix::Memory)

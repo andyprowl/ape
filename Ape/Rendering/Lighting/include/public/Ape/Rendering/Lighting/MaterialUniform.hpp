@@ -22,11 +22,16 @@ public:
         ShaderProgram & program,
         std::string const & prefix,
         int const diffuseMapUnit,
-        int const specularMapUnit)
+        int const specularMapUnit,
+        int const normalMapUnit)
         : ambient{program, prefix + ".ambient"}
         , shininess{program, prefix + ".shininess"}
-        , diffuseMap{program, prefix + ".diffuse", diffuseMapUnit}
-        , specularMap{program, prefix + ".specular", specularMapUnit}
+        , hasDiffuseMap{program, prefix + ".hasDiffuseMap"}
+        , diffuseMap{program, prefix + ".diffuseMap", diffuseMapUnit}
+        , hasSpecularMap{program, prefix + ".hasSpecularMap"}
+        , specularMap{program, prefix + ".specularMap", specularMapUnit}
+        , hasNormalMap{program, prefix + ".hasNormalMap"}
+        , normalMap{program, prefix + ".normalMap", normalMapUnit}
     {
     }
 
@@ -37,15 +42,11 @@ public:
 
         shininess = material.shininess;
 
-        if (material.diffuseMap != nullptr)
-        {
-            diffuseMap = *material.diffuseMap;
-        }
+        setDiffuseMap(material);
     
-        if (material.specularMap != nullptr)
-        {
-            specularMap = *material.specularMap;
-        }
+        setSpecularMap(material);
+
+        setNormalMap(material);
     }
 
     auto operator = (ValueType const & material)
@@ -56,15 +57,58 @@ public:
         return *this;
     }
 
+private:
+
+    auto setDiffuseMap(ape::Material const & material)
+        -> void
+    {
+        hasDiffuseMap = (material.diffuseMap != nullptr);
+
+        if (material.diffuseMap != nullptr)
+        {
+            diffuseMap = *material.diffuseMap;
+        }
+    }
+
+    auto setSpecularMap(ape::Material const & material)
+        -> void
+    {
+        hasSpecularMap = (material.specularMap != nullptr);
+
+        if (material.specularMap != nullptr)
+        {
+            specularMap = *material.specularMap;
+        }
+    }
+
+    auto setNormalMap(ape::Material const & material)
+        -> void
+    {
+        hasNormalMap = (material.normalMap != nullptr);
+
+        if (material.normalMap != nullptr)
+        {
+            normalMap = *material.normalMap;
+        }
+    }
+
 public:
 
     Uniform<glm::vec3> ambient;
 
     Uniform<float> shininess;
 
+    Uniform<bool> hasDiffuseMap;
+
     Uniform<Texture> diffuseMap;
 
+    Uniform<bool> hasSpecularMap;
+
     Uniform<Texture> specularMap;
+
+    Uniform<bool> hasNormalMap;
+
+    Uniform<Texture> normalMap;
 
 };
 

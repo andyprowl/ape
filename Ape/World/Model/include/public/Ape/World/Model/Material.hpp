@@ -20,10 +20,12 @@ public:
         glm::vec3 const & ambient,
         glow::Texture const * diffuseMap,
         glow::Texture const * specularMap,
+        glow::Texture const * normalMap,
         float const shininess)
         : ambient{ambient}
         , diffuseMap{diffuseMap}
         , specularMap{specularMap}
+        , normalMap{normalMap}
         , shininess{shininess}
     {
     }
@@ -35,6 +37,8 @@ public:
     glow::Texture const * diffuseMap;
 
     glow::Texture const * specularMap;
+
+    glow::Texture const * normalMap;
 
     float shininess;
 

@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace glow
@@ -41,7 +42,8 @@ public:
     auto read(
         std::filesystem::path const & path,
         TextureStorageType storageType,
-        ColorSpace imageColorSpace) const
+        ColorSpace imageColorSpace,
+        std::string_view label = "") const
         -> Texture;
 
     auto getSearchPaths() const

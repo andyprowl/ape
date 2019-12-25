@@ -6,6 +6,6 @@ namespace basix
 {
 
 template<typename T>
-auto null_ptr = static_cast<T *>(nullptr);
+auto nullPtr = static_cast<T *>(nullptr);
 
 } // namespace basix

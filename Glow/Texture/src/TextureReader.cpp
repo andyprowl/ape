@@ -35,14 +35,15 @@ TextureReader::TextureReader(std::vector<std::filesystem::path> searchPaths)
 auto TextureReader::read(
     std::filesystem::path const & path,
     TextureStorageType const storageType,
-    ColorSpace const imageColorSpace) const
+    ColorSpace const imageColorSpace,
+    std::string_view const label) const
     -> Texture
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
     auto const descriptor = readTextureDescriptor(absolutePath, imageColorSpace, storageType);
     
-    return Texture{descriptor};
+    return Texture{descriptor, label};
 }
 
 auto TextureReader::getSearchPaths() const
