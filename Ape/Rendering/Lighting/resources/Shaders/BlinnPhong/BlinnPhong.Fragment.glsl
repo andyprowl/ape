@@ -259,11 +259,10 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
 }
 
 float sampleShadowWithPercentageCloserFiltering(
-    vec3 depthMapPosition,
-    sampler2DShadow depthMap,
-    float bias)
+    vec3 depthMapPositionAndTestDepth,
+    sampler2DShadow depthMap)
 {
-    float currentDepth = depthMapPosition.z;
+    float testDepth = depthMapPositionAndTestDepth.z;
 
     vec2 texelSize = 1.0 / textureSize(depthMap, 0);
 
@@ -273,26 +272,17 @@ float sampleShadowWithPercentageCloserFiltering(
     {
         for (int y = -1; y <= 1; ++y)
         {
-            vec2 offsets = vec2(x, y) * texelSize;
+            vec2 xyOffsets = vec2(x, y) * texelSize;
 
-            vec3 samplingCoords = vec3(depthMapPosition.xy + offsets, currentDepth - bias);
+            vec2 xySamplingCoords = depthMapPositionAndTestDepth.xy + xyOffsets;
 
-            float pcfDepth = texture(depthMap, samplingCoords).r;
-
-            shadow += currentDepth;
+            shadow += texture(depthMap, vec3(xySamplingCoords, testDepth)).r;
         }
     }
 
     shadow /= 9.0;
 
     return shadow;
-}
-
-float sampleSingleShadowValue(vec3 depthMapPosition, sampler2DShadow depthMap, float bias)
-{
-    depthMapPosition.z -= bias;
-
-    return texture(depthMap, depthMapPosition).r;
 }
 
 float calculateMonodirectionalShadowFactor(
@@ -302,17 +292,19 @@ float calculateMonodirectionalShadowFactor(
 {
     vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
-    vec3 depthMapPosition = lightProjectionPosition * 0.5 + 0.5;
+    vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
     float bias = max(0.0002 * (1.0 - abs(dot(getNormal(), lightDirection))), 0.000005);
 
+    depthMapPositionAndTestDepth.z -= bias;
+
     if (usePercentageCloserFiltering)
     {
-        return sampleShadowWithPercentageCloserFiltering(depthMapPosition, depthMap, bias);
+        return sampleShadowWithPercentageCloserFiltering(depthMapPositionAndTestDepth, depthMap);
     }
     else
     {
-        return sampleSingleShadowValue(depthMapPosition, depthMap, bias);
+        return texture(depthMap, depthMapPositionAndTestDepth).r;
     }
 }
 
