@@ -216,21 +216,21 @@ auto StatefulSceneBuilder::createBodies()
 
     createWalls();
 
-    //createContainers();
+    createContainers();
 
     createLamps();
 
     createFlashlights();
 
-    //createNanosuits();
+    createNanosuits();
 
-    //createDragons();
+    createDragons();
 
-    //createSpaceships();
+    createSpaceships();
 
-    //createDynos();
+    createDynos();
 
-    //createCastles();
+    createCastles();
 
     createTaverns();
 
