@@ -157,7 +157,7 @@ struct LightSystemView
 struct DepthMapping
 {
 
-    samplerCube point[MAX_NUM_OF_POINT_LIGHTS];
+    samplerCubeShadow point[MAX_NUM_OF_POINT_LIGHTS];
 
     sampler2DShadow spot[MAX_NUM_OF_SPOT_LIGHTS];
 
@@ -275,11 +275,11 @@ float sampleShadowWithPercentageCloserFiltering(
         {
             vec2 offsets = vec2(x, y) * texelSize;
 
-            vec3 samplingCoords = vec3(depthMapPosition.xy + offsets, currentDepth + bias);
+            vec3 samplingCoords = vec3(depthMapPosition.xy + offsets, currentDepth - bias);
 
             float pcfDepth = texture(depthMap, samplingCoords).r;
 
-            shadow += currentDepth + bias;
+            shadow += currentDepth;
         }
     }
 
@@ -292,9 +292,7 @@ float sampleSingleShadowValue(vec3 depthMapPosition, sampler2DShadow depthMap, f
 {
     depthMapPosition.z -= bias;
 
-    float depth = texture(depthMap, depthMapPosition).r;
-
-    return depth;
+    return texture(depthMap, depthMapPosition).r;
 }
 
 float calculateMonodirectionalShadowFactor(
@@ -318,7 +316,7 @@ float calculateMonodirectionalShadowFactor(
     }
 }
 
-float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depthMap)
+float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow depthMap)
 {
     // TODO: This can be different for each light! This is a hack.
     // The far plane should either be passed a part of the light uniform or the algorithm should be
@@ -327,13 +325,13 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCube depth
 
     vec3 lightToVertex = vertex.position - lightPosition;
 
-    float closestDepth = texture(depthMap, lightToVertex).r * farPlaneDistance;
-
-    float currentDepth = length(lightToVertex);
+    float currentDepthNormalized = length(lightToVertex) / farPlaneDistance;
 
     float bias = 0.002;
 
-    return ((currentDepth - bias) > closestDepth) ? 0.0 : 1.0;
+    vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
+
+    return texture(depthMap, coords).r;
 }
 
 vec3 computeAmbientLight(LightColor color)

@@ -56,7 +56,7 @@ auto makeOmniDepthMapTexture(
 
     auto texture = glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};
 
-    //enableShadowSampling(texture);
+    enableShadowSampling(texture);
 
     return texture;
 }
