@@ -290,9 +290,11 @@ float sampleShadowWithPercentageCloserFiltering(
 
 float sampleSingleShadowValue(vec3 depthMapPosition, sampler2DShadow depthMap, float bias)
 {
+    depthMapPosition.z -= bias;
+
     float depth = texture(depthMap, depthMapPosition).r;
 
-    return depth + bias;
+    return depth;
 }
 
 float calculateMonodirectionalShadowFactor(
