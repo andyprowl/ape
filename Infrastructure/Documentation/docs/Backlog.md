@@ -1,7 +1,9 @@
-- Assimp does not accept map_bump for normal maps: currently replaced manually in .OBJ files with 
-  map_Kn, but we need to figure out what the correct solution is
-- Associate object label to frame buffers
+- Perform lighting calculations in tangent space
+ - All matrix multiplications and coordinate transformations should be done in vertex shader
+- Implement CSM
+- Write own FBX loader, convert all models to FBX and keep Assimp-based loader as legacy
 - Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)
+- Associate object label to frame buffers
 - Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
  - Last time we removed them by tweaking shadow bias
 - Write tutorial on radar approach to frustum culling for spheres
