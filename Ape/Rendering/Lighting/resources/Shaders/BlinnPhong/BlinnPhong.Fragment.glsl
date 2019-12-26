@@ -211,7 +211,7 @@ vec3 getSampledBumpedNormal()
 
     vec3 normalInWorldSpace = vertex.tangentToWorld * normalInTangentSpace;
 
-    return normalize(normalInWorldSpace);
+    return normalInWorldSpace;
 }
 
 vec3 getNormal()
@@ -271,12 +271,18 @@ float calculateMonodirectionalShadowFactor(
 
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
-    //float bias = max(0.0002 * (1.0 - abs(dot(getNormal(), lightDirection))), 0.000005);
-
     // TODO: EXPERIMENTAL
-    float cosTheta = 1.0 - abs(dot(getNormal(), normalize(lightDirection)));
-    float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
-    bias = clamp(bias, 0.0, 0.001);
+    // Notice: not using bumped normal!
+    //float cosTheta = abs(dot(vertex.normal, normalize(lightDirection)));
+    //float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+    float sine = length(cross(vertex.normal, lightDirection));
+    float cosine = abs(dot(vertex.normal, lightDirection));
+    float tangent = sine / cosine;
+    float bias = clamp(0.005 * tangent, 0.0, 0.001);
+
+    // This seems to be OK for spot lights, but not for directional lights.
+    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
+    //float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
 
     depthMapPositionAndTestDepth.z -= bias;
 
@@ -303,12 +309,13 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow
 
     // TODO: EXPERIMENTAL
     /*
-    float cosTheta = abs(dot(getNormal(), normalize(lightToVertex)));
+    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
+    float cosTheta = abs(dot(vertex.normal, normalize(lightToVertex)));
     float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
     bias = clamp(bias, 0.0, 0.0005);
     */
 
-    float bias = 0.0002;
+    float bias = 0.0005;
 
     vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
@@ -439,9 +446,10 @@ vec3 computePointLighting()
 
 vec3 computeSpotLight(SpotLight light)
 {
-    vec3 lightDirection = normalize(light.position - vertex.position);
+    vec3 vertexToLight = normalize(light.position - vertex.position);
 
-    float angleCosine = dot(lightDirection, normalize(-light.direction));
+    // We are assuming light direction was normalized on the CPU side.
+    float angleCosine = dot(vertexToLight, -light.direction);
     
     float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
 
@@ -449,9 +457,9 @@ vec3 computeSpotLight(SpotLight light)
 
     vec3 ambientLight = computeAmbientLight(light.color);
 
-    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+    vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
 
-    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+    vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
 
     float sourceDistance = length(light.position - vertex.position);
 
@@ -493,7 +501,8 @@ vec3 computeSpotLighting()
 
 vec3 computeDirectionalLight(DirectionalLight light)
 {
-    vec3 lightDirection = normalize(-light.direction);
+    // We are assuming light direction was normalized on the CPU side.
+    vec3 lightDirection = -light.direction;
 
     vec3 ambientLight = computeAmbientLight(light.color);
 

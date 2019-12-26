@@ -184,7 +184,10 @@ public:
     {
         position = light.getPosition();
 
-        direction = light.getDirection();
+        // Normalization could be done in the vertex or fragment shader but there is no reason to
+        // have that done millions of times for the same value, so hopefully doing this on the CPU
+        // will save some performance.
+        direction = glm::normalize(light.getDirection());
 
         innerCutoffCosine = glm::cos(light.getCutoff().inner);
 
@@ -242,7 +245,10 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        direction = light.getDirection();
+        // Normalization could be done in the vertex or fragment shader but there is no reason to
+        // have that done millions of times for the same value, so hopefully doing this on the CPU
+        // will save some performance.
+        direction = glm::normalize(light.getDirection());
 
         color = light.getColor();
 
