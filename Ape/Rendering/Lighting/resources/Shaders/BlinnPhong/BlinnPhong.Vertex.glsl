@@ -18,9 +18,9 @@ struct Vertex
 
     vec3 normal;
 
-    vec3 tangent;
-
     vec2 textureCoords;
+
+    mat3 tangentToWorld;
 
 };
 
@@ -194,6 +194,28 @@ uniform LightSystem lightSystem;
 
 uniform LightSystemView lightSystemView;
 
+// This implements the so-called Gram-Schmidt process
+vec3 orthogonalize(vec3 v, vec3 reference)
+{
+    return normalize(v - dot(v, reference) * reference);
+}
+
+vec3 computeTangentInWorldSpace(vec3 tangentInModelSpace, vec3 normalInWorldSpace)
+{
+    vec3 tangentInWorldSpace = normalize(transform.normal * tangentInModelSpace);
+
+    return orthogonalize(tangentInWorldSpace, normalInWorldSpace);
+}
+
+mat3 computeTangentToWorld(vec3 tangentInModelSpace, vec3 normalInWorldSpace)
+{
+    vec3 tangent = computeTangentInWorldSpace(tangentInModelSpace, normalInWorldSpace);
+
+    vec3 bitangent = cross(normalInWorldSpace, tangent);
+
+    return mat3(tangent, bitangent, normalInWorldSpace);
+}
+
 void main()
 {
     vec4 rawPosition = vec4(positionAttribute, 1.0);
@@ -206,8 +228,7 @@ void main()
 
     vertex.normal = normalize(transform.normal * normalAttribute);
 
-    // TODO: shouldn't we use normal matrix here instead of world matrix?
-    vertex.tangent = normalize(vec3(transform.model * vec4(tangentAttribute, 0.0)));
+    vertex.tangentToWorld = computeTangentToWorld(tangentAttribute, vertex.normal);
 
     vertex.textureCoords = vec2(1.0 - textureCoordsAttribute.x, textureCoordsAttribute.y);
 

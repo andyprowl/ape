@@ -95,7 +95,7 @@ Ni 1.450000
 d 1.000000
 illum 2
 map_Kn textures\\leyawiinucwallint01_n.png
-map_Kd textures\\leyawiinucwallint01.png
+//map_Kd textures\\leyawiinucwallint01.png
 
 newmtl Material__8
 Ns 8.574186
@@ -106,7 +106,7 @@ Ke 0.0 0.0 0.0
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kn textures\\cheydinhalfloortile02_n.png
+//map_Kn textures\\cheydinhalfloortile02_n.png
 map_Kd textures\\cheydinhalfloortile02.png
 
 newmtl Material__9

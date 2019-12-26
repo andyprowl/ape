@@ -17,10 +17,10 @@ struct Vertex
     vec3 position;
 
     vec3 normal;
-    
-    vec3 tangent;
 
     vec2 textureCoords;
+
+    mat3 tangentToWorld;
 
 };
 
@@ -205,32 +205,11 @@ vec3 getMappedNormalInTangentSpace()
     return normalize(sampledNormal * 2.0 - vec3(1.0, 1.0, 1.0));
 }
 
-mat3 computeTangentToWorldTransform()
-{
-    vec3 normal = normalize(vertex.normal);
-
-    vec3 tangent = normalize(vertex.tangent - dot(vertex.tangent, normal) * normal);
-
-    vec3 bitangent = normalize(cross(normal, tangent));
-
-    return mat3(tangent, bitangent, normal);
-}
-
 vec3 getSampledBumpedNormal()
 {
     vec3 normalInTangentSpace = getMappedNormalInTangentSpace();
 
-    // TODO: Figure out how to properly handle normal maps with alpha channels and "null" texels
-    // such as (0, 0, 0, 0). Doing this should not be necessary and the problem should likely be
-    // solved at the origin (i.e. model contains normal maps which are not normal maps).
-    if (normalInTangentSpace.z < 0.0)
-    {
-        return vertex.normal;
-    }
-
-    mat3 tangentToWorld = computeTangentToWorldTransform();
-
-    vec3 normalInWorldSpace = tangentToWorld * normalInTangentSpace;
+    vec3 normalInWorldSpace = vertex.tangentToWorld * normalInTangentSpace;
 
     return normalize(normalInWorldSpace);
 }
@@ -239,9 +218,7 @@ vec3 getNormal()
 {
     if (material.hasNormalMap && useNormalMapping)
     {
-        vec3 bumpedNormal = getSampledBumpedNormal();
-
-        return bumpedNormal;
+        return getSampledBumpedNormal();
     }
     else
     {
@@ -324,7 +301,14 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow
 
     float currentDepthNormalized = length(lightToVertex) / farPlaneDistance;
 
-    float bias = 0.0001;
+    // TODO: EXPERIMENTAL
+    /*
+    float cosTheta = abs(dot(getNormal(), normalize(lightToVertex)));
+    float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
+    bias = clamp(bias, 0.0, 0.0005);
+    */
+
+    float bias = 0.0002;
 
     vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
