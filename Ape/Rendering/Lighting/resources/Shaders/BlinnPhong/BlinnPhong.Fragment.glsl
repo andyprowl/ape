@@ -200,16 +200,16 @@ uniform bool renderNormals = false;
 
 vec3 getMappedNormalInTangentSpace()
 {
-    vec3 sampledNormal = vec3(texture(material.normalMap, vertex.textureCoords));
+    const vec3 sampledNormal = vec3(texture(material.normalMap, vertex.textureCoords));
 
     return normalize(sampledNormal * 2.0 - vec3(1.0, 1.0, 1.0));
 }
 
 vec3 getSampledBumpedNormal()
 {
-    vec3 normalInTangentSpace = getMappedNormalInTangentSpace();
+    const vec3 normalInTangentSpace = getMappedNormalInTangentSpace();
 
-    vec3 normalInWorldSpace = vertex.tangentToWorld * normalInTangentSpace;
+    const vec3 normalInWorldSpace = vertex.tangentToWorld * normalInTangentSpace;
 
     return normalInWorldSpace;
 }
@@ -226,7 +226,7 @@ vec3 getNormal()
     }
 }
 
-float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
+float computeAttenuationFactor(const Attenuation attenuation, const float sourceDistance)
 {    
     return 
         1.0 / 
@@ -236,12 +236,12 @@ float computeAttenuationFactor(Attenuation attenuation, float sourceDistance)
 }
 
 float sampleShadowWithPercentageCloserFiltering(
-    vec3 depthMapPositionAndTestDepth,
-    sampler2DShadow depthMap)
+    const vec3 depthMapPositionAndTestDepth,
+    const sampler2DShadow depthMap)
 {
-    float testDepth = depthMapPositionAndTestDepth.z;
+    const float testDepth = depthMapPositionAndTestDepth.z;
 
-    vec2 texelSize = 1.0 / textureSize(depthMap, 0);
+    const vec2 texelSize = 1.0 / textureSize(depthMap, 0);
 
     float shadow = 0.0;
 
@@ -249,9 +249,9 @@ float sampleShadowWithPercentageCloserFiltering(
     {
         for (int y = -1; y <= 1; ++y)
         {
-            vec2 xyOffsets = vec2(x, y) * texelSize;
+            const vec2 xyOffsets = vec2(x, y) * texelSize;
 
-            vec2 xySamplingCoords = depthMapPositionAndTestDepth.xy + xyOffsets;
+            const vec2 xySamplingCoords = depthMapPositionAndTestDepth.xy + xyOffsets;
 
             shadow += texture(depthMap, vec3(xySamplingCoords, testDepth)).r;
         }
@@ -262,23 +262,35 @@ float sampleShadowWithPercentageCloserFiltering(
     return shadow;
 }
 
-float calculateMonodirectionalShadowFactor(
-    vec3 lightDirection,
-    vec4 lightSpacePosition,
-    sampler2DShadow depthMap)
+float calculateMonodirectionalShadowBias(const vec3 lightDirection)
 {
-    vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
+    // TODO: EXPERIMENTAL
+    // Notice: not using bumped normal!
+    
+    const float sine = length(cross(vertex.normal, lightDirection));
+    
+    const float cosine = abs(dot(vertex.normal, lightDirection));
+    
+    const float tangent = sine / cosine;
+    
+    return clamp(0.005 * tangent, 0.0, 0.001);
+
+    // This seems to be OK for spot lights, but not for directional lights.
+    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
+    
+    // return max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
+}
+
+float calculateMonodirectionalShadowFactor(
+    const vec3 lightDirection,
+    const vec4 lightSpacePosition,
+    const sampler2DShadow depthMap)
+{
+    const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
-    // TODO: EXPERIMENTAL
-    // Notice: not using bumped normal!
-    //float cosTheta = abs(dot(vertex.normal, normalize(lightDirection)));
-    //float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
-    float sine = length(cross(vertex.normal, lightDirection));
-    float cosine = abs(dot(vertex.normal, lightDirection));
-    float tangent = sine / cosine;
-    float bias = clamp(0.005 * tangent, 0.0, 0.001);
+    const float bias = calculateMonodirectionalShadowBias(lightDirection);
 
     // This seems to be OK for spot lights, but not for directional lights.
     // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
@@ -296,68 +308,72 @@ float calculateMonodirectionalShadowFactor(
     }
 }
 
-float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow depthMap)
+float calculateOmnidirectionalShadowBias(/*const vec3 lightToVertex*/)
+{
+    // TODO: Figure out if we can use the same calcualtion as for monodirectional lights
+    // return calculateMonodirectionalShadowBias(normalize(lightToVertex));
+    
+    return 0.0005;
+}
+
+float calculateOmnidirectionalShadowFactor(
+    const vec3 lightPosition,
+    const samplerCubeShadow depthMap)
 {
     // TODO: This can be different for each light! This is a hack.
     // The far plane should either be passed a part of the light uniform or the algorithm should be
     // changed to not make use of the far plane.
     const float farPlaneDistance = 100.0;
 
-    vec3 lightToVertex = vertex.position - lightPosition;
+    const vec3 lightToVertex = vertex.position - lightPosition;
 
-    float currentDepthNormalized = length(lightToVertex) / farPlaneDistance;
+    const float lightToVertexDistance = length(lightToVertex);
 
-    // TODO: EXPERIMENTAL
-    /*
-    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
-    float cosTheta = abs(dot(vertex.normal, normalize(lightToVertex)));
-    float bias = 0.005 * tan(acos(cosTheta)); // cosTheta is dot( n,l ), clamped between 0 and 1
-    bias = clamp(bias, 0.0, 0.0005);
-    */
+    const float currentDepthNormalized = lightToVertexDistance / farPlaneDistance;
 
-    float bias = 0.0005;
+    const float bias = calculateOmnidirectionalShadowBias(/*lightToVertex / lightToVertexDistance*/);
 
-    vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
+    const vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
     return texture(depthMap, coords).r;
 }
 
-vec3 computeAmbientLight(LightColor color)
+vec3 computeAmbientLight(const LightColor color)
 {
-    vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
+    const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
     return color.ambient * material.ambient * diffuseColor;
 }
 
-vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
+vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
 {
     if (!material.hasDiffuseMap)
     {
         return vec3(0.0, 0.0, 0.0);
     }
 
-    float diffusion = dot(getNormal(), lightDirection);
+    const float diffusion = dot(getNormal(), lightDirection);
 
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the diffusion by the dot product of light and (non-bumped) surface normal.
 
-    float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
+    const float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
 
-    float cappedDiffusion = max(correctedDiffusion, 0.0);
+    const float cappedDiffusion = max(correctedDiffusion, 0.0);
 
-    vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
+    const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
     return color.diffuse * (cappedDiffusion * diffuseColor);
 }
 
-float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
+float computeSpecularLightReflectivity(const vec3 viewDirection, const vec3 lightDirection)
 {
     if (usePhongModel)
     {
         // Uses classical Phong model
 
-        vec3 reflectDirection = reflect(-lightDirection, getNormal());
+        const vec3 reflectDirection = reflect(-lightDirection, getNormal());
 
         return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     }
@@ -365,53 +381,53 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
     {
         // Uses Blinn-Phong model
 
-        vec3 halfwayDirection = normalize(lightDirection + viewDirection);
+        const vec3 halfwayDirection = normalize(lightDirection + viewDirection);
 
-        float shininessAdjuster = 4.0;
+        const float shininessAdjuster = 4.0;
 
-        float shininess = material.shininess * shininessAdjuster;
+        const float shininess = material.shininess * shininessAdjuster;
 
-        float factor = dot(getNormal(), halfwayDirection);
+        const float factor = dot(getNormal(), halfwayDirection);
 
         return pow(max(factor, 0.0), shininess);
     }
 }
 
-vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
+vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
 {
     if (!material.hasSpecularMap)
     {
         return vec3(0.0, 0.0, 0.0);
     }
 
-    vec3 viewDirection = normalize(camera.position - vertex.position);
+    const vec3 viewDirection = normalize(camera.position - vertex.position);
 
-    float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
+    const float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
 
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
 
-    float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
+    const float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
 
-    vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
+    const vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
 
     return color.specular * (correctedReflectivity * specularColor);
 }
 
-vec3 computePointLight(PointLight light)
+vec3 computePointLight(const PointLight light)
 {
-    vec3 lightDirection = normalize(light.position - vertex.position);
+    const vec3 lightDirection = normalize(light.position - vertex.position);
 
-    vec3 ambientLight = computeAmbientLight(light.color);
+    const vec3 ambientLight = computeAmbientLight(light.color);
 
-    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
 
-    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+    const vec3 specularLight = computeSpecularLight(light.color, lightDirection);
 
-    float sourceDistance = length(light.position - vertex.position);
+    const float sourceDistance = length(light.position - vertex.position);
 
-    float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
+    const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
     return attenuation * (ambientLight + diffuseLight + specularLight);
 }
@@ -422,20 +438,20 @@ vec3 computePointLighting()
 
     for (int i = 0; i < lightSystem.pointArraySize; ++i)
     {
-        PointLight light = lightSystem.point[i];
+        const PointLight light = lightSystem.point[i];
 
         if (!light.isTurnedOn)
         {
             continue;
         }
 
-        float shadow = calculateOmnidirectionalShadowFactor(
+        const float shadow = calculateOmnidirectionalShadowFactor(
             light.position,
             depthMapping.point[i]);
 
         if (shadow > 0.0)
         {
-            vec3 contribution = computePointLight(light);
+            const vec3 contribution = computePointLight(light);
 
             color += shadow * contribution;
         }
@@ -444,26 +460,26 @@ vec3 computePointLighting()
     return color;
 }
 
-vec3 computeSpotLight(SpotLight light)
+vec3 computeSpotLight(const SpotLight light)
 {
-    vec3 vertexToLight = normalize(light.position - vertex.position);
+    const vec3 vertexToLight = normalize(light.position - vertex.position);
 
     // We are assuming light direction was normalized on the CPU side.
-    float angleCosine = dot(vertexToLight, -light.direction);
+    const float angleCosine = dot(vertexToLight, -light.direction);
     
-    float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
+    const float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
 
-    float intensity = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
+    const float intensity = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
 
-    vec3 ambientLight = computeAmbientLight(light.color);
+    const vec3 ambientLight = computeAmbientLight(light.color);
 
-    vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
 
-    vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
+    const vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
 
-    float sourceDistance = length(light.position - vertex.position);
+    const float sourceDistance = length(light.position - vertex.position);
 
-    float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
+    const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
     return attenuation * intensity * (ambientLight + diffuseLight + specularLight);
 }
@@ -474,23 +490,23 @@ vec3 computeSpotLighting()
 
     for (int i = 0; i < lightSystem.spotArraySize; ++i)
     {
-        SpotLight light = lightSystem.spot[i];
+        const SpotLight light = lightSystem.spot[i];
 
         if (!light.isTurnedOn)
         {
             continue;
         }
 
-        vec4 lightSpacePosition = lightSpacePositioning.spot[i];
+        const vec4 lightSpacePosition = lightSpacePositioning.spot[i];
 
-        float shadow = calculateMonodirectionalShadowFactor(
+        const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
             lightSpacePosition,
             depthMapping.spot[i]);
 
         if (shadow > 0.0)
         {
-            vec3 contribution = computeSpotLight(light);
+            const vec3 contribution = computeSpotLight(light);
 
             color += shadow * contribution;
         }
@@ -499,16 +515,16 @@ vec3 computeSpotLighting()
     return color;
 }
 
-vec3 computeDirectionalLight(DirectionalLight light)
+vec3 computeDirectionalLight(const DirectionalLight light)
 {
     // We are assuming light direction was normalized on the CPU side.
-    vec3 lightDirection = -light.direction;
+    const vec3 lightDirection = -light.direction;
 
-    vec3 ambientLight = computeAmbientLight(light.color);
+    const vec3 ambientLight = computeAmbientLight(light.color);
 
-    vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
 
-    vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+    const vec3 specularLight = computeSpecularLight(light.color, lightDirection);
 
     return (ambientLight + diffuseLight + specularLight);
 }
@@ -519,23 +535,23 @@ vec3 computeDirectionalLighting()
 
     for (int i = 0; i < lightSystem.directionalArraySize; ++i)
     {
-        DirectionalLight light = lightSystem.directional[i];
+        const DirectionalLight light = lightSystem.directional[i];
 
         if (!light.isTurnedOn)
         {
             continue;
         }
 
-        vec4 lightSpacePosition = lightSpacePositioning.directional[i];
+        const vec4 lightSpacePosition = lightSpacePositioning.directional[i];
 
-        float shadow = calculateMonodirectionalShadowFactor(
+        const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
             lightSpacePosition,
             depthMapping.directional[i]);
 
         if (shadow > 0.0)
         {
-            vec3 contribution = computeDirectionalLight(light);
+            const vec3 contribution = computeDirectionalLight(light);
 
             color += shadow * contribution;
         }
@@ -546,11 +562,11 @@ vec3 computeDirectionalLighting()
 
 void renderLighting()
 {
-    vec3 pointLighting = computePointLighting();
+    const vec3 pointLighting = computePointLighting();
 
-    vec3 spotLighting = computeSpotLighting();
+    const vec3 spotLighting = computeSpotLighting();
 
-    vec3 directionalLighting = computeDirectionalLighting();
+    const vec3 directionalLighting = computeDirectionalLighting();
 
     fragmentColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
 }

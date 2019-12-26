@@ -202,25 +202,25 @@ vec3 orthogonalize(vec3 v, vec3 reference)
 
 vec3 computeTangentInWorldSpace(vec3 tangentInModelSpace, vec3 normalInWorldSpace)
 {
-    vec3 tangentInWorldSpace = normalize(transform.normal * tangentInModelSpace);
+    const vec3 tangentInWorldSpace = normalize(transform.normal * tangentInModelSpace);
 
     return orthogonalize(tangentInWorldSpace, normalInWorldSpace);
 }
 
 mat3 computeTangentToWorld(vec3 tangentInModelSpace, vec3 normalInWorldSpace)
 {
-    vec3 tangent = computeTangentInWorldSpace(tangentInModelSpace, normalInWorldSpace);
+    const vec3 tangent = computeTangentInWorldSpace(tangentInModelSpace, normalInWorldSpace);
 
-    vec3 bitangent = cross(normalInWorldSpace, tangent);
+    const vec3 bitangent = cross(normalInWorldSpace, tangent);
 
     return mat3(tangent, bitangent, normalInWorldSpace);
 }
 
 void main()
 {
-    vec4 rawPosition = vec4(positionAttribute, 1.0);
+    const vec4 rawPosition = vec4(positionAttribute, 1.0);
 
-    vec4 worldPosition = transform.model * rawPosition;
+    const vec4 worldPosition = transform.model * rawPosition;
 
     gl_Position = transform.camera * rawPosition;
 
