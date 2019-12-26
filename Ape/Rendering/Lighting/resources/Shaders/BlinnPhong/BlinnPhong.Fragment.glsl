@@ -560,7 +560,7 @@ vec3 computeDirectionalLighting()
     return color;
 }
 
-void renderLighting()
+vec4 renderLighting()
 {
     const vec3 pointLighting = computePointLighting();
 
@@ -568,7 +568,7 @@ void renderLighting()
 
     const vec3 directionalLighting = computeDirectionalLighting();
 
-    fragmentColor = vec4(pointLighting + directionalLighting + spotLighting, 1.0);
+    return vec4(pointLighting + directionalLighting + spotLighting, 1.0);
 }
 
 void main()
@@ -579,6 +579,6 @@ void main()
     }
     else
     {
-        renderLighting();
+        fragmentColor = renderLighting();
     }
 }
