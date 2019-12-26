@@ -80,7 +80,7 @@ auto MeshLoader::importVertices(aiMesh const & mesh) const
 
         auto const normal = makeVector(mesh.mNormals[i]);
 
-        auto const tangent = importTangent(mesh, i);
+        auto const tangent = makeVector(mesh.mTangents[i]);
 
         auto const textureCoords = importTextureCoordinates(mesh, i);
 
@@ -88,23 +88,6 @@ auto MeshLoader::importVertices(aiMesh const & mesh) const
     }
 
     return vertices;
-}
-
-auto MeshLoader::importTangent(aiMesh const & mesh, int vertexIndex) const
-    -> glm::vec3
-{
-    auto const normal = makeVector(mesh.mNormals[vertexIndex]);
-
-    auto const tangent = makeVector(mesh.mTangents[vertexIndex]);
-
-    auto const bitangent = makeVector(mesh.mBitangents[vertexIndex]);
-
-    // Some models use mirrored texture coordinates. We need to take this into account to make sure
-    // that we produce a right-handed TBN (tangent-space) coordinate system.
-
-    auto const isRightHanded = (glm::dot(glm::cross(normal, tangent), bitangent) > 0.0);
-
-    return (isRightHanded ? tangent : tangent);
 }
 
 auto MeshLoader::importTextureCoordinates(aiMesh const & mesh, int const vertexIndex) const

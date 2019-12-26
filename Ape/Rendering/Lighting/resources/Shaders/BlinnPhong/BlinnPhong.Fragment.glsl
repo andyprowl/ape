@@ -196,7 +196,7 @@ uniform bool usePercentageCloserFiltering = false;
 
 uniform bool useNormalMapping = true;
 
-uniform bool renderNormals = true;
+uniform bool renderNormals = false;
 
 vec3 getMappedNormalInTangentSpace()
 {
@@ -324,7 +324,7 @@ float calculateOmnidirectionalShadowFactor(vec3 lightPosition, samplerCubeShadow
 
     float currentDepthNormalized = length(lightToVertex) / farPlaneDistance;
 
-    float bias = 0.002;
+    float bias = 0.0001;
 
     vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
@@ -351,9 +351,7 @@ vec3 computeDiffuseLight(LightColor color, vec3 lightDirection)
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the diffusion by the dot product of light and (non-bumped) surface normal.
 
-    // TODO: EXPERIMENTAL!!
-    //float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
-    float correctedDiffusion = diffusion;
+    float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
 
     float cappedDiffusion = max(correctedDiffusion, 0.0);
 
@@ -384,9 +382,6 @@ float computeSpecularLightReflectivity(vec3 viewDirection, vec3 lightDirection)
 
         float factor = dot(getNormal(), halfwayDirection);
 
-        // TODO: THIS IS ONLY EXPERIMENTAL!!
-        //factor *= dot(vertex.normal, lightDirection);
-
         return pow(max(factor, 0.0), shininess);
     }
 }
@@ -406,12 +401,11 @@ vec3 computeSpecularLight(LightColor color, vec3 lightDirection)
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
 
-    //float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
+    float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
 
     vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
 
-    //return color.specular * (correctedReflectivity * specularColor);
-    return color.specular * (reflectivity * specularColor);
+    return color.specular * (correctedReflectivity * specularColor);
 }
 
 vec3 computePointLight(PointLight light)

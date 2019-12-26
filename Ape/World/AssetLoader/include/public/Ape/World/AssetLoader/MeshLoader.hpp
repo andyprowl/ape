@@ -36,9 +36,6 @@ private:
     auto importVertices(aiMesh const & mesh) const
         -> std::vector<ShapeVertex>;
 
-    auto importTangent(aiMesh const & mesh, int vertexIndex) const
-        -> glm::vec3;
-
     auto importTextureCoordinates(aiMesh const & mesh, int vertexIndex) const
         -> glm::vec2;
 
