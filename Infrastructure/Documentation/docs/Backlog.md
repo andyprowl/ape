@@ -1,5 +1,3 @@
-- Perform lighting calculations in tangent space
- - All matrix multiplications and coordinate transformations should be done in vertex shader
 - Implement CSM
 - Write own FBX loader, convert all models to FBX and keep Assimp-based loader as legacy
 - Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)
