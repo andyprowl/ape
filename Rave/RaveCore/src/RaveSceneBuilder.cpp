@@ -221,7 +221,7 @@ auto StatefulSceneBuilder::createBodies()
     createLamps();
 
     createFlashlights();
-
+    
     createNanosuits();
 
     createDragons();

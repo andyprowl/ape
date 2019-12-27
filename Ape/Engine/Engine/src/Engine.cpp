@@ -184,15 +184,15 @@ private:
 
         ImGui::GetStyle().Alpha = 0.2f;
 
-        auto const fontFilePath = resourceFolder "/fonts/ProggyClean.ttf";
-
-        auto & io = ImGui::GetIO();
-
-        io.Fonts->AddFontFromFileTTF(fontFilePath,  26);
-
         ImGui_ImplOpenGL3_Init("#version 450");
 
         imGuiDispatcher->initialize(*window);
+
+        auto & io = ImGui::GetIO();
+
+        auto const fontFilePath = resourceFolder "/fonts/ProggyClean.ttf";
+
+        io.Fonts->AddFontFromFileTTF(fontFilePath,  26);
     }
 
     auto updateActiveCameraAspectRatio(basix::Size<int> const & size)

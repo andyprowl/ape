@@ -40,6 +40,9 @@ private:
     auto makeLightCamera() const
         -> Camera;
 
+    auto computeFarDistance() const
+        -> float;
+
     auto updateLightCamera()
         -> void;
 

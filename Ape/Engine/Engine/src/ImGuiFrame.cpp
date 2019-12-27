@@ -12,9 +12,9 @@ namespace ape
 ImGuiFrame::ImGuiFrame(ImGuiEventDispatcher & dispatcher)
     : dispatcher{&dispatcher}
 {
-    dispatcher.onFrameBegin();
-
     ImGui_ImplOpenGL3_NewFrame();
+
+    dispatcher.onFrameBegin();
 
     ImGui::NewFrame();
 }

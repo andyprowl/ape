@@ -283,20 +283,9 @@ float calculateMonodirectionalShadowBias(const vec3 lightDirection)
 
 float calculateMonodirectionalShadowFactor(
     const vec3 lightDirection,
-    const vec4 lightSpacePosition,
+    const vec3 lightProjectionPosition,
     const sampler2DShadow depthMap)
 {
-    const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
-
-    // If the fragment is outside of the light's view space, we don't need to perform any shadow
-    // calculation for it. This optimization seems to have a relevant impact on performance.
-    if ((abs(lightProjectionPosition.x) > 1.0) ||
-        (abs(lightProjectionPosition.y) > 1.0) ||
-        (abs(lightProjectionPosition.z) > 1.0))
-    {
-        return 0.0;
-    }
-
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
     const float bias = calculateMonodirectionalShadowBias(lightDirection);
@@ -485,7 +474,9 @@ vec3 computeSpotLight(const SpotLight light)
 
     const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
-    return attenuation * intensity * (ambientLight + diffuseLight + specularLight);
+    const vec3 color = intensity * (ambientLight + diffuseLight + specularLight);
+
+    return attenuation * min(vec3(1.0, 1.0, 1.0), color);
 }
 
 vec3 computeSpotLighting()
@@ -503,9 +494,20 @@ vec3 computeSpotLighting()
 
         const vec4 lightSpacePosition = lightSpacePositioning.spot[i];
 
+        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
+
+        // If the fragment is outside of the light's view space, we don't need to perform any
+        // calculation for it. This optimization seems to have a relevant impact on performance.
+        if ((abs(lightProjectionPosition.x) > 1.0) ||
+            (abs(lightProjectionPosition.y) > 1.0) ||
+            (abs(lightProjectionPosition.z) > 1.0))
+        {
+            continue;
+        }
+
         const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
-            lightSpacePosition,
+            lightProjectionPosition,
             depthMapping.spot[i]);
 
         if (shadow > 0.0)
@@ -548,9 +550,20 @@ vec3 computeDirectionalLighting()
 
         const vec4 lightSpacePosition = lightSpacePositioning.directional[i];
 
+        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
+
+        // If the fragment is outside of the light's view space, we don't need to perform any
+        // calculation for it. This optimization seems to have a relevant impact on performance.
+        if ((abs(lightProjectionPosition.x) > 1.0) ||
+            (abs(lightProjectionPosition.y) > 1.0) ||
+            (abs(lightProjectionPosition.z) > 1.0))
+        {
+            continue;
+        }
+
         const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
-            lightSpacePosition,
+            lightProjectionPosition,
             depthMapping.directional[i]);
 
         if (shadow > 0.0)
