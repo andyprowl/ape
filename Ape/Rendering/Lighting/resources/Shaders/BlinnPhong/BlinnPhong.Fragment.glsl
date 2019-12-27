@@ -363,7 +363,6 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the diffusion by the dot product of light and (non-bumped) surface normal.
-
     const float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
 
     const float cappedDiffusion = max(correctedDiffusion, 0.0);
@@ -413,7 +412,6 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
-
     const float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
 
     const vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
