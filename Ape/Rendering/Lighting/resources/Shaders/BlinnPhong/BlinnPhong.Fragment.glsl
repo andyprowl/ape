@@ -275,7 +275,7 @@ float calculateMonodirectionalShadowBias(const vec3 lightDirection)
     
     return clamp(0.005 * tangent, 0.0, 0.001);
 
-    // This seems to be OK for spot lights, but not for directional lights.
+    // ALTERNATIVE TECHNIQUE below: seems to be OK for spot lights, but not for directional lights.
     // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
     
     // return max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
@@ -288,13 +288,18 @@ float calculateMonodirectionalShadowFactor(
 {
     const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
+    // If the fragment is outside of the light's view space, we don't need to perform any shadow
+    // calculation for it. This optimization seems to have a relevant impact on performance.
+    if ((abs(lightProjectionPosition.x) > 1.0) ||
+        (abs(lightProjectionPosition.y) > 1.0) ||
+        (abs(lightProjectionPosition.z) > 1.0))
+    {
+        return 0.0;
+    }
+
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
     const float bias = calculateMonodirectionalShadowBias(lightDirection);
-
-    // This seems to be OK for spot lights, but not for directional lights.
-    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
-    //float bias = max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
 
     depthMapPositionAndTestDepth.z -= bias;
 
@@ -331,7 +336,8 @@ float calculateOmnidirectionalShadowFactor(
 
     const float currentDepthNormalized = lightToVertexDistance / farPlaneDistance;
 
-    const float bias = calculateOmnidirectionalShadowBias(/*lightToVertex / lightToVertexDistance*/);
+    const float bias = calculateOmnidirectionalShadowBias(
+        /*lightToVertex / lightToVertexDistance*/);
 
     const vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
