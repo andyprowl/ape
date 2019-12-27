@@ -494,16 +494,16 @@ vec3 computeSpotLighting()
 
         const vec4 lightSpacePosition = lightSpacePositioning.spot[i];
 
-        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
-
         // If the fragment is outside of the light's view space, we don't need to perform any
         // calculation for it. This optimization seems to have a relevant impact on performance.
-        if ((abs(lightProjectionPosition.x) > 1.0) ||
-            (abs(lightProjectionPosition.y) > 1.0) ||
-            (abs(lightProjectionPosition.z) > 1.0))
+        if ((abs(lightSpacePosition.x) > lightSpacePosition.w) ||
+            (abs(lightSpacePosition.y) > lightSpacePosition.w) ||
+            (abs(lightSpacePosition.z) > lightSpacePosition.w))
         {
             continue;
         }
+
+        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
         const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
@@ -550,16 +550,16 @@ vec3 computeDirectionalLighting()
 
         const vec4 lightSpacePosition = lightSpacePositioning.directional[i];
 
-        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
-
         // If the fragment is outside of the light's view space, we don't need to perform any
         // calculation for it. This optimization seems to have a relevant impact on performance.
-        if ((abs(lightProjectionPosition.x) > 1.0) ||
-            (abs(lightProjectionPosition.y) > 1.0) ||
-            (abs(lightProjectionPosition.z) > 1.0))
+        if ((abs(lightSpacePosition.x) > lightSpacePosition.w) ||
+            (abs(lightSpacePosition.y) > lightSpacePosition.w) ||
+            (abs(lightSpacePosition.z) > lightSpacePosition.w))
         {
             continue;
         }
+
+        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
         const float shadow = calculateMonodirectionalShadowFactor(
             light.direction,
