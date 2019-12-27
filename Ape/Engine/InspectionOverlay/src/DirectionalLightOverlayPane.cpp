@@ -16,6 +16,8 @@ auto DirectionalLightOverlayPane::updateSelectedLightProperties()
 
     onOffStatusUpdater.updateLightOnOffStatus(*light);
 
+    shadowCastingStatusUpdater.updateLightShadowCastingStatus(*light);
+
     colorUpdater.updateLightColor(*light);
 
     updateViewProperties(*light);

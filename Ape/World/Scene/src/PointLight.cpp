@@ -8,8 +8,9 @@ PointLight::PointLight(
     glm::vec3 const & position,
     Attenuation const & attenuation,
     Color const & color,
-    bool const isTurnedOn)
-    : Light{std::move(name), color, isTurnedOn}
+    bool const isTurnedOn,
+    bool const castsShadow)
+    : Light{std::move(name), color, isTurnedOn, castsShadow}
     , position{position}
     , attenuation{attenuation}
 {

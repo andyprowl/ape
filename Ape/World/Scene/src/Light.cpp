@@ -3,10 +3,11 @@
 namespace ape
 {
 
-Light::Light(std::string name, Color const & color, bool const isTurnedOn)
+Light::Light(std::string name, Color const & color, bool const isTurnedOn, bool const castsShadow)
     : name{std::move(name)}
     , color{color}
     , isOn{isTurnedOn}
+    , castsShadow{castsShadow}
 {
 }
 
@@ -39,6 +40,11 @@ auto Light::isTurnedOn() const
 auto Light::turnOn()
     -> void
 {
+    if (isOn)
+    {
+        return;
+    }
+
     isOn = true;
 
     onLightChanged.fire();
@@ -47,6 +53,11 @@ auto Light::turnOn()
 auto Light::turnOff()
     -> void
 {
+    if (!isOn)
+    {
+        return;
+    }
+
     isOn = false;
 
     onLightChanged.fire();
@@ -56,6 +67,46 @@ auto Light::toggle()
     -> void
 {
     isOn = !isOn;
+
+    onLightChanged.fire();
+}
+
+auto Light::isCastingShadow() const
+    -> bool
+{
+    return castsShadow;
+}
+
+auto Light::enableShadowCasting()
+    -> void
+{
+    if (castsShadow)
+    {
+        return;
+    }
+
+    castsShadow = true;
+
+    onLightChanged.fire();
+}
+
+auto Light::disableShadowCasting()
+    -> void
+{
+    if (!castsShadow)
+    {
+        return;
+    }
+
+    castsShadow = false;
+
+    onLightChanged.fire();
+}
+
+auto Light::toggleShadowCasting()
+    -> void
+{
+    castsShadow = !castsShadow;
 
     onLightChanged.fire();
 }

@@ -18,7 +18,8 @@ public:
         glm::vec3 const & position,
         Attenuation const & attenuation,
         Color const & color,
-        bool isTurnedOn);
+        bool isTurnedOn,
+        bool castsShadow);
 
     auto getPosition() const
         -> glm::vec3;

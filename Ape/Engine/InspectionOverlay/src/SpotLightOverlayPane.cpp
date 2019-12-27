@@ -16,6 +16,8 @@ auto SpotLightOverlayPane::updateSelectedLightProperties()
 
     onOffStatusUpdater.updateLightOnOffStatus(*light);
 
+    shadowCastingStatusUpdater.updateLightShadowCastingStatus(*light);
+
     colorUpdater.updateLightColor(*light);
 
     attenuationUpdater.updateLightAttenuation(*light);

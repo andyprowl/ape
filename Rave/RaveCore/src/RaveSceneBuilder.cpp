@@ -821,9 +821,19 @@ auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position, std::str
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
+    auto const isTurnedOn = true;
+
+    auto const isCastingShadow = true;
+
     auto & lightSystem = scene.getLightSystem();
 
-    return lightSystem.point.emplace_back(std::move(name), position, attenuation, color, true);
+    return lightSystem.point.emplace_back(
+        std::move(name),
+        position,
+        attenuation,
+        color,
+        isTurnedOn,
+        isCastingShadow);
 }
 
 auto StatefulSceneBuilder::createSpotLights()
@@ -885,6 +895,8 @@ auto StatefulSceneBuilder::createSpotLight(
 
     auto const isTurnedOn = true;
 
+    auto const isCastingShadow = true;
+
     auto & lightSystem = scene.getLightSystem();
 
     return lightSystem.spot.emplace_back(
@@ -894,7 +906,8 @@ auto StatefulSceneBuilder::createSpotLight(
         cutoff,
         attenuation,
         color,
-        isTurnedOn);
+        isTurnedOn,
+        isCastingShadow);
 }
 
 auto StatefulSceneBuilder::createDirectionalLights()
@@ -927,9 +940,18 @@ auto StatefulSceneBuilder::createDirectionalLight(glm::vec3 const & direction, s
 
     auto const color = ape::Light::Color{ambient, diffuse, specular};
 
+    auto const isTurnedOn = false;
+
+    auto const isCastingShadow = true;
+
     auto & lightSystem = scene.getLightSystem();
 
-    return lightSystem.directional.emplace_back(std::move(name), direction, color, false);
+    return lightSystem.directional.emplace_back(
+        std::move(name),
+        direction,
+        color,
+        isTurnedOn,
+        isCastingShadow);
 }
 
 auto StatefulSceneBuilder::addBody(glm::mat4 const & transformation, ape::Model const & model)

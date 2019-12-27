@@ -79,7 +79,7 @@ auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
 {
     for (auto i = 0u; i < lights.size(); ++i)
     {
-        if (!lights[i].isTurnedOn())
+        if (!lights[i].isTurnedOn() || !(lights[i].isCastingShadow()))
         {
             continue;
         }

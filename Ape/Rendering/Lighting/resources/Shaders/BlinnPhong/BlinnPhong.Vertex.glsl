@@ -96,6 +96,8 @@ struct PointLight
 
     bool isTurnedOn;
 
+    bool isCastingShadow;
+
 };
 
 struct SpotLight
@@ -115,6 +117,8 @@ struct SpotLight
 
     bool isTurnedOn;
 
+    bool isCastingShadow;
+
 };
 
 struct DirectionalLight
@@ -125,6 +129,8 @@ struct DirectionalLight
     LightColor color;
 
     bool isTurnedOn;
+
+    bool isCastingShadow;
 
 };
 

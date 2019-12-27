@@ -4,6 +4,7 @@
 #include <Ape/Engine/InspectionOverlay/LightColorUpdaterOverlay.hpp>
 #include <Ape/Engine/InspectionOverlay/LightOnOffStatusUpdaterOverlay.hpp>
 #include <Ape/Engine/InspectionOverlay/LightPositionUpdaterOverlay.hpp>
+#include <Ape/Engine/InspectionOverlay/LightShadowCastingStatusUpdaterOverlay.hpp>
 #include <Ape/Engine/InspectionOverlay/LightSystemOverlayPane.hpp>
 
 #include <Ape/World/Scene/PointLight.hpp>
@@ -30,6 +31,8 @@ private:
 private:
 
     LightOnOffStatusUpdaterOverlay onOffStatusUpdater;
+
+    LightShadowCastingStatusUpdaterOverlay shadowCastingStatusUpdater;
 
     LightColorUpdaterOverlay colorUpdater;
 

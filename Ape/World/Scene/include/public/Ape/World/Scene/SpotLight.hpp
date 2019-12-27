@@ -41,7 +41,8 @@ public:
         CutoffAngle const & cutoff,
         Attenuation const & attenuation,
         Color const & color,
-        bool const isTurnedOn);
+        bool isTurnedOn,
+        bool castsShadow);
 
     auto getPosition() const
         -> glm::vec3;

@@ -7,8 +7,9 @@ DirectionalLight::DirectionalLight(
     std::string name,
     glm::vec3 const & direction,
     Color const & color,
-    bool const isTurnedOn)
-    : Light{std::move(name), color, isTurnedOn}
+    bool const isTurnedOn,
+    bool const castsShadow)
+    : Light{std::move(name), color, isTurnedOn, castsShadow}
     , direction{direction}
 {
 }

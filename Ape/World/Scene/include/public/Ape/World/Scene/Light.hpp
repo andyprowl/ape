@@ -44,7 +44,7 @@ public:
 
 public:
 
-    Light(std::string name, Color const & color, bool isTurnedOn);
+    Light(std::string name, Color const & color, bool isTurnedOn, bool castsShadow);
 
     auto getName() const
         -> std::string_view;
@@ -67,6 +67,18 @@ public:
     auto toggle()
         -> void;
 
+    auto isCastingShadow() const
+        -> bool;
+
+    auto enableShadowCasting()
+        -> void;
+
+    auto disableShadowCasting()
+        -> void;
+
+    auto toggleShadowCasting()
+        -> void;
+
 public:
 
     mutable basix::Signal<auto () -> void> onLightChanged;
@@ -78,6 +90,8 @@ private:
     Color color;
 
     bool isOn;
+
+    bool castsShadow;
 
 };
 

@@ -96,6 +96,8 @@ struct PointLight
 
     bool isTurnedOn;
 
+    bool isCastingShadow;
+
 };
 
 struct SpotLight
@@ -115,6 +117,8 @@ struct SpotLight
 
     bool isTurnedOn;
 
+    bool isCastingShadow;
+
 };
 
 struct DirectionalLight
@@ -125,6 +129,8 @@ struct DirectionalLight
     LightColor color;
 
     bool isTurnedOn;
+
+    bool isCastingShadow;
 
 };
 
@@ -282,10 +288,16 @@ float calculateMonodirectionalShadowBias(const vec3 lightDirection)
 }
 
 float calculateMonodirectionalShadowFactor(
+    const bool isCastingShadow,
     const vec3 lightDirection,
     const vec3 lightProjectionPosition,
     const sampler2DShadow depthMap)
 {
+    if (!isCastingShadow)
+    {
+        return 1.0;
+    }
+
     vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
 
     const float bias = calculateMonodirectionalShadowBias(lightDirection);
@@ -311,9 +323,15 @@ float calculateOmnidirectionalShadowBias(/*const vec3 lightToVertex*/)
 }
 
 float calculateOmnidirectionalShadowFactor(
+    const bool isCastingShadow,
     const vec3 lightPosition,
     const samplerCubeShadow depthMap)
 {
+    if (!isCastingShadow)
+    {
+        return 1.0;
+    }
+
     // TODO: This can be different for each light! This is a hack.
     // The far plane should either be passed a part of the light uniform or the algorithm should be
     // changed to not make use of the far plane.
@@ -439,6 +457,7 @@ vec3 computePointLighting()
         }
 
         const float shadow = calculateOmnidirectionalShadowFactor(
+            light.isCastingShadow,
             light.position,
             depthMapping.point[i]);
 
@@ -506,6 +525,7 @@ vec3 computeSpotLighting()
         const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
         const float shadow = calculateMonodirectionalShadowFactor(
+            light.isCastingShadow,
             light.direction,
             lightProjectionPosition,
             depthMapping.spot[i]);
@@ -562,6 +582,7 @@ vec3 computeDirectionalLighting()
         const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
 
         const float shadow = calculateMonodirectionalShadowFactor(
+            light.isCastingShadow,
             light.direction,
             lightProjectionPosition,
             depthMapping.directional[i]);

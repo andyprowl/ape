@@ -16,7 +16,8 @@ public:
         std::string name,
         glm::vec3 const & direction,
         Color const & color,
-        bool isTurnedOn);
+        bool isTurnedOn,
+        bool castsShadow);
 
     auto getDirection() const
         -> glm::vec3;

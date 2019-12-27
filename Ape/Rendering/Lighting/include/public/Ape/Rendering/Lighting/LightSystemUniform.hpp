@@ -124,6 +124,7 @@ public:
         , color{program, prefix + ".color"}
         , attenuation{program, prefix + ".attenuation"}
         , isTurnedOn{program, prefix + ".isTurnedOn"}
+        , isCastingShadow{program, prefix + ".isCastingShadow"}
     {
     }
 
@@ -137,6 +138,8 @@ public:
         attenuation = light.getAttenuation();
 
         isTurnedOn = light.isTurnedOn();
+
+        isCastingShadow = light.isCastingShadow();
     }
 
     auto operator = (ValueType const & light)
@@ -157,6 +160,8 @@ public:
 
     Uniform<bool> isTurnedOn;
 
+    Uniform<bool> isCastingShadow;
+
 };
 
 class SpotLightUniform
@@ -176,6 +181,7 @@ public:
         , color{program, prefix + ".color"}
         , attenuation{program, prefix + ".attenuation"}
         , isTurnedOn{program, prefix + ".isTurnedOn"}
+        , isCastingShadow{program, prefix + ".isCastingShadow"}
     {
     }
 
@@ -198,6 +204,8 @@ public:
         attenuation = light.getAttenuation();
 
         isTurnedOn = light.isTurnedOn();
+
+        isCastingShadow = light.isCastingShadow();
     }
 
     auto operator = (ValueType const & light)
@@ -224,6 +232,8 @@ public:
 
     Uniform<bool> isTurnedOn;
 
+    Uniform<bool> isCastingShadow;
+
 };
 
 class DirectionalLightUniform
@@ -239,6 +249,7 @@ public:
         : direction{program, prefix + ".direction"}
         , color{program, prefix + ".color"}
         , isTurnedOn{program, prefix + ".isTurnedOn"}
+        , isCastingShadow{program, prefix + ".isCastingShadow"}
     {
     }
 
@@ -253,6 +264,8 @@ public:
         color = light.getColor();
 
         isTurnedOn = light.isTurnedOn();
+
+        isCastingShadow = light.isCastingShadow();
     }
 
     auto operator = (ValueType const & light)
@@ -270,6 +283,8 @@ public:
     Uniform<ape::Light::Color> color;
 
     Uniform<bool> isTurnedOn;
+
+    Uniform<bool> isCastingShadow;
 
 };
 

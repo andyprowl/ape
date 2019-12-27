@@ -10,8 +10,9 @@ SpotLight::SpotLight(
     CutoffAngle const & cutoff,
     Attenuation const & attenuation,
     Color const & color,
-    bool const isTurnedOn)
-    : Light{std::move(name), color, isTurnedOn}
+    bool const isTurnedOn,
+    bool const castsShadow)
+    : Light{std::move(name), color, isTurnedOn, castsShadow}
     , position{position}
     , direction{direction}
     , cutoff{cutoff}
