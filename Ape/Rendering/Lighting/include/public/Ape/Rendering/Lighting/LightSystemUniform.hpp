@@ -131,13 +131,19 @@ public:
     auto set(ValueType const & light)
         -> void
     {
+        isTurnedOn = light.isTurnedOn();
+
+        if (!isTurnedOn)
+        {
+            // The shader will not need light data if it is turned off.
+            return;
+        }
+
         position = light.getPosition();
 
         color = light.getColor();
 
         attenuation = light.getAttenuation();
-
-        isTurnedOn = light.isTurnedOn();
 
         isCastingShadow = light.isCastingShadow();
     }
@@ -188,6 +194,14 @@ public:
     auto set(ValueType const & light)
         -> void
     {
+        isTurnedOn = light.isTurnedOn();
+
+        if (!isTurnedOn)
+        {
+            // The shader will not need light data if it is turned off.
+            return;
+        }
+
         position = light.getPosition();
 
         // Normalization could be done in the vertex or fragment shader but there is no reason to
@@ -202,8 +216,6 @@ public:
         color = light.getColor();
 
         attenuation = light.getAttenuation();
-
-        isTurnedOn = light.isTurnedOn();
 
         isCastingShadow = light.isCastingShadow();
     }
@@ -256,14 +268,20 @@ public:
     auto set(ValueType const & light)
         -> void
     {
+        isTurnedOn = light.isTurnedOn();
+
+        if (!isTurnedOn)
+        {
+            // The shader will not need light data if it is turned off.
+            return;
+        }
+
         // Normalization could be done in the vertex or fragment shader but there is no reason to
         // have that done millions of times for the same value, so hopefully doing this on the CPU
         // will save some performance.
         direction = glm::normalize(light.getDirection());
 
         color = light.getColor();
-
-        isTurnedOn = light.isTurnedOn();
 
         isCastingShadow = light.isCastingShadow();
     }

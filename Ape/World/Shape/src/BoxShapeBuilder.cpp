@@ -67,6 +67,7 @@ public:
         : normalDirection{normalDirection}
         , size{size}
         , center{center}
+        , texTopRight{1.0f, 1.0f}
     {
         vertices.reserve(numOfFaces * numOfVerticesPerFace);
     }
@@ -108,9 +109,9 @@ private:
 
         return {{
             makeVertex({-0.5f, 0.0f, -0.5f}, normal, tangent, {0.0f, 0.0f}),
-            makeVertex({0.5f, 0.0f, -0.5f}, normal, tangent, {1.0f, 0.0f}),
-            makeVertex({0.5f, 0.0f, 0.5f}, normal, tangent, {1.0f, 1.0f}),
-            makeVertex({-0.5f, 0.0f, 0.5f}, normal, tangent, {0.0f, 1.0f})}};
+            makeVertex({0.5f, 0.0f, -0.5f}, normal, tangent, {texTopRight.x, 0.0f}),
+            makeVertex({0.5f, 0.0f, 0.5f}, normal, tangent, {texTopRight.x, texTopRight.y}),
+            makeVertex({-0.5f, 0.0f, 0.5f}, normal, tangent, {0.0f, texTopRight.y})}};
     }
 
     auto makeVertex(
@@ -176,6 +177,8 @@ private:
     Size size;
 
     Position center;
+
+    glm::vec2 texTopRight;
 
     std::vector<ShapeVertex> vertices;
 

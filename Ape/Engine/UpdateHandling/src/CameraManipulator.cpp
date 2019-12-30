@@ -45,6 +45,20 @@ auto moveCameraSideways(Camera & camera, float const magnitude)
     view.setPosition(newPosition);
 }
 
+auto moveCameraVertically(Camera & camera, float const magnitude)
+    -> void
+{
+    auto & view = camera.getView();
+
+    auto const position = view.getPosition();
+
+    auto const up = glm::vec3{0.0f, 1.0f, 0.0f};
+
+    auto const newPosition = position + (up * magnitude);
+
+    view.setPosition(newPosition);
+}
+
 } // unnamed namespace
 
 CameraManipulator::CameraManipulator(
@@ -102,6 +116,8 @@ auto CameraManipulator::onFrame(std::chrono::nanoseconds const frameDuration)
     processStraightMovement(*activeCamera, frameDurationInSeconds);
 
     processStrafeMovement(*activeCamera, frameDurationInSeconds);
+
+    processLiftMovement(*activeCamera, frameDurationInSeconds);
 }
 
 auto CameraManipulator::onMouseWheel(basix::Offset<int> const offset)
@@ -153,5 +169,25 @@ auto CameraManipulator::processStrafeMovement(
         moveCameraSideways(camera, +1.0f * translationDelta * speedMultiplier);
     }
 }
+
+auto CameraManipulator::processLiftMovement(
+    Camera & camera,
+    double const lastFrameDuration) const
+    -> void
+{
+    auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
+
+    auto const speedMultiplier = window->isKeyPressed(Key::keyRightShift) ? 4.0f : 1.0f;
+
+    if (window->isKeyPressed(Key::keyPageUp))
+    {
+        moveCameraVertically(camera, +1.0f * translationDelta * speedMultiplier);
+    }
+    else if (window->isKeyPressed(Key::keyPageDown))
+    {
+        moveCameraVertically(camera, -1.0f * translationDelta * speedMultiplier);
+    }
+}
+
 
 } // namespace ape

@@ -45,6 +45,9 @@ private:
     auto processStrafeMovement(Camera & camera, double lastFrameDuration) const
         -> void;
 
+    auto processLiftMovement(Camera & camera, double lastFrameDuration) const
+        -> void;
+
 private:
 
     CameraSelector * cameraSelector;

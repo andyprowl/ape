@@ -174,6 +174,28 @@ auto BasicUniform<glm::vec2>::set(glm::vec2 const & value)
 }
 
 template<>
+auto BasicUniform<glm::ivec2>::get() const
+    -> glm::ivec2
+{
+    auto value = std::array<int, 2u>{0};
+
+    glGetUniformiv(programId, location, value.data());
+
+    assert(glGetError() == GL_NO_ERROR);
+
+    return glm::ivec2{value[0], value[1]};
+}
+
+template<>
+auto BasicUniform<glm::ivec2>::set(glm::ivec2 const & value)
+    -> void
+{
+    glUniform2i(location, value.x, value.y);
+
+    assert(glGetError() == GL_NO_ERROR);
+}
+
+template<>
 auto BasicUniform<glm::vec3>::get() const
     -> glm::vec3
 {
@@ -191,6 +213,28 @@ auto BasicUniform<glm::vec3>::set(glm::vec3 const & value)
     -> void
 {
     glUniform3f(location, value.x, value.y, value.z);
+
+    assert(glGetError() == GL_NO_ERROR);
+}
+
+template<>
+auto BasicUniform<glm::ivec3>::get() const
+    -> glm::ivec3
+{
+    auto value = std::array<int, 3u>{0};
+
+    glGetUniformiv(programId, location, value.data());
+
+    assert(glGetError() == GL_NO_ERROR);
+
+    return glm::ivec3{value[0], value[1], value[2]};
+}
+
+template<>
+auto BasicUniform<glm::ivec3>::set(glm::ivec3 const & value)
+    -> void
+{
+    glUniform3i(location, value.x, value.y, value.z);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -217,6 +261,29 @@ auto BasicUniform<glm::vec4>::set(glm::vec4 const & value)
     assert(glGetError() == GL_NO_ERROR);
 }
 
+template<>
+auto BasicUniform<glm::ivec4>::get() const
+    -> glm::ivec4
+{
+    auto value = std::array<int, 4u>{0};
+
+    glGetUniformiv(programId, location, value.data());
+
+    assert(glGetError() == GL_NO_ERROR);
+
+    return glm::ivec4{value[0], value[1], value[2], value[3]};
+}
+
+template<>
+auto BasicUniform<glm::ivec4>::set(glm::ivec4 const & value)
+    -> void
+{
+    glUniform4i(location, value.x, value.y, value.z, value.w);
+
+    assert(glGetError() == GL_NO_ERROR);
+}
+
+
 template class BasicUniform<bool>;
 
 template class BasicUniform<float>;
@@ -229,8 +296,14 @@ template class BasicUniform<glm::mat4>;
 
 template class BasicUniform<glm::vec2>;
 
+template class BasicUniform<glm::ivec2>;
+
 template class BasicUniform<glm::vec3>;
 
+template class BasicUniform<glm::ivec3>;
+
 template class BasicUniform<glm::vec4>;
+
+template class BasicUniform<glm::ivec4>;
 
 } // namespace glow::detail

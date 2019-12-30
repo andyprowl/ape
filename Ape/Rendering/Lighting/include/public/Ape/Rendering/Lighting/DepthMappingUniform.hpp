@@ -31,7 +31,9 @@ public:
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
-        , maxNumOfLightsPerType{8}
+        , maxNumOfPointLights{8}
+        , maxNumOfSpotLights{8}
+        , maxNumOfDirectionalLights{8}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
         bindSamplers(program);
@@ -72,17 +74,17 @@ private:
 
         auto index = firstDepthMapUnit;
 
-        for (auto i = 0; i < maxNumOfLightsPerType; ++i)
+        for (auto i = 0; i < maxNumOfPointLights; ++i)
         {
             point[i].bind(index++);
         }
 
-        for (auto i = 0; i < maxNumOfLightsPerType; ++i)
+        for (auto i = 0; i < maxNumOfSpotLights; ++i)
         {
             spot[i].bind(index++);
         }
 
-        for (auto i = 0; i < maxNumOfLightsPerType; ++i)
+        for (auto i = 0; i < maxNumOfDirectionalLights; ++i)
         {
             directional[i].bind(index++);
         }
@@ -120,7 +122,11 @@ private:
 
 private:
 
-    int maxNumOfLightsPerType;
+    int maxNumOfPointLights;
+
+    int maxNumOfSpotLights;
+
+    int maxNumOfDirectionalLights;
 
     int firstDepthMapUnit;
 
