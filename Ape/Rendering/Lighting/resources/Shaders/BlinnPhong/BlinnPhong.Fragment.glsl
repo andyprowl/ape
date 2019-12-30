@@ -355,7 +355,7 @@ vec3 computeAmbientLight(const LightColor color)
 {
     const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
-    return color.ambient * material.ambient * diffuseColor;
+    return (color.ambient * material.ambient * diffuseColor);
 }
 
 vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
@@ -376,7 +376,7 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
 
     const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
 
-    return color.diffuse * (cappedDiffusion * diffuseColor);
+    return (color.diffuse * (cappedDiffusion * diffuseColor));
 }
 
 float computeSpecularLightReflectivity(const vec3 viewDirection, const vec3 lightDirection)
@@ -423,7 +423,7 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
 
     const vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
 
-    return color.specular * (correctedReflectivity * specularColor);
+    return (color.specular * (correctedReflectivity * specularColor));
 }
 
 vec3 computePointLight(const PointLight light)
@@ -440,7 +440,7 @@ vec3 computePointLight(const PointLight light)
 
     const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
-    return attenuation * (ambientLight + diffuseLight + specularLight);
+    return (attenuation * (ambientLight + diffuseLight + specularLight));
 }
 
 vec3 computePointLighting()
@@ -455,7 +455,7 @@ vec3 computePointLighting()
         {
             continue;
         }
-
+        
         const float shadow = calculateOmnidirectionalShadowFactor(
             light.isCastingShadow,
             light.position,
@@ -463,9 +463,7 @@ vec3 computePointLighting()
 
         if (shadow > 0.0)
         {
-            const vec3 contribution = computePointLight(light);
-
-            color += shadow * contribution;
+            color += shadow * computePointLight(light);
         }
     }
 
@@ -493,9 +491,9 @@ vec3 computeSpotLight(const SpotLight light)
 
     const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
-    const vec3 color = intensity * (ambientLight + diffuseLight + specularLight);
+    const vec3 color = (ambientLight + diffuseLight + specularLight);
 
-    return attenuation * min(vec3(1.0, 1.0, 1.0), color);
+    return (attenuation * intensity * min(vec3(1.0, 1.0, 1.0), color));
 }
 
 vec3 computeSpotLighting()
@@ -532,9 +530,7 @@ vec3 computeSpotLighting()
 
         if (shadow > 0.0)
         {
-            const vec3 contribution = computeSpotLight(light);
-
-            color += shadow * contribution;
+            color += computeSpotLight(light);
         }
     }
 
@@ -589,16 +585,14 @@ vec3 computeDirectionalLighting()
 
         if (shadow > 0.0)
         {
-            const vec3 contribution = computeDirectionalLight(light);
-
-            color += shadow * contribution;
+            color += shadow * computeDirectionalLight(light);
         }
     }
 
     return color;
 }
 
-vec4 renderLighting()
+vec3 renderLighting()
 {
     const vec3 pointLighting = computePointLighting();
 
@@ -606,7 +600,92 @@ vec4 renderLighting()
 
     const vec3 directionalLighting = computeDirectionalLighting();
 
-    return vec4(pointLighting + directionalLighting + spotLighting, 1.0);
+    return (pointLighting + directionalLighting + spotLighting);
+}
+
+float calculateFogFactor(const float fogDensity)
+{
+    if (fogDensity == 0.0)
+    {
+        return 1.0;
+    }
+
+    const float heightLimit = 10.0;
+
+    const vec3 cameraToVertex = camera.position - vertex.position;
+
+    const float d = length(cameraToVertex);
+
+    const float deltaH = abs(cameraToVertex.y);
+
+    const float deltaHZero = (vertex.position.y > camera.position.y)
+        ? max(0.0, vertex.position.y - heightLimit) - max(0.0, camera.position.y - heightLimit)
+        : max(0.0, camera.position.y - heightLimit) - max(0.0, vertex.position.y - heightLimit);
+
+    const float fd = d * ((deltaH - deltaHZero) / deltaH);
+
+    const float fogFactor = exp(-2.0 * (fd * fogDensity) * (fd * fogDensity));
+    
+    return clamp(fogFactor, 0.0, 1.0);
+}
+
+float evaluateFogIntegral(float x, float a, float b, float c)
+{
+    const float disc = (4 * a * c) - (b * b);
+
+    const float tx = (2 * a * x) + b;
+
+    if (disc > 0.0)
+    {
+        const float droot = sqrt(disc);
+
+        return (2.0 / droot) * atan(tx / droot);
+    }
+    else if (disc < 0.0)
+    {
+        const float droot = sqrt(-disc);
+
+        return (1.0 / droot) * log((tx - droot) / (tx + droot));
+    }
+    else
+    {
+        return (-2.0 / tx);
+    }
+}
+
+float calculateLightQuantity(const PointLight light)
+{
+    if (!light.isTurnedOn)
+    {
+        return 0.0;
+    }
+
+    const vec3 v = camera.position - vertex.position;
+
+    const vec3 lp = vertex.position - light.position;
+
+    const float a = dot(v, v);
+
+    const float b = 2 * dot(v, lp);
+
+    const float c = dot(lp, lp);
+
+    return evaluateFogIntegral(1.0, a, b, c) - evaluateFogIntegral(0.0, a, b, c);
+}
+
+vec3 fog(vec3 color)
+{
+    const float fogDensity = 0.05;
+
+    const vec3 fogColor = vec3(0.2, 0.1, 0.4);
+    
+    const float lightQuantity = calculateLightQuantity(lightSystem.point[0]);
+
+    const float fogFactor = calculateFogFactor(fogDensity);
+
+    vec3 result = mix(fogColor * lightQuantity, color, fogFactor);
+
+    return result;
 }
 
 void main()
@@ -617,6 +696,6 @@ void main()
     }
     else
     {
-        fragmentColor = renderLighting();
+        fragmentColor = vec4(fog(renderLighting()), 1.0);
     }
 }

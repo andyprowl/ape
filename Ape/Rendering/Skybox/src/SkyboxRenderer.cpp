@@ -49,6 +49,8 @@ auto SkyboxRenderer::setupUniforms(Camera const & camera, glow::CubeTexture cons
     shader->transform = projection * viewRotation;
 
     shader->skybox = skybox;
+
+    shader->cameraHeight = camera.getView().getPosition().y;
 }
 
 auto SkyboxRenderer::drawCube() const

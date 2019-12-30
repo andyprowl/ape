@@ -25,6 +25,7 @@ SkyboxShaderProgram::SkyboxShaderProgram()
     : ShaderProgram{buildStandardShader()}
     , transform{*this, "transform"}
     , skybox{*this, "skybox", 0}
+    , cameraHeight{*this, "cameraHeight"}
 {
 }
 

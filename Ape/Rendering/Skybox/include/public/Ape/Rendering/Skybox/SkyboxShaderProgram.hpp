@@ -19,6 +19,8 @@ public:
 
     glow::Uniform<glow::CubeTexture> skybox;
 
+    glow::Uniform<float> cameraHeight;
+
 };
 
 } // namespace ape

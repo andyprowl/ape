@@ -6,6 +6,8 @@ out vec3 textureCoordinates;
 
 uniform mat4 transform;
 
+uniform float cameraPositionY;
+
 void main()
 {
     textureCoordinates = positionAttribute;
