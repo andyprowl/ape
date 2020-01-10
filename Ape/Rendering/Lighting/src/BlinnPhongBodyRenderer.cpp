@@ -17,10 +17,37 @@
 #include <Glow/GpuResource/ScopedBinder.hpp>
 #include <Glow/Texture/Texture.hpp>
 
+#include <Basix/Range/Sorting.hpp>
+
 #include <glad/glad.h>
 
 namespace ape
 {
+
+namespace
+{
+
+auto getDistance(Body const & body, Camera const & camera)
+    -> float
+{
+    auto const & eye = camera.getView().getPosition();
+
+    for (auto const & part : body.getParts())
+    {
+        auto const & meshes = part.getMeshes();
+
+        if (!meshes.empty())
+        {
+            auto const& boundingSphere = meshes.front().getBoundingVolumes().getSphere();
+
+            return (glm::distance(boundingSphere.getCenter(), eye) - boundingSphere.getRadius());
+        }
+    }
+
+    return 0.0;
+}
+
+} // unnamed namespace
 
 BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     BlinnPhongShaderProgram & shader,
@@ -46,7 +73,9 @@ auto BlinnPhongBodyRenderer::render(
 
     auto const culler = RadarFrustumCuller{camera};
 
-    for (auto const body : bodies)
+    auto sortedBodies = getBodiesSortedByDistanceFromCamera(bodies, camera);
+
+    for (auto const body : sortedBodies)
     {
         renderBody(*body, cameraTransformation, culler);
     }
@@ -62,6 +91,21 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
     -> void
 {
     performFrustumCulling = enable;
+}
+
+auto BlinnPhongBodyRenderer::getBodiesSortedByDistanceFromCamera(
+    BodyRange const & bodies,
+    Camera const & camera) const
+    -> std::vector<Body const*>
+{
+    auto sortedBodies = std::vector<Body const *>{std::cbegin(bodies), std::cend(bodies)};
+
+    basix::sort(sortedBodies, [&camera] (Body const * const lhs, Body const * const rhs)
+    {
+        return (getDistance(*lhs, camera) < getDistance(*rhs, camera));
+    });
+
+    return sortedBodies;
 }
 
 auto BlinnPhongBodyRenderer::setupInvariantUniforms(

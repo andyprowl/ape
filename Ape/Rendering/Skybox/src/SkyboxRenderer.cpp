@@ -18,7 +18,7 @@ SkyboxRenderer::SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & se
 {
 }
 
-auto SkyboxRenderer::render(Camera const & camera) const
+auto SkyboxRenderer::render(Camera const & camera, LightSystem const & lightSystem) const
     -> void
 {
     auto const skybox = selector->getActiveSkybox();
@@ -30,7 +30,7 @@ auto SkyboxRenderer::render(Camera const & camera) const
 
     auto const shaderBinder = bind(*shader);
 
-    setupUniforms(camera, *skybox);
+    setupUniforms(camera, lightSystem, *skybox);
 
     glDepthFunc(GL_LEQUAL);
 
@@ -39,18 +39,23 @@ auto SkyboxRenderer::render(Camera const & camera) const
     glDepthFunc(GL_LESS);
 }
 
-auto SkyboxRenderer::setupUniforms(Camera const & camera, glow::CubeTexture const & skybox) const
+auto SkyboxRenderer::setupUniforms(
+    Camera const & camera,
+    LightSystem const & lightSystem,
+    glow::CubeTexture const & skybox) const
     -> void
 {
     auto const projection = camera.getProjection().getTransformation();
 
     auto const viewRotation = glm::mat4{glm::mat3{camera.getView().getTransformation()}};
 
+    shader->lightSystem = lightSystem;
+
     shader->transform = projection * viewRotation;
 
     shader->skybox = skybox;
 
-    shader->cameraHeight = camera.getView().getPosition().y;
+    shader->cameraPosition = camera.getView().getPosition();
 }
 
 auto SkyboxRenderer::drawCube() const

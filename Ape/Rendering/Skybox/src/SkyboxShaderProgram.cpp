@@ -11,11 +11,16 @@ namespace
 auto buildStandardShader()
     -> glow::ShaderProgram
 {
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
+    auto const builder = glow::ShaderBuilder{{
+        resourceFolder "/shaders",
+        Ape_Rendering_Lighting_ResourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        glow::VertexShaderPath{"Skybox/Skybox.Vertex.glsl"},
-        glow::FragmentShaderPath{"Skybox/Skybox.Fragment.glsl"},
+        std::vector<glow::VertexShaderPath>{"Skybox/Skybox.Vertex.glsl"},
+        std::vector<glow::GeometryShaderPath>{},
+        std::vector<glow::FragmentShaderPath>{
+            "Skybox/Skybox.Fragment.glsl",
+            "Fog/Fog.Fragment.glsl"},
         "Skybox");
 }
 
@@ -23,9 +28,10 @@ auto buildStandardShader()
 
 SkyboxShaderProgram::SkyboxShaderProgram()
     : ShaderProgram{buildStandardShader()}
+    , lightSystem{*this, "lightSystem"}
     , transform{*this, "transform"}
     , skybox{*this, "skybox", 0}
-    , cameraHeight{*this, "cameraHeight"}
+    , cameraPosition{*this, "camera.position"}
 {
 }
 

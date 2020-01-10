@@ -28,11 +28,20 @@ private:
     auto createBodies()
         -> void;
 
-    auto createGroundTiles()
+    auto createFloor()
         -> void;
 
-    auto createGroundTile(int row, int col, ape::Model const & model)
+    auto createCeiling()
+        -> void;
+
+    auto createTiledPlatform(float z)
+        -> void;
+
+    auto createTile(int row, int col, float z, ape::Model const & model)
         -> ape::Body &;
+
+    auto createWalls()
+        -> void;
 
     auto createWall(
         int row,
@@ -41,9 +50,6 @@ private:
         glm::mat4 const & rotation,
         ape::Model const & model)
         -> ape::Body &;
-
-    auto createWalls()
-        -> void;
 
     auto createContainers()
         -> void;
@@ -144,7 +150,13 @@ private:
     auto createPointLights()
         -> void;
 
-    auto createPointLight(glm::vec3 const & position, std::string name)
+    auto getPointLightColors()
+        -> std::vector<ape::Light::Color>;
+
+    auto createPointLight(
+        glm::vec3 const & position,
+        ape::Light::Color const & color,
+        std::string name)
         -> ape::PointLight &;
 
     auto createSpotLights()
@@ -212,7 +224,9 @@ auto StatefulSceneBuilder::createBodies()
 {
     scene.reserveBodyCapacity(200);
 
-    createGroundTiles();
+    createFloor();
+
+    //createCeiling();
 
     createWalls();
 
@@ -239,7 +253,19 @@ auto StatefulSceneBuilder::createBodies()
     //createSponzas();
 }
 
-auto StatefulSceneBuilder::createGroundTiles()
+auto StatefulSceneBuilder::createFloor()
+    -> void
+{
+    createTiledPlatform(-2.0f);
+}
+
+auto StatefulSceneBuilder::createCeiling()
+    -> void
+{
+    createTiledPlatform(40.0f);
+}
+
+auto StatefulSceneBuilder::createTiledPlatform(const float z)
     -> void
 {
     auto & concrete = assets->generalAssets.models[0];
@@ -254,15 +280,19 @@ auto StatefulSceneBuilder::createGroundTiles()
 
             auto const & model = isInnerSquare ? wood : concrete;
 
-            createGroundTile(row, col, model);
+            createTile(row, col, z, model);
         }
     }
 }
 
-auto StatefulSceneBuilder::createGroundTile(int const row, int const col, ape::Model const & model)
+auto StatefulSceneBuilder::createTile(
+    int const row,
+    int const col,
+    float const z,
+    ape::Model const & model)
     -> ape::Body &
 {
-    auto const position = glm::vec3{row * 5.0f, -2.0f, col * 5.0f};
+    auto const position = glm::vec3{row * 5.0f, z, col * 5.0f};
 
     auto body = ape::Body{model};
 
@@ -461,7 +491,8 @@ auto StatefulSceneBuilder::getFlashlightPositions() const
         {2.5f, 1.0f, 3.0f},
         {-2.5f, 1.5f, 2.5f},
         {-10.0f, 15.0f, -35.0f},
-        {10.0f, 15.0f, -35.0f}};
+        {10.0f, 15.0f, -35.0f},
+        {0.5f, 3.5f, 0.0f}};
 }
 
 auto StatefulSceneBuilder::computeFlashlightRotation(glm::vec3 const & position)
@@ -549,7 +580,7 @@ auto StatefulSceneBuilder::createSpaceships()
     {
         auto const translation = glm::translate(glm::mat4{1.0f}, position);
 
-        addBody(translation * scaling, model);
+        scene.spaceship = &addBody(translation * scaling, model);
     }
 }
 
@@ -557,7 +588,7 @@ auto StatefulSceneBuilder::getSpaceshipPositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-0.0f, 6.0f, -2.0f}};
+        {-5.0f, 6.0f, -2.0f}};
 }
 
 auto StatefulSceneBuilder::createDynos()
@@ -795,11 +826,15 @@ auto StatefulSceneBuilder::createPointLights()
 {
     auto const positions = getPointLampPositions();
 
+    auto const colors = getPointLightColors();
+
     for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
     {
         auto const position = positions[i];
 
-        auto & light = createPointLight(position, "PointLight_" + std::to_string(i));
+        auto const color = colors[i];
+
+        auto & light = createPointLight(position, color, "PointLight_" + std::to_string(i));
 
         if (i >= 2)
         {
@@ -808,18 +843,33 @@ auto StatefulSceneBuilder::createPointLights()
     }
 }
 
-auto StatefulSceneBuilder::createPointLight(glm::vec3 const & position, std::string name)
+auto StatefulSceneBuilder::getPointLightColors()
+    -> std::vector<ape::Light::Color>
+{
+    using Ambient = glm::vec3;
+
+    using Diffuse = glm::vec3;
+    
+    using Specular = glm::vec3;
+
+    return {
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.9f}, Specular{0.3f, 0.2f, 1.0f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.3f, 0.8f, 0.2f}, Specular{0.4f, 0.9f, 0.2f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.3f, 0.8f, 0.2f}, Specular{0.4f, 0.9f, 0.2f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.8f, 0.9f, 0.2f}, Specular{1.0f, 1.0f, 0.2f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.8f, 0.3f, 0.3f}, Specular{0.9f, 0.3f, 0.3f}}};
+}
+
+auto StatefulSceneBuilder::createPointLight(
+    glm::vec3 const & position,
+    ape::Light::Color const & color,
+    std::string name)
     -> ape::PointLight &
 {
-    auto const ambient = glm::vec3{0.1f, 0.1f, 0.1f};
-
-    auto const diffuse = glm::vec3{0.4f, 0.3f, 0.6f};
-
-    auto const specular = glm::vec3{1.0f, 0.7f, 0.8f};
-
     auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.06f};
-
-    auto const color = ape::Light::Color{ambient, diffuse, specular};
 
     auto const isTurnedOn = true;
 
@@ -879,6 +929,7 @@ auto StatefulSceneBuilder::getSpotLightColors()
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.2f, 0.3f, 0.9f}, Specular{0.5f, 0.7f, 0.8f}},
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.8f, 0.8f, 0.2f}, Specular{0.5f, 0.5f, 0.1f}},
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.2f, 0.3f, 0.9f}, Specular{0.5f, 0.7f, 0.8f}},
+        {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.8f, 0.3f, 0.1f}, Specular{0.8f, 0.3f, 0.3f}},
         {Ambient{0.0f, 0.0f, 0.0f}, Diffuse{0.9f, 0.8f, 0.6f}, Specular{1.0f, 0.9f, 0.7f}}};
 }
 

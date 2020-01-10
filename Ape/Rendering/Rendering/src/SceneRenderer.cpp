@@ -347,7 +347,9 @@ auto SceneRenderer::renderSkybox() const
 
     assert(activeCamera != nullptr);
 
-    renderers.skyboxRenderer.render(*activeCamera);
+    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
+
+    renderers.skyboxRenderer.render(*activeCamera, lightSystem);
 }
 
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const

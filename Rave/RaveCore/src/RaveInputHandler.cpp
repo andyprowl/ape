@@ -51,6 +51,16 @@ auto rotateBodyAroundWorldY(ape::Body & body, float const radians)
     ape::setTransformation(body, newTransformation);
 }
 
+auto translateBodyAlongZ(ape::Body & body, float const amount)
+    -> void
+{
+    auto const offset = glm::vec3{0.0f, 0.0f, amount};
+    
+    auto const position = ape::getPosition(body);
+
+    ape::setPosition(body, position + offset);
+}
+
 auto getFunctionKey(int const i)
     -> ape::Key
 {
@@ -93,6 +103,8 @@ auto RaveInputHandler::onFrame(std::chrono::nanoseconds const frameDuration)
 
     auto const frameDurationInSeconds = frameDuration.count() / 1'000'000'000.0;
 
+    processSpaceshipMovement(frameDurationInSeconds);
+
     processShapeModification(frameDurationInSeconds);
 
     processLightRevolution(frameDurationInSeconds);
@@ -132,6 +144,25 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
         getEngine().pause();
 
         getWindow().close();
+    }
+}
+
+auto RaveInputHandler::processSpaceshipMovement(double lastFrameDuration) const
+    -> void
+{
+    auto & scene = getScene();
+
+    auto const & window = getWindow();
+
+    auto const delta = glm::radians(static_cast<float>(lastFrameDuration * 100.0f));
+
+    if (window.isKeyPressed(ape::Key::keyG))
+    {
+        translateBodyAlongZ(*scene.spaceship, +delta);
+    }
+    else if (window.isKeyPressed(ape::Key::keyH))
+    {
+        translateBodyAlongZ(*scene.spaceship, -delta);
     }
 }
 

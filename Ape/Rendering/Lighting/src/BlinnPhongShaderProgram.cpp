@@ -14,8 +14,11 @@ auto buildBlinnPhongShader()
     auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
 
     return builder.buildProgram(
-        glow::VertexShaderPath{"BlinnPhong/BlinnPhong.Vertex.glsl"},
-        glow::FragmentShaderPath{"BlinnPhong/BlinnPhong.Fragment.glsl"},
+        std::vector<glow::VertexShaderPath>{"BlinnPhong/BlinnPhong.Vertex.glsl"},
+        std::vector<glow::GeometryShaderPath>{},
+        std::vector<glow::FragmentShaderPath>{
+            "BlinnPhong/BlinnPhong.Fragment.glsl",
+            "Fog/Fog.Fragment.glsl"},
         std::string{"BlinnPhong"});
 }
 

@@ -34,6 +34,18 @@ auto checkShaderLinkingOutcome(int const shaderId)
     throw CouldNotLinkShaderProgram{infoLog.data()};
 }
 
+// Necessary because initializer lists do not play well with move-only types.
+template<typename T>
+auto makeSingleElementVector(T && value)
+    -> std::vector<T>
+{
+    auto v = std::vector<T>{};
+
+    v.push_back(std::move(value));
+
+    return v;
+}
+
 } // unnamed namespace
 
 ShaderProgram::ShaderProgram(
@@ -49,10 +61,25 @@ ShaderProgram::ShaderProgram(
     std::optional<GeometryShader> geometryShader,
     FragmentShader fragmentShader,
     std::string_view const label)
+    : ShaderProgram{
+        makeSingleElementVector(std::move(vertexShader)),
+        geometryShader.has_value()
+            ? makeSingleElementVector(std::move(*geometryShader))
+            : std::vector<GeometryShader>{},
+        makeSingleElementVector(std::move(fragmentShader)),
+        label}
+{
+}
+
+ShaderProgram::ShaderProgram(
+    std::vector<VertexShader> vertexShaders,
+    std::vector<GeometryShader> geometryShaders,
+    std::vector<FragmentShader> fragmentShaders,
+    std::string_view label)
     : resource{glCreateProgram(), glDeleteProgram}
-    , vertexShader{std::move(vertexShader)}
-    , geometryShader{std::move(geometryShader)}
-    , fragmentShader{std::move(fragmentShader)}
+    , vertexShaders{std::move(vertexShaders)}
+    , geometryShaders{std::move(geometryShaders)}
+    , fragmentShaders{std::move(fragmentShaders)}
 {
     link();
 
@@ -81,22 +108,22 @@ auto ShaderProgram::getId() const
     return resource.get();
 }
 
-auto ShaderProgram::getVertexShader() const
-    -> VertexShader const &
+auto ShaderProgram::getVertexShaders() const
+    -> std::vector<VertexShader> const &
 {
-    return vertexShader;
+    return vertexShaders;
 }
 
-auto ShaderProgram::getGeometryShader() const
-    -> std::optional<GeometryShader> const &
+auto ShaderProgram::getGeometryShaders() const
+    -> std::vector<GeometryShader> const &
 {
-    return geometryShader;
+    return geometryShaders;
 }
 
-auto ShaderProgram::getFragmentShader() const
-    -> FragmentShader const &
+auto ShaderProgram::getFragmentShaders() const
+    -> std::vector<FragmentShader> const &
 {
-    return fragmentShader;
+    return fragmentShaders;
 }
 
 auto ShaderProgram::setLabel(std::string_view const label)
@@ -110,14 +137,20 @@ auto ShaderProgram::link()
 {
     auto const id = resource.get();
 
-    glAttachShader(id, vertexShader.getId());
-
-    if (geometryShader.has_value())
+    for (auto const & vertexShader : vertexShaders)
     {
-        glAttachShader(id, geometryShader->getId());
+        glAttachShader(id, vertexShader.getId());
     }
 
-    glAttachShader(id, fragmentShader.getId());
+    for (auto const & geometryShader : geometryShaders)
+    {
+        glAttachShader(id, geometryShader.getId());
+    }
+
+    for (auto const & fragmentShader : fragmentShaders)
+    {
+        glAttachShader(id, fragmentShader.getId());
+    }
 
     glLinkProgram(id);
 

@@ -125,6 +125,8 @@ auto BodyPart::scaleUniformly(float const factor)
 
     updateWorldTransformation();
 
+    updateDescendentWorldTransformations();
+
     body->onLocalTransformationChanged.fire(*this);
 }
 
@@ -135,6 +137,8 @@ auto BodyPart::translate(glm::vec3 const & offset)
     localTransformation = glm::translate(localTransformation, offset);
 
     updateWorldTransformation();
+
+    updateDescendentWorldTransformations();
 
     body->onLocalTransformationChanged.fire(*this);
 }

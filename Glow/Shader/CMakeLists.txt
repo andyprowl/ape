@@ -15,4 +15,5 @@ AddPrivateDependencies(
     3rdParty::Glad
     3rdParty::glm
     3rdParty::Stb
-    Basix::CompilerSupport)
+    Basix::CompilerSupport
+    Basix::Range)

@@ -33,6 +33,8 @@ public:
 
     ape::Body * castle = nullptr;
 
+    ape::Body * spaceship = nullptr;
+
     std::vector<ape::CameraSpotlightSynchronizer> cameraSpotLightSynchronizers;
 
     std::vector<ape::BodyPointLightSynchronizer> bodyPointLightSynchronizers;

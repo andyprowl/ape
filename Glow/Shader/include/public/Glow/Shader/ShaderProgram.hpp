@@ -55,6 +55,12 @@ public:
         FragmentShader fragmentShader,
         std::string_view label = "");
 
+    ShaderProgram(
+        std::vector<VertexShader> vertexShaders,
+        std::vector<GeometryShader> geometryShaders,
+        std::vector<FragmentShader> fragmentShaders,
+        std::string_view label = "");
+
     auto bind() const
         -> void;
 
@@ -75,14 +81,14 @@ public:
         return Uniform<T>{id, location};
     }
 
-    auto getVertexShader() const
-        -> VertexShader const &;
+    auto getVertexShaders() const
+        -> std::vector<VertexShader> const &;
 
-    auto getGeometryShader() const
-        -> std::optional<GeometryShader> const &;
+    auto getGeometryShaders() const
+        -> std::vector<GeometryShader> const &;
 
-    auto getFragmentShader() const
-        -> FragmentShader const &;
+    auto getFragmentShaders() const
+        -> std::vector<FragmentShader> const &;
 
     auto setLabel(std::string_view label)
         -> void;
@@ -99,11 +105,11 @@ private:
 
     GpuResource resource;
 
-    VertexShader vertexShader;
+    std::vector<VertexShader> vertexShaders;
     
-    std::optional<GeometryShader> geometryShader;
+    std::vector<GeometryShader> geometryShaders;
     
-    FragmentShader fragmentShader;
+    std::vector<FragmentShader> fragmentShaders;
 
 };
 

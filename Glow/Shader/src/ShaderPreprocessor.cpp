@@ -32,7 +32,7 @@ ShaderPreprocessor::ShaderPreprocessor(ShaderReader & reader)
 auto ShaderPreprocessor::preprocess(std::string source) const
     -> std::string
 {
-    auto includeStart = source.find('\n' + includeDirective);
+    auto includeStart = findIncludeDirectiveIndex(source, 0);
 
     while (includeStart != std::string::npos)
     {
@@ -42,15 +42,17 @@ auto ShaderPreprocessor::preprocess(std::string source) const
             
         auto preprocessedContent = preprocess(std::move(includedContent));
 
+        auto const preprocessedContentLength = preprocessedContent.length();
+
         auto const includeEnd = source.find('\n', includeStart + fileName.length() + 3);
 
         auto prologue = source.substr(0, includeStart);
 
         auto epilogue = source.substr(includeEnd + 1);
 
-        source = prologue + std::move(preprocessedContent) + epilogue;
+        source = std::move(prologue) + std::move(preprocessedContent) + std::move(epilogue);
 
-        includeStart = source.find(includeDirective, includeStart + source.length());
+        includeStart = findIncludeDirectiveIndex(source, includeStart + preprocessedContentLength);
     }
 
     return source;
@@ -60,6 +62,21 @@ auto ShaderPreprocessor::getReader() const
     -> ShaderReader &
 {
     return *reader;
+}
+
+auto ShaderPreprocessor::findIncludeDirectiveIndex(
+    std::string_view const source,
+    std::size_t const startIndex) const
+    -> std::size_t
+{
+    const auto index = source.find(includeDirective, startIndex);
+
+    if ((index != std::string::npos) && (index > 0) && (source[index - 1] != '\n'))
+    {
+        throw IncludeDirectiveNotAtLineStart{};
+    }
+
+    return index;
 }
 
 auto preprocessShader(ShaderPreprocessor const & preprocessor, std::filesystem::path const & path)

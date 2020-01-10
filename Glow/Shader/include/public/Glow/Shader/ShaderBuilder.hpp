@@ -43,6 +43,13 @@ public:
         std::string_view label = "") const
         -> ShaderProgram;
 
+    auto buildProgram(
+        std::vector<VertexShaderPath> const & vertexShaderPaths,
+        std::vector<GeometryShaderPath> const & geometryShaderPaths,
+        std::vector<FragmentShaderPath> const & fragmentShaderPaths,
+        std::string_view label = "") const
+        -> ShaderProgram;
+
     auto buildVertexShader(std::filesystem::path const & path, std::string_view label = "") const
         -> VertexShader;
 

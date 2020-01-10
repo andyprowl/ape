@@ -13,6 +13,7 @@ namespace ape
 {
 
 class Camera;
+class LightSystem;
 class SkyboxSelector;
 class SkyboxShaderProgram;
 
@@ -23,12 +24,15 @@ public:
 
     SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & selector);
 
-    auto render(Camera const & camera) const
+    auto render(Camera const & camera, LightSystem const & lightSystem) const
         -> void;
 
 private:
 
-    auto setupUniforms(Camera const & camera, glow::CubeTexture const & skybox) const
+    auto setupUniforms(
+        Camera const & camera,
+        LightSystem const & lightSystem,
+        glow::CubeTexture const & skybox) const
         -> void;
 
     auto drawCube() const

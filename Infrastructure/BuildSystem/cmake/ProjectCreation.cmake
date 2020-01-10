@@ -235,6 +235,20 @@ function(
             ${TARGET_NAME} 
             resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
+        set(PUBLIC_RESOURCE_FOLDER ${TARGET_NAME}_ResourceFolder)
+
+        if(CURRENT_PACKAGE)
+
+            set(PUBLIC_RESOURCE_FOLDER "${CURRENT_PACKAGE}::${PUBLIC_RESOURCE_FOLDER}")
+
+            string(REPLACE "::" "_" PUBLIC_RESOURCE_FOLDER "${PUBLIC_RESOURCE_FOLDER}")
+
+        endif()
+
+        AddPublicDefinitions(
+            ${TARGET_NAME} 
+            ${PUBLIC_RESOURCE_FOLDER}="${CMAKE_CURRENT_SOURCE_DIR}/resources")
+
     endif()
 
     SetProjectFolderForIDE(${TARGET_NAME} ${CURRENT_PACKAGE})

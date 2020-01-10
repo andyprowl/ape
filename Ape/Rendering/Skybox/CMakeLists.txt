@@ -14,4 +14,5 @@ AddPublicDependencies(
 AddPrivateDependencies(
     ${PROJECT_NAME}
     3rdParty::Glad
+    Ape::Rendering::Lighting
     Ape::World::Scene)

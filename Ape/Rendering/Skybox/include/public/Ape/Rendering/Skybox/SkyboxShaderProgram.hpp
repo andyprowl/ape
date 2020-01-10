@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
+
 #include <Glow/Shader/CubeTextureUniform.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
 
@@ -15,11 +17,13 @@ public:
 
     SkyboxShaderProgram();
 
+    glow::Uniform<ape::LightSystem> lightSystem;
+
     glow::Uniform<glm::mat4> transform;
 
     glow::Uniform<glow::CubeTexture> skybox;
 
-    glow::Uniform<float> cameraHeight;
+    glow::Uniform<glm::vec3> cameraPosition;
 
 };
 

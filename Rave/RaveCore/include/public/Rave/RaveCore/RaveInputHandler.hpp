@@ -58,6 +58,9 @@ private:
     auto onKeyPress(ape::Key key, ape::KeyModifier modifier)
         -> void override;
 
+    auto processSpaceshipMovement(double lastFrameDuration) const
+        -> void;
+
     auto processShapeModification(double lastFrameDuration) const
         -> void;
 

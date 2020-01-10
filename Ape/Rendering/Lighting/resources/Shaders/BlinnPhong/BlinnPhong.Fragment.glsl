@@ -1,184 +1,6 @@
 #version 450 core
 
-// IMPORTANT:
-// By convention, we call the uniform that contains the size of a uniform array UA as UAArraySize,
-// so for example the size of the "point" array is held in a uniform named pointArraySize.
-// The CPU side of the software relies on this naming convention.
-
-#define MAX_NUM_OF_POINT_LIGHTS 8
-
-#define MAX_NUM_OF_SPOT_LIGHTS 8
-
-#define MAX_NUM_OF_DIRECTIONAL_LIGHTS 8
-
-struct Vertex
-{
-
-    vec3 position;
-
-    vec3 normal;
-
-    vec2 textureCoords;
-
-    mat3 tangentToWorld;
-
-};
-
-struct Transform
-{
-
-    mat4 model;
-
-    mat4 camera;
-
-    mat3 normal;
-
-};
-
-struct Camera
-{
-
-    vec3 position;
-
-};
-
-struct Material
-{
-
-    vec3 ambient;
-
-    bool hasDiffuseMap;
-
-    sampler2D diffuseMap;
-
-    bool hasSpecularMap;
-
-    sampler2D specularMap;
-
-    bool hasNormalMap;
-
-    sampler2D normalMap;
-
-    float shininess;
-
-};
-
-struct Attenuation
-{
-
-    float constant;
-
-    float linear;
-
-    float quadratic;
-
-};
-
-struct LightColor
-{
-
-    vec3 ambient;
-
-    vec3 diffuse;
-
-    vec3 specular;
-
-};
-
-struct PointLight
-{
-
-    vec3 position;
-
-    LightColor color;
-
-    Attenuation attenuation;
-
-    bool isTurnedOn;
-
-    bool isCastingShadow;
-
-};
-
-struct SpotLight
-{
-
-    vec3 position;
-
-    vec3 direction;
-
-    float innerCutoffCosine;
-
-    float outerCutoffCosine;
-
-    Attenuation attenuation;
-
-    LightColor color;
-
-    bool isTurnedOn;
-
-    bool isCastingShadow;
-
-};
-
-struct DirectionalLight
-{
-
-    vec3 direction;
-
-    LightColor color;
-
-    bool isTurnedOn;
-
-    bool isCastingShadow;
-
-};
-
-struct LightSystem
-{
-
-    PointLight point[MAX_NUM_OF_POINT_LIGHTS];
-
-    int pointArraySize;
-
-    SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
-
-    int spotArraySize;
-
-    DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
-
-    int directionalArraySize;
-
-};
-
-struct LightSystemView
-{
-
-    mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
-
-    mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
-
-};
-
-struct DepthMapping
-{
-
-    samplerCubeShadow point[MAX_NUM_OF_POINT_LIGHTS];
-
-    sampler2DShadow spot[MAX_NUM_OF_SPOT_LIGHTS];
-
-    sampler2DShadow directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
-
-};
-
-struct LightSpacePositioning
-{
-
-    vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
-
-    vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
-
-};
+#include "BlinnPhong/BlinnPhong.Types.glsl"
 
 in Vertex vertex;
 
@@ -201,6 +23,8 @@ uniform bool usePhongModel = false;
 uniform bool usePercentageCloserFiltering = false;
 
 uniform bool useNormalMapping = true;
+
+uniform float fogDensity = 0.02;
 
 uniform bool renderNormals = false;
 
@@ -479,7 +303,7 @@ vec3 computeSpotLight(const SpotLight light)
     
     const float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
 
-    const float intensity = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
+    const float cutoff = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
 
     const vec3 ambientLight = computeAmbientLight(light.color);
 
@@ -493,7 +317,7 @@ vec3 computeSpotLight(const SpotLight light)
 
     const vec3 color = (ambientLight + diffuseLight + specularLight);
 
-    return (attenuation * intensity * min(vec3(1.0, 1.0, 1.0), color));
+    return (attenuation * cutoff * min(vec3(1.0, 1.0, 1.0), color));
 }
 
 vec3 computeSpotLighting()
@@ -603,90 +427,8 @@ vec3 renderLighting()
     return (pointLighting + directionalLighting + spotLighting);
 }
 
-float calculateFogFactor(const float fogDensity)
-{
-    if (fogDensity == 0.0)
-    {
-        return 1.0;
-    }
-
-    const float heightLimit = 10.0;
-
-    const vec3 cameraToVertex = camera.position - vertex.position;
-
-    const float d = length(cameraToVertex);
-
-    const float deltaH = abs(cameraToVertex.y);
-
-    const float deltaHZero = (vertex.position.y > camera.position.y)
-        ? max(0.0, vertex.position.y - heightLimit) - max(0.0, camera.position.y - heightLimit)
-        : max(0.0, camera.position.y - heightLimit) - max(0.0, vertex.position.y - heightLimit);
-
-    const float fd = d * ((deltaH - deltaHZero) / deltaH);
-
-    const float fogFactor = exp(-2.0 * (fd * fogDensity) * (fd * fogDensity));
-    
-    return clamp(fogFactor, 0.0, 1.0);
-}
-
-float evaluateFogIntegral(float x, float a, float b, float c)
-{
-    const float disc = (4 * a * c) - (b * b);
-
-    const float tx = (2 * a * x) + b;
-
-    if (disc > 0.0)
-    {
-        const float droot = sqrt(disc);
-
-        return (2.0 / droot) * atan(tx / droot);
-    }
-    else if (disc < 0.0)
-    {
-        const float droot = sqrt(-disc);
-
-        return (1.0 / droot) * log((tx - droot) / (tx + droot));
-    }
-    else
-    {
-        return (-2.0 / tx);
-    }
-}
-
-float calculateLightQuantity(const PointLight light)
-{
-    if (!light.isTurnedOn)
-    {
-        return 0.0;
-    }
-
-    const vec3 v = camera.position - vertex.position;
-
-    const vec3 lp = vertex.position - light.position;
-
-    const float a = dot(v, v);
-
-    const float b = 2 * dot(v, lp);
-
-    const float c = dot(lp, lp);
-
-    return evaluateFogIntegral(1.0, a, b, c) - evaluateFogIntegral(0.0, a, b, c);
-}
-
-vec3 fog(vec3 color)
-{
-    const float fogDensity = 0.05;
-
-    const vec3 fogColor = vec3(0.2, 0.1, 0.4);
-    
-    const float lightQuantity = calculateLightQuantity(lightSystem.point[0]);
-
-    const float fogFactor = calculateFogFactor(fogDensity);
-
-    vec3 result = mix(fogColor * lightQuantity, color, fogFactor);
-
-    return result;
-}
+// Extern, define in separate shader.
+vec3 fog(vec3 color, vec3 fragmentPosition);
 
 void main()
 {
@@ -696,6 +438,15 @@ void main()
     }
     else
     {
-        fragmentColor = vec4(fog(renderLighting()), 1.0);
+        vec3 color = renderLighting();
+
+        if (fogDensity > 0.0)
+        {
+            fragmentColor = vec4(fog(color, vertex.position), 1.0);
+        }
+        else
+        {
+            fragmentColor = vec4(color, 1.0);
+        }
     }
 }

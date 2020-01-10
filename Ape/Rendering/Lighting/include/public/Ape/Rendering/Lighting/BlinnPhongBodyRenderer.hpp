@@ -42,6 +42,11 @@ public:
 
 private:
 
+    auto getBodiesSortedByDistanceFromCamera(
+        BodyRange const & bodies,
+        Camera const & camera) const
+        -> std::vector<Body const *>;
+
     auto setupInvariantUniforms(
         Camera const & camera,
         LightSystem const & lightSystem,

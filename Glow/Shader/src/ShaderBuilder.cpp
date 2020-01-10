@@ -1,5 +1,7 @@
 #include <Glow/Shader/ShaderBuilder.hpp>
 
+#include <Basix/Range/Transform.hpp>
+
 namespace glow
 {
 
@@ -88,6 +90,37 @@ auto ShaderBuilder::buildProgram(
         buildVertexShader(vertexShaderPath, makeProgramVertexShaderLabel(label)),
         buildGeometryShader(geometryShaderPath, makeProgramGeometryShaderLabel(label)),
         buildFragmentShader(fragmentShaderPath, makeProgramFragmentShaderLabel(label))};
+}
+
+auto ShaderBuilder::buildProgram(
+    std::vector<VertexShaderPath> const & vertexShaderPaths,
+    std::vector<GeometryShaderPath> const & geometryShaderPaths,
+    std::vector<FragmentShaderPath> const & fragmentShaderPaths,
+    std::string_view label) const
+    -> ShaderProgram
+{
+    auto vertexShaders = basix::transform(
+        vertexShaderPaths,
+        [&] (std::filesystem::path const & path)
+    {
+        return buildVertexShader(path, makeProgramVertexShaderLabel(label));
+    });
+
+    auto geometryShaders = basix::transform(
+        geometryShaderPaths,
+        [&] (std::filesystem::path const & path)
+    {
+        return buildGeometryShader(path, makeProgramGeometryShaderLabel(label));
+    });
+
+    auto fragmentShaders = basix::transform(
+        fragmentShaderPaths,
+        [&] (std::filesystem::path const & path)
+    {
+        return buildFragmentShader(path, makeProgramFragmentShaderLabel(label));
+    });
+
+    return {std::move(vertexShaders), std::move(geometryShaders), std::move(fragmentShaders)};
 }
 
 auto ShaderBuilder::buildVertexShader(
