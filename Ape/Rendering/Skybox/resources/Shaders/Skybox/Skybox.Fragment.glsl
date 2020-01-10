@@ -19,9 +19,9 @@ void main()
     {
         const float skyboxDistance = 100.0;
 
-        const vec3 fragmentPosition = textureCoordinates * skyboxDistance;
+        const vec3 cameraToFragment = textureCoordinates * skyboxDistance;
 
-        fragmentColor = vec4(fog(skyboxColor.rgb, fragmentPosition), 1.0);
+        fragmentColor = vec4(fog(skyboxColor.rgb, cameraToFragment), 1.0);
     }
     else
     {

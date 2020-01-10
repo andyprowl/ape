@@ -139,9 +139,9 @@ float calculateNormalizedSpotLightQuantity(
     }
 }
 
-vec3 fog(vec3 color, vec3 fragmentPosition)
+vec3 fog(vec3 color, vec3 cameraToFragment)
 {
-    const vec3 v = fragmentPosition - camera.position;
+    const vec3 v = cameraToFragment;
 
     const float a = dot(v, v);
 
