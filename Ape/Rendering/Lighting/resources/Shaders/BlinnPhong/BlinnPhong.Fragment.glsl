@@ -312,9 +312,9 @@ vec3 computeSpotLight(const SpotLight light)
 
     const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
 
-    const vec3 color = (ambientLight + diffuseLight + specularLight);
+    const vec3 color = cutoff * (ambientLight + diffuseLight + specularLight);
 
-    return (attenuation * cutoff * min(vec3(1.0, 1.0, 1.0), color));
+    return (attenuation * min(vec3(1.0, 1.0, 1.0), color));
 }
 
 vec3 computeSpotLighting()
@@ -351,7 +351,7 @@ vec3 computeSpotLighting()
 
         if (shadow > 0.0)
         {
-            color += computeSpotLight(light);
+            color += shadow * computeSpotLight(light);
         }
     }
 
