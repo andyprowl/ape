@@ -24,13 +24,21 @@ auto makeBoundingVolumesInWorldCoordinates(
 } // unnamed namespace
 
 BodyPartMesh::BodyPartMesh(
+    BodyPart const & part,
     Mesh const & model,
     glm::mat4 const & worldTransformation)
-    : model{&model}
+    : part{&part}
+    , model{&model}
     , boundingVolumes{makeBoundingVolumesInWorldCoordinates(model, worldTransformation)}
 {
 }
-    
+
+auto BodyPartMesh::getPart() const
+    -> BodyPart const &
+{
+    return *part;
+}
+
 auto BodyPartMesh::getModel() const
     -> Mesh const &
 {

@@ -24,31 +24,21 @@
 namespace ape
 {
 
-auto fogDensity = 0.02f;
+auto fogDensity = 0.005f;
 
 auto fogColor = glm::vec3{0.2f, 0.2f, 0.2f};
 
 namespace
 {
 
-auto getDistance(Body const & body, Camera const & camera)
+auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
     -> float
 {
     auto const & eye = camera.getView().getPosition();
 
-    for (auto const & part : body.getParts())
-    {
-        auto const & meshes = part.getMeshes();
+    auto const& boundingSphere = mesh.getBoundingVolumes().getSphere();
 
-        if (!meshes.empty())
-        {
-            auto const& boundingSphere = meshes.front().getBoundingVolumes().getSphere();
-
-            return (glm::distance(boundingSphere.getCenter(), eye) - boundingSphere.getRadius());
-        }
-    }
-
-    return 0.0;
+    return (glm::distance(boundingSphere.getCenter(), eye) - boundingSphere.getRadius());
 }
 
 } // unnamed namespace
@@ -73,15 +63,17 @@ auto BlinnPhongBodyRenderer::render(
 
     setupInvariantUniforms(camera, lightSystem, shadowMapping);
 
+    auto const sortedMeshes = getVisibleMeshesSortedByDistanceFromCamera(bodies, camera);
+
     auto const & cameraTransformation = camera.getTransformation();
 
-    auto const culler = RadarFrustumCuller{camera};
-
-    auto const sortedBodies = getBodiesSortedByDistanceFromCamera(bodies, camera);
-
-    for (auto const body : sortedBodies)
+    for (auto const mesh : sortedMeshes)
     {
-        renderBody(*body, cameraTransformation, culler);
+        auto const & part = mesh->getPart();
+
+        setupBodyPartUniforms(part, cameraTransformation);
+    
+        renderMesh(*mesh);
     }
 }
 
@@ -95,21 +87,6 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
     -> void
 {
     performFrustumCulling = enable;
-}
-
-auto BlinnPhongBodyRenderer::getBodiesSortedByDistanceFromCamera(
-    BodyRange const & bodies,
-    Camera const & camera) const
-    -> std::vector<Body const*>
-{
-    auto sortedBodies = std::vector<Body const *>{std::cbegin(bodies), std::cend(bodies)};
-
-    basix::sort(sortedBodies, [&camera] (Body const * const lhs, Body const * const rhs)
-    {
-        return (getDistance(*lhs, camera) < getDistance(*rhs, camera));
-    });
-
-    return sortedBodies;
 }
 
 auto BlinnPhongBodyRenderer::setupInvariantUniforms(
@@ -131,35 +108,47 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     shader->fogColor = fogColor;
 }
 
-auto BlinnPhongBodyRenderer::renderBody(
-    Body const & body,
-    glm::mat4 const & cameraTransformation,
-    RadarFrustumCuller const & culler) const
-    -> void
+auto BlinnPhongBodyRenderer::getVisibleMeshesSortedByDistanceFromCamera(
+    BodyRange const & bodies,
+    Camera const & camera) const
+    -> std::vector<const BodyPartMesh *>
 {
-    for (auto const & part : body.getParts())
+    auto meshes = getVisibleMeshes(bodies, camera);
+
+    basix::sort(
+        meshes,
+        [&camera] (BodyPartMesh const * const lhs, BodyPartMesh const * const rhs)
     {
-        renderBodyPart(part, cameraTransformation, culler);
-    }
+        return (getDistance(*lhs, camera) < getDistance(*rhs, camera));
+    });
+
+    return meshes;
 }
 
-auto BlinnPhongBodyRenderer::renderBodyPart(
-    BodyPart const & part,
-    glm::mat4 const & cameraTransformation,
-    RadarFrustumCuller const & culler) const
-    -> void
+auto BlinnPhongBodyRenderer::getVisibleMeshes(
+    BodyRange const & bodies,
+    Camera const & camera) const
+    -> std::vector<const BodyPartMesh *>
 {
-    setupBodyPartUniforms(part, cameraTransformation);
+    auto const culler = RadarFrustumCuller{camera};
 
-    for (auto const & bodyMesh : part.getMeshes())
+    auto meshes = std::vector<BodyPartMesh const *>{};
+
+    for (auto const body : bodies)
     {
-        if (!isVisible(bodyMesh, culler))
+        for (auto const & part : body->getParts())
         {
-            continue;
+            for (auto const & mesh : part.getMeshes())
+            {
+                if (isVisible(mesh, culler))
+                {
+                    meshes.push_back(&mesh);
+                }
+            }
         }
-
-        renderMesh(bodyMesh);
     }
+
+    return meshes;
 }
 
 auto BlinnPhongBodyRenderer::setupBodyPartUniforms(

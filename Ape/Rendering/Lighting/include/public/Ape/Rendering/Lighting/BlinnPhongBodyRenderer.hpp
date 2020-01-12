@@ -42,28 +42,19 @@ public:
 
 private:
 
-    auto getBodiesSortedByDistanceFromCamera(
-        BodyRange const & bodies,
-        Camera const & camera) const
-        -> std::vector<Body const *>;
-
     auto setupInvariantUniforms(
         Camera const & camera,
         LightSystem const & lightSystem,
         ShadowMapping const & shadowMapping) const
         -> void;
 
-    auto renderBody(
-        Body const & body,
-        glm::mat4 const & cameraTransformation,
-        RadarFrustumCuller const & culler) const
-        -> void;
+    auto getVisibleMeshesSortedByDistanceFromCamera(
+        BodyRange const & bodies,
+        Camera const & camera) const
+        -> std::vector<const BodyPartMesh *>;
 
-    auto renderBodyPart(
-        BodyPart const & part,
-        glm::mat4 const & cameraTransformation,
-        RadarFrustumCuller const & culler) const
-        -> void;
+    auto getVisibleMeshes(BodyRange const & bodies, Camera const & camera) const
+        -> std::vector<const BodyPartMesh *>;
 
     auto setupBodyPartUniforms(
         BodyPart const & part,

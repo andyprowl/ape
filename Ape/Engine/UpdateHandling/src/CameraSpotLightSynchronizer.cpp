@@ -35,7 +35,11 @@ auto CameraSpotlightSynchronizer::synchronize(Camera const & camera, SpotLight &
 
     auto const newDirection = view.getDirection();
 
-    light.setPlacement(newPosition, newDirection);
+    // TODO: This is meant to be a temporary hack for getting a nice rendering result for a
+    // headlight in the fog. Due to the way fog calculations work, having the headlight placed
+    // slightly behind the viewer prevents singularity (when light and camera coincide) and also
+    // makes fog around the viewer to be partly illuminated even outside the spotlight's cone.
+    light.setPlacement(newPosition - newDirection * 0.05f, newDirection);
 }
 
 } // namespace ape

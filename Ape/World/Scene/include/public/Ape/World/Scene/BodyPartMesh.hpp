@@ -5,6 +5,7 @@
 namespace ape
 {
 
+class BodyPart;
 class Mesh;
 
 class BodyPartMesh
@@ -12,7 +13,10 @@ class BodyPartMesh
 
 public:
 
-    BodyPartMesh(Mesh const & model, glm::mat4 const & worldTransformation);
+    BodyPartMesh(BodyPart const & part, Mesh const & model, glm::mat4 const & worldTransformation);
+
+    auto getPart() const
+        -> BodyPart const &;
     
     auto getModel() const
         -> Mesh const &;
@@ -28,6 +32,8 @@ private:
         -> void;
 
 private:
+
+    const BodyPart * part;
 
     const Mesh * model;
 

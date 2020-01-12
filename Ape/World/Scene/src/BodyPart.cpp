@@ -215,7 +215,7 @@ auto BodyPart::makeMeshes() const
 {
     return basix::transform(part->getMeshes(), [this] (Mesh const * const mesh)
     {
-        return BodyPartMesh{*mesh, worldTransformation};
+        return BodyPartMesh{*this, *mesh, worldTransformation};
     });
 }
 

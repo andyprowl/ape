@@ -19,7 +19,7 @@ void main()
 
     const float skyboxDistance = 100.0;
 
-    const vec3 cameraToFragment = textureCoordinates * skyboxDistance;
+    const vec3 cameraToFragment = normalize(textureCoordinates) * skyboxDistance;
 
     fragmentColor = vec4(fog(skyboxColor.rgb, cameraToFragment), 1.0);
 }

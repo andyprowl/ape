@@ -19,7 +19,11 @@ float evaluateLightQuantityIntegral(
     const float x,
     const float a,
     const float b,
-    const float drootInverse)
+    const float drootInverse,
+    
+    
+    
+    const float disc)
 {
     const float tx = (2.0 * a * x) + b;
 
@@ -68,8 +72,8 @@ float evaluateLightQuantityIntegral(
     const float drootInverse = 1.0 / droot;
 
     return
-        evaluateLightQuantityIntegral(to, a, b, drootInverse) -
-        evaluateLightQuantityIntegral(from, a, b, drootInverse);
+        evaluateLightQuantityIntegral(to, a, b, drootInverse,     disc) -
+        evaluateLightQuantityIntegral(from, a, b, drootInverse,        disc);
 }
 
 float calculateNormalizedPointLightQuantity(
@@ -80,7 +84,7 @@ float calculateNormalizedPointLightQuantity(
     const float a = vLengthSquared;
     const float b = 2.0 * dot(v, lc);
     const float u = 0.1; // To avoid singularity when v and lp are parallel and opposing
-    const float c = dot(lc, lc) + u ;
+    const float c = dot(lc, lc) + u;
 
     return evaluateLightQuantityIntegral(v, 0.0, 1.0, a, b, c);
 }
@@ -99,7 +103,7 @@ float calculateNormalizedSpotLightQuantity(
 
     const float a = vLengthSquared;
     const float b = 2.0 * vDotLC;
-    const float u = 0.1; // To avoid singularity when v and lp are parallel and opposing
+    const float u = 0.1; // To avoid singularity when v and lp are parallel
     const float c = lcDotLC + u;
     
     const float k = 1.0 / (cutoffCosine * cutoffCosine);
@@ -151,7 +155,7 @@ vec3 calculateNormalizedPointLitFog(const vec3 cameraToFragment, const float squ
             lc,
             squaredDistance);
 
-        color += light.color.diffuse * quantity * light.attenuation.quadratic;
+        color += light.color.diffuse * quantity / light.attenuation.quadratic;
     }
 
     return color;
@@ -179,7 +183,7 @@ vec3 calculateNormalizedSpotLitFog(const vec3 cameraToFragment, const float squa
             squaredDistance,
             light.outerCutoffCosine);
 
-        color += light.color.diffuse * quantity * light.attenuation.quadratic;
+        color += light.color.diffuse * quantity / light.attenuation.quadratic;
     }
 
     return color;
@@ -198,10 +202,16 @@ vec3 calculateNormalizedDirectionalLitFog(const vec3 cameraToFragment, const flo
             continue;
         }
 
-        color += light.color.diffuse * 0.0001;
+        color += light.color.diffuse;
     }
 
     return color;
+}
+
+// Taken from https://stackoverflow.com/a/4275343/1932150
+float rand(vec2 v)
+{
+    return fract(sin(dot(v.xy, vec2(12.9898, 78.233))) * 43758.5453);
 }
 
 vec3 calculateFogColor(const vec3 color, const vec3 cameraToFragment)
@@ -217,7 +227,10 @@ vec3 calculateFogColor(const vec3 color, const vec3 cameraToFragment)
         calculateNormalizedSpotLitFog(cameraToFragment, squaredDistance) +
         calculateNormalizedDirectionalLitFog(cameraToFragment, squaredDistance);
 
-    const vec3 litFogColor = normalizedLitFogColor * fogColor * distance;
+    // This helps removing or completely reducing regular artefacts against the skybox
+    const float noise = 0.001 * rand(cameraToFragment.xy);
+
+    const vec3 litFogColor = 0.01 * normalizedLitFogColor * fogColor * distance + noise;
 
     return mix(litFogColor, color, fogFactor);
 }
