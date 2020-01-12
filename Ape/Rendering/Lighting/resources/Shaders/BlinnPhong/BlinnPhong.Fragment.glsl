@@ -24,8 +24,6 @@ uniform bool usePercentageCloserFiltering = false;
 
 uniform bool useNormalMapping = true;
 
-uniform float fogDensity = 0.02;
-
 uniform bool renderNormals = false;
 
 vec3 getMappedNormalInTangentSpace()
@@ -138,12 +136,12 @@ float calculateMonodirectionalShadowFactor(
     }
 }
 
-float calculateOmnidirectionalShadowBias(/*const vec3 lightToVertex*/)
+float calculateOmnidirectionalShadowBias(const vec3 lightToVertex)
 {
     // TODO: Figure out if we can use the same calcualtion as for monodirectional lights
     // return calculateMonodirectionalShadowBias(normalize(lightToVertex));
     
-    return 0.0005;
+    return 0.00005 * length(lightToVertex) * (1.0 - dot(vertex.normal, lightToVertex));
 }
 
 float calculateOmnidirectionalShadowFactor(
@@ -167,8 +165,7 @@ float calculateOmnidirectionalShadowFactor(
 
     const float currentDepthNormalized = lightToVertexDistance / farPlaneDistance;
 
-    const float bias = calculateOmnidirectionalShadowBias(
-        /*lightToVertex / lightToVertexDistance*/);
+    const float bias = calculateOmnidirectionalShadowBias(lightToVertex);
 
     const vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
 
@@ -427,8 +424,8 @@ vec3 renderLighting()
     return (pointLighting + directionalLighting + spotLighting);
 }
 
-// Extern, define in separate shader.
-vec3 fog(vec3 color, vec3 cameraToFragment);
+// Extern, defined in separate shader.
+vec3 fog(const vec3 color, const vec3 cameraToFragment);
 
 void main()
 {
@@ -440,15 +437,8 @@ void main()
     {
         vec3 color = renderLighting();
 
-        if (fogDensity > 0.0)
-        {
-            vec3 cameraToFragment = vertex.position - camera.position;
+        vec3 cameraToFragment = vertex.position - camera.position;
 
-            fragmentColor = vec4(fog(color, cameraToFragment), 1.0);
-        }
-        else
-        {
-            fragmentColor = vec4(color, 1.0);
-        }
+        fragmentColor = vec4(fog(color, cameraToFragment), 1.0);
     }
 }

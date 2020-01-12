@@ -60,6 +60,9 @@ auto SpotLightView::makeLightCamera() const
 
     auto const viewUp = glm::vec3{0.0f, 1.0f, 0.0f};
 
+    // Correct setting of far distance is important, because the shader will not compute lighting
+    // for fragments that are outside the light's frustum (in this case, there are beyond the far
+    // plane).
     auto const farDistance = computeFarDistance();
 
     return {

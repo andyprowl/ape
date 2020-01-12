@@ -24,6 +24,10 @@
 namespace ape
 {
 
+auto fogDensity = 0.02f;
+
+auto fogColor = glm::vec3{0.2f, 0.2f, 0.2f};
+
 namespace
 {
 
@@ -73,7 +77,7 @@ auto BlinnPhongBodyRenderer::render(
 
     auto const culler = RadarFrustumCuller{camera};
 
-    auto sortedBodies = getBodiesSortedByDistanceFromCamera(bodies, camera);
+    auto const sortedBodies = getBodiesSortedByDistanceFromCamera(bodies, camera);
 
     for (auto const body : sortedBodies)
     {
@@ -121,6 +125,10 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     shader->lightSystemView.set(shadowMapping.lightSystemView);
 
     shader->depthMapping.set(shadowMapping.depthMapping);
+
+    shader->fogDensity = fogDensity;
+
+    shader->fogColor = fogColor;
 }
 
 auto BlinnPhongBodyRenderer::renderBody(

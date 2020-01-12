@@ -6,29 +6,20 @@ uniform Camera camera;
 
 uniform LightSystem lightSystem;
 
-uniform float fogDensity = 0.02;
+uniform float fogDensity;
 
-float calculateFogFactor(const float fogDensity, const float lenSquare)
+uniform vec3 fogColor;
+
+float calculateFogFactor(const float squaredDistance)
 {
-/*
-    const float heightLimit = 10.0;
-
-    const vec3 cameraToVertex = camera.position - vertex.position;
-
-    const float d = length(cameraToVertex);
-
-    const float deltaH = abs(cameraToVertex.y);
-
-    const float deltaHZero = (vertex.position.y > camera.position.y)
-        ? max(0.0, vertex.position.y - heightLimit) - max(0.0, camera.position.y - heightLimit)
-        : max(0.0, camera.position.y - heightLimit) - max(0.0, vertex.position.y - heightLimit);
-
-    const float fd = d * ((deltaH - deltaHZero) / deltaH);
-*/
-    return exp(-(lenSquare * fogDensity));
+    return exp(-(squaredDistance * fogDensity));
 }
 
-float evaluateLightQuantityIntegral(float x, float a, float b, float drootInverse)
+float evaluateLightQuantityIntegral(
+    const float x,
+    const float a,
+    const float b,
+    const float drootInverse)
 {
     const float tx = (2.0 * a * x) + b;
 
@@ -58,18 +49,22 @@ float evaluateLightQuantityIntegral(float x, float a, float b, float drootInvers
     return (2.0 * drootInverse) * atan(tx * drootInverse);
 }
 
-float evaluateLightQuantityIntegral(float from, float to, float a, float b, float c)
+float evaluateLightQuantityIntegral(
+    const vec3 v,
+    float from,
+    float to,
+    const float a,
+    const float b,
+    const float c)
 {
     if (from >= to)
     {
         return 0.0;
     }
 
-    const float disc = (4.0 * a * c) - (b * b);
-
     // Discriminant is always > 0.0 (needs proof), so the square root is well-defined...
+    const float disc = (4.0 * a * c) - (b * b);
     const float droot = sqrt(disc);
-
     const float drootInverse = 1.0 / droot;
 
     return
@@ -83,14 +78,11 @@ float calculateNormalizedPointLightQuantity(
     const float vLengthSquared)
 {
     const float a = vLengthSquared;
-
     const float b = 2.0 * dot(v, lc);
-
     const float u = 0.1; // To avoid singularity when v and lp are parallel and opposing
+    const float c = dot(lc, lc) + u ;
 
-    const float c = dot(lc, lc) + u;
-
-    return evaluateLightQuantityIntegral(0.0, 1.0, a, b, c);
+    return evaluateLightQuantityIntegral(v, 0.0, 1.0, a, b, c);
 }
 
 float calculateNormalizedSpotLightQuantity(
@@ -129,23 +121,19 @@ float calculateNormalizedSpotLightQuantity(
 
     if (p1 == p2)
     {
-        return float(p1) * evaluateLightQuantityIntegral(max(0.0, t1), min(1.0, t2), a, b, c);
+        return float(p1) * evaluateLightQuantityIntegral(v, max(0.0, t1), min(1.0, t2), a, b, c);
     }
     else
     {
         return
-            float(p1) * evaluateLightQuantityIntegral(0.0, min(t1, 1.0), a, b, c) +
-            float(p2) * evaluateLightQuantityIntegral(max(0.0, t2), 1.0, a, b, c);
+            float(p1) * evaluateLightQuantityIntegral(v, 0.0, min(t1, 1.0), a, b, c) +
+            float(p2) * evaluateLightQuantityIntegral(v, max(0.0, t2), 1.0, a, b, c);
     }
 }
 
-vec3 fog(vec3 color, vec3 cameraToFragment)
+vec3 calculateNormalizedPointLitFog(const vec3 cameraToFragment, const float squaredDistance)
 {
-    const vec3 v = cameraToFragment;
-
-    const float a = dot(v, v);
-
-    vec3 fogColor = vec3(0.0, 0.0, 0.0);
+    vec3 color = vec3(0.0, 0.0, 0.0);
 
     for (int i = 0; i < lightSystem.pointArraySize; ++i)
     {
@@ -158,8 +146,20 @@ vec3 fog(vec3 color, vec3 cameraToFragment)
 
         const vec3 lc = camera.position - light.position;
 
-        fogColor += light.color.diffuse * calculateNormalizedPointLightQuantity(v, lc, a);
+        const float quantity = calculateNormalizedPointLightQuantity(
+            cameraToFragment,
+            lc,
+            squaredDistance);
+
+        color += light.color.diffuse * quantity * light.attenuation.quadratic;
     }
+
+    return color;
+}
+
+vec3 calculateNormalizedSpotLitFog(const vec3 cameraToFragment, const float squaredDistance)
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
 
     for (int i = 0; i < lightSystem.spotArraySize; ++i)
     {
@@ -172,13 +172,22 @@ vec3 fog(vec3 color, vec3 cameraToFragment)
 
         const vec3 lc = camera.position - light.position;
 
-        fogColor += light.color.diffuse * calculateNormalizedSpotLightQuantity(
-            v,
+        const float quantity = calculateNormalizedSpotLightQuantity(
+            cameraToFragment,
             lc,
             light.direction,
-            a,
+            squaredDistance,
             light.outerCutoffCosine);
+
+        color += light.color.diffuse * quantity * light.attenuation.quadratic;
     }
+
+    return color;
+}
+
+vec3 calculateNormalizedDirectionalLitFog(const vec3 cameraToFragment, const float squaredDistance)
+{
+    vec3 color = vec3(0.0, 0.0, 0.0);
 
     for (int i = 0; i < lightSystem.directionalArraySize; ++i)
     {
@@ -189,17 +198,36 @@ vec3 fog(vec3 color, vec3 cameraToFragment)
             continue;
         }
 
-        // TODO: Replace this hardcoded value with a meaningful calculation.
-        fogColor += light.color.diffuse * 0.1;
+        color += light.color.diffuse * 0.0001;
     }
 
-    const float fogFactor = calculateFogFactor(fogDensity, a);
+    return color;
+}
 
-    const vec3 fogBaseColor = vec3(0.2, 0.2, 0.2);
+vec3 calculateFogColor(const vec3 color, const vec3 cameraToFragment)
+{
+    const float squaredDistance = dot(cameraToFragment, cameraToFragment);
 
-    const float distance = sqrt(a);
+    const float distance = sqrt(squaredDistance);
 
-    fogColor *= fogBaseColor * distance;
+    const float fogFactor = calculateFogFactor(squaredDistance);
 
-    return mix(fogColor, color, fogFactor);
+    const vec3 normalizedLitFogColor = 
+        calculateNormalizedPointLitFog(cameraToFragment, squaredDistance) +
+        calculateNormalizedSpotLitFog(cameraToFragment, squaredDistance) +
+        calculateNormalizedDirectionalLitFog(cameraToFragment, squaredDistance);
+
+    const vec3 litFogColor = normalizedLitFogColor * fogColor * distance;
+
+    return mix(litFogColor, color, fogFactor);
+}
+
+vec3 fog(const vec3 color, const vec3 cameraToFragment)
+{
+    if (fogDensity == 0.0)
+    {
+        return color;
+    }
+
+    return calculateFogColor(color, cameraToFragment);
 }

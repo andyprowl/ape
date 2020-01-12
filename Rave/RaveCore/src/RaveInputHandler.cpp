@@ -17,6 +17,13 @@
 
 #include <algorithm>
 
+namespace ape
+{
+
+extern float fogDensity;
+
+} // namespace ape
+
 namespace rave
 {
 
@@ -119,7 +126,7 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     {
         toggleBlinnPhongModel();
     }
-    else if ((key == ape::Key::keyF) && (modifier == ape::KeyModifier::none))
+    else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
     {
         togglePercentageCloserFiltering();
     }
@@ -127,7 +134,7 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     {
         toggleNormalMapping();
     }
-    else if ((key == ape::Key::keyP) && (modifier == ape::KeyModifier::none))
+    else if ((key == ape::Key::keyK) && (modifier == ape::KeyModifier::none))
     {
         togglePickedObjects();
     }
@@ -138,6 +145,14 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     else if ((key == ape::Key::keyE) && (modifier == ape::KeyModifier::control))
     {
         increaseOutlineWidth(-0.01f);
+    }
+    else if ((key == ape::Key::keyT) && (modifier == ape::KeyModifier::control))
+    {
+        ape::fogDensity += 0.01f * glm::exp(5.0f * ape::fogDensity);
+    }
+    else if ((key == ape::Key::keyY) && (modifier == ape::KeyModifier::control))
+    {
+        ape::fogDensity = std::max(0.0f, ape::fogDensity * 0.1f);
     }
     else if (key == ape::Key::keyEscape)
     {

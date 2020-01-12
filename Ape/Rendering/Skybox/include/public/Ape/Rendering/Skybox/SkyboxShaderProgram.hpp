@@ -25,6 +25,10 @@ public:
 
     glow::Uniform<glm::vec3> cameraPosition;
 
+    glow::Uniform<float> fogDensity;
+
+    glow::Uniform<glm::vec3> fogColor;
+
 };
 
 } // namespace ape

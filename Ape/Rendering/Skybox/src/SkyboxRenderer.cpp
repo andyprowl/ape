@@ -12,6 +12,10 @@
 namespace ape
 {
 
+extern float fogDensity;
+
+extern glm::vec3 fogColor;
+
 SkyboxRenderer::SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & selector)
     : shader{&shader}
     , selector{&selector}
@@ -56,6 +60,10 @@ auto SkyboxRenderer::setupUniforms(
     shader->skybox = skybox;
 
     shader->cameraPosition = camera.getView().getPosition();
+
+    shader->fogDensity = fogDensity;
+
+    shader->fogColor = fogColor;
 }
 
 auto SkyboxRenderer::drawCube() const

@@ -1,6 +1,8 @@
 - Implement fog
  - Let Blinn-Phong fragment shader only receive lights that are turned on
  - This way we do not need to perform the conditional on the GPU, which is a performance issue
+- Fragment shader optimization:
+ - Skip point light if point is out of reach (determine radius based on attenuation)
 - Implement CSM
 - Write own FBX loader, convert all models to FBX and keep Assimp-based loader as legacy
 - Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)

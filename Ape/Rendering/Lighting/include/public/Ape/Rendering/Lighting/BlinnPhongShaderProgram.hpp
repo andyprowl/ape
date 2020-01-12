@@ -41,6 +41,10 @@ public:
 
     glow::Uniform<bool> useNormalMapping;
 
+    glow::Uniform<float> fogDensity;
+
+    glow::Uniform<glm::vec3> fogColor;
+
 };
 
 } // namespace ape
