@@ -15,15 +15,42 @@ float calculateFogFactor(const float squaredDistance)
     return exp(-(squaredDistance * fogDensity));
 }
 
+/**
+ * Atan implementation taken from:
+ * https://seblagarde.wordpress.com/2014/12/01/inverse-trigonometric-functions-gpu-optimization-for-amd-gcn-architecture/
+ * Polynomial degree = 2
+ * Tune for positive input [0, infinity] and provide output [0, PI/2]
+**/
+float fastAtanPositive(const float x)
+{
+    #define PI 3.1415926535897932384626433832795
+    #define HALF_PI (PI * 0.5)
+    #define C1 1.01991
+    #define C2 -0.218891
+
+    const float t0 = (x < 1.0f) ? x : 1.0f / x;
+
+    const float t1 = (C2 * t0 + C1) * t0; // p(x)
+    
+    // Undo range reduction
+    return (x < 1.0f) ? t1 : HALF_PI - t1;
+}
+
+// input [-infinity, infinity] and output [-PI/2, PI/2]
+float fastAtan(const float x)
+{
+    const float t0 = fastAtanPositive(abs(x));
+
+    // Undo range reduction, branchless form of:
+    //     return (x < 0.0) ? -t0 : +t0;
+    return sign(x) * t0;
+}
+
 float evaluateLightQuantityIntegral(
     const float x,
     const float a,
     const float b,
-    const float drootInverse,
-    
-    
-    
-    const float disc)
+    const float drootInverse)
 {
     const float tx = (2.0 * a * x) + b;
 
@@ -50,13 +77,13 @@ float evaluateLightQuantityIntegral(
     **/
 
     // TODO: atan() is expensive, use a lookup table or some approximation
-    return (2.0 * drootInverse) * atan(tx * drootInverse);
+    return (2.0 * drootInverse) * fastAtan(tx * drootInverse);
 }
 
 float evaluateLightQuantityIntegral(
     const vec3 v,
-    float from,
-    float to,
+    const float from,
+    const float to,
     const float a,
     const float b,
     const float c)
@@ -72,8 +99,8 @@ float evaluateLightQuantityIntegral(
     const float drootInverse = 1.0 / droot;
 
     return
-        evaluateLightQuantityIntegral(to, a, b, drootInverse,     disc) -
-        evaluateLightQuantityIntegral(from, a, b, drootInverse,        disc);
+        evaluateLightQuantityIntegral(to, a, b, drootInverse) -
+        evaluateLightQuantityIntegral(from, a, b, drootInverse);
 }
 
 float calculateNormalizedPointLightQuantity(
