@@ -347,6 +347,9 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(
 
     auto const storageType = glow::TextureStorageType::immutable;
 
+    // Let the number of mipmap levels be deduced from the image size.
+    auto const numOfMipmapLevels = 0;
+
     auto texture = textureReader.read(
         filepath,
         storageType,
@@ -355,6 +358,7 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linearMipmapLinear},
         glow::TextureWrapping::repeat,
+        numOfMipmapLevels,
         filepath.string());
 
     return assets.textures.emplace_back(std::move(texture));

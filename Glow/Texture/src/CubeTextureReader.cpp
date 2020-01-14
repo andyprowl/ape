@@ -74,14 +74,15 @@ auto readTextureDescriptor(
     std::filesystem::path const & folder,
     ColorSpace const colorSpace,
     TextureFiltering const filtering,
-    TextureWrapping const wrapping)
+    TextureWrapping const wrapping,
+    int const numOfMipmapLevels)
     -> CubeTextureDescriptor
 {
     auto imageSet = readImageSetFromFolder(folder);
 
     auto const internalFormat = determineInternalFormat(imageSet.front.format, colorSpace);
 
-    return {std::move(imageSet), internalFormat, filtering, wrapping};
+    return {std::move(imageSet), internalFormat, filtering, wrapping, numOfMipmapLevels};
 }
 
 } // unnamed namespace
@@ -95,7 +96,9 @@ auto CubeTextureReader::read(
     std::filesystem::path const & folderPath,
     ColorSpace const imageColorSpace,
     TextureFiltering const filtering,
-    TextureWrapping const wrapping) const
+    TextureWrapping const wrapping,
+    int const numOfMipmapLevels,
+    std::string_view const label) const
     -> CubeTexture
 {
     auto const absolutePath = resolveToPathOfExistingFolder(folderPath);
@@ -104,9 +107,10 @@ auto CubeTextureReader::read(
         absolutePath,
         imageColorSpace,
         filtering,
-        wrapping);
+        wrapping,
+        numOfMipmapLevels);
     
-    return CubeTexture{descriptor};
+    return CubeTexture{descriptor, true, label};
 }
 
 auto CubeTextureReader::getSearchPaths() const

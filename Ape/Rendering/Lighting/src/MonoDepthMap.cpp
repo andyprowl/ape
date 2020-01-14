@@ -32,6 +32,9 @@ auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const l
         glow::TextureImageFormat::depth,
         glow::PixelType::floatingPoint};
 
+    // We do not want to allocate storage for additional mipmap levels for depth textures.
+    auto numOfMipmapLevels = 1;
+
     // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = glow::TextureDescriptor{
         std::move(image),
@@ -40,9 +43,10 @@ auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const l
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge,
-        glow::TextureStorageType::immutable};
+        glow::TextureStorageType::immutable,
+        numOfMipmapLevels};
 
-    auto texture = glow::Texture{descriptor, std::string{labelPrefix} + ".Texture"};
+    auto texture = glow::Texture{descriptor, false, std::string{labelPrefix} + ".Texture"};
 
     enableShadowSampling(texture);
 

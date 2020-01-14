@@ -47,6 +47,7 @@ public:
         ColorSpace imageColorSpace,
         TextureFiltering filtering,
         TextureWrapping wrapping = TextureWrapping::repeat,
+        int const numOfMipmapLevels = 0,
         std::string_view label = "") const
         -> Texture;
 

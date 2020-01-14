@@ -11,7 +11,7 @@
 
 #include <filesystem>
 #include <stdexcept>
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace glow
@@ -56,7 +56,9 @@ public:
         std::filesystem::path const & folderPath,
         ColorSpace imageColorSpace,
         TextureFiltering filtering,
-        TextureWrapping wrapping = TextureWrapping::repeat) const
+        TextureWrapping wrapping = TextureWrapping::clampToEdge,
+        int numOfMipmapLevels = 0,
+        std::string_view label = "") const
         -> CubeTexture;
 
     auto getSearchPaths() const

@@ -21,7 +21,7 @@ public:
 
     explicit Texture(TextureDescriptor const & descriptor);
 
-    Texture(TextureDescriptor const & descriptor, std::string_view label);
+    Texture(TextureDescriptor const & descriptor, bool createMipmap, std::string_view label);
 
     auto getId() const
         -> GpuResource::Id;
@@ -48,6 +48,9 @@ public:
         -> void;
 
     auto setSwizzleMask(TextureSwizzleMask const & mask)
+        -> void;
+
+    auto generateMipmap()
         -> void;
 
     auto setLabel(std::string_view label)

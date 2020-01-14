@@ -48,6 +48,9 @@ auto makeOmniDepthMapTexture(
 {
     auto imageSet = makeOmniDepthMapImageSet(size);
 
+    // We do not want to allocate storage for additional mipmap levels for depth textures.
+    auto numOfMipmapLevels = 1;
+
     // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = glow::CubeTextureDescriptor{
         std::move(imageSet),
@@ -55,9 +58,10 @@ auto makeOmniDepthMapTexture(
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linear},
-        glow::TextureWrapping::clampToEdge};
+        glow::TextureWrapping::clampToEdge,
+        numOfMipmapLevels};
 
-    auto texture = glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};
+    auto texture = glow::CubeTexture{descriptor, false, std::string{labelPrefix} + ".Texture"};
 
     enableShadowSampling(texture);
 

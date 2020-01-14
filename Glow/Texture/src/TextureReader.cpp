@@ -15,14 +15,15 @@ auto readTextureDescriptor(
     ColorSpace const colorSpace,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
-    TextureStorageType const storageType)
+    TextureStorageType const storageType,
+    int const numOfMipmapLevels)
     -> TextureDescriptor
 {
     auto image = readImageFromFile(path, true);
 
     auto const internalFormat = determineInternalFormat(image.format, colorSpace);
 
-    return {std::move(image), internalFormat, filtering, wrapping, storageType};
+    return {std::move(image), internalFormat, filtering, wrapping, storageType, numOfMipmapLevels};
 }
 
 } // unnamed namespace
@@ -38,6 +39,7 @@ auto TextureReader::read(
     ColorSpace const imageColorSpace,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
+    int const numOfMipmapLevels,
     std::string_view const label) const
     -> Texture
 {
@@ -48,9 +50,10 @@ auto TextureReader::read(
         imageColorSpace,
         filtering,
         wrapping,
-        storageType);
+        storageType,
+        numOfMipmapLevels);
     
-    return Texture{descriptor, label};
+    return Texture{descriptor, true, label};
 }
 
 auto TextureReader::getSearchPaths() const

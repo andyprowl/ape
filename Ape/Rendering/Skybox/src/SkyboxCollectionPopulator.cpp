@@ -45,12 +45,17 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 
         auto const folder = entry.path().parent_path();
 
+        // For the skybox we do not want additional mipmap levels to be generated.
+        auto const numOfMipmapLevels = 1;
+
         auto skybox = textureReader.read(
             folder,
             glow::ColorSpace::perceptual,
             glow::TextureFiltering{
                 glow::TextureMagnificationFilter::linear,
-                glow::TextureMinificationFilter::linear});
+                glow::TextureMinificationFilter::linear},
+            glow::TextureWrapping::clampToEdge,
+            numOfMipmapLevels);
 
         collection->addSkybox(std::move(skybox));
     }

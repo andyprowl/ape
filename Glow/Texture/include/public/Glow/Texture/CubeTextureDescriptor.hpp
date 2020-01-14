@@ -17,11 +17,13 @@ public:
         CubeTextureImageSet imageSet,
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,
-        TextureWrapping const wrapping)
+        TextureWrapping const wrapping,
+        int const numOfMipmapLevels = 1)
         : imageSet{std::move(imageSet)}
         , internalFormat{internalFormat}
         , filtering{filtering}
         , wrapping{wrapping}
+        , numOfMipmapLevels{numOfMipmapLevels}
     {
     }
 
@@ -34,6 +36,8 @@ public:
     TextureFiltering filtering;
 
     TextureWrapping wrapping;
+
+    int const numOfMipmapLevels;
 
 };
 

@@ -24,12 +24,14 @@ public:
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,
         TextureWrapping const wrapping,
-        TextureStorageType const storageType)
+        TextureStorageType const storageType,
+        int const numOfMipmapLevels = 1)
         : image{std::move(image)}
         , internalFormat{internalFormat}
         , filtering{filtering}
         , wrapping{wrapping}
         , storageType{storageType}
+        , numOfMipmapLevels{numOfMipmapLevels}
     {
     }
 
@@ -44,6 +46,8 @@ public:
     TextureWrapping wrapping;
 
     TextureStorageType storageType;
+
+    int numOfMipmapLevels;
 
 };
 
