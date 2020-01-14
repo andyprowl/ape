@@ -52,6 +52,9 @@ auto makeOmniDepthMapTexture(
     auto const descriptor = glow::CubeTextureDescriptor{
         std::move(imageSet),
         glow::TextureInternalFormat::depth32,
+        glow::TextureFiltering{
+            glow::TextureMagnificationFilter::linear,
+            glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge};
 
     auto texture = glow::CubeTexture{descriptor, std::string{labelPrefix} + ".Texture"};

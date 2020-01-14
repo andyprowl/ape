@@ -16,18 +16,28 @@ namespace glow
 namespace
 {
 
+auto setTextureFiltering(TextureDescriptor const & descriptor)
+    -> void
+{
+    auto const magnification = convertToOpenGLTextureMagnificationFilter(
+        descriptor.filtering.magnification);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magnification);
+
+    auto const minification = convertToOpenGLTextureMinificationFilter(
+        descriptor.filtering.minification);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minification);
+}
+
 auto setTextureWrapping(TextureDescriptor const & descriptor)
     -> void
 {
-    auto const wrappingMode = convertToOpenGLTextureWrapping(descriptor.wrapping);
+    auto const wrapping = convertToOpenGLTextureWrapping(descriptor.wrapping);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrappingMode);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrappingMode);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
 }
 
 auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
@@ -39,9 +49,11 @@ auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
 
     auto const pixelType = convertToOpenGLPixelType(descriptor.image.pixelType);
 
+    auto const numOfMipmapLevels = 8;
+
     glTexStorage2D(
         GL_TEXTURE_2D,
-        1,
+        numOfMipmapLevels,
         internalFormat,
         descriptor.image.size.width,
         descriptor.image.size.height);
@@ -106,11 +118,15 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor)
 
     glBindTexture(GL_TEXTURE_2D, textureId);
 
+    setTextureFiltering(descriptor);
+
     setTextureWrapping(descriptor);
 
     setTextureImageData(descriptor);
 
     glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }
@@ -122,7 +138,9 @@ Texture::Texture(TextureDescriptor const & descriptor)
 {
 }
 
-Texture::Texture(TextureDescriptor const & descriptor, std::string_view const label)
+Texture::Texture(
+    TextureDescriptor const & descriptor,
+    std::string_view const label)
     : resource{makeOpenGLTextureObject(descriptor)}
     , size{descriptor.image.size}
     , internalFormat{descriptor.internalFormat}

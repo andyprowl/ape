@@ -10,6 +10,9 @@ uniform float fogDensity;
 
 uniform vec3 fogColor;
 
+// Returns a value in the range ]0.0, 1.0].
+// A value of 1.0 indicates that fog should not be considered at all to render the fragment.
+// A value of 0.0 indicates that only fog color should be considered to render the fragment.
 float calculateFogFactor(const float squaredDistance)
 {
     return exp(-(squaredDistance * fogDensity));
@@ -245,19 +248,19 @@ vec3 calculateFogColor(const vec3 color, const vec3 cameraToFragment)
 {
     const float squaredDistance = dot(cameraToFragment, cameraToFragment);
 
-    const float distance = sqrt(squaredDistance);
-
-    const float fogFactor = calculateFogFactor(squaredDistance);
-
     const vec3 normalizedLitFogColor = 
         calculateNormalizedPointLitFog(cameraToFragment, squaredDistance) +
         calculateNormalizedSpotLitFog(cameraToFragment, squaredDistance) +
         calculateNormalizedDirectionalLitFog(cameraToFragment, squaredDistance);
 
-    // This helps removing or completely reducing regular artefacts against the skybox
+    const float distance = sqrt(squaredDistance);
+
+    // This helps removing or completely reducing regular artefacts against the skybox.
     const float noise = 0.001 * rand(cameraToFragment.xy);
 
     const vec3 litFogColor = 0.01 * normalizedLitFogColor * fogColor * distance + noise;
+
+    const float fogFactor = calculateFogFactor(squaredDistance);
 
     return mix(litFogColor, color, fogFactor);
 }

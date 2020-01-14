@@ -24,7 +24,9 @@
 namespace ape
 {
 
-auto fogDensity = 0.005f;
+// TODO: Create proper Fog class rather than having these two global variables!
+//auto fogDensity = 0.01f;
+auto fogDensity = 0.0f;
 
 auto fogColor = glm::vec3{0.2f, 0.2f, 0.2f};
 

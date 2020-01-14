@@ -10,6 +10,18 @@ namespace glow
 namespace
 {
 
+auto setTextureFitering(TextureFiltering const filtering)
+    -> void
+{
+    auto const magnification = convertToOpenGLTextureMagnificationFilter(filtering.magnification);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, magnification);
+
+    auto const minification = convertToOpenGLTextureMinificationFilter(filtering.minification);
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, minification);
+}
+
 auto setTextureWrapping(TextureWrapping const wrapping)
     -> void
 {
@@ -84,11 +96,15 @@ auto makeOpenGLTextureObject(CubeTextureDescriptor const & descriptor)
 
     createTextureStorage(descriptor);
 
-    setTextureImageData(descriptor.imageSet);
+    setTextureFitering(descriptor.filtering);
 
     setTextureWrapping(descriptor.wrapping);
 
+    setTextureImageData(descriptor.imageSet);
+
     glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
     return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }

@@ -45,7 +45,12 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 
         auto const folder = entry.path().parent_path();
 
-        auto skybox = textureReader.read(folder, glow::ColorSpace::perceptual);
+        auto skybox = textureReader.read(
+            folder,
+            glow::ColorSpace::perceptual,
+            glow::TextureFiltering{
+                glow::TextureMagnificationFilter::linear,
+                glow::TextureMinificationFilter::linear});
 
         collection->addSkybox(std::move(skybox));
     }

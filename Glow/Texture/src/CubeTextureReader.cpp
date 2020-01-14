@@ -72,16 +72,16 @@ auto readImageSetFromFolder(std::filesystem::path const & folderPath)
 
 auto readTextureDescriptor(
     std::filesystem::path const & folder,
-    ColorSpace const colorSpace)
+    ColorSpace const colorSpace,
+    TextureFiltering const filtering,
+    TextureWrapping const wrapping)
     -> CubeTextureDescriptor
 {
     auto imageSet = readImageSetFromFolder(folder);
 
     auto const internalFormat = determineInternalFormat(imageSet.front.format, colorSpace);
 
-    auto const wrapping = TextureWrapping::clampToEdge;
-
-    return {std::move(imageSet), internalFormat, wrapping};
+    return {std::move(imageSet), internalFormat, filtering, wrapping};
 }
 
 } // unnamed namespace
@@ -93,12 +93,18 @@ CubeTextureReader::CubeTextureReader(std::vector<std::filesystem::path> searchPa
 
 auto CubeTextureReader::read(
     std::filesystem::path const & folderPath,
-    ColorSpace const imageColorSpace) const
+    ColorSpace const imageColorSpace,
+    TextureFiltering const filtering,
+    TextureWrapping const wrapping) const
     -> CubeTexture
 {
     auto const absolutePath = resolveToPathOfExistingFolder(folderPath);
 
-    auto const descriptor = readTextureDescriptor(absolutePath, imageColorSpace);
+    auto const descriptor = readTextureDescriptor(
+        absolutePath,
+        imageColorSpace,
+        filtering,
+        wrapping);
     
     return CubeTexture{descriptor};
 }

@@ -1,14 +1,14 @@
 - Implement fog
+ - Make fog density parameter meaninfully modulate density from 0 to 1
  - Let Blinn-Phong fragment shader only receive lights that are turned on
  - This way we do not need to perform the conditional on the GPU, which is a performance issue
-- Fragment shader optimization:
+- Optimization hints
  - Skip point light if point is out of reach (determine radius based on attenuation)
+ - Use mipmapping at least for ground and wall textures, possibly also for other objects
+ - Use instancing for drawing several instances at once (e.g. ground/wall tiles)
 - Implement CSM
 - Write own FBX loader, convert all models to FBX and keep Assimp-based loader as legacy
 - Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)
-- Associate object label to frame buffers
-- Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
- - Last time we removed them by tweaking shadow bias
 - Write tutorial on radar approach to frustum culling for spheres
  - In particular mention how to handle the case where Zc < 0 (not on LightHouse3d) 
 - Write tutorial/documentation on gamma correction
@@ -37,6 +37,8 @@
     - Not sure it is correct that the renderer does the binding and setting of viewport though
     - Maybe it is a naming issue? It simply shouldn't be called "renderer"?
     - Try to think how the generic pipeline would like if composed declaratively by the user
+- Point light artefacts (diagonal lines on perspective shadow map border) have appeared again
+ - Last time we removed them by tweaking shadow bias
 - Glow should be independent of GLM: specializations of Uniform for glm types should be in Ape
 - Try FBX format for 3D models
     - Use FBX SDK for importing the models

@@ -347,7 +347,15 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(
 
     auto const storageType = glow::TextureStorageType::immutable;
 
-    auto texture = textureReader.read(filepath, storageType, colorSpace, filepath.string());
+    auto texture = textureReader.read(
+        filepath,
+        storageType,
+        colorSpace,
+        glow::TextureFiltering{
+            glow::TextureMagnificationFilter::linear,
+            glow::TextureMinificationFilter::linearMipmapLinear},
+        glow::TextureWrapping::repeat,
+        filepath.string());
 
     return assets.textures.emplace_back(std::move(texture));
 }

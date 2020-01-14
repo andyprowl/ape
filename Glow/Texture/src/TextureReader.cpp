@@ -13,6 +13,8 @@ namespace
 auto readTextureDescriptor(
     std::filesystem::path const & path,
     ColorSpace const colorSpace,
+    TextureFiltering const filtering,
+    TextureWrapping const wrapping,
     TextureStorageType const storageType)
     -> TextureDescriptor
 {
@@ -20,9 +22,7 @@ auto readTextureDescriptor(
 
     auto const internalFormat = determineInternalFormat(image.format, colorSpace);
 
-    auto const wrapping = TextureWrapping::repeat;
-
-    return {std::move(image), internalFormat, wrapping, storageType};
+    return {std::move(image), internalFormat, filtering, wrapping, storageType};
 }
 
 } // unnamed namespace
@@ -36,12 +36,19 @@ auto TextureReader::read(
     std::filesystem::path const & path,
     TextureStorageType const storageType,
     ColorSpace const imageColorSpace,
+    TextureFiltering const filtering,
+    TextureWrapping const wrapping,
     std::string_view const label) const
     -> Texture
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
-    auto const descriptor = readTextureDescriptor(absolutePath, imageColorSpace, storageType);
+    auto const descriptor = readTextureDescriptor(
+        absolutePath,
+        imageColorSpace,
+        filtering,
+        wrapping,
+        storageType);
     
     return Texture{descriptor, label};
 }

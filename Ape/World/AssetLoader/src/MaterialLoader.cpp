@@ -215,7 +215,19 @@ auto MaterialLoader::readAndStoreTexture(
 {
     auto const storageType = glow::TextureStorageType::immutable;
 
-    auto readTexture = textureReader.read(path, storageType, colorSpace, path.string());
+    auto const filtering = glow::TextureFiltering{
+        glow::TextureMagnificationFilter::linear,
+        glow::TextureMinificationFilter::linearMipmapLinear};
+
+    auto const wrapping = glow::TextureWrapping::repeat;
+
+    auto readTexture = textureReader.read(
+        path,
+        storageType,
+        colorSpace,
+        filtering,
+        wrapping,
+        path.string());
 
     setSwizzleIfGrayscale(readTexture);
 

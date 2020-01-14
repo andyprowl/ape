@@ -3,7 +3,9 @@
 #include <Glow/Texture/ColorSpace.hpp>
 #include <Glow/Texture/CubeTexture.hpp>
 #include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/TextureFiltering.hpp>
 #include <Glow/Texture/TextureStorageType.hpp>
+#include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Basix/FileSystem/FileFinder.hpp>
 
@@ -50,7 +52,11 @@ public:
 
     explicit CubeTextureReader(std::vector<std::filesystem::path> searchPaths);
 
-    auto read(std::filesystem::path const & folderPath, ColorSpace imageColorSpace) const
+    auto read(
+        std::filesystem::path const & folderPath,
+        ColorSpace imageColorSpace,
+        TextureFiltering filtering,
+        TextureWrapping wrapping = TextureWrapping::repeat) const
         -> CubeTexture;
 
     auto getSearchPaths() const

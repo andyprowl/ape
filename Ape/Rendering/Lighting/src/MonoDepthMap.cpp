@@ -36,6 +36,9 @@ auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const l
     auto const descriptor = glow::TextureDescriptor{
         std::move(image),
         glow::TextureInternalFormat::depth32,
+        glow::TextureFiltering{
+            glow::TextureMagnificationFilter::linear,
+            glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::immutable};
 

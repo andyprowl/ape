@@ -23,6 +23,9 @@ auto makeColorBuffer(basix::Size<int> const & size)
     auto const descriptor = glow::TextureDescriptor{
         std::move(image),
         glow::TextureInternalFormat::srgb8,
+        glow::TextureFiltering{
+            glow::TextureMagnificationFilter::linear,
+            glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge,
         glow::TextureStorageType::modifiable};
 
@@ -40,7 +43,7 @@ auto makeFrameBufferForTarget(
     glow::RenderBufferObject & depthAndStencilBuffer)
     -> glow::FrameBufferObject
 {
-    auto frameBuffer = glow::FrameBufferObject{};
+    auto frameBuffer = glow::FrameBufferObject{"Offscreen surface framebuffer"};
 
     auto const binder = glow::bind(frameBuffer);
 
