@@ -64,10 +64,11 @@ Body::Body(Model const & model)
 {
 }
 
-Body::Body(Model const & model, std::string name)
+Body::Body(Model const & model, std::string name, bool const castsShadow)
     : model{&model}
     , name{std::move(name)}
     , parts{makePartInstances(*this, model)}
+    , castsShadow{castsShadow}
 {
 }
 
@@ -75,6 +76,7 @@ Body::Body(Body && rhs) noexcept
     : model{rhs.model}
     , name{std::move(rhs.name)}
     , parts{std::move(rhs.parts)}
+    , castsShadow{rhs.castsShadow}
 {
     connectPartsToSelf();
 }
@@ -87,6 +89,8 @@ auto Body::operator = (Body && rhs) noexcept
     name = std::move(rhs.name);
     
     parts = std::move(rhs.parts);
+
+    castsShadow = rhs.castsShadow;
 
     connectPartsToSelf();
 
@@ -133,6 +137,30 @@ auto Body::getParts() const
     -> basix::ContainerView<PartContainer const>
 {
     return basix::makeView(parts);
+}
+
+auto Body::isCastingShadow() const
+    -> bool
+{
+    return castsShadow;
+}
+
+auto Body::enableShadowCasting()
+    -> void
+{
+    castsShadow = true;
+}
+
+auto Body::disableShadowCasting()
+    -> void
+{
+    castsShadow = false;
+}
+
+auto Body::toggleShadowCasting()
+    -> void
+{
+    castsShadow = !castsShadow;
 }
 
 auto Body::connectPartsToSelf()

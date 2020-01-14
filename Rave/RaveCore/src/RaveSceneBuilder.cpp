@@ -250,7 +250,7 @@ auto StatefulSceneBuilder::createBodies()
 
     createHouses();
 
-    //createSponzas();
+    createSponzas();
 }
 
 auto StatefulSceneBuilder::createFloor()
@@ -294,7 +294,9 @@ auto StatefulSceneBuilder::createTile(
 {
     auto const position = glm::vec3{row * 5.0f, z, col * 5.0f};
 
-    auto body = ape::Body{model};
+    auto const castsShadow = false;
+
+    auto body = ape::Body{model, "", castsShadow};
 
     ape::setPosition(body, position);
 

@@ -25,7 +25,7 @@ public:
     
     explicit Body(Model const & model);
 
-    Body(Model const & model, std::string name);
+    Body(Model const & model, std::string name, bool castsShadow = true);
 
     Body(Body && rhs) noexcept;
 
@@ -55,6 +55,18 @@ public:
     auto getParts() const
         -> basix::ContainerView<PartContainer const>;
 
+    auto isCastingShadow() const
+        -> bool;
+
+    auto enableShadowCasting()
+        -> void;
+
+    auto disableShadowCasting()
+        -> void;
+
+    auto toggleShadowCasting()
+        -> void;
+
 public:
 
     mutable basix::Signal<auto (BodyPart const & source) -> void> onLocalTransformationChanged;
@@ -71,6 +83,8 @@ private:
     std::string name;
 
     PartContainer parts;
+
+    bool castsShadow;
 
 };
 

@@ -79,7 +79,7 @@ auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
 {
     for (auto i = 0u; i < lights.size(); ++i)
     {
-        if (!lights[i].isTurnedOn() || !(lights[i].isCastingShadow()))
+        if ((not lights[i].isTurnedOn()) || (not lights[i].isCastingShadow()))
         {
             continue;
         }
@@ -125,6 +125,11 @@ auto OmniDepthCubeBodyRenderer::renderBody(
     PointLightView const & lightView) const
     -> void
 {
+    if (not body.isCastingShadow())
+    {
+        return;
+    }
+
     for (auto const & part : body.getParts())
     {
         renderBodyPart(part, lightView);

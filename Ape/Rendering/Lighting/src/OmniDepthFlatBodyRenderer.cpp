@@ -120,7 +120,7 @@ auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
 {
     for (auto i = 0u; i < lights.size(); ++i)
     {
-        if (!lights[i].isTurnedOn() || !(lights[i].isCastingShadow()))
+        if ((not lights[i].isTurnedOn()) || (not lights[i].isCastingShadow()))
         {
             continue;
         }
@@ -197,6 +197,11 @@ auto OmniDepthFlatBodyRenderer::renderBody(
     Culler const & culler) const
     -> void
 {
+    if (not body.isCastingShadow())
+    {
+        return;
+    }
+
     for (auto const & part : body.getParts())
     {
         renderBodyPart(part, lightView, culler);
@@ -219,7 +224,7 @@ auto OmniDepthFlatBodyRenderer::renderBodyPart(
 
     for (auto const & bodyMesh : part.getMeshes())
     {
-        if (!isVisible(bodyMesh, culler))
+        if (not isVisible(bodyMesh, culler))
         {
             continue;
         }
@@ -233,7 +238,7 @@ auto OmniDepthFlatBodyRenderer::isVisible(
     Culler const & culler) const
     -> bool
 {
-    if (!isFrustumCullingEnabled())
+    if (not isFrustumCullingEnabled())
     {
         return true;
     }
