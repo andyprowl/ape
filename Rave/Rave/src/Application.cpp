@@ -45,8 +45,9 @@ public:
         , effectSelector{effectCollection}
         , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
         , skyboxSelector{skyboxCollection}
-        , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>()}
+     // Using a VAO per shape seems to make performance worse...
+     // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
+        , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>()}
         , depthBodyRenderer{
             {monoDepthShader, *shapeRenderer},
             {omniDepthCubeShader, *shapeRenderer},

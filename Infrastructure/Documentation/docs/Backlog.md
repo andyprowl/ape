@@ -1,11 +1,15 @@
 - Implement fog
- - Make fog density parameter meaninfully modulate density from 0 to 1
+ - Make fog density parameter meaninfully modulate density from 0 to 1 (smoothstep?)
  - Let Blinn-Phong fragment shader only receive lights that are turned on
- - This way we do not need to perform the conditional on the GPU, which is a performance issue
+  - This way we do not need to perform the conditional on the GPU, which is a performance issue
 - Optimization hints
  - Skip point light if point is out of reach (determine radius based on attenuation)
- - Use mipmapping at least for ground and wall textures, possibly also for other objects
  - Use instancing for drawing several instances at once (e.g. ground/wall tiles)
+ - Do not regenerate shadow maps at every frame, only when the light moves or a shadow caster moves
+   within the light's frustum/range
+- Troubleshoot issue with Sponza model, likely due to normal mapping
+ - It also seems to cause a huge slowdown even when looking away from it, so maybe culling does not
+   work correctly either?
 - Implement CSM
 - Write own FBX loader, convert all models to FBX and keep Assimp-based loader as legacy
 - Use Pimpl for SceneRenderer (lots of annoying dependencies and forward-declarations)
