@@ -13,6 +13,7 @@ uniform Fog fog;
 // A value of 1.0 indicates that fog should not be considered at all to render the fragment.
 float calculateFogFactor(const float distance)
 {
+    // TODO: exp() is expensive, use a lookup table or some approximation
     return exp(-(distance * fog.density));
 }
 
