@@ -425,7 +425,7 @@ vec3 renderLighting()
 }
 
 // Extern, defined in separate shader.
-vec3 fog(const vec3 color, const vec3 cameraToFragment);
+vec3 applyFog(const vec3 color, const vec3 cameraToFragment);
 
 void main()
 {
@@ -439,6 +439,6 @@ void main()
 
         vec3 cameraToFragment = vertex.position - camera.position;
 
-        fragmentColor = vec4(fog(color, cameraToFragment), 1.0);
+        fragmentColor = vec4(applyFog(color, cameraToFragment), 1.0);
     }
 }

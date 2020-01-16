@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/Lighting/DepthMappingUniform.hpp>
+#include <Ape/Rendering/Lighting/FogUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniform.hpp>
 #include <Ape/Rendering/Lighting/MaterialUniform.hpp>
@@ -33,6 +34,8 @@ public:
 
     glow::Uniform<Material> material;
 
+    glow::Uniform<Fog> fog;
+
     glow::Uniform<DepthMapping> depthMapping;
 
     glow::Uniform<bool> usePhongModel;
@@ -40,10 +43,6 @@ public:
     glow::Uniform<bool> usePercentageCloserFiltering;
 
     glow::Uniform<bool> useNormalMapping;
-
-    glow::Uniform<float> fogDensity;
-
-    glow::Uniform<glm::vec3> fogColor;
 
 };
 

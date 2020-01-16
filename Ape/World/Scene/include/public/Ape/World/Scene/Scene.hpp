@@ -2,6 +2,7 @@
 
 #include <Ape/World/Scene/Body.hpp>
 #include <Ape/World/Scene/Camera.hpp>
+#include <Ape/World/Scene/Fog.hpp>
 #include <Ape/World/Scene/LightSystem.hpp>
 
 #include <Basix/Range/ContainerView.hpp>
@@ -19,7 +20,11 @@ public:
 
     Scene() = default;
 
-    Scene(std::vector<Body> bodies, std::vector<Camera> cameras, LightSystem lightSystem);
+    Scene(
+        std::vector<Body> bodies,
+        std::vector<Camera> cameras,
+        LightSystem lightSystem,
+        Fog const & fog);
 
     auto getBody(int index)
         -> Body &;
@@ -60,6 +65,12 @@ public:
     auto getLightSystem() const
         -> LightSystem const &;
 
+    auto getFog()
+        -> Fog &;
+
+    auto getFog() const
+        -> Fog const &;
+
 public:
 
     mutable basix::Signal<auto (Body &) -> void> onBodyAdded;
@@ -77,6 +88,8 @@ private:
     std::vector<Camera> cameras;
 
     LightSystem lightSystem;
+    
+    Fog fog;
 
 };
 

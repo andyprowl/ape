@@ -2,11 +2,13 @@
  - Make fog density parameter meaninfully modulate density from 0 to 1 (smoothstep?)
  - Let Blinn-Phong fragment shader only receive lights that are turned on
   - This way we do not need to perform the conditional on the GPU, which is a performance issue
+ - Use samplers for linear atan() (exp()?) interpolation instead of relying on computation in shader
 - Optimization hints
  - Skip point light if point is out of reach (determine radius based on attenuation)
  - Use instancing for drawing several instances at once (e.g. ground/wall tiles)
  - Do not regenerate shadow maps at every frame, only when the light moves or a shadow caster moves
    within the light's frustum/range
+ - Replace expensive fragment shader ops (e.g. pow()?) with sampling from 1D texture
 - Troubleshoot issue with Sponza model, likely due to normal mapping
  - It also seems to cause a huge slowdown even when looking away from it, so maybe culling does not
    work correctly either?

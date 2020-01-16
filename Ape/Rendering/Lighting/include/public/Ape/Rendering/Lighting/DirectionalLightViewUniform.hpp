@@ -8,7 +8,7 @@ namespace glow
 {
 
 template<>
-class Uniform<ape::DirectionalLightView> : private Uniform<glm::mat4>
+class Uniform<ape::DirectionalLightView> : private Uniform<glm::mat4>                               
 {
 
 public:

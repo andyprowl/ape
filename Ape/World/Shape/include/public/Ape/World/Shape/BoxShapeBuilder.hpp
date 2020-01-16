@@ -44,7 +44,8 @@ public:
     auto build(
         NormalDirection normalDirection,
         Size const & size = {1.0f, 1.0f, 1.0f},
-        Position const & center = {0.0f, 0.0f, 0.0f}) const
+        Position const & center = {0.0f, 0.0f, 0.0f},
+        glm::vec2 const & textureTopRight = {1.0f, 1.0f}) const
         -> Shape;
 
 };

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Ape/Rendering/Lighting/FogUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
 
 #include <Glow/Shader/CubeTextureUniform.hpp>
@@ -25,9 +26,7 @@ public:
 
     glow::Uniform<glm::vec3> cameraPosition;
 
-    glow::Uniform<float> fogDensity;
-
-    glow::Uniform<glm::vec3> fogColor;
+    glow::Uniform<Fog> fog;
 
 };
 

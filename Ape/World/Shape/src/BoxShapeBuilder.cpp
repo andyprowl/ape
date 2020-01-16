@@ -63,11 +63,12 @@ public:
     StatefulBuilder(
         NormalDirection const normalDirection,
         Size const & size,
-        Position const & center)
+        Position const & center,
+        glm::vec2 const & textureTopRight)
         : normalDirection{normalDirection}
         , size{size}
         , center{center}
-        , texTopRight{1.0f, 1.0f}
+        , texTopRight{textureTopRight}
     {
         vertices.reserve(numOfFaces * numOfVerticesPerFace);
     }
@@ -191,10 +192,11 @@ private:
 auto BoxShapeBuilder::build(
     NormalDirection const normalDirection,
     Size const & size,
-    Position const & center) const
+    Position const & center,
+    glm::vec2 const & textureTopRight) const
     -> Shape
 {
-    return StatefulBuilder{normalDirection, size, center}.build();
+    return StatefulBuilder{normalDirection, size, center, textureTopRight}.build();
 }
 
 } // namespace ape

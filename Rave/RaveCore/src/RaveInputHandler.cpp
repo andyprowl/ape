@@ -17,13 +17,6 @@
 
 #include <algorithm>
 
-namespace ape
-{
-
-extern float fogDensity;
-
-} // namespace ape
-
 namespace rave
 {
 
@@ -145,14 +138,6 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     else if ((key == ape::Key::keyE) && (modifier == ape::KeyModifier::control))
     {
         increaseOutlineWidth(-0.01f);
-    }
-    else if ((key == ape::Key::keyT) && (modifier == ape::KeyModifier::control))
-    {
-        ape::fogDensity += 0.01f * glm::exp(5.0f * ape::fogDensity);
-    }
-    else if ((key == ape::Key::keyY) && (modifier == ape::KeyModifier::control))
-    {
-        ape::fogDensity = std::max(0.0f, ape::fogDensity * 0.1f);
     }
     else if (key == ape::Key::keyEscape)
     {

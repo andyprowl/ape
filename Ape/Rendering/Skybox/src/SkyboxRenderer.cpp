@@ -12,17 +12,16 @@
 namespace ape
 {
 
-extern float fogDensity;
-
-extern glm::vec3 fogColor;
-
 SkyboxRenderer::SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & selector)
     : shader{&shader}
     , selector{&selector}
 {
 }
 
-auto SkyboxRenderer::render(Camera const & camera, LightSystem const & lightSystem) const
+auto SkyboxRenderer::render(
+    Camera const & camera,
+    LightSystem const & lightSystem,
+    Fog const & fog) const
     -> void
 {
     auto const skybox = selector->getActiveSkybox();
@@ -34,7 +33,7 @@ auto SkyboxRenderer::render(Camera const & camera, LightSystem const & lightSyst
 
     auto const shaderBinder = bind(*shader);
 
-    setupUniforms(camera, lightSystem, *skybox);
+    setupUniforms(camera, lightSystem, fog, *skybox);
 
     glDepthFunc(GL_LEQUAL);
 
@@ -46,6 +45,7 @@ auto SkyboxRenderer::render(Camera const & camera, LightSystem const & lightSyst
 auto SkyboxRenderer::setupUniforms(
     Camera const & camera,
     LightSystem const & lightSystem,
+    Fog const & fog,
     glow::CubeTexture const & skybox) const
     -> void
 {
@@ -61,9 +61,7 @@ auto SkyboxRenderer::setupUniforms(
 
     shader->cameraPosition = camera.getView().getPosition();
 
-    shader->fogDensity = fogDensity;
-
-    shader->fogColor = fogColor;
+    shader->fog = fog;
 }
 
 auto SkyboxRenderer::drawCube() const

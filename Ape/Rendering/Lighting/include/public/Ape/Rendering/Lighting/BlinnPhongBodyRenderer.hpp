@@ -13,7 +13,8 @@ class Body;
 class BodyPart;
 class BodyPartMesh;
 class Camera;
-class RadarFrustumCuller;
+class Culler;
+class Fog;
 class LightSystem;
 class Mesh;
 class ShadowMapping;
@@ -31,6 +32,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         LightSystem const & lightSystem,
+        Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
 
@@ -45,6 +47,7 @@ private:
     auto setupInvariantUniforms(
         Camera const & camera,
         LightSystem const & lightSystem,
+        Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
 
@@ -61,7 +64,7 @@ private:
         glm::mat4 const & cameraTransformation) const
         -> void;
 
-    auto isVisible(BodyPartMesh const & mesh, RadarFrustumCuller const & culler) const
+    auto isVisible(BodyPartMesh const & mesh, Culler const & culler) const
         -> bool;
 
     auto renderMesh(BodyPartMesh const & mesh) const

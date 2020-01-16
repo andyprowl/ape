@@ -24,12 +24,6 @@
 namespace ape
 {
 
-// TODO: Create proper Fog class rather than having these two global variables!
-//auto fogDensity = 0.01f;
-auto fogDensity = 0.0f;
-
-auto fogColor = glm::vec3{0.2f, 0.2f, 0.2f};
-
 namespace
 {
 
@@ -58,12 +52,13 @@ auto BlinnPhongBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
     LightSystem const & lightSystem,
+    Fog const & fog,
     ShadowMapping const & shadowMapping) const
     -> void
 {
     auto const shaderBinder = bind(*shader);
 
-    setupInvariantUniforms(camera, lightSystem, shadowMapping);
+    setupInvariantUniforms(camera, lightSystem, fog, shadowMapping);
 
     auto const sortedMeshes = getVisibleMeshesSortedByDistanceFromCamera(bodies, camera);
 
@@ -94,6 +89,7 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
 auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     Camera const & camera,
     LightSystem const & lightSystem,
+    Fog const & fog,
     ShadowMapping const & shadowMapping) const
     -> void
 {
@@ -105,9 +101,7 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
 
     shader->depthMapping.set(shadowMapping.depthMapping);
 
-    shader->fogDensity = fogDensity;
-
-    shader->fogColor = fogColor;
+    shader->fog.set(fog);
 }
 
 auto BlinnPhongBodyRenderer::getVisibleMeshesSortedByDistanceFromCamera(
@@ -167,9 +161,7 @@ auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
     shader->normalTransformation = part.getWorldNormalTransformation();
 }
 
-auto BlinnPhongBodyRenderer::isVisible(
-    BodyPartMesh const & mesh,
-    RadarFrustumCuller const & culler) const
+auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const & culler) const
     -> bool
 {
     if (!isFrustumCullingEnabled())

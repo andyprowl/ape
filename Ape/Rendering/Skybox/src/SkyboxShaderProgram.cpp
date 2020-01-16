@@ -32,8 +32,7 @@ SkyboxShaderProgram::SkyboxShaderProgram()
     , transform{*this, "transform"}
     , skybox{*this, "skybox", 0}
     , cameraPosition{*this, "camera.position"}
-    , fogDensity{*this, "fogDensity", 0.0f}
-    , fogColor{*this, "fogColor", glm::vec3{0.0f, 0.0f, 0.0f}}
+    , fog{*this, "fog"}
 {
 }
 

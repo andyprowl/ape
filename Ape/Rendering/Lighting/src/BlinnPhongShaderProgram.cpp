@@ -37,8 +37,7 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , usePhongModel{*this, "usePhongModel", false}
     , usePercentageCloserFiltering{*this, "usePercentageCloserFiltering", false}
     , useNormalMapping{*this, "useNormalMapping", true}
-    , fogDensity{*this, "fogDensity", 0.0f}
-    , fogColor{*this, "fogColor", glm::vec3{0.0f, 0.0f, 0.0f}}
+    , fog{*this, "fog"}
 {
 }
 

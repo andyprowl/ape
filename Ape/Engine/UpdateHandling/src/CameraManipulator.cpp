@@ -139,7 +139,9 @@ auto CameraManipulator::processStraightMovement(
 {
     auto const translationDelta = static_cast<float>(lastFrameDuration * 5.0f);
 
-    auto const speedMultiplier = window->isKeyPressed(Key::keyRightShift) ? 4.0f : 1.0f;
+    auto const speedMultiplier = 
+        (window->isKeyPressed(Key::keyRightShift) ? 4.0f : 1.0f) *
+        (window->isKeyPressed(Key::keyRightControl) ? 2.0f : 1.0f); 
 
     if (window->isKeyPressed(Key::keyUp))
     {

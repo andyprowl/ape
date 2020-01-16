@@ -9,12 +9,6 @@
 namespace ape
 {
 
-extern float fogDensity;
-
-extern float fogHeightLimit;
-
-extern glm::vec3 fogColor;
-
 LightSystemOverlay::LightSystemOverlay(
     basix::Position<int> const & initialPosition,
     basix::Size<int> const & initialSize,
@@ -34,18 +28,6 @@ auto LightSystemOverlay::update()
     auto const window = makeWindow();
 
     ImGui::BeginTabBar("Light system");
-
-    ImGui::SliderFloat("Fog density", &ape::fogDensity, 0.0f, 0.5f);
-
-    auto currentColor = reinterpret_cast<float *>(&ape::fogColor);
-
-    auto const editorFlags =
-        ImGuiColorEditFlags_DisplayRGB |
-        ImGuiColorEditFlags_InputRGB |
-        ImGuiColorEditFlags_Float |
-        ImGuiColorEditFlags_PickerHueWheel;
-
-    ImGui::ColorEdit3("Fog color", currentColor, editorFlags);
 
     if (ImGui::BeginTabItem("Spot lights"))
     {

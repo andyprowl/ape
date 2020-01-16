@@ -11,6 +11,7 @@
 
 #include <Ape/Engine/FrameProfiling/FrameRateCalculator.hpp>
 #include <Ape/Engine/FrameProfiling/TaskTimeProfiler.hpp>
+#include <Ape/Engine/InspectionOverlay/FogOverlay.hpp>
 #include <Ape/Engine/InspectionOverlay/FrameProfilingOverlay.hpp>
 #include <Ape/Engine/InspectionOverlay/LightSystemOverlay.hpp>
 #include <Ape/Engine/Windowing/Viewport.hpp>
@@ -54,6 +55,7 @@ public:
         , frameRateCalculator{lastFrameProfiles, 4}
         , frameProfilingOverlay{makeFrameProfilingOverlay()}
         , lightSystemOverlay{makeLightSystemOverlay()}
+        , fogOverlay{makeFogOverlay()}
         , resizeHandlerConnection{registerWindowResizeHandler()}
         , activeCameraChangeConnection{registerActiveCameraChangeHandler()}
         , isInspectionOverlayShown{false}
@@ -121,11 +123,23 @@ private:
     {
         auto const initialPosition =  basix::Position<int>{10, 280};
 
-        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 650};
+        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 550};
 
         auto & scene = renderer->getCameraSelector().getScene();
 
         return {initialPosition, initialSize, scene.getLightSystem()};
+    }
+
+    auto makeFogOverlay() const
+        -> FogOverlay
+    {
+        auto const initialPosition =  basix::Position<int>{10, 280 + 550};
+
+        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 120};
+
+        auto & scene = renderer->getCameraSelector().getScene();
+
+        return {initialPosition, initialSize, scene.getFog()};
     }
     
     auto registerWindowResizeHandler()
@@ -315,6 +329,8 @@ private:
         frameProfilingOverlay.update();
 
         lightSystemOverlay.update();
+
+        fogOverlay.update();
     }
 
     auto swapBuffers()
@@ -368,6 +384,8 @@ private:
     FrameProfilingOverlay frameProfilingOverlay;
 
     LightSystemOverlay lightSystemOverlay;
+
+    FogOverlay fogOverlay;
 
     basix::ScopedSignalConnection resizeHandlerConnection;
 

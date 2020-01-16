@@ -3,10 +3,15 @@
 namespace ape
 {
 
-Scene::Scene(std::vector<Body> bodies, std::vector<Camera> cameras, LightSystem lightSystem)
+Scene::Scene(
+    std::vector<Body> bodies,
+    std::vector<Camera> cameras,
+    LightSystem lightSystem,
+    Fog const & fog)
     : bodies{std::move(bodies)}
     , cameras{std::move(cameras)}
     , lightSystem{std::move(lightSystem)}
+    , fog{fog}
 {
 }
 
@@ -15,7 +20,6 @@ auto Scene::getBody(int const index)
 {
     return bodies[index];
 }
-
 
 auto Scene::getBodies()
     -> basix::ContainerView<std::vector<Body>>
@@ -109,6 +113,18 @@ auto Scene::getLightSystem() const
     -> LightSystem const &
 {
     return lightSystem;
+}
+
+auto Scene::getFog()
+    -> Fog &
+{
+    return fog;
+}
+
+auto Scene::getFog() const
+    -> Fog const &
+{
+    return fog;
 }
 
 } // namespace ape

@@ -153,6 +153,15 @@ struct LightSystemView
 
 };
 
+struct Fog
+{
+    
+    float density;
+
+    vec3 color;
+
+};
+
 struct DepthMapping
 {
 

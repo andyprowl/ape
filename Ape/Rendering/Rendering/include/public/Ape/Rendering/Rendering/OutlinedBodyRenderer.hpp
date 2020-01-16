@@ -10,6 +10,7 @@ namespace ape
 
 class Body;
 class Camera;
+class Fog;
 class LightSystem;
 class ShadowMapping;
 
@@ -26,6 +27,7 @@ public:
         BodyRange const & bodies,
         Camera const & camera,
         LightSystem const & lightSystem,
+        Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
 
@@ -35,6 +37,7 @@ private:
         BodyRange const & bodies,
         Camera const & camera,
         LightSystem const & lightSystem,
+        Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
 

@@ -6,16 +6,14 @@ uniform Camera camera;
 
 uniform LightSystem lightSystem;
 
-uniform float fogDensity;
-
-uniform vec3 fogColor;
+uniform Fog fog;
 
 // Returns a value in the range ]0.0, 1.0].
-// A value of 1.0 indicates that fog should not be considered at all to render the fragment.
 // A value of 0.0 indicates that only fog color should be considered to render the fragment.
-float calculateFogFactor(const float squaredDistance)
+// A value of 1.0 indicates that fog should not be considered at all to render the fragment.
+float calculateFogFactor(const float distance)
 {
-    return exp(-(squaredDistance * fogDensity));
+    return exp(-(distance * fog.density));
 }
 
 /**
@@ -185,7 +183,7 @@ vec3 calculateNormalizedPointLitFog(const vec3 cameraToFragment, const float squ
             lc,
             squaredDistance);
 
-        color += light.color.diffuse * quantity / light.attenuation.quadratic;
+        color += light.color.diffuse * (quantity / light.attenuation.quadratic);
     }
 
     return color;
@@ -213,7 +211,7 @@ vec3 calculateNormalizedSpotLitFog(const vec3 cameraToFragment, const float squa
             squaredDistance,
             light.outerCutoffCosine);
 
-        color += light.color.diffuse * quantity / light.attenuation.quadratic;
+        color += light.color.diffuse * (quantity / light.attenuation.quadratic);
     }
 
     return color;
@@ -255,19 +253,19 @@ vec3 calculateFogColor(const vec3 color, const vec3 cameraToFragment)
 
     const float distance = sqrt(squaredDistance);
 
-    // This helps removing or completely reducing regular artefacts against the skybox.
+    // This helps reducing regular artefacts against the skybox.
     const float noise = 0.001 * rand(cameraToFragment.xy);
 
-    const vec3 litFogColor = 0.01 * normalizedLitFogColor * fogColor * distance + noise;
+    const vec3 litFogColor = 0.01 * normalizedLitFogColor * fog.color * distance + noise;
 
-    const float fogFactor = calculateFogFactor(squaredDistance);
+    const float fogFactor = calculateFogFactor(distance);
 
     return mix(litFogColor, color, fogFactor);
 }
 
-vec3 fog(const vec3 color, const vec3 cameraToFragment)
+vec3 applyFog(const vec3 color, const vec3 cameraToFragment)
 {
-    if (fogDensity == 0.0)
+    if (fog.density == 0.0)
     {
         return color;
     }
