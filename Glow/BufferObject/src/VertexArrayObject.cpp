@@ -43,4 +43,10 @@ auto VertexArrayObject::unbind() const
     glBindVertexArray(0);
 }
 
+auto VertexArrayObject::getBinding(int const bindingIndex) const
+    -> VertexArrayAttributeBinding
+{
+    return {*this, bindingIndex};
+}
+
 } // namespace glow

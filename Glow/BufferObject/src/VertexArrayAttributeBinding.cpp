@@ -6,8 +6,6 @@
 
 #include <glad/glad.h>
 
-
-
 namespace glow
 {
 
@@ -46,13 +44,13 @@ auto VertexArrayAttributeBinding::setFormat(VertexAttribute const & format)
 
     auto const isNormalized = false;
 
-    auto const type = convertToOpenGLDataType(format.type);
+    auto const componentType = glow::convertToOpenGLDataType(format.componentType);
 
     glVertexArrayAttribFormat(
         vaoId,
         bindingIndex,
         format.numOfComponents,
-        type,
+        componentType,
         isNormalized,
         static_cast<GLuint>(format.relativeOffset));
 }

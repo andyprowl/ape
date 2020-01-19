@@ -16,12 +16,10 @@
 #define getAttributesize(Type, attribute) \
     sizeof(getAttributeType(Type, attribute)) / sizeof(getAttributeBaseType(Type, attribute))
 
-#define encodeAttributeOffset(Type, attribute) offsetof(Type, attribute)
-
 #define encodeAttributeLayout(Type, attribute) glow::VertexAttribute{ \
     glow::asDataType<getAttributeBaseType(Type, attribute)>(), \
     static_cast<int>(getAttributesize(Type, attribute)), \
-    static_cast<int>(encodeAttributeOffset(Type, attribute)), \
+    static_cast<int>(offsetof(Type, attribute)), \
     sizeof(Type)}
 
 namespace glow

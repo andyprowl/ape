@@ -2,8 +2,6 @@
 
 #include <Glow/BufferObject/DataType.hpp>
 
-#include <cstddef>
-
 namespace glow
 {
 
@@ -13,11 +11,11 @@ class VertexAttribute
 public:
 
     VertexAttribute(
-        DataType const type,
+        DataType const componentType,
         int const numOfComponents,
-        std::size_t const relativeOffset,
+        int const relativeOffset,
         int const stride)
-        : type{type}
+        : componentType{componentType}
         , numOfComponents{numOfComponents}
         , relativeOffset{relativeOffset}
         , stride{stride}
@@ -26,11 +24,11 @@ public:
 
 public:
 
-    DataType type;
+    DataType componentType;
 
     int numOfComponents;
 
-    std::size_t relativeOffset;
+    int relativeOffset;
 
     int stride;
 

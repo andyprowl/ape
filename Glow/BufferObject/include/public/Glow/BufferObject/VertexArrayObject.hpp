@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Glow/BufferObject/BufferObject.hpp>
+#include <Glow/BufferObject/VertexArrayAttributeBinding.hpp>
 
 namespace glow
 {
@@ -17,6 +18,9 @@ public:
 
     auto unbind() const
         -> void;
+
+    auto getBinding(int bindingIndex) const
+        -> VertexArrayAttributeBinding;
 
 };
 

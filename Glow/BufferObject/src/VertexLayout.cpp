@@ -5,10 +5,25 @@
 namespace glow
 {
 
+namespace
+{
+
+auto encodeAttributeOffset(VertexAttribute const & attribute)
+    -> void const *
+{
+    auto const relativeOffset = static_cast<std::size_t>(attribute.relativeOffset);
+
+    return reinterpret_cast<void const *>(relativeOffset);
+}
+
+} // unnamed namespace
+
 auto sendLayoutAttributeToGpu(int const position, VertexAttribute const & attribute)
     -> void
 {
-    auto const type = convertToOpenGLDataType(attribute.type);
+    auto const type = convertToOpenGLDataType(attribute.componentType);
+
+    auto const encodedOffset = encodeAttributeOffset(attribute);
 
     glVertexAttribPointer(
         position,
@@ -16,7 +31,7 @@ auto sendLayoutAttributeToGpu(int const position, VertexAttribute const & attrib
         type,
         GL_FALSE,
         attribute.stride,
-        reinterpret_cast<void const *>(attribute.relativeOffset));
+        encodedOffset);
 
     glEnableVertexAttribArray(position);
 }
