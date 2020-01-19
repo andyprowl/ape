@@ -12,8 +12,8 @@ auto getVertexLayout()
     -> glow::VertexLayout<2>
 {
     return {
-        encodeComponentLayout(PlainQuadVertex, position),
-        encodeComponentLayout(PlainQuadVertex, textureCoordinates)};
+        encodeAttributeLayout(PlainQuadVertex, position),
+        encodeAttributeLayout(PlainQuadVertex, textureCoordinates)};
 }
 
 } // unnamed namespace

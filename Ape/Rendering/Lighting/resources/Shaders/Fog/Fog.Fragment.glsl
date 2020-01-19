@@ -112,7 +112,7 @@ float calculateNormalizedPointLightQuantity(
 {
     const float a = vLengthSquared;
     const float b = 2.0 * dot(v, lc);
-    const float u = 0.1; // To avoid singularity when v and lp are parallel and opposing
+    const float u = 0.1; // To avoid singularity when v and lc are parallel and opposing
     const float c = dot(lc, lc) + u;
 
     return evaluateLightQuantityIntegral(v, 0.0, 1.0, a, b, c);

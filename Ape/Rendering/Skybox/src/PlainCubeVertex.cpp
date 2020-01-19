@@ -11,7 +11,7 @@ namespace
 auto getVertexLayout()
     -> glow::VertexLayout<1>
 {
-    return {encodeComponentLayout(PlainCubeVertex, position)};
+    return {encodeAttributeLayout(PlainCubeVertex, position)};
 }
 
 } // unnamed namespace

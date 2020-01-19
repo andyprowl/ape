@@ -13,7 +13,7 @@ auto buildStandardShader()
 {
     auto const builder = glow::ShaderBuilder{{
         resourceFolder "/shaders",
-        Ape_Rendering_Lighting_ResourceFolder "/shaders"}};
+        resourceFolder_Ape_Rendering_Lighting "/shaders"}};
 
     return builder.buildProgram(
         std::vector<glow::VertexShaderPath>{"Skybox/Skybox.Vertex.glsl"},

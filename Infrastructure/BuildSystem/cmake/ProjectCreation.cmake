@@ -235,15 +235,15 @@ function(
             ${TARGET_NAME} 
             resourceFolder="${CMAKE_CURRENT_SOURCE_DIR}/resources")
 
-        set(PUBLIC_RESOURCE_FOLDER ${TARGET_NAME}_ResourceFolder)
+        set(PUBLIC_RESOURCE_FOLDER resourceFolder::_${TARGET_NAME})
 
         if(CURRENT_PACKAGE)
 
-            set(PUBLIC_RESOURCE_FOLDER "${CURRENT_PACKAGE}::${PUBLIC_RESOURCE_FOLDER}")
-
-            string(REPLACE "::" "_" PUBLIC_RESOURCE_FOLDER "${PUBLIC_RESOURCE_FOLDER}")
+            set(PUBLIC_RESOURCE_FOLDER "resourceFolder::${CURRENT_PACKAGE}::${TARGET_NAME}")
 
         endif()
+
+        string(REPLACE "::" "_" PUBLIC_RESOURCE_FOLDER "${PUBLIC_RESOURCE_FOLDER}")
 
         AddPublicDefinitions(
             ${TARGET_NAME} 

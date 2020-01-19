@@ -12,10 +12,10 @@ auto getVertexLayout()
     -> glow::VertexLayout<4>
 {
     return {
-        encodeComponentLayout(ShapeVertex, position),
-        encodeComponentLayout(ShapeVertex, normal),
-        encodeComponentLayout(ShapeVertex, tangent),
-        encodeComponentLayout(ShapeVertex, textureCoordinates)};
+        encodeAttributeLayout(ShapeVertex, position),
+        encodeAttributeLayout(ShapeVertex, normal),
+        encodeAttributeLayout(ShapeVertex, tangent),
+        encodeAttributeLayout(ShapeVertex, textureCoordinates)};
 }
 
 } // unnamed namespace

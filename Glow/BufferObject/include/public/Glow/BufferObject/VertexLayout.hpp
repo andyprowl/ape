@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/BufferObject/VertexComponent.hpp>
+#include <Glow/BufferObject/VertexAttribute.hpp>
 
 #include <Basix/Meta/HomogenousVariadics.hpp>
 
@@ -8,44 +8,50 @@
 #include <initializer_list>
 #include <type_traits>
 
-#define getComponentSizeInFloats(Type, component) \
-    sizeof(decltype(std::declval<Type>().component)) / sizeof(float)
+#define getAttributeType(Type, attribute) decltype(std::declval<Type>().attribute)
 
-#define encodeComponentOffset(Type, component) offsetof(Type, component)
+#define getAttributeBaseType(Type, attribute) \
+    glow::BaseType<getAttributeType(Type, attribute)>
 
-#define encodeComponentLayout(Type, component) glow::VertexComponent{ \
-    getComponentSizeInFloats(Type, component), \
-    encodeComponentOffset(Type, component), \
+#define getAttributesize(Type, attribute) \
+    sizeof(getAttributeType(Type, attribute)) / sizeof(getAttributeBaseType(Type, attribute))
+
+#define encodeAttributeOffset(Type, attribute) offsetof(Type, attribute)
+
+#define encodeAttributeLayout(Type, attribute) glow::VertexAttribute{ \
+    glow::asDataType<getAttributeBaseType(Type, attribute)>(), \
+    static_cast<int>(getAttributesize(Type, attribute)), \
+    static_cast<int>(encodeAttributeOffset(Type, attribute)), \
     sizeof(Type)}
 
 namespace glow
 {
 
-template<int NumOfComponents>
+template<int NumOfAttributes>
 class VertexLayout
 {
 
 public:
 
-    template<staticListOf(NumOfComponents, VertexComponent, Ts)>
-    VertexLayout(Ts const & ... components)
-        : components{components...}
+    template<staticListOf(NumOfAttributes, VertexAttribute, Ts)>
+    VertexLayout(Ts const & ... attributes)
+        : attributes{attributes...}
     {
     }
 
-    auto getComponent(const int index) const
-        -> const VertexComponent &
+    auto getAttribute(const int index) const
+        -> const VertexAttribute &
     {
-        return components[index];
+        return attributes[index];
     }
 
 private:
 
-    std::array<VertexComponent, static_cast<std::size_t>(NumOfComponents)> components;
+    std::array<VertexAttribute, static_cast<std::size_t>(NumOfAttributes)> attributes;
 
 };
 
-auto sendVertexLayoutToGpu(std::initializer_list<VertexComponent> components)
+auto sendVertexLayoutToGpu(std::initializer_list<VertexAttribute> attributes)
     -> void;
 
 } // namespace glow
@@ -53,13 +59,13 @@ auto sendVertexLayoutToGpu(std::initializer_list<VertexComponent> components)
 namespace glow::detail
 {
 
-template<int NumOfComponents, int... Is>
+template<int NumOfAttributes, int... Is>
 auto sendVertexLayoutToGpu(
-    VertexLayout<NumOfComponents> components,
+    VertexLayout<NumOfAttributes> attributes,
     std::integer_sequence<int, Is...>)
     -> void
 {
-    glow::sendVertexLayoutToGpu({components.getComponent(Is)...});
+    glow::sendVertexLayoutToGpu({attributes.getAttribute(Is)...});
 }
 
 } // namespace glow::detail
@@ -67,11 +73,11 @@ auto sendVertexLayoutToGpu(
 namespace glow
 {
 
-template<int NumOfComponents>
-auto sendVertexLayoutToGpu(VertexLayout<NumOfComponents> components)
+template<int NumOfAttributes>
+auto sendVertexLayoutToGpu(VertexLayout<NumOfAttributes> attributes)
     -> void
 {
-    detail::sendVertexLayoutToGpu(components, std::make_integer_sequence<int, NumOfComponents>{});
+    detail::sendVertexLayoutToGpu(attributes, std::make_integer_sequence<int, NumOfAttributes>{});
 }
 
 // To be specialized individually for concrete vertex types.
