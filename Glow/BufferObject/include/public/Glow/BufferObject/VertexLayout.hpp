@@ -31,21 +31,31 @@ class VertexLayout
 
 public:
 
+    using Attributes = std::array<VertexAttribute, static_cast<std::size_t>(NumOfAttributes)>;
+
+public:
+
     template<staticListOf(NumOfAttributes, VertexAttribute, Ts)>
     VertexLayout(Ts const & ... attributes)
         : attributes{attributes...}
     {
     }
 
+    auto getAttributes() const
+        -> Attributes const &
+    {
+        return attributes;
+    }
+
     auto getAttribute(const int index) const
-        -> const VertexAttribute &
+        -> VertexAttribute const &
     {
         return attributes[index];
     }
 
 private:
 
-    std::array<VertexAttribute, static_cast<std::size_t>(NumOfAttributes)> attributes;
+    Attributes attributes;
 
 };
 
@@ -77,6 +87,11 @@ auto sendVertexLayoutToGpu(VertexLayout<NumOfAttributes> attributes)
 {
     detail::sendVertexLayoutToGpu(attributes, std::make_integer_sequence<int, NumOfAttributes>{});
 }
+
+// To be specialized individually for concrete vertex types.
+template<typename VertexType>
+auto getVertexLayout()
+    -> VertexLayout<VertexType::numOfComponents>;
 
 // To be specialized individually for concrete vertex types.
 template<typename VertexType>

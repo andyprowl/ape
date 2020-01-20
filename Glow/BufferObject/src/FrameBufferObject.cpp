@@ -61,7 +61,7 @@ auto createFrameBufferResource()
 {
     auto id = GpuResource::Id{};
 
-    glGenFramebuffers(1, &id);
+    glCreateFramebuffers(1, &id);
 
     return GpuResource{id, [] (GpuResource::Id const id) { glDeleteFramebuffers(1, &id); }};
 }

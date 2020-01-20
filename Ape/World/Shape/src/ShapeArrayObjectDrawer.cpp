@@ -46,7 +46,13 @@ auto ShapeArrayObjectDrawer::registerShapes(std::vector<Shape *> const & shapes)
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeArrayObjectDrawer::render(Shape const & shape) const
+auto ShapeArrayObjectDrawer::beginRenderBatch()
+    -> void
+{
+}
+
+// virtual (from ShapeDrawer)
+auto ShapeArrayObjectDrawer::render(Shape const & shape)
     -> void
 {
     auto & arrayObject = getArrayObjectForShape(shape);
@@ -58,6 +64,12 @@ auto ShapeArrayObjectDrawer::render(Shape const & shape) const
     glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
 
     arrayObject.unbind();
+}
+
+// virtual (from ShapeDrawer)
+auto ShapeArrayObjectDrawer::endRenderBatch()
+    -> void
+{
 }
 
 auto ShapeArrayObjectDrawer::setupArrayObjectsForShapes(

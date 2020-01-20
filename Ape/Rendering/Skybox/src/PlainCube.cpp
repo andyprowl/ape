@@ -26,7 +26,7 @@ auto makeVertexBufferObject(std::vector<PlainCubeVertex> const & vertices)
 
     auto const vertexBufferSize = vertices.size() * sizeof(PlainCubeVertex);
 
-    glBufferData(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), GL_STATIC_DRAW);
+    glBufferStorage(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), 0);
 
     glow::sendVertexLayoutToGpu<PlainCubeVertex>();
 

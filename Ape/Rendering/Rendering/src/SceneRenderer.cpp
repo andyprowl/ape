@@ -196,11 +196,19 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
     // VAO here.
     with(arrayObject, [this]
     {
+        shapeDrawer->beginRenderBatch();
+
         renderDepthMapping();
 
         auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
 
         renderSceneBodies();
+
+        shapeDrawer->endRenderBatch();
+
+        renderBodyBounds();
+
+        renderSkybox();
     });
 }
 
@@ -214,11 +222,19 @@ auto SceneRenderer::renderSceneToScreenSurface()
     // VAO here.
     with(arrayObject, [this]
     {
+        shapeDrawer->beginRenderBatch();
+
         renderDepthMapping();
 
         targetSurface->makeCurrent();
 
         renderSceneBodies();
+
+        shapeDrawer->endRenderBatch();
+
+        renderBodyBounds();
+
+        renderSkybox();
     });
 }
 
@@ -244,7 +260,7 @@ auto SceneRenderer::renderSceneBodies()
     -> void
 {
     auto const profiling = profiler->startTimingCpuGpuTask("Scene body rendering");
-
+    
     setupViewport();
 
     clearTargetBuffers();
@@ -255,10 +271,6 @@ auto SceneRenderer::renderSceneBodies()
     renderNonPickedBodies();
 
     renderPickedBodies();
-
-    renderBodyBounds();
-
-    renderSkybox();
 }
 
 auto SceneRenderer::clearTargetBuffers()

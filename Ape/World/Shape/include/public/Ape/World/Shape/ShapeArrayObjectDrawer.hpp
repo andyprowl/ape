@@ -22,7 +22,15 @@ public:
         -> void;
 
     // virtual (from ShapeDrawer)
-    auto render(Shape const & shape) const
+    auto beginRenderBatch()
+        -> void override;
+
+    // virtual (from ShapeDrawer)
+    auto render(Shape const & shape)
+        -> void override;
+
+    // virtual (from ShapeDrawer)
+    auto endRenderBatch() 
         -> void override;
 
 private:

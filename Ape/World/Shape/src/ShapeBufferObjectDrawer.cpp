@@ -9,7 +9,13 @@
 namespace ape
 {
 
-auto ShapeBufferObjectDrawer::render(Shape const & shape) const
+// virtual (from ShapeDrawer)
+auto ShapeBufferObjectDrawer::beginRenderBatch()
+    -> void
+{
+}
+
+auto ShapeBufferObjectDrawer::render(Shape const & shape)
     -> void
 {
     shape.getVertexBufferObject().bind();
@@ -21,6 +27,12 @@ auto ShapeBufferObjectDrawer::render(Shape const & shape) const
     auto const numOfVertices = shape.getNumOfVertices();
 
     glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
+}
+
+// virtual (from ShapeDrawer)
+auto ShapeBufferObjectDrawer::endRenderBatch() 
+    -> void
+{
 }
 
 } // namespace ape

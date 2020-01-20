@@ -17,7 +17,7 @@ auto createRenderBufferResource()
 {
     auto id = GpuResource::Id{};
 
-    glGenRenderbuffers(1, &id);
+    glCreateRenderbuffers(1, &id);
 
     return GpuResource{id, [] (GpuResource::Id const id) { glDeleteRenderbuffers(1, &id); }};
 }

@@ -41,7 +41,7 @@ auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
 
 BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     BlinnPhongShaderProgram & shader,
-    ShapeDrawer const & shapeRenderer)
+    ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
     , performFrustumCulling{true}

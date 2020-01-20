@@ -55,7 +55,7 @@ auto VertexArrayAttributeBinding::setFormat(VertexAttribute const & format)
         static_cast<GLuint>(format.relativeOffset));
 }
 
-auto VertexArrayAttributeBinding::setSource(
+auto VertexArrayAttributeBinding::setVertexSource(
     VertexBufferObject const & sourceBuffer,
     int const offsetFromStart,
     int const stride)

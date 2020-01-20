@@ -15,7 +15,7 @@ auto createElementBufferResource()
 {
     auto id = GpuResource::Id{};
 
-    glGenBuffers(1, &id);
+    glCreateBuffers(1, &id);
 
     return GpuResource{id, [] (GpuResource::Id const id) { glDeleteBuffers(1, &id); }};
 }

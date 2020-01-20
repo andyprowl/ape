@@ -6,6 +6,8 @@
 namespace glow
 {
 
+class ElementBufferObject;
+
 class VertexArrayObject : public BufferObject
 {
 
@@ -21,6 +23,15 @@ public:
 
     auto getBinding(int bindingIndex) const
         -> VertexArrayAttributeBinding;
+
+    auto setIndexSource(ElementBufferObject const & buffer)
+        -> void;
+
+    auto enableAttribute(int attributeIndex)
+        -> void;
+
+    auto disableAttribute(int attributeIndex)
+        -> void;
 
 };
 

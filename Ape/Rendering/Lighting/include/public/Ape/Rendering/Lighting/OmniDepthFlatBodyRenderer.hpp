@@ -34,7 +34,7 @@ public:
 
     OmniDepthFlatBodyRenderer(
         OmniDepthFlatShaderProgram & shader,
-        ShapeDrawer const & shapeRenderer);
+        ShapeDrawer & shapeRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -97,7 +97,7 @@ private:
 
     OmniDepthFlatShaderProgram * shader;
 
-    ShapeDrawer const * shapeRenderer;
+    ShapeDrawer * shapeRenderer;
 
     TaskTimeProfiler * profiler;
 

@@ -26,7 +26,7 @@ class BlinnPhongBodyRenderer
 
 public:
 
-    BlinnPhongBodyRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    BlinnPhongBodyRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer & shapeRenderer);
 
     auto render(
         BodyRange const & bodies,
@@ -74,7 +74,7 @@ private:
 
     BlinnPhongShaderProgram * shader;
 
-    ShapeDrawer const * shapeRenderer;
+    ShapeDrawer * shapeRenderer;
 
     bool performFrustumCulling;
 

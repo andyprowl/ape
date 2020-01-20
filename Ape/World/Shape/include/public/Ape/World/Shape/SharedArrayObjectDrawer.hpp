@@ -2,15 +2,19 @@
 
 #include <Ape/World/Shape/ShapeDrawer.hpp>
 
+#include <Glow/BufferObject/VertexArrayObject.hpp>
+
 namespace ape
 {
 
 class Shape;
 
-class ShapeBufferObjectDrawer : public ShapeDrawer
+class SharedArrayObjectDrawer : public ShapeDrawer
 {
 
 public:
+
+    SharedArrayObjectDrawer();
 
     // virtual (from ShapeDrawer)
     auto beginRenderBatch()
@@ -23,6 +27,10 @@ public:
     // virtual (from ShapeDrawer)
     auto endRenderBatch()
         -> void override;
+
+private:
+
+    glow::VertexArrayObject arrayObject;
 
 };
 

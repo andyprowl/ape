@@ -2,34 +2,25 @@
 
 #include <Glow/BufferObject/VertexLayout.hpp>
 
-namespace ape
+namespace glow
 {
 
-namespace
-{
-
-auto getVertexLayout()
+template<>
+auto getVertexLayout<ape::ShapeVertex>()
     -> glow::VertexLayout<4>
 {
     return {
-        encodeAttributeLayout(ShapeVertex, position),
-        encodeAttributeLayout(ShapeVertex, normal),
-        encodeAttributeLayout(ShapeVertex, tangent),
-        encodeAttributeLayout(ShapeVertex, textureCoordinates)};
+        encodeAttributeLayout(ape::ShapeVertex, position),
+        encodeAttributeLayout(ape::ShapeVertex, normal),
+        encodeAttributeLayout(ape::ShapeVertex, tangent),
+        encodeAttributeLayout(ape::ShapeVertex, textureCoordinates)};
 }
-
-} // unnamed namespace
-
-} // namespace ape
-
-namespace glow
-{
 
 template<>
 auto sendVertexLayoutToGpu<ape::ShapeVertex>()
     -> void
 {
-    auto const layout = ape::getVertexLayout();
+    auto const layout = getVertexLayout<ape::ShapeVertex>();
 
     sendVertexLayoutToGpu(layout);
 }

@@ -26,7 +26,7 @@ public:
     auto setFormat(VertexAttribute const & format)
         -> void;
 
-    auto setSource(VertexBufferObject const & sourceBuffer, int offsetFromStart, int stride)
+    auto setVertexSource(VertexBufferObject const & sourceBuffer, int offsetFromStart, int stride)
         -> void;
 
 private:

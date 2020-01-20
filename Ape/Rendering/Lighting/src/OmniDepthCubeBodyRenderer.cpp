@@ -40,7 +40,7 @@ auto asReference(Body * const body)
 
 OmniDepthCubeBodyRenderer::OmniDepthCubeBodyRenderer(
     OmniDepthCubeShaderProgram & shader,
-    ShapeDrawer const & shapeRenderer)
+    ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
     , profiler{nullptr}

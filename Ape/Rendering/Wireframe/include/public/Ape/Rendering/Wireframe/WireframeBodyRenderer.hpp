@@ -24,7 +24,7 @@ public:
 
     WireframeBodyRenderer(
         WireframeShaderProgram & shader,
-        ShapeDrawer const & shapeRenderer,
+        ShapeDrawer & shapeRenderer,
         LineStyleProvider const & styleProvider);
 
     auto render(BodyRange const & bodies, Camera const & camera) const
@@ -48,7 +48,7 @@ private:
 
     WireframeShaderProgram * shader;
 
-    ShapeDrawer const * shapeRenderer;
+    ShapeDrawer * shapeRenderer;
     
     LineStyleProvider const * styleProvider;
 

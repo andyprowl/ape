@@ -11,6 +11,10 @@ class ShapeVertex
 
 public:
 
+    static constexpr auto const numOfComponents = 4;
+
+public:
+
     ShapeVertex(
         glm::vec3 const & position,
         glm::vec3 const & normal,

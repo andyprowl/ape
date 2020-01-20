@@ -19,7 +19,7 @@ namespace ape
 
 WireframeBodyRenderer::WireframeBodyRenderer(
     WireframeShaderProgram & shader,
-    ShapeDrawer const & shapeRenderer,
+    ShapeDrawer & shapeRenderer,
     LineStyleProvider const & styleProvider)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}

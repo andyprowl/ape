@@ -32,7 +32,7 @@ public:
 
     OmniDepthCubeBodyRenderer(
         OmniDepthCubeShaderProgram & shader,
-        ShapeDrawer const & shapeRenderer);
+        ShapeDrawer & shapeRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -71,7 +71,7 @@ private:
 
     OmniDepthCubeShaderProgram * shader;
 
-    ShapeDrawer const * shapeRenderer;
+    ShapeDrawer * shapeRenderer;
 
     TaskTimeProfiler * profiler;
 

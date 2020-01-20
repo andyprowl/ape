@@ -32,7 +32,7 @@ public:
 
 public:
 
-    MonoDepthBodyRenderer(MonoDepthShaderProgram & shader, ShapeDrawer const & shapeRenderer);
+    MonoDepthBodyRenderer(MonoDepthShaderProgram & shader, ShapeDrawer & shapeRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -107,7 +107,7 @@ private:
 
     MonoDepthShaderProgram * shader;
 
-    ShapeDrawer const * shapeRenderer;
+    ShapeDrawer * shapeRenderer;
 
     TaskTimeProfiler * profiler;
 

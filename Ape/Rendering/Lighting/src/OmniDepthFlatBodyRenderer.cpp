@@ -65,7 +65,7 @@ auto getFaceCamera(
 
 OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
     OmniDepthFlatShaderProgram & shader,
-    ShapeDrawer const & shapeRenderer)
+    ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
     , profiler{nullptr}
