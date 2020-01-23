@@ -1,8 +1,5 @@
 #include <Ape/World/Shape/Shape.hpp>
 
-#include <Glow/BufferObject/VertexArrayObject.hpp>
-#include <Glow/BufferObject/VertexLayout.hpp>
-
 #include <glad/glad.h>
 #include <glm/geometric.hpp>
 
@@ -15,38 +12,6 @@ namespace
 auto const minFloat = std::numeric_limits<float>::min();
 
 auto const maxFloat = std::numeric_limits<float>::max();
-
-auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
-    -> glow::VertexBufferObject
-{
-    auto vbo = glow::VertexBufferObject{};
-
-    vbo.bind();
-
-    auto const vertexBufferSize = vertices.size() * sizeof(ShapeVertex);
-
-    glBufferStorage(GL_ARRAY_BUFFER, vertexBufferSize, vertices.data(), 0);
-
-    glow::sendVertexLayoutToGpu<ShapeVertex>();
-
-    return vbo;
-}
-
-auto makeVertexIndexBufferObject(std::vector<unsigned int> const & indices)
-    -> glow::ElementBufferObject
-{
-    auto ebo = glow::ElementBufferObject{};
-
-    ebo.bind();
-
-    glBufferStorage(
-        GL_ELEMENT_ARRAY_BUFFER,
-        indices.size() * sizeof(unsigned int),
-        indices.data(),
-        0);
-
-    return ebo;
-}
 
 auto makeAxisAlignedBoundingBox(std::vector<ShapeVertex> const & vertices)
     -> Box
@@ -91,53 +56,29 @@ auto makeBoundingVolumes(std::vector<ShapeVertex> const & vertices)
 
 } // unnamed namespace
 
-Shape::Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices)
-    : bufferObjects{makeVertices(vertices, indices)}
-    , numOfVertices{static_cast<int>(indices.size())}
+Shape::Shape(std::vector<ShapeVertex> vertices, std::vector<unsigned int> indices)
+    : vertices{std::move(vertices)}
+    , indices{std::move(indices)}
     , boundingVolumes{makeBoundingVolumes(vertices)}
 {
 }
 
-auto Shape::getVertexBufferObject() const 
-    -> const glow::VertexBufferObject &
+auto Shape::getVertices() const 
+    -> const std::vector<ShapeVertex> &
 {
-    return bufferObjects.vertex;
+    return vertices;
 }
 
-auto Shape::getElementBufferObject() const 
-    -> const glow::ElementBufferObject &
+auto Shape::getIndices() const 
+    -> const std::vector<unsigned int> &
 {
-    return bufferObjects.element;
-}
-
-auto Shape::getNumOfVertices() const
-    -> int
-{
-    return numOfVertices;
+    return indices;
 }
 
 auto Shape::getBoundingVolumes() const
     -> ShapeBounds const &
 {
     return boundingVolumes;
-}
-
-auto Shape::makeVertices(
-    std::vector<ShapeVertex> const & vertices,
-    std::vector<unsigned int> const & indices) const
-    -> BufferObjectSet
-{
-    auto vao = glow::VertexArrayObject{};
-
-    vao.bind();
-
-    auto vbo = makeVertexBufferObject(vertices);
-
-    auto ebo = makeVertexIndexBufferObject(indices);
-
-    vao.unbind();
-
-    return {std::move(vbo), std::move(ebo)};
 }
 
 } // namespace ape

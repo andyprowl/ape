@@ -18,48 +18,37 @@ class Shape : public basix::Counted<Shape>
 
 public:
 
-    Shape(std::vector<ShapeVertex> const & vertices, std::vector<unsigned int> const & indices);
+    Shape(std::vector<ShapeVertex> vertices, std::vector<unsigned int> indices);
 
-    auto getVertexBufferObject() const
-        -> const glow::VertexBufferObject &;
+    auto getVertices() const
+        -> std::vector<ShapeVertex> const &;
 
-    auto getElementBufferObject() const
-        -> const glow::ElementBufferObject &;
-
-    auto getNumOfVertices() const
-        -> int;
+    auto getIndices() const
+        -> std::vector<unsigned int> const &;
 
     auto getBoundingVolumes() const
         -> ShapeBounds const &;
 
 private:
 
-    class BufferObjectSet
-    {
-    
-    public:
+    std::vector<ShapeVertex> vertices;
 
-        glow::VertexBufferObject vertex;
-
-        glow::ElementBufferObject element;
-    
-    };
-
-private:
-
-    auto makeVertices(
-        std::vector<ShapeVertex> const & vertices,
-        std::vector<unsigned int> const & indices) const
-        -> BufferObjectSet;
-
-private:
-    
-    BufferObjectSet bufferObjects;
-
-    int numOfVertices;
+    std::vector<unsigned int> indices;
 
     ShapeBounds boundingVolumes;
 
 };
+
+inline auto getNumOfVertices(Shape const & shape)
+    -> int
+{
+    return static_cast<int>(shape.getVertices().size());
+}
+
+inline auto getNumOfIndices(Shape const & shape)
+    -> int
+{
+    return static_cast<int>(shape.getIndices().size());
+}
 
 } // namespace ape

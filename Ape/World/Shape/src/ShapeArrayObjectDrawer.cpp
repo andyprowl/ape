@@ -1,6 +1,7 @@
 #include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
 
 #include <Ape/World/Shape/Shape.hpp>
+#include <Ape/World/Shape/ShapeBufferObjectCreator.hpp>
 
 #include <Glow/BufferObject/VertexLayout.hpp>
 #include <Glow/GpuResource/ScopedBinder.hpp>
@@ -14,35 +15,14 @@
 namespace ape
 {
 
-namespace
-{
-
-auto setupRenderingState(Shape const & shape)
-    -> void
-{
-    shape.getVertexBufferObject().bind();
-
-    shape.getElementBufferObject().bind();
-
-    glow::sendVertexLayoutToGpu<ShapeVertex>();
-}
-
-} // unnamed namespace
-
 ShapeArrayObjectDrawer::ShapeArrayObjectDrawer(std::vector<Shape *> const & shapes)
-{
-    registerShapes(shapes);
-}
-
-auto ShapeArrayObjectDrawer::registerShapes(std::vector<Shape *> const & shapes)
-    -> void
 {
     // This design is weak and error-prone, as it relies on consistent order of insertion and
     // creation of shapes. It should be changed to something more robust.
 
-    shapeArrayObjects.resize(shapeArrayObjects.size() + shapes.size());
+    bufferObjects.resize(shapes.size());
 
-    setupArrayObjectsForShapes(shapes, shapeArrayObjects);
+    setupBufferObjectsForShapes(shapes, bufferObjects);
 }
 
 // virtual (from ShapeDrawer)
@@ -57,13 +37,11 @@ auto ShapeArrayObjectDrawer::render(Shape const & shape)
 {
     auto & arrayObject = getArrayObjectForShape(shape);
 
-    arrayObject.bind();
+    auto const binder = glow::bind(arrayObject);
 
-    auto const numOfVertices = shape.getNumOfVertices();
+    auto const numOfIndices = getNumOfIndices(shape);
 
-    glDrawElements(GL_TRIANGLES, numOfVertices, GL_UNSIGNED_INT, 0);
-
-    arrayObject.unbind();
+    glDrawElements(GL_TRIANGLES, numOfIndices, GL_UNSIGNED_INT, 0);
 }
 
 // virtual (from ShapeDrawer)
@@ -72,29 +50,57 @@ auto ShapeArrayObjectDrawer::endRenderBatch()
 {
 }
 
-auto ShapeArrayObjectDrawer::setupArrayObjectsForShapes(
+auto ShapeArrayObjectDrawer::setupBufferObjectsForShapes(
     std::vector<Shape *> const & shapes,
-    std::vector<glow::VertexArrayObject> & destination) const
+    std::vector<BufferObjectSet> & destination) const
     -> void
 {
     for (auto const shape : shapes)
     {
         auto const id = shape->getInstanceIndex();
 
-        auto & arrayObject = destination[id];
+        auto & shapeBuffers = destination[id];
 
-        setupArrayObjectForShape(*shape, arrayObject);
+        setupBufferObjectsForShape(*shape, shapeBuffers);
     }
 }
 
-auto ShapeArrayObjectDrawer::setupArrayObjectForShape(
+auto ShapeArrayObjectDrawer::setupBufferObjectsForShape(
     Shape const & shape,
-    glow::VertexArrayObject & destination) const
+    BufferObjectSet & destination) const
     -> void
 {
-    auto const binder = glow::bind(destination);
+    destination.array.bind();
 
-    setupRenderingState(shape);
+    setupVertexAndElementBuffersForShape(shape, destination);
+
+    setupRenderingState(destination);
+
+    destination.array.unbind();
+}
+
+auto ShapeArrayObjectDrawer::setupVertexAndElementBuffersForShape(
+    Shape const & shape,
+    BufferObjectSet & destination) const
+    -> void
+{
+    auto const creator = ShapeBufferObjectCreator{};
+
+    auto shapeBuffers = creator.makeBuffers(shape);
+    
+    destination.vertex = std::move(shapeBuffers.vertex);
+    
+    destination.element = std::move(shapeBuffers.element);
+}
+
+auto ShapeArrayObjectDrawer::setupRenderingState(BufferObjectSet & destination) const
+    -> void
+{
+    auto const vertexBinder = glow::bind(destination.vertex);
+
+    auto const elementBinder = glow::bind(destination.element);
+
+    glow::sendVertexLayoutToGpu<ShapeVertex>();
 }
 
 auto ShapeArrayObjectDrawer::getArrayObjectForShape(Shape const & shape) const
@@ -102,7 +108,7 @@ auto ShapeArrayObjectDrawer::getArrayObjectForShape(Shape const & shape) const
 {
     auto const shapeIndex = shape.getInstanceIndex();
 
-    return shapeArrayObjects[shapeIndex];
+    return bufferObjects[shapeIndex].array;
 }
 
 } // namespace ape

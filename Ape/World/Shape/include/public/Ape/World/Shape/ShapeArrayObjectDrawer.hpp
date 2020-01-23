@@ -2,7 +2,9 @@
 
 #include <Ape/World/Shape/ShapeDrawer.hpp>
 
+#include <Glow/BufferObject/ElementBufferObject.hpp>
 #include <Glow/BufferObject/VertexArrayObject.hpp>
+#include <Glow/BufferObject/VertexBufferObject.hpp>
 
 #include <vector>
 
@@ -18,9 +20,6 @@ public:
 
     explicit ShapeArrayObjectDrawer(std::vector<Shape *> const & shapes);
 
-    auto registerShapes(std::vector<Shape *> const & shapes)
-        -> void;
-
     // virtual (from ShapeDrawer)
     auto beginRenderBatch()
         -> void override;
@@ -34,15 +33,38 @@ public:
         -> void override;
 
 private:
-    
-    auto setupArrayObjectsForShapes(
+
+    class BufferObjectSet
+    {
+
+    public:
+
+        glow::VertexArrayObject array;
+
+        glow::VertexBufferObject vertex;
+
+        glow::ElementBufferObject element;
+
+    };
+
+private:
+
+    auto setupBufferObjectsForShapes(
         std::vector<Shape *> const & shapes,
-        std::vector<glow::VertexArrayObject> & destination) const
+        std::vector<BufferObjectSet> & destination) const
         -> void;
 
-    auto setupArrayObjectForShape(
+    auto setupBufferObjectsForShape(
         Shape const & shape,
-        glow::VertexArrayObject & destination) const
+        BufferObjectSet & destination) const
+        -> void;
+
+    auto setupVertexAndElementBuffersForShape(
+        Shape const & shape,
+        BufferObjectSet & destination) const
+        -> void;
+
+    auto setupRenderingState(BufferObjectSet & destination) const
         -> void;
 
     auto getArrayObjectForShape(Shape const & shape) const
@@ -50,7 +72,7 @@ private:
 
 private:
 
-    std::vector<glow::VertexArrayObject> shapeArrayObjects;
+    std::vector<BufferObjectSet> bufferObjects;
 
 };
 

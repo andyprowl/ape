@@ -23,6 +23,7 @@
 #include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
 #include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
 #include <Ape/World/Shape/SharedArrayObjectDrawer.hpp>
+#include <Ape/World/Shape/SharedBufferObjectDrawer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
 #include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
 #include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
@@ -48,8 +49,9 @@ public:
         , skyboxSelector{skyboxCollection}
      // Using a VAO per shape seems to make performance worse...
      // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>()}
-        , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>()}
+     // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
+        , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
+     // , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
         , depthBodyRenderer{
             {monoDepthShader, *shapeRenderer},
             {omniDepthCubeShader, *shapeRenderer},

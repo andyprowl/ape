@@ -250,8 +250,8 @@ int main(int argc, char *argv[])
     
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectDrawer>();
-    auto shapeRenderer1 = std::make_unique<ape::SharedArrayObjectDrawer>();
+    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
+    auto shapeRenderer1 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer1 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer1},
@@ -321,8 +321,8 @@ int main(int argc, char *argv[])
 
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer2 = std::make_unique<ape::ShapeBufferObjectDrawer>();
-    auto shapeRenderer2 = std::make_unique<ape::SharedArrayObjectDrawer>();
+    //auto shapeRenderer2 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
+    auto shapeRenderer2 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer2 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer2},
@@ -396,8 +396,8 @@ int main(int argc, char *argv[])
 
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer3 = std::make_unique<ape::ShapeBufferObjectDrawer>();
-    auto shapeRenderer3 = std::make_unique<ape::SharedArrayObjectDrawer>();
+    //auto shapeRenderer3 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
+    auto shapeRenderer3 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer3 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer3},
