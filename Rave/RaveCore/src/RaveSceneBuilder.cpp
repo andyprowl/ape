@@ -7,6 +7,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include <Basix/Range/Transform.hpp>
+
 namespace rave
 {
 
@@ -51,17 +53,17 @@ private:
     auto createContainers()
         -> void;
     
-    auto createRotatedContainers()
+    auto createRandomRotatedContainers()
         -> void;
 
-    auto getRotatedContainerPositions() const
+    auto getRandomRotatedContainerPositions() const
         -> std::vector<glm::vec3>;
 
-    auto createNonRotatedContainers()
+    auto createCustomTransformedContainers()
         -> void;
 
-    auto getNonRotatedContainerPositions() const
-        -> std::vector<glm::vec3>;
+    auto getCustomContainerTransformations() const
+        -> std::vector<glm::mat4>;
 
     auto createLamps()
         -> void;
@@ -121,6 +123,12 @@ private:
         -> void;
 
     auto getHousePositions() const
+        -> std::vector<glm::vec3>;
+    
+    auto createLibertyStatues()
+        -> void;
+
+    auto getLibertyStatuePositions() const
         -> std::vector<glm::vec3>;
 
     auto createSponzas()
@@ -219,8 +227,8 @@ auto StatefulSceneBuilder::build()
 auto StatefulSceneBuilder::createBodies()
     -> void
 {
-    scene.reserveBodyCapacity(200);
-
+    scene.reserveBodyCapacity(500);
+    
     createFloor();
 
     createWalls();
@@ -240,11 +248,13 @@ auto StatefulSceneBuilder::createBodies()
     createDynos();
 
     createCastles();
-
+    
     createTaverns();
 
     createHouses();
-
+    
+    createLibertyStatues();
+    
     createSponzas();
 }
 
@@ -261,9 +271,9 @@ auto StatefulSceneBuilder::createTiledPlatform(const float z)
 
     auto & wood = assets->generalAssets.models[1];
 
-    for (auto row = -5; row < +5; ++row)
+    for (auto row = -7; row < +7; ++row)
     {
-        for (auto col = -5; col < +5; ++col)
+        for (auto col = -7; col < +7; ++col)
         {
             auto const isInnerSquare = (std::abs(row) < 1) && (std::abs(col) < 1);
 
@@ -307,15 +317,15 @@ auto StatefulSceneBuilder::createWalls()
         glm::radians(-90.0f),
         glm::vec3{0.0f, 0.0f, 1.0f});
 
-    for (auto i = -5; i < +5; ++i)
+    for (auto i = -7; i < +7; ++i)
     {
-        createWall(i, -5, {0.0f, -2.5f}, rotationAroundX, concrete);
+        createWall(i, -7, {0.0f, -2.5f}, rotationAroundX, concrete);
 
-        createWall(i, +4, {0.0f, +2.5f}, rotationAroundX, concrete);
+        createWall(i, +6, {0.0f, +2.5f}, rotationAroundX, concrete);
 
-        createWall(-5, i, {-2.5f, 0.0f}, rotationAroundZ, concrete);
+        createWall(-7, i, {-2.5f, 0.0f}, rotationAroundZ, concrete);
 
-        createWall(+4, i, {+2.5f, 0.0f}, rotationAroundZ, concrete);
+        createWall(+6, i, {+2.5f, 0.0f}, rotationAroundZ, concrete);
     }
 }
 
@@ -337,17 +347,17 @@ auto StatefulSceneBuilder::createWall(
 auto StatefulSceneBuilder::createContainers()
     -> void
 {
-    createRotatedContainers();
+    createRandomRotatedContainers();
 
-    createNonRotatedContainers();
+    createCustomTransformedContainers();
 }
 
-auto StatefulSceneBuilder::createRotatedContainers()
+auto StatefulSceneBuilder::createRandomRotatedContainers()
     -> void
 {
     auto const & model = assets->generalAssets.models[2];
 
-    auto const positions = getRotatedContainerPositions();
+    auto const positions = getRandomRotatedContainerPositions();
 
     auto const numOfBodies = scene.getNumOfBodies();
 
@@ -371,7 +381,7 @@ auto StatefulSceneBuilder::createRotatedContainers()
     }
 }
 
-auto StatefulSceneBuilder::getRotatedContainerPositions() const
+auto StatefulSceneBuilder::getRandomRotatedContainerPositions() const
     -> std::vector<glm::vec3>
 {
     return {
@@ -388,29 +398,57 @@ auto StatefulSceneBuilder::getRotatedContainerPositions() const
         {-1.3f, 1.0f, -1.5f}};
 }
 
-auto StatefulSceneBuilder::createNonRotatedContainers()
+auto StatefulSceneBuilder::createCustomTransformedContainers()
     -> void
 {
     auto const & model = assets->generalAssets.models[2];
 
-    auto const positions = getNonRotatedContainerPositions();
+    auto const transformations = getCustomContainerTransformations();
 
     auto const numOfBodies = scene.getNumOfBodies();
 
-    for (auto i = 0; i < static_cast<int>(positions.size()); ++i)
+    for (auto i = 0; i < static_cast<int>(transformations.size()); ++i)
     {
-        auto const translation = glm::translate(glm::mat4{1.0f}, positions[i]);
+        auto const & transformation = transformations[i];
 
-        addBody(translation, model);
+        addBody(transformation, model);
     }
 }
 
-auto StatefulSceneBuilder::getNonRotatedContainerPositions() const
-    -> std::vector<glm::vec3>
+auto StatefulSceneBuilder::getCustomContainerTransformations() const
+    -> std::vector<glm::mat4>
 {
-    return {
-        {0.0f, -1.5f, 7.5f},
-        {2.0f, -1.5f, 7.5f}};
+    class Transformation
+    {
+    
+    public:
+
+        glm::vec3 position;
+
+        float rotationAroundY;
+    
+    };
+
+    auto const transformations = std::vector<Transformation>{
+        {{0.0f, -1.5f, 7.5f}, 0.0f},
+        {{2.0f, -1.5f, 7.5f}, 0.0f},
+        {{-15.0f, -1.5f, -16.0f}, 10.0f},
+        {{-16.5f, -1.5f, -16.1f}, -15.0f},
+        {{-19.0f, -1.5f, -16.2f}, 20.0f},
+        {{-20.2f, -1.5f, -16.2f}, 7.0f},
+        {{-21.3f, -1.5f, -16.6f}, -4.0f}};
+
+    return basix::transform(transformations, [] (Transformation const & transformation)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, transformation.position);
+
+        auto const rotation = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(transformation.rotationAroundY),
+            glm::vec3{0.0f, 0.1f, 0.0f});
+
+        return (translation * rotation);
+    });
 }
 
 auto StatefulSceneBuilder::createLamps()
@@ -441,7 +479,9 @@ auto StatefulSceneBuilder::getPointLampPositions() const
         {0.0f, 3.0f, -40.0f},
         {0.0f, 0.0f, -35.0f},
         {0.0f, 3.0f, -30.0f},
-        {-5.0f, 3.0f, -15.0f}};
+        {-5.0f, 3.0f, -15.0f},
+        {-15.0f, 2.0f, -10.0f},
+        {-25.0f, 0.0f, -12.0f}};
 }
 
 auto StatefulSceneBuilder::createFlashlights()
@@ -694,7 +734,32 @@ auto StatefulSceneBuilder::getHousePositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {0.0f, -2.0f, 15.0f}};
+        {0.0f, -2.0f, 15.0f},
+        {-20.0f, -2.0f, -20.0f}};
+}
+
+auto StatefulSceneBuilder::createLibertyStatues()
+    -> void
+{
+    auto const & model = assets->libertyStatueAssets.models[0];
+
+    auto const positions = getLibertyStatuePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {3.0f, 3.0f, 3.0f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getLibertyStatuePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-16.0f, -2.5f, -14.0f}};
 }
 
 auto StatefulSceneBuilder::createSponzas()
@@ -851,7 +916,9 @@ auto StatefulSceneBuilder::getPointLightColors()
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
-        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.8f, 0.3f, 0.3f}, Specular{0.9f, 0.3f, 0.3f}}};
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.8f, 0.3f, 0.3f}, Specular{0.9f, 0.3f, 0.3f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.3f, 0.8f, 1.0f}, Specular{0.3f, 0.7f, 0.9f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{1.0f, 1.0f, 1.0f}, Specular{1.0f, 1.0f, 1.0f}}};
 }
 
 auto StatefulSceneBuilder::createPointLight(

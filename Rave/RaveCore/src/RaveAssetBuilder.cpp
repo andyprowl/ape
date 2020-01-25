@@ -440,6 +440,12 @@ auto RaveAssetBuilder::build() const
 
     loadAssets("House/House.obj", "House", collection.houseAssets, collection);
 
+    loadAssets(
+        "LibertyStatue/LibertyStatue.obj",
+        "LibertyStatue",
+        collection.libertyStatueAssets,
+        collection);
+
     if (!doNotIncludeSponza)
     {
         loadAssets("Sponza/sponza.obj", "Sponza", collection.sponzaAssets, collection);

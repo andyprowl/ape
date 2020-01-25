@@ -31,7 +31,7 @@ public:
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
-        , maxNumOfPointLights{8}
+        , maxNumOfPointLights{10}
         , maxNumOfSpotLights{8}
         , maxNumOfDirectionalLights{8}
         , firstDepthMapUnit{firstDepthMapUnit}

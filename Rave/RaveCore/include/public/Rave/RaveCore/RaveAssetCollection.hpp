@@ -26,6 +26,8 @@ public:
 
     ape::AssetRepository houseAssets;
 
+    ape::AssetRepository libertyStatueAssets;
+
     ape::AssetRepository sponzaAssets;
 
     std::vector<ape::Shape *> shapes;
