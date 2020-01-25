@@ -111,15 +111,11 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor, bool const cr
 
     glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
 
-    glBindTexture(GL_TEXTURE_2D, textureId);
-
     setTextureFiltering(textureId, descriptor);
 
     setTextureWrapping(textureId, descriptor);
 
     setTextureImageData(textureId, descriptor, createMipmap);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
 
     return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }
