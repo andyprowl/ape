@@ -50,8 +50,8 @@ public:
      // Using a VAO per shape seems to make performance worse...
      // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
      // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
-        , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
+     // , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
+        , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
         , depthBodyRenderer{
             {monoDepthShader, *shapeRenderer},
             {omniDepthCubeShader, *shapeRenderer},

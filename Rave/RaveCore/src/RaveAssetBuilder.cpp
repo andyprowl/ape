@@ -427,7 +427,7 @@ auto RaveAssetBuilder::build() const
     createSimpleAssets(collection);
 
     loadAssets("Nanosuit/nanosuit.obj", "Nanosuit", collection.nanosuitAssets, collection);
-
+    
     loadAssets("Dragon/Dragon.obj", "Dragon", collection.dragonAssets, collection);
 
     loadAssets("Spaceship/Spaceship.obj", "Spaceship", collection.spaceshipAssets, collection);
@@ -444,7 +444,7 @@ auto RaveAssetBuilder::build() const
     {
         loadAssets("Sponza/sponza.obj", "Sponza", collection.sponzaAssets, collection);
     }
-
+    
     return collection;
 }
 

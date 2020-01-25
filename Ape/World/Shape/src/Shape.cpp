@@ -59,7 +59,7 @@ auto makeBoundingVolumes(std::vector<ShapeVertex> const & vertices)
 Shape::Shape(std::vector<ShapeVertex> vertices, std::vector<unsigned int> indices)
     : vertices{std::move(vertices)}
     , indices{std::move(indices)}
-    , boundingVolumes{makeBoundingVolumes(vertices)}
+    , boundingVolumes{makeBoundingVolumes(this->vertices)}
 {
 }
 

@@ -28,6 +28,7 @@
 #include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
 #include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
 #include <Ape/World/Shape/SharedArrayObjectDrawer.hpp>
+#include <Ape/World/Shape/SharedBufferObjectDrawer.hpp>
 
 #include <Basix/Range/Search.hpp>
 
@@ -251,7 +252,8 @@ int main(int argc, char *argv[])
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
     //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    auto shapeRenderer1 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    //auto shapeRenderer1 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    auto shapeRenderer1 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer1 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer1},
@@ -322,7 +324,8 @@ int main(int argc, char *argv[])
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
     //auto shapeRenderer2 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    auto shapeRenderer2 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    //auto shapeRenderer2 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    auto shapeRenderer2 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer2 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer2},
@@ -397,7 +400,8 @@ int main(int argc, char *argv[])
     // Using a VAO per shape seems to make performance worse...
     //auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
     //auto shapeRenderer3 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    auto shapeRenderer3 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    //auto shapeRenderer3 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
+    auto shapeRenderer3 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
 
     auto depthBodyRenderer3 = ape::DepthBodyRenderer{
         {monoDepthShader, *shapeRenderer3},

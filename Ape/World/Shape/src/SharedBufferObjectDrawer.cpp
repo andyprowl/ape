@@ -68,11 +68,13 @@ auto SharedBufferObjectDrawer::render(Shape const & shape)
     
     auto const numOfIndices = getNumOfIndices(shape);
 
+    auto const indexBufferOffset = offsets.elementBufferOffset * sizeof(unsigned int);
+
     glDrawElementsBaseVertex(
         GL_TRIANGLES,
         numOfIndices,
         GL_UNSIGNED_INT,
-        reinterpret_cast<void *>(static_cast<std::uintptr_t>(offsets.elementBufferOffset)),
+        reinterpret_cast<void *>(static_cast<std::uintptr_t>(indexBufferOffset)),
         offsets.vertexBufferOffset);
 }
 

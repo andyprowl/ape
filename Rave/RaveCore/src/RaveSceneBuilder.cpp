@@ -31,9 +31,6 @@ private:
     auto createFloor()
         -> void;
 
-    auto createCeiling()
-        -> void;
-
     auto createTiledPlatform(float z)
         -> void;
 
@@ -226,8 +223,6 @@ auto StatefulSceneBuilder::createBodies()
 
     createFloor();
 
-    //createCeiling();
-
     createWalls();
 
     createContainers();
@@ -235,7 +230,7 @@ auto StatefulSceneBuilder::createBodies()
     createLamps();
 
     createFlashlights();
-    
+ 
     createNanosuits();
 
     createDragons();
@@ -257,12 +252,6 @@ auto StatefulSceneBuilder::createFloor()
     -> void
 {
     createTiledPlatform(-2.0f);
-}
-
-auto StatefulSceneBuilder::createCeiling()
-    -> void
-{
-    createTiledPlatform(40.0f);
 }
 
 auto StatefulSceneBuilder::createTiledPlatform(const float z)
