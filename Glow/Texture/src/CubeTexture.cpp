@@ -193,9 +193,7 @@ auto CubeTexture::unbind() const
 auto CubeTexture::generateMipmap()
     -> void
 {
-    auto const binder = glow::bind(*this);
-
-    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+    glGenerateTextureMipmap(getId());
 }
 
 auto CubeTexture::setLabel(std::string_view const label)
