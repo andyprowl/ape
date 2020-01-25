@@ -31,9 +31,9 @@ public:
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
-        , maxNumOfPointLights{10}
+        , maxNumOfPointLights{15}
         , maxNumOfSpotLights{8}
-        , maxNumOfDirectionalLights{8}
+        , maxNumOfDirectionalLights{4}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
         bindSamplers(program);

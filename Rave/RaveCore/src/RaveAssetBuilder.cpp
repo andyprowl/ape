@@ -437,6 +437,10 @@ auto RaveAssetBuilder::build() const
 
     loadAssets("House/House.obj", "House", collection.houseAssets, collection);
 
+    loadAssets("Cottage/Cottage.obj", "Cottage", collection.cottageAssets, collection);
+
+    loadAssets("Bridge/Bridge.obj", "Bridge", collection.bridgeAssets, collection);
+
     loadAssets(
         "LibertyStatue/LibertyStatue.obj",
         "LibertyStatue",

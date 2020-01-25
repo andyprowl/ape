@@ -125,6 +125,18 @@ private:
     auto getHousePositions() const
         -> std::vector<glm::vec3>;
     
+    auto createCottages()
+        -> void;
+
+    auto getCottagePositions() const
+        -> std::vector<glm::vec3>;
+    
+    auto createBridges()
+        -> void;
+
+    auto getBridgePositions() const
+        -> std::vector<glm::vec3>;
+    
     auto createLibertyStatues()
         -> void;
 
@@ -228,7 +240,7 @@ auto StatefulSceneBuilder::createBodies()
     -> void
 {
     scene.reserveBodyCapacity(500);
-    
+
     createFloor();
 
     createWalls();
@@ -250,8 +262,12 @@ auto StatefulSceneBuilder::createBodies()
     createCastles();
     
     createTaverns();
-
+    
     createHouses();
+    
+    createCottages();
+    
+    createBridges();
     
     createLibertyStatues();
     
@@ -481,7 +497,9 @@ auto StatefulSceneBuilder::getPointLampPositions() const
         {0.0f, 3.0f, -30.0f},
         {-5.0f, 3.0f, -15.0f},
         {-15.0f, 2.0f, -10.0f},
-        {-25.0f, 0.0f, -12.0f}};
+        {-25.0f, 0.0f, -12.0f},
+        {8.0f, 3.0f, -15.0f},
+        {15.0f, 0.0f, -10.0f}};
 }
 
 auto StatefulSceneBuilder::createFlashlights()
@@ -738,6 +756,59 @@ auto StatefulSceneBuilder::getHousePositions() const
         {-20.0f, -2.0f, -20.0f}};
 }
 
+auto StatefulSceneBuilder::createCottages()
+    -> void
+{
+    auto const & model = assets->cottageAssets.models[0];
+
+    auto const positions = getCottagePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {1.0f, 1.0f, 1.0f});
+
+    for (auto const & position : positions)
+    {
+        auto const rotationY = glm::rotate(
+            glm::mat4{1.0f},
+            glm::radians(180.f),
+            glm::vec3{0.0f, 1.0f, 0.0f});
+
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling * rotationY, model);
+    }
+}
+
+auto StatefulSceneBuilder::getCottagePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {20.0f, 0.0f, -20.0f}};
+}
+
+auto StatefulSceneBuilder::createBridges()
+    -> void
+{
+    auto const & model = assets->bridgeAssets.models[0];
+
+    auto const positions = getBridgePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.08f, 0.08f, 0.08f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getBridgePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {8.0f, -2.1f, -6.0f}};
+}
+
 auto StatefulSceneBuilder::createLibertyStatues()
     -> void
 {
@@ -759,7 +830,9 @@ auto StatefulSceneBuilder::getLibertyStatuePositions() const
     -> std::vector<glm::vec3>
 {
     return {
-        {-16.0f, -2.5f, -14.0f}};
+        {-16.0f, -2.5f, -14.0f},
+        {-14.0f, -2.5f, -7.0f},
+        {-6.0f, -2.5f, 0.0f}};
 }
 
 auto StatefulSceneBuilder::createSponzas()
@@ -892,7 +965,7 @@ auto StatefulSceneBuilder::createPointLights()
 
         auto & light = createPointLight(position, color, "PointLight_" + std::to_string(i));
 
-        if (i >= 2)
+        if ((i >= 2) && (i <= 9))
         {
             light.turnOff();
         }
@@ -918,7 +991,9 @@ auto StatefulSceneBuilder::getPointLightColors()
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}},
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.8f, 0.3f, 0.3f}, Specular{0.9f, 0.3f, 0.3f}},
         {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.3f, 0.8f, 1.0f}, Specular{0.3f, 0.7f, 0.9f}},
-        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{1.0f, 1.0f, 1.0f}, Specular{1.0f, 1.0f, 1.0f}}};
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{1.0f, 1.0f, 1.0f}, Specular{1.0f, 1.0f, 1.0f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{1.0f, 1.0f, 1.0f}, Specular{1.0f, 1.0f, 1.0f}},
+        {Ambient{0.1f, 0.1f, 0.1f}, Diffuse{0.4f, 0.3f, 0.6f}, Specular{1.0f, 0.7f, 0.8f}}};
 }
 
 auto StatefulSceneBuilder::createPointLight(

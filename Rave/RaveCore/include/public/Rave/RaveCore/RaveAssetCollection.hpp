@@ -26,6 +26,10 @@ public:
 
     ape::AssetRepository houseAssets;
 
+    ape::AssetRepository cottageAssets;
+
+    ape::AssetRepository bridgeAssets;
+
     ape::AssetRepository libertyStatueAssets;
 
     ape::AssetRepository sponzaAssets;
