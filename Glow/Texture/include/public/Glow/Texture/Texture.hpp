@@ -10,8 +10,6 @@
 namespace glow
 {
 
-enum class TextureStorageType;
-
 class TextureSwizzleMask;
 
 class Texture
@@ -44,9 +42,6 @@ public:
     auto getSize() const
         -> basix::Size<int>;
 
-    auto setSize(basix::Size<int> const & newSize)
-        -> void;
-
     auto setSwizzleMask(TextureSwizzleMask const & mask)
         -> void;
 
@@ -54,11 +49,6 @@ public:
         -> void;
 
     auto setLabel(std::string_view label)
-        -> void;
-
-private:
-
-    auto recreateMutableStorage()
         -> void;
 
 private:

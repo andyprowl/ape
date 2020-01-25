@@ -40,7 +40,7 @@ public:
 
     Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
         : gateway{4, 5, enableDebugOutput}
-        , window{gateway.createWindow("Rave", {2000, 1000})}
+        , window{gateway.createWindow("Rave", {1920, 1080})}
         , assets{createRaveAssets(doNotIncludeSponza)}
         , scene{createRaveScene(assets, doNotIncludeSponza)}
         , effectCollection{RaveEffectCollectionReader{}.read()}

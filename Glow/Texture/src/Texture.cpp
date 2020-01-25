@@ -1,6 +1,5 @@
 #include <Glow/Texture/Texture.hpp>
 
-#include <Glow/Texture/TextureStorageType.hpp>
 #include <Glow/Texture/TextureSwizzleMask.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
@@ -19,13 +18,13 @@ namespace glow
 namespace
 {
 
-auto setTextureFiltering(TextureDescriptor const & descriptor)
+auto setTextureFiltering(GpuResource::Id const textureId, TextureDescriptor const & descriptor)
     -> void
 {
     auto const magnification = convertToOpenGLTextureMagnificationFilter(
         descriptor.filtering.magnification);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magnification);
+    glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, magnification);
 
     auto const minification = convertToOpenGLTextureMinificationFilter(
         descriptor.filtering.minification);
@@ -33,14 +32,14 @@ auto setTextureFiltering(TextureDescriptor const & descriptor)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minification);
 }
 
-auto setTextureWrapping(TextureDescriptor const & descriptor)
+auto setTextureWrapping(GpuResource::Id const textureId, TextureDescriptor const & descriptor)
     -> void
 {
     auto const wrapping = convertToOpenGLTextureWrapping(descriptor.wrapping);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
+    glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, wrapping);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapping);
+    glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, wrapping);
 }
 
 auto determineNumOfMipmapLevels(TextureDescriptor const & descriptor)
@@ -56,7 +55,9 @@ auto determineNumOfMipmapLevels(TextureDescriptor const & descriptor)
     return basix::log2(std::max(baseSize.width, baseSize.height));
 }
 
-auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
+auto setImmutableTextureImageData(
+    GpuResource::Id const textureId,
+    TextureDescriptor const & descriptor)
     -> void
 {
     auto const imageFormat = convertToOpenGLImageFormat(descriptor.image.format);
@@ -67,8 +68,8 @@ auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
 
     auto const numOfMipmapLevels = determineNumOfMipmapLevels(descriptor);
 
-    glTexStorage2D(
-        GL_TEXTURE_2D,
+    glTextureStorage2D(
+        textureId,
         numOfMipmapLevels,
         internalFormat,
         descriptor.image.size.width,
@@ -76,8 +77,8 @@ auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
 
     if (descriptor.image.bytes != nullptr)
     {
-        glTexSubImage2D(
-            GL_TEXTURE_2D,
+        glTextureSubImage2D(
+            textureId,
             0,
             0,
             0,
@@ -89,48 +90,17 @@ auto setImmutableTextureImageData(TextureDescriptor const & descriptor)
     }
 }
 
-auto setMutableTextureImageData(TextureDescriptor const & descriptor)
+auto setTextureImageData(
+    GpuResource::Id const textureId,
+    TextureDescriptor const & descriptor,
+    bool const createMipmap)
     -> void
 {
-    auto const imageFormat = convertToOpenGLImageFormat(descriptor.image.format);
-
-    auto const internalFormat = convertToOpenGLInternalFormat(descriptor.internalFormat);
-
-    auto const pixelType = convertToOpenGLPixelType(descriptor.image.pixelType);
-
-    auto const numOfMipmapLevels = determineNumOfMipmapLevels(descriptor);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, numOfMipmapLevels);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        internalFormat,
-        descriptor.image.size.width,
-        descriptor.image.size.height,
-        0,
-        imageFormat,
-        pixelType,
-        descriptor.image.bytes.get());
-}
-
-auto setTextureImageData(TextureDescriptor const & descriptor, bool const createMipmap)
-    -> void
-{
-    if (descriptor.storageType == TextureStorageType::modifiable)
-    {
-        setMutableTextureImageData(descriptor);
-    }
-    else
-    {
-        assert(descriptor.storageType == TextureStorageType::immutable);
-
-        setImmutableTextureImageData(descriptor);
-    }
+    setImmutableTextureImageData(textureId, descriptor);
 
     if (createMipmap)
     {
-        glGenerateMipmap(GL_TEXTURE_2D);
+        glGenerateTextureMipmap(textureId);
     }
 }
 
@@ -139,15 +109,15 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor, bool const cr
 {
     auto textureId = GpuResource::Id{};
 
-    glGenTextures(1, &textureId);
+    glCreateTextures(GL_TEXTURE_2D, 1, &textureId);
 
     glBindTexture(GL_TEXTURE_2D, textureId);
 
-    setTextureFiltering(descriptor);
+    setTextureFiltering(textureId, descriptor);
 
-    setTextureWrapping(descriptor);
+    setTextureWrapping(textureId, descriptor);
 
-    setTextureImageData(descriptor, createMipmap);
+    setTextureImageData(textureId, descriptor, createMipmap);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -221,27 +191,12 @@ auto Texture::getSize() const
     return size;
 }
 
-auto Texture::setSize(basix::Size<int> const & newSize)
-    -> void
-{
-    if (newSize == size)
-    {
-        return;
-    }
-    
-    size = newSize;
-
-    recreateMutableStorage();
-}
-
 auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
     -> void
 {
-    auto const binder = glow::bind(*this);
-
     auto const swizzleMask = convertToOpenGLSwizzleMask(mask);
 
-    glTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask.data());
+    glTextureParameteriv(getId(), GL_TEXTURE_SWIZZLE_RGBA, swizzleMask.data());
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -249,40 +204,13 @@ auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
 auto Texture::generateMipmap()
     -> void
 {
-    auto const binder = glow::bind(*this);
-
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateTextureMipmap(getId());
 }
 
 auto Texture::setLabel(std::string_view const label)
     -> void
 {
     glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());
-}
-
-auto Texture::recreateMutableStorage()
-    -> void
-{
-    auto const binder = glow::bind(*this);
-
-    auto const openGLImageFormat = convertToOpenGLImageFormat(imageFormat);
-
-    auto const openGLInternalFormat = convertToOpenGLInternalFormat(internalFormat);
-
-    auto const openGLPixelType = convertToOpenGLPixelType(pixelType);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        openGLInternalFormat,
-        size.width,
-        size.height,
-        0,
-        openGLImageFormat,
-        openGLPixelType,
-        nullptr);
-
-    assert(glGetError() == GL_NO_ERROR);
 }
 
 } // namespace glow

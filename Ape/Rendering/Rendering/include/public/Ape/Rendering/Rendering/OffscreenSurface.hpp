@@ -28,9 +28,6 @@ public:
     auto getSize() const
         -> basix::Size<int>;
 
-    auto setSize(basix::Size<int> const & newSize)
-        -> void;
-
 private:
 
     glow::Texture colorBuffer;

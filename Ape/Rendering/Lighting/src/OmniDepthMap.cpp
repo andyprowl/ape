@@ -1,7 +1,6 @@
 #include <Ape/Rendering/Lighting/OmniDepthMap.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <glad/glad.h>
 

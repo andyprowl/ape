@@ -1,7 +1,6 @@
 #include <Ape/Rendering/Lighting/MonoDepthMap.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <glad/glad.h>
 
@@ -43,7 +42,6 @@ auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const l
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge,
-        glow::TextureStorageType::immutable,
         numOfMipmapLevels};
 
     auto texture = glow::Texture{descriptor, false, std::string{labelPrefix} + ".Texture"};

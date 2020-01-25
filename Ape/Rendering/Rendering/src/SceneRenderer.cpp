@@ -82,7 +82,7 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 {
     viewport = newViewport;
 
-    offscreenSurface.setSize(viewport.size);
+    offscreenSurface = OffscreenSurface{viewport.size};
 
     shadowMapping.lightSystemView.setViewSize(viewport.size);
 }

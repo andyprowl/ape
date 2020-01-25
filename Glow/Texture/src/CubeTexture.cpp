@@ -1,7 +1,5 @@
 #include <Glow/Texture/CubeTexture.hpp>
 
-#include <Glow/Texture/TextureStorageType.hpp>
-
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <Basix/Mathematics/Math.hpp>
@@ -14,28 +12,28 @@ namespace glow
 namespace
 {
 
-auto setTextureFitering(TextureFiltering const filtering)
+auto setTextureFitering(GpuResource::Id const textureId, TextureFiltering const filtering)
     -> void
 {
     auto const magnification = convertToOpenGLTextureMagnificationFilter(filtering.magnification);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, magnification);
+    glTextureParameteri(textureId, GL_TEXTURE_MAG_FILTER, magnification);
 
     auto const minification = convertToOpenGLTextureMinificationFilter(filtering.minification);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, minification);
+    glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, minification);
 }
 
-auto setTextureWrapping(TextureWrapping const wrapping)
+auto setTextureWrapping(GpuResource::Id const textureId, TextureWrapping const wrapping)
     -> void
 {
     auto const wrappingMode = convertToOpenGLTextureWrapping(wrapping);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, wrappingMode);
+    glTextureParameteri(textureId, GL_TEXTURE_WRAP_R, wrappingMode);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, wrappingMode);
+    glTextureParameteri(textureId, GL_TEXTURE_WRAP_S, wrappingMode);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, wrappingMode);
+    glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, wrappingMode);
 }
 
 auto determineNumOfMipmapLevels(CubeTextureDescriptor const & descriptor)
@@ -52,7 +50,10 @@ auto determineNumOfMipmapLevels(CubeTextureDescriptor const & descriptor)
     return basix::log2(std::max(baseSize.width, baseSize.height));
 }
 
-auto setTextureImageData(GLenum const target, TextureImage const & image)
+auto setTextureImageData(
+    GpuResource::Id const textureId,
+    GLenum const target,
+    TextureImage const & image)
     -> void
 {
     if (image.bytes == nullptr)
@@ -70,10 +71,23 @@ auto setTextureImageData(GLenum const target, TextureImage const & image)
 
     auto const & bytes = image.bytes;
 
-    glTexSubImage2D(target, 0, 0, 0, width, height, imageFormat, pixelType, bytes.get());
+    auto const faceIndex = target - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+
+    glTextureSubImage3D(
+        textureId,
+        0,
+        0,
+        0,
+        faceIndex,
+        width,
+        height,
+        1,
+        imageFormat,
+        pixelType,
+        bytes.get());
 }
 
-auto createTextureStorage(CubeTextureDescriptor const & descriptor)
+auto createTextureStorage(GpuResource::Id const textureId, CubeTextureDescriptor const & descriptor)
     -> void
 {
     auto const & imageSize = descriptor.imageSet.right.size;
@@ -82,32 +96,35 @@ auto createTextureStorage(CubeTextureDescriptor const & descriptor)
 
     auto const numOfMimaps = determineNumOfMipmapLevels(descriptor);
 
-    glTexStorage2D(
-        GL_TEXTURE_CUBE_MAP,
+    glTextureStorage2D(
+        textureId,
         numOfMimaps,
         internalFormat,
         imageSize.width,
         imageSize.height);
 }
 
-auto setTextureImageData(CubeTextureImageSet const & imageSet, bool const createMipmap)
+auto setTextureImageData(
+    GpuResource::Id const textureId,
+    CubeTextureImageSet const & imageSet,
+    bool const createMipmap)
     -> void
 {
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_POSITIVE_X, imageSet.right);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_X, imageSet.right);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, imageSet.left);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, imageSet.left);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, imageSet.top);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, imageSet.top);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, imageSet.bottom);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, imageSet.bottom);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, imageSet.front);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, imageSet.front);
 
-    setTextureImageData(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, imageSet.back);
+    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, imageSet.back);
 
     if (createMipmap)
     {
-        glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+        glGenerateTextureMipmap(textureId);
     }
 }
 
@@ -116,19 +133,15 @@ auto makeOpenGLTextureObject(CubeTextureDescriptor const & descriptor, bool cons
 {
     auto textureId = GpuResource::Id{};
 
-    glGenTextures(1, &textureId);
+    glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &textureId);
 
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+    createTextureStorage(textureId, descriptor);
 
-    createTextureStorage(descriptor);
+    setTextureFitering(textureId, descriptor.filtering);
 
-    setTextureFitering(descriptor.filtering);
+    setTextureWrapping(textureId, descriptor.wrapping);
 
-    setTextureWrapping(descriptor.wrapping);
-
-    setTextureImageData(descriptor.imageSet, createMipmap);
-
-    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+    setTextureImageData(textureId, descriptor.imageSet, createMipmap);
 
     return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }

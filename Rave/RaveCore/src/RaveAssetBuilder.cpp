@@ -345,14 +345,11 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 
-    auto const storageType = glow::TextureStorageType::immutable;
-
     // Let the number of mipmap levels be deduced from the image size.
     auto const numOfMipmapLevels = 0;
 
     auto texture = textureReader.read(
         filepath,
-        storageType,
         colorSpace,
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,

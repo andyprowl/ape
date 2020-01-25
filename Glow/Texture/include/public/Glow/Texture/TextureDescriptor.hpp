@@ -2,7 +2,6 @@
 
 #include <Glow/Texture/TextureImage.hpp>
 #include <Glow/Texture/TextureInternalFormat.hpp>
-#include <Glow/Texture/TextureStorageType.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
@@ -24,13 +23,11 @@ public:
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,
         TextureWrapping const wrapping,
-        TextureStorageType const storageType,
         int const numOfMipmapLevels = 1)
         : image{std::move(image)}
         , internalFormat{internalFormat}
         , filtering{filtering}
         , wrapping{wrapping}
-        , storageType{storageType}
         , numOfMipmapLevels{numOfMipmapLevels}
     {
     }
@@ -44,8 +41,6 @@ public:
     TextureFiltering filtering;
 
     TextureWrapping wrapping;
-
-    TextureStorageType storageType;
 
     int numOfMipmapLevels;
 

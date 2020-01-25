@@ -213,8 +213,6 @@ auto MaterialLoader::readAndStoreTexture(
     glow::ColorSpace const colorSpace) const
     -> glow::Texture const &
 {
-    auto const storageType = glow::TextureStorageType::immutable;
-
     auto const filtering = glow::TextureFiltering{
         glow::TextureMagnificationFilter::linear,
         glow::TextureMinificationFilter::linearMipmapLinear};
@@ -226,7 +224,6 @@ auto MaterialLoader::readAndStoreTexture(
 
     auto readTexture = textureReader.read(
         path,
-        storageType,
         colorSpace,
         filtering,
         wrapping,

@@ -1,7 +1,6 @@
 #include <Ape/Rendering/Rendering/OffscreenSurface.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Texture/TextureStorageType.hpp>
 
 #include <cassert>
 
@@ -26,8 +25,7 @@ auto makeColorBuffer(basix::Size<int> const & size)
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linear},
-        glow::TextureWrapping::clampToEdge,
-        glow::TextureStorageType::modifiable};
+        glow::TextureWrapping::clampToEdge};
 
     return glow::Texture{descriptor};
 }
@@ -88,14 +86,6 @@ auto OffscreenSurface::getSize() const
     -> basix::Size<int>
 {
     return size;
-}
-
-auto OffscreenSurface::setSize(basix::Size<int> const & newSize)
-    -> void
-{
-    colorBuffer.setSize(newSize);
-
-    depthAndStencilBuffer.setStorage(newSize);
 }
 
 } // namespace ape

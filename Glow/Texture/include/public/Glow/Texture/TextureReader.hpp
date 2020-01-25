@@ -4,7 +4,6 @@
 #include <Glow/Texture/CubeTexture.hpp>
 #include <Glow/Texture/Texture.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
-#include <Glow/Texture/TextureStorageType.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Basix/FileSystem/FileFinder.hpp>
@@ -43,7 +42,6 @@ public:
 
     auto read(
         std::filesystem::path const & path,
-        TextureStorageType storageType,
         ColorSpace imageColorSpace,
         TextureFiltering filtering,
         TextureWrapping wrapping = TextureWrapping::repeat,
