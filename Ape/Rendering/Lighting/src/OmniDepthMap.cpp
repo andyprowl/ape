@@ -1,7 +1,5 @@
 #include <Ape/Rendering/Lighting/OmniDepthMap.hpp>
 
-#include <Glow/GpuResource/ScopedBinder.hpp>
-
 #include <glad/glad.h>
 
 #include <cassert>
@@ -33,11 +31,9 @@ auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
 auto enableShadowSampling(glow::CubeTexture & texture)
     -> void
 {
-    auto const binder = glow::bind(texture);
+    glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 }
 
 auto makeOmniDepthMapTexture(
@@ -73,8 +69,6 @@ auto makeOmniDepthMapFrameBuffer(
     -> glow::FrameBufferObject
 {
     auto frameBuffer = glow::FrameBufferObject{std::string{labelPrefix} + ".Framebuffer"};
-
-    auto const binder = glow::bind(frameBuffer);
 
     frameBuffer.attach(depthMapTexture, glow::FrameBufferAttachment::depth);
 

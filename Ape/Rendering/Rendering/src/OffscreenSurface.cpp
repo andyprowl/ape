@@ -43,8 +43,6 @@ auto makeFrameBufferForTarget(
 {
     auto frameBuffer = glow::FrameBufferObject{"Offscreen surface framebuffer"};
 
-    auto const binder = glow::bind(frameBuffer);
-
     frameBuffer.attach(colorBuffer, glow::FrameBufferAttachment::color0);
     
     frameBuffer.attach(depthAndStencilBuffer, glow::FrameBufferAttachment::depthAndStencil);

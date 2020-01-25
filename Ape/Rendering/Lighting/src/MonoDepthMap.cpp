@@ -1,7 +1,5 @@
 #include <Ape/Rendering/Lighting/MonoDepthMap.hpp>
 
-#include <Glow/GpuResource/ScopedBinder.hpp>
-
 #include <glad/glad.h>
 
 #include <cassert>
@@ -15,11 +13,9 @@ namespace
 auto enableShadowSampling(glow::Texture & texture)
     -> void
 {
-    auto const binder = glow::bind(texture);
+    glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+    glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 }
 
 auto makeDepthMapTexture(basix::Size<int> const & size, std::string_view const labelPrefix)
@@ -55,8 +51,6 @@ auto makeDepthMapFrameBuffer(glow::Texture & depthMapTexture, std::string_view c
     -> glow::FrameBufferObject
 {
     auto frameBuffer = glow::FrameBufferObject{std::string{labelPrefix} + ".Framebuffer"};
-
-    auto const binder = glow::bind(frameBuffer);
 
     frameBuffer.attach(depthMapTexture, glow::FrameBufferAttachment::depth);
 

@@ -56,9 +56,7 @@ auto RenderBufferObject::unbind() const
 auto RenderBufferObject::setStorage(basix::Size<int> const size)
     -> void
 {
-    auto const binder = glow::bind(*this);
-
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, size.width, size.height);
+    glNamedRenderbufferStorage(getId(), GL_DEPTH24_STENCIL8, size.width, size.height);
 }
 
 auto RenderBufferObject::setLabel(std::string_view const label)

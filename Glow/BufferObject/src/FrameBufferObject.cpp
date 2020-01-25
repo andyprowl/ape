@@ -124,7 +124,7 @@ auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment co
 
     auto const mipmapLevel = 0;
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, GL_TEXTURE_2D, textureId, mipmapLevel);
+    glNamedFramebufferTexture(getId(), glAttachment, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachment const attachment)
@@ -136,7 +136,7 @@ auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachmen
 
     auto const mipmapLevel = 0;
 
-    glFramebufferTexture(GL_FRAMEBUFFER, glAttachment, textureId, mipmapLevel);
+    glNamedFramebufferTexture(getId(), glAttachment, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(
@@ -147,13 +147,13 @@ auto FrameBufferObject::attach(
 {
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
-    auto const glFace = convertToOpenGLFace(face);
+    auto const glFace = static_cast<int>(face);
 
     auto const textureId = texture.getId();
 
     auto const mipmapLevel = 0;
 
-    glFramebufferTexture2D(GL_FRAMEBUFFER, glAttachment, glFace, textureId, mipmapLevel);
+    glNamedFramebufferTextureLayer(getId(), glAttachment, textureId, mipmapLevel, glFace);
 }
 
 auto FrameBufferObject::attach(
@@ -167,19 +167,19 @@ auto FrameBufferObject::attach(
 
     auto const mipmapLevel = 0;
 
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, glAttachment, GL_RENDERBUFFER, bufferId);
+    glNamedFramebufferRenderbuffer(getId(), glAttachment, GL_RENDERBUFFER, bufferId);
 }
 
 auto FrameBufferObject::resetReadTarget()
     -> void
 {
-    glReadBuffer(GL_NONE);
+    glNamedFramebufferReadBuffer(getId(), GL_NONE);
 }
 
 auto FrameBufferObject::resetDrawTarget()
     -> void
 {
-    glDrawBuffer(GL_NONE);
+    glNamedFramebufferReadBuffer(getId(), GL_NONE);
 }
 
 auto FrameBufferObject::setLabel(std::string_view const label)
