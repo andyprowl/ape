@@ -29,7 +29,7 @@ auto setTextureFiltering(GpuResource::Id const textureId, TextureDescriptor cons
     auto const minification = convertToOpenGLTextureMinificationFilter(
         descriptor.filtering.minification);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minification);
+    glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, minification);
 }
 
 auto setTextureWrapping(GpuResource::Id const textureId, TextureDescriptor const & descriptor)
