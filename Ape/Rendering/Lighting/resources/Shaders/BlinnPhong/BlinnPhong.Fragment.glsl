@@ -67,21 +67,13 @@ float sampleShadowWithPercentageCloserFiltering(
     const vec3 depthMapPositionAndTestDepth,
     const sampler2DShadow depthMap)
 {
-    const float testDepth = depthMapPositionAndTestDepth.z;
-
-    const vec2 texelSize = 1.0 / textureSize(depthMap, 0);
-
     float shadow = 0.0;
 
     for (int x = -1; x <= 1; ++x)
     {
         for (int y = -1; y <= 1; ++y)
         {
-            const vec2 xyOffsets = vec2(x, y) * texelSize;
-
-            const vec2 xySamplingCoords = depthMapPositionAndTestDepth.xy + xyOffsets;
-
-            shadow += texture(depthMap, vec3(xySamplingCoords, testDepth)).r;
+            shadow += textureOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
         }
     }
 

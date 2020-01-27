@@ -1,5 +1,4 @@
-- Implement fog
- - Use samplers for linear atan() (exp()?) interpolation instead of relying on computation in shader
+- Extract Rendering::ShapeDrawer out of World::Shape, move the contents of World::Shape into Model
 - Optimization hints
  - Let Blinn-Phong fragment shader only receive lights that are turned on
   - This way we do not need to perform the conditional on the GPU, which is a performance issue
@@ -7,8 +6,9 @@
  - Use instancing for drawing several instances at once (e.g. ground/wall tiles)
  - Do not regenerate shadow maps at every frame, only when the light moves or a shadow caster moves
    within the light's frustum/range
+ - Store all materials in a single UBO and pass in only the material index to reference material
+ - Use samplers for linear atan() (exp()?) interpolation instead of relying on computation in shader
  - Replace expensive fragment shader ops (e.g. pow()?) with sampling from 1D texture
- - Use a single VBO/EBO for shapes that share the same vertex layout (reduce binding/transfer ops)
 - Troubleshoot issue with Sponza model, likely due to normal mapping
  - It also seems to cause a huge slowdown even when looking away from it, so maybe culling does not
    work correctly either?

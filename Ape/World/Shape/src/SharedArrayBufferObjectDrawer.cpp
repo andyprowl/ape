@@ -1,4 +1,4 @@
-#include <Ape/World/Shape/SharedBufferObjectDrawer.hpp>
+#include <Ape/World/Shape/SharedArrayBufferObjectDrawer.hpp>
 
 #include <Ape/World/Shape/Shape.hpp>
 #include <Ape/World/Shape/ShapeBufferObjectCreator.hpp>
@@ -48,24 +48,20 @@ auto makeIndexBufferObject(std::vector<unsigned int> const & indices)
 
 } // unnamed namespace
 
-SharedBufferObjectDrawer::SharedBufferObjectDrawer(std::vector<Shape *> const & shapes)
-    : SharedBufferObjectDrawer{mergeShapeGeometry(shapes)}
+SharedArrayBufferObjectDrawer::SharedArrayBufferObjectDrawer(std::vector<Shape *> const & shapes)
+    : SharedArrayBufferObjectDrawer{mergeShapeGeometry(shapes)}
 {
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::beginRenderBatch()
+auto SharedArrayBufferObjectDrawer::beginRenderBatch()
     -> void
 {
-    bufferObjects.vertex.bind();
-
-    bufferObjects.element.bind();
-
-    glow::sendVertexLayoutToGpu<ShapeVertex>();
+    bufferObjects.array.bind();
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::render(Shape const & shape)
+auto SharedArrayBufferObjectDrawer::render(Shape const & shape)
     -> void
 {
     auto const & offsets = getBufferOffsetsForShape(shape);
@@ -83,23 +79,23 @@ auto SharedBufferObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::endRenderBatch()
+auto SharedArrayBufferObjectDrawer::endRenderBatch()
     -> void
 {
-    bufferObjects.element.unbind();
-
-    bufferObjects.vertex.unbind();
+    bufferObjects.array.unbind();
 }
 
-SharedBufferObjectDrawer::SharedBufferObjectDrawer(ShapeGeometry geometry)
+SharedArrayBufferObjectDrawer::SharedArrayBufferObjectDrawer(ShapeGeometry geometry)
     : bufferObjects{
+        glow::VertexArrayObject{},
         makeVertexBufferObject(geometry.vertices),
         makeIndexBufferObject(geometry.indices)}
     , bufferOffsets{std::move(geometry.offsets)}
 {
+    setupVertexFormat();
 }
 
-auto SharedBufferObjectDrawer::getBufferOffsetsForShape(Shape const & shape) const
+auto SharedArrayBufferObjectDrawer::getBufferOffsetsForShape(Shape const & shape) const
     -> const ShapeBufferOffset &
 {
     auto const shapeIndex = shape.getInstanceIndex();
@@ -107,7 +103,7 @@ auto SharedBufferObjectDrawer::getBufferOffsetsForShape(Shape const & shape) con
     return bufferOffsets[shapeIndex];
 }
 
-auto SharedBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> const & shapes) const
+auto SharedArrayBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> const & shapes) const
     -> ShapeGeometry
 {
     auto geometry = ShapeGeometry{};
@@ -124,6 +120,29 @@ auto SharedBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> const & s
     }
 
     return geometry;
+}
+
+auto SharedArrayBufferObjectDrawer::setupVertexFormat()
+    -> void
+{
+    auto const layout = glow::getVertexLayout<ShapeVertex>();
+
+    auto const & attributes = layout.getAttributes();
+
+    for (auto i = 0; i < static_cast<int>(attributes.size()); ++i)
+    {
+        auto binding = bufferObjects.array.getBinding(i);
+
+        binding.setAttributeIndex(i);
+
+        binding.setFormat(attributes[i]);
+        
+        binding.setVertexSource(bufferObjects.vertex, 0, sizeof(ShapeVertex));
+
+        bufferObjects.array.enableAttribute(i);
+    }
+
+    bufferObjects.array.setIndexSource(bufferObjects.element);
 }
 
 } // namespace ape

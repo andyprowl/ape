@@ -97,8 +97,7 @@ float evaluateLightQuantityIntegral(
 
     // Discriminant is always > 0.0 (needs proof), so the square root is well-defined...
     const float disc = (4.0 * a * c) - (b * b);
-    const float droot = sqrt(disc);
-    const float drootInverse = 1.0 / droot;
+    const float drootInverse = inversesqrt(disc);
 
     return
         evaluateLightQuantityIntegral(to, a, b, drootInverse) -

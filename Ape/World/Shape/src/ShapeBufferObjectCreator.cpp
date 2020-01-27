@@ -15,9 +15,11 @@ auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
 {
     auto vbo = glow::VertexBufferObject{};
 
+    auto const vertexData = static_cast<void const *>(vertices.data());
+
     auto const vertexBufferSize = vertices.size() * sizeof(ShapeVertex);
 
-    glNamedBufferStorage(vbo.getId(), vertexBufferSize, vertices.data(), 0);
+    vbo.createStorage(vertexData, vertexBufferSize);
 
     return vbo;
 }
@@ -27,9 +29,11 @@ auto makeIndexBufferObject(std::vector<unsigned int> const & indices)
 {
     auto ebo = glow::ElementBufferObject{};
 
+    auto const indexData = static_cast<void const *>(indices.data());
+
     auto const indexBufferSize = indices.size() * sizeof(unsigned int);
 
-    glNamedBufferStorage(ebo.getId(), indexBufferSize, indices.data(), 0);
+    ebo.createStorage(indexData, indexBufferSize);
 
     return ebo;
 }

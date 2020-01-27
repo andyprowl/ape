@@ -23,6 +23,7 @@
 #include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
 #include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
 #include <Ape/World/Shape/SharedArrayObjectDrawer.hpp>
+#include <Ape/World/Shape/SharedArrayBufferObjectDrawer.hpp>
 #include <Ape/World/Shape/SharedBufferObjectDrawer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
 #include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
@@ -51,7 +52,8 @@ public:
      // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
      // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
      // , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
-        , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
+     // , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
+        , shapeRenderer{std::make_unique<ape::SharedArrayBufferObjectDrawer>(assets.shapes)}
         , depthBodyRenderer{
             {monoDepthShader, *shapeRenderer},
             {omniDepthCubeShader, *shapeRenderer},

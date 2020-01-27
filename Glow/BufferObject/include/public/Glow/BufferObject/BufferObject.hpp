@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Glow/BufferObject/BufferStorageFlags.hpp>
+
 #include <Glow/GpuResource/GpuResource.hpp>
 
 namespace glow
@@ -21,6 +23,12 @@ public:
     {
         return (getId() != 0);
     }
+
+    auto createStorage(
+        void const * data,
+        std::size_t sizeInBytes,
+        BufferStorageFlags flags = BufferStorageFlags::none)
+        -> void;
 
 protected:
     
