@@ -64,8 +64,8 @@ float computeAttenuationFactor(const Attenuation attenuation, const float source
 }
 
 float sampleShadowWithPercentageCloserFiltering(
-    const vec3 depthMapPositionAndTestDepth,
-    const sampler2DShadow depthMap)
+    const sampler2DShadow depthMap,
+    const vec4 depthMapPositionAndTestDepth)
 {
     float shadow = 0.0;
 
@@ -73,7 +73,7 @@ float sampleShadowWithPercentageCloserFiltering(
     {
         for (int y = -1; y <= 1; ++y)
         {
-            shadow += textureOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
+            shadow += textureProjOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
         }
     }
 
@@ -104,7 +104,7 @@ float calculateMonodirectionalShadowBias(const vec3 lightDirection)
 float calculateMonodirectionalShadowFactor(
     const bool isCastingShadow,
     const vec3 lightDirection,
-    const vec3 lightProjectionPosition,
+    vec4 depthMapPositionAndTestDepth,
     const sampler2DShadow depthMap)
 {
     if (!isCastingShadow)
@@ -112,19 +112,17 @@ float calculateMonodirectionalShadowFactor(
         return 1.0;
     }
 
-    vec3 depthMapPositionAndTestDepth = lightProjectionPosition * 0.5 + 0.5;
-
     const float bias = calculateMonodirectionalShadowBias(lightDirection);
 
-    depthMapPositionAndTestDepth.z -= bias;
+    depthMapPositionAndTestDepth.z -= bias * depthMapPositionAndTestDepth.w;
 
     if (usePercentageCloserFiltering)
     {
-        return sampleShadowWithPercentageCloserFiltering(depthMapPositionAndTestDepth, depthMap);
+        return sampleShadowWithPercentageCloserFiltering(depthMap, depthMapPositionAndTestDepth);
     }
     else
     {
-        return texture(depthMap, depthMapPositionAndTestDepth).r;
+        return textureProj(depthMap, depthMapPositionAndTestDepth).r;
     }
 }
 
@@ -333,12 +331,10 @@ vec3 computeSpotLighting()
             continue;
         }
 
-        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
-
         const float shadow = calculateMonodirectionalShadowFactor(
             light.isCastingShadow,
             light.direction,
-            lightProjectionPosition,
+            lightSpacePosition,
             depthMapping.spot[i]);
 
         if (shadow > 0.0)
@@ -388,12 +384,10 @@ vec3 computeDirectionalLighting()
             continue;
         }
 
-        const vec3 lightProjectionPosition = lightSpacePosition.xyz / lightSpacePosition.w;
-
         const float shadow = calculateMonodirectionalShadowFactor(
             light.isCastingShadow,
             light.direction,
-            lightProjectionPosition,
+            lightSpacePosition,
             depthMapping.directional[i]);
 
         if (shadow > 0.0)

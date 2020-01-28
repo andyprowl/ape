@@ -21,7 +21,13 @@ public:
 
     auto set(ValueType const & lightView)
     {
-        Uniform<glm::mat4>::set(lightView.getCamera().getTransformation());
+        constexpr auto const normalizationMatrix = glm::mat4{
+            {0.5f, 0.0f, 0.0f, 0.0f},
+            {0.0f, 0.5f, 0.0f, 0.0f},
+            {0.0f, 0.0f, 0.5f, 0.0f},
+            {0.5f, 0.5f, 0.5f, 1.0f}};
+
+        Uniform<glm::mat4>::set(normalizationMatrix * lightView.getCamera().getTransformation());
     }
 
     auto operator = (ValueType const & lightView)
