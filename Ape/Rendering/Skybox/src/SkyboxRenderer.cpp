@@ -53,15 +53,15 @@ auto SkyboxRenderer::setupUniforms(
 
     auto const viewRotation = glm::mat4{glm::mat3{camera.getView().getTransformation()}};
 
-    shader->lightSystem = lightSystem;
+    shader->lightSystem.set(lightSystem);
 
-    shader->transform = projection * viewRotation;
+    shader->transform.set(projection * viewRotation);
 
-    shader->skybox = skybox;
+    shader->skybox.set(skybox);
 
-    shader->cameraPosition = camera.getView().getPosition();
+    shader->cameraPosition.set(camera.getView().getPosition());
 
-    shader->fog = fog;
+    shader->fog.set(fog);
 }
 
 auto SkyboxRenderer::drawCube() const

@@ -70,17 +70,6 @@ public:
     auto getId() const
         -> GpuResource::Id;
 
-    template<typename T>
-    auto getUniform(std::string_view name) const
-        -> Uniform<T>
-    {
-        auto const id = resource.get();
-
-        auto const location = getUniformLocation(name);
-
-        return Uniform<T>{id, location};
-    }
-
     auto getVertexShaders() const
         -> std::vector<VertexShader> const &;
 
@@ -97,9 +86,6 @@ private:
 
     auto link()
         -> void;
-
-    auto getUniformLocation(std::string_view name) const
-        -> int;
 
 private:
 

@@ -33,17 +33,9 @@ public:
     auto set(ValueType const & fog)
         -> void
     {
-        density = fog.density;
+        density.set(fog.density);
 
-        color = fog.color;
-    }
-
-    auto operator = (ValueType const & attenuation)
-        -> Uniform &
-    {
-        set(attenuation);
-
-        return *this;
+        color.set(fog.color);
     }
 
 public:

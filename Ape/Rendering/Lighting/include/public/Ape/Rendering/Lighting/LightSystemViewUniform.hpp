@@ -5,7 +5,7 @@
 #include <Ape/Rendering/Lighting/SpotLightViewUniform.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
-#include <Glow/Shader/VectorUniform.hpp>
+#include <Glow/Shader/UniformArray.hpp>
 
 #include <vector>
 
@@ -31,9 +31,9 @@ public:
     auto set(ValueType const & lightSystem)
         -> void
     {
-        spot = lightSystem.getSpotView();
+        spot.set(lightSystem.getSpotView());
 
-        directional = lightSystem.getDirectionalView();
+        directional.set(lightSystem.getDirectionalView());
     }
 
     auto operator = (ValueType const & lightSystem)
@@ -46,9 +46,9 @@ public:
 
 public:
 
-    UnsizedVectorUniform<Uniform<ape::SpotLightView>> spot;
+    UniformArray<Uniform<ape::SpotLightView>> spot;
 
-    UnsizedVectorUniform<Uniform<ape::DirectionalLightView>> directional;
+    UniformArray<Uniform<ape::DirectionalLightView>> directional;
 
 };
 

@@ -167,7 +167,7 @@ vec3 calculateNormalizedPointLitFog(const vec3 cameraToFragment, const float squ
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lightSystem.pointArraySize; ++i)
+    for (int i = 0; i < lightSystem.numOfPointLights; ++i)
     {
         const PointLight light = lightSystem.point[i];
 
@@ -193,7 +193,7 @@ vec3 calculateNormalizedSpotLitFog(const vec3 cameraToFragment, const float squa
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lightSystem.spotArraySize; ++i)
+    for (int i = 0; i < lightSystem.numOfSpotLights; ++i)
     {
         const SpotLight light = lightSystem.spot[i];
 
@@ -221,7 +221,7 @@ vec3 calculateNormalizedDirectionalLitFog(const vec3 cameraToFragment, const flo
 {
     vec3 color = vec3(0.0, 0.0, 0.0);
 
-    for (int i = 0; i < lightSystem.directionalArraySize; ++i)
+    for (int i = 0; i < lightSystem.numOfDirectionalLights; ++i)
     {
         const DirectionalLight light = lightSystem.directional[i];
 

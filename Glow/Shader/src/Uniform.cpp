@@ -23,31 +23,55 @@ restoreCompilerWarnings()
 namespace glow::detail
 {
 
-template<typename T>
-BasicUniform<T>::BasicUniform(ShaderProgram & program, std::string_view name)
-    : BasicUniform{program.getUniform<T>(name)}
+BasicUniform::BasicUniform(ShaderProgram & shader, std::string_view name)
+    : shader{&shader}
+    , location{getUniformLocation(name)}
 {
 }
 
-template<typename T>
-BasicUniform<T>::BasicUniform(
-    ShaderProgram & program,
-    std::string_view name,
-    T const & value)
-    : BasicUniform<T>{program, name}
+auto BasicUniform::getShader() const
+    -> ShaderProgram &
 {
-    auto const shaderBinder = bind(program);
-
-    set(value);
+    return *shader;
 }
+
+auto BasicUniform::getLocation() const
+    -> int
+{
+    return location;
+}
+
+auto BasicUniform::getUniformLocation(std::string_view const name) const
+    -> int
+{
+    auto const shaderId = shader->getId();
+
+    auto const uniformLocation = glGetUniformLocation(shaderId, name.data());
+
+    if (uniformLocation < 0)
+    {
+        throw UniformNotFound{std::string{name}};
+    }
+
+    return uniformLocation;
+}
+
+} // namespace glow::detail
+
+namespace glow
+{
 
 template<>
-auto BasicUniform<bool>::get() const
+auto Uniform<bool>::get() const
     -> bool
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = int{};
 
-    glGetUniformiv(programId, location, &value);
+    glGetUniformiv(shaderId, uniformLocation, &value);
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -55,21 +79,27 @@ auto BasicUniform<bool>::get() const
 }
 
 template<>
-auto BasicUniform<bool>::set(bool const & value)
+auto Uniform<bool>::set(bool const & value)
     -> void
 {
-    glUniform1i(location, value);
+    auto const uniformLocation = getLocation();
+
+    glUniform1i(uniformLocation, value);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<float>::get() const
+auto Uniform<float>::get() const
     -> float
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = float{0.0f};
 
-    glGetUniformfv(programId, location, &value);
+    glGetUniformfv(shaderId, uniformLocation, &value);
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -77,21 +107,27 @@ auto BasicUniform<float>::get() const
 }
 
 template<>
-auto BasicUniform<float>::set(float const & value)
+auto Uniform<float>::set(float const & value)
     -> void
 {
-    glUniform1f(location, value);
+    auto const uniformLocation = getLocation();
+
+    glUniform1f(uniformLocation, value);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<int>::get() const
+auto Uniform<int>::get() const
     -> int
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = int{};
 
-    glGetUniformiv(programId, location, &value);
+    glGetUniformiv(shaderId, uniformLocation, &value);
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -99,21 +135,27 @@ auto BasicUniform<int>::get() const
 }
 
 template<>
-auto BasicUniform<int>::set(int const & value)
+auto Uniform<int>::set(int const & value)
     -> void
 {
-    glUniform1i(location, value);
+    auto const uniformLocation = getLocation();
+
+    glUniform1i(uniformLocation, value);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::mat3>::get() const
+auto Uniform<glm::mat3>::get() const
     -> glm::mat3
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = glm::mat3{0.0f};
 
-    glGetUniformfv(programId, location, glm::value_ptr(value));
+    glGetUniformfv(shaderId, uniformLocation, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -121,21 +163,27 @@ auto BasicUniform<glm::mat3>::get() const
 }
 
 template<>
-auto BasicUniform<glm::mat3>::set(glm::mat3 const & value)
+auto Uniform<glm::mat3>::set(glm::mat3 const & value)
     -> void
 {
-    glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    auto const uniformLocation = getLocation();
+
+    glUniformMatrix3fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::mat4>::get() const
+auto Uniform<glm::mat4>::get() const
     -> glm::mat4
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = glm::mat4{0.0f};
 
-    glGetUniformfv(programId, location, glm::value_ptr(value));
+    glGetUniformfv(shaderId, uniformLocation, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -143,21 +191,27 @@ auto BasicUniform<glm::mat4>::get() const
 }
 
 template<>
-auto BasicUniform<glm::mat4>::set(glm::mat4 const & value)
+auto Uniform<glm::mat4>::set(glm::mat4 const & value)
     -> void
 {
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    auto const uniformLocation = getLocation();
+
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::vec2>::get() const
+auto Uniform<glm::vec2>::get() const
     -> glm::vec2
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<float, 2u>{0};
 
-    glGetUniformfv(programId, location, value.data());
+    glGetUniformfv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -165,21 +219,27 @@ auto BasicUniform<glm::vec2>::get() const
 }
 
 template<>
-auto BasicUniform<glm::vec2>::set(glm::vec2 const & value)
+auto Uniform<glm::vec2>::set(glm::vec2 const & value)
     -> void
 {
-    glUniform2f(location, value.x, value.y);
+    auto const uniformLocation = getLocation();
+
+    glUniform2f(uniformLocation, value.x, value.y);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::ivec2>::get() const
+auto Uniform<glm::ivec2>::get() const
     -> glm::ivec2
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<int, 2u>{0};
 
-    glGetUniformiv(programId, location, value.data());
+    glGetUniformiv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -187,21 +247,27 @@ auto BasicUniform<glm::ivec2>::get() const
 }
 
 template<>
-auto BasicUniform<glm::ivec2>::set(glm::ivec2 const & value)
+auto Uniform<glm::ivec2>::set(glm::ivec2 const & value)
     -> void
 {
-    glUniform2i(location, value.x, value.y);
+    auto const uniformLocation = getLocation();
+
+    glUniform2i(uniformLocation, value.x, value.y);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::vec3>::get() const
+auto Uniform<glm::vec3>::get() const
     -> glm::vec3
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<float, 3u>{0};
 
-    glGetUniformfv(programId, location, value.data());
+    glGetUniformfv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -209,21 +275,27 @@ auto BasicUniform<glm::vec3>::get() const
 }
 
 template<>
-auto BasicUniform<glm::vec3>::set(glm::vec3 const & value)
+auto Uniform<glm::vec3>::set(glm::vec3 const & value)
     -> void
 {
-    glUniform3f(location, value.x, value.y, value.z);
+    auto const uniformLocation = getLocation();
+
+    glUniform3f(uniformLocation, value.x, value.y, value.z);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::ivec3>::get() const
+auto Uniform<glm::ivec3>::get() const
     -> glm::ivec3
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<int, 3u>{0};
 
-    glGetUniformiv(programId, location, value.data());
+    glGetUniformiv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -231,21 +303,27 @@ auto BasicUniform<glm::ivec3>::get() const
 }
 
 template<>
-auto BasicUniform<glm::ivec3>::set(glm::ivec3 const & value)
+auto Uniform<glm::ivec3>::set(glm::ivec3 const & value)
     -> void
 {
-    glUniform3i(location, value.x, value.y, value.z);
+    auto const uniformLocation = getLocation();
+
+    glUniform3i(uniformLocation, value.x, value.y, value.z);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::vec4>::get() const
+auto Uniform<glm::vec4>::get() const
     -> glm::vec4
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<float, 4u>{0};
 
-    glGetUniformfv(programId, location, value.data());
+    glGetUniformfv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -253,21 +331,27 @@ auto BasicUniform<glm::vec4>::get() const
 }
 
 template<>
-auto BasicUniform<glm::vec4>::set(glm::vec4 const & value)
+auto Uniform<glm::vec4>::set(glm::vec4 const & value)
     -> void
 {
-    glUniform4f(location, value.x, value.y, value.z, value.w);
+    auto const uniformLocation = getLocation();
+
+    glUniform4f(uniformLocation, value.x, value.y, value.z, value.w);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
 template<>
-auto BasicUniform<glm::ivec4>::get() const
+auto Uniform<glm::ivec4>::get() const
     -> glm::ivec4
 {
+    auto const shaderId = getShader().getId();
+
+    auto const uniformLocation = getLocation();
+
     auto value = std::array<int, 4u>{0};
 
-    glGetUniformiv(programId, location, value.data());
+    glGetUniformiv(shaderId, uniformLocation, value.data());
 
     assert(glGetError() == GL_NO_ERROR);
 
@@ -275,35 +359,36 @@ auto BasicUniform<glm::ivec4>::get() const
 }
 
 template<>
-auto BasicUniform<glm::ivec4>::set(glm::ivec4 const & value)
+auto Uniform<glm::ivec4>::set(glm::ivec4 const & value)
     -> void
 {
-    glUniform4i(location, value.x, value.y, value.z, value.w);
+    auto const uniformLocation = getLocation();
+
+    glUniform4i(uniformLocation, value.x, value.y, value.z, value.w);
 
     assert(glGetError() == GL_NO_ERROR);
 }
 
+template class Uniform<bool>;
 
-template class BasicUniform<bool>;
+template class Uniform<float>;
 
-template class BasicUniform<float>;
+template class Uniform<int>;
 
-template class BasicUniform<int>;
+template class Uniform<glm::mat3>;
 
-template class BasicUniform<glm::mat3>;
+template class Uniform<glm::mat4>;
 
-template class BasicUniform<glm::mat4>;
+template class Uniform<glm::vec2>;
 
-template class BasicUniform<glm::vec2>;
+template class Uniform<glm::ivec2>;
 
-template class BasicUniform<glm::ivec2>;
+template class Uniform<glm::vec3>;
 
-template class BasicUniform<glm::vec3>;
+template class Uniform<glm::ivec3>;
 
-template class BasicUniform<glm::ivec3>;
+template class Uniform<glm::vec4>;
 
-template class BasicUniform<glm::vec4>;
-
-template class BasicUniform<glm::ivec4>;
+template class Uniform<glm::ivec4>;
 
 } // namespace glow::detail

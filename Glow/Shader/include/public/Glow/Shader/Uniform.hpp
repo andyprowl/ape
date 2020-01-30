@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Glow/GpuResource/ScopedBinder.hpp>
+
 #include <string_view>
 #include <vector>
 
@@ -13,41 +15,27 @@ class ShaderProgram;
 namespace glow::detail
 {
 
-template<typename T>
 class BasicUniform
 {
 
 public:
 
-    using ValueType = T;
-
-public:
-
-    BasicUniform(ShaderProgram & program, std::string_view name);
-
-    BasicUniform(ShaderProgram & program, std::string_view name, T const & value);
-
-    auto get() const
-        -> T;
-
-    auto set(T const & value)
-        -> void;
+    BasicUniform(ShaderProgram & shader, std::string_view name);
     
-protected:
+    auto getShader() const
+        -> ShaderProgram &;
 
-    friend class ShaderProgram;
+    auto getLocation() const
+        -> int;
 
-protected:
+private:
 
-    BasicUniform(unsigned int const programId, int const location)
-        : programId{programId}
-        , location{location}
-    {
-    }
+    auto getUniformLocation(std::string_view name) const
+        -> int;
 
-protected:
+private:
 
-    unsigned int programId;
+    ShaderProgram * shader;
     
     int location;
 
@@ -59,43 +47,30 @@ namespace glow
 {
 
 template<typename T>
-class Uniform : public detail::BasicUniform<T>
+class Uniform : public detail::BasicUniform
 {
 
 public:
 
-    using detail::BasicUniform<T>::BasicUniform;
-
-    auto operator = (T const & value)
-        -> Uniform &
-    {
-        this->set(value);
-
-        return *this;
-    }
-
-};
-
-template<>
-class Uniform<bool> : public detail::BasicUniform<bool>
-{
+    using ValueType = T;
 
 public:
 
-    using detail::BasicUniform<bool>::BasicUniform;
+    using BasicUniform::BasicUniform;
 
-    explicit operator bool () const
+    Uniform(ShaderProgram & program, std::string_view name, ValueType const & value)
+        : BasicUniform{program, name}
     {
-        return this->get();
-    }
+        auto const shaderBinder = glow::bind(program);
 
-    auto operator = (ValueType const value)
-        -> Uniform &
-    {
         set(value);
-
-        return *this;
     }
+
+    auto get() const
+        -> ValueType;
+
+    auto set(ValueType const & value)
+        -> void;
 
 };
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <string_view>
 
 namespace glow
@@ -7,12 +8,17 @@ namespace glow
 
 class UniformBlock;
 
-class UniformBlockMember
+} // namespace glow
+
+namespace glow::detail
+{
+
+class BasicUniformBlockMember
 {
 
 public:
 
-    UniformBlockMember(UniformBlock & block, std::string_view name);
+    BasicUniformBlockMember(UniformBlock & block, std::string_view name);
 
     auto getBlock() const
         -> UniformBlock &;
@@ -38,6 +44,27 @@ private:
     int index;
 
     int offset;
+
+};
+
+} // namespace glow::detail
+
+namespace glow
+{
+
+template<typename T>
+class UniformBlockMember : public detail::BasicUniformBlockMember
+{
+
+public:
+
+    using BasicUniformBlockMember::BasicUniformBlockMember;
+
+    auto get(const std::byte * buffer)
+        -> const T &;
+
+    auto set(T const & value, std::byte * buffer)
+        -> void;
 
 };
 

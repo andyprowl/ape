@@ -64,12 +64,12 @@ void main()
     // This is due to how omnidirectional shadow maps are implemented.
     // We only need to do this for monodirectional shadow maps (spot and directional lights).
 
-    for (int i = 0; i < lightSystem.spotArraySize; ++i)
+    for (int i = 0; i < lightSystem.numOfSpotLights; ++i)
     {
         lightSpacePositioning.spot[i] = lightSystemView.spot[i] * worldPosition;
     }
 
-    for (int i = 0; i < lightSystem.directionalArraySize; ++i)
+    for (int i = 0; i < lightSystem.numOfDirectionalLights; ++i)
     {
         lightSpacePositioning.directional[i] = lightSystemView.directional[i] * worldPosition;
     }

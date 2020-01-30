@@ -143,7 +143,7 @@ auto BodyBoundsRenderer::renderMesh(
 
     assert(isBoundingBoxConsistent(mesh, cubeToBoundingBox));
 
-    shader->transformation = cameraTransformation * cubeToBoundingBox;
+    shader->transformation.set(cameraTransformation * cubeToBoundingBox);
 
     drawBox();
 }

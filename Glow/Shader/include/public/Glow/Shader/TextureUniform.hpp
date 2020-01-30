@@ -15,8 +15,6 @@ public:
      
     using GenericTextureUniform::GenericTextureUniform;
 
-    using GenericTextureUniform::operator =;
-
 };
 
 } // namespace glow

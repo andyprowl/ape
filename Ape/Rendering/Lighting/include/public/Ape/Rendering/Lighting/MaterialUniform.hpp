@@ -38,9 +38,9 @@ public:
     auto set(ape::Material const & material)
         -> void
     {
-        ambient = material.ambient;
+        ambient.set(material.ambient);
 
-        shininess = material.shininess;
+        shininess.set(material.shininess);
 
         setDiffuseMap(material);
     
@@ -62,33 +62,33 @@ private:
     auto setDiffuseMap(ape::Material const & material)
         -> void
     {
-        hasDiffuseMap = (material.diffuseMap != nullptr);
+        hasDiffuseMap.set(material.diffuseMap != nullptr);
 
         if (material.diffuseMap != nullptr)
         {
-            diffuseMap = *material.diffuseMap;
+            diffuseMap.set(*material.diffuseMap);
         }
     }
 
     auto setSpecularMap(ape::Material const & material)
         -> void
     {
-        hasSpecularMap = (material.specularMap != nullptr);
+        hasSpecularMap.set(material.specularMap != nullptr);
 
         if (material.specularMap != nullptr)
         {
-            specularMap = *material.specularMap;
+            specularMap.set(*material.specularMap);
         }
     }
 
     auto setNormalMap(ape::Material const & material)
         -> void
     {
-        hasNormalMap = (material.normalMap != nullptr);
+        hasNormalMap.set(material.normalMap != nullptr);
 
         if (material.normalMap != nullptr)
         {
-            normalMap = *material.normalMap;
+            normalMap.set(*material.normalMap);
         }
     }
 

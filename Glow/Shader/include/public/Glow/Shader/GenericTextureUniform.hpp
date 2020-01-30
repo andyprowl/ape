@@ -35,21 +35,13 @@ public:
     {
         textureUnit = newTextureUnit;
 
-        sampler = newTextureUnit;
+        sampler.set(newTextureUnit);
     }
 
     auto set(ValueType const & texture)
         -> void
     {
         texture.activate(textureUnit);
-    }
-
-    auto operator = (ValueType const & texture)
-        -> GenericTextureUniform &
-    {
-        set(texture);
-
-        return *this;
     }
 
     auto getUnit() const

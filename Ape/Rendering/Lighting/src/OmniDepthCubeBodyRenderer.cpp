@@ -84,7 +84,7 @@ auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
             continue;
         }
 
-        shader->lightPosition = lights[i].getPosition();
+        shader->lightPosition.set(lights[i].getPosition());
 
         auto const & lightView = lightViews[i];
 

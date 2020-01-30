@@ -154,11 +154,11 @@ auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
 {
     auto const & worldTransformation = part.getWorldTransformation();
 
-    shader->worldTransformation = worldTransformation;
+    shader->worldTransformation.set(worldTransformation);
     
-    shader->cameraTransformation = cameraTransformation * worldTransformation;
+    shader->cameraTransformation.set(cameraTransformation * worldTransformation);
 
-    shader->normalTransformation = part.getWorldNormalTransformation();
+    shader->normalTransformation.set(part.getWorldNormalTransformation());
 }
 
 auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const & culler) const

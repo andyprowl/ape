@@ -30,17 +30,17 @@ public:
     auto set(ValueType const & lightView)
         -> void
     {
-        right = lightView.right;
+        right.set(lightView.right);
 
-        left = lightView.left;
+        left.set(lightView.left);
 
-        top = lightView.top;
+        top.set(lightView.top);
 
-        bottom = lightView.bottom;
+        bottom.set(lightView.bottom);
 
-        front = lightView.front;
+        front.set(lightView.front);
 
-        back = lightView.back;
+        back.set(lightView.back);
     }
 
     auto operator = (ValueType const & lightView)

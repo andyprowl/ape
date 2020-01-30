@@ -48,9 +48,9 @@ auto WireframeBodyRenderer::setupLineStyleUniforms() const
 {
     auto const & lineStyle = styleProvider->getStyle();
 
-    shader->lineColor = lineStyle.color;
+    shader->lineColor.set(lineStyle.color);
 
-    shader->lineWidth = lineStyle.width;
+    shader->lineWidth.set(lineStyle.width);
 }
 
 auto WireframeBodyRenderer::renderBody(
@@ -71,7 +71,7 @@ auto WireframeBodyRenderer::renderBodyPart(
 {
     auto const & worldTransformation = part.getWorldTransformation();
 
-    shader->transformation = cameraTransformation * worldTransformation;
+    shader->transformation.set(cameraTransformation * worldTransformation);
 
     for (auto const mesh : part.getModel().getMeshes())
     {

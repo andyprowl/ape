@@ -132,15 +132,15 @@ struct LightSystem
 
     PointLight point[MAX_NUM_OF_POINT_LIGHTS];
 
-    int pointArraySize;
+    int numOfPointLights;
 
     SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
 
-    int spotArraySize;
+    int numOfSpotLights;
 
     DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
-    int directionalArraySize;
+    int numOfDirectionalLights;
 
 };
 

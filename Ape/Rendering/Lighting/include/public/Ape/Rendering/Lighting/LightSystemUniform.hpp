@@ -3,7 +3,7 @@
 #include <Ape/World/Scene/LightSystem.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
-#include <Glow/Shader/VectorUniform.hpp>
+#include <Glow/Shader/UniformArray.hpp>
 
 namespace glow
 {
@@ -34,19 +34,11 @@ public:
     auto set(ValueType const & attenuation)
         -> void
     {
-        constant = attenuation.constant;
+        constant.set(attenuation.constant);
 
-        linear = attenuation.linear;
+        linear.set(attenuation.linear);
 
-        quadratic = attenuation.quadratic;
-    }
-
-    auto operator = (ValueType const & attenuation)
-        -> Uniform &
-    {
-        set(attenuation);
-
-        return *this;
+        quadratic.set(attenuation.quadratic);
     }
 
 public:
@@ -85,19 +77,11 @@ public:
     auto set(ValueType const & color)
         -> void
     {
-        ambient = color.ambient;
+        ambient.set(color.ambient);
 
-        diffuse = color.diffuse;
+        diffuse.set(color.diffuse);
 
-        specular = color.specular;
-    }
-
-    auto operator = (ValueType const & color)
-        -> Uniform &
-    {
-        set(color);
-
-        return *this;
+        specular.set(color.specular);
     }
 
 public:
@@ -131,29 +115,21 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        isTurnedOn = light.isTurnedOn();
+        isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn)
+        if (!isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
         }
 
-        position = light.getPosition();
+        position.set(light.getPosition());
 
-        color = light.getColor();
+        color.set(light.getColor());
 
-        attenuation = light.getAttenuation();
+        attenuation.set(light.getAttenuation());
 
-        isCastingShadow = light.isCastingShadow();
-    }
-
-    auto operator = (ValueType const & light)
-        -> PointLightUniform &
-    {
-        set(light);
-
-        return *this;
+        isCastingShadow.set(light.isCastingShadow());
     }
 
 public:
@@ -194,38 +170,30 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        isTurnedOn = light.isTurnedOn();
+        isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn)
+        if (!isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
         }
 
-        position = light.getPosition();
+        position.set(light.getPosition());
 
         // Normalization could be done in the vertex or fragment shader but there is no reason to
         // have that done millions of times for the same value, so hopefully doing this on the CPU
         // will save some performance.
-        direction = glm::normalize(light.getDirection());
+        direction.set(glm::normalize(light.getDirection()));
 
-        innerCutoffCosine = glm::cos(light.getCutoff().inner);
+        innerCutoffCosine.set(glm::cos(light.getCutoff().inner));
 
-        outerCutoffCosine = glm::cos(light.getCutoff().outer);
+        outerCutoffCosine.set(glm::cos(light.getCutoff().outer));
 
-        color = light.getColor();
+        color.set(light.getColor());
 
-        attenuation = light.getAttenuation();
+        attenuation.set(light.getAttenuation());
 
-        isCastingShadow = light.isCastingShadow();
-    }
-
-    auto operator = (ValueType const & light)
-        -> SpotLightUniform &
-    {
-        set(light);
-
-        return *this;
+        isCastingShadow.set(light.isCastingShadow());
     }
 
 public:
@@ -268,9 +236,9 @@ public:
     auto set(ValueType const & light)
         -> void
     {
-        isTurnedOn = light.isTurnedOn();
+        isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn)
+        if (!isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
@@ -279,19 +247,11 @@ public:
         // Normalization could be done in the vertex or fragment shader but there is no reason to
         // have that done millions of times for the same value, so hopefully doing this on the CPU
         // will save some performance.
-        direction = glm::normalize(light.getDirection());
+        direction.set(glm::normalize(light.getDirection()));
 
-        color = light.getColor();
+        color.set(light.getColor());
 
-        isCastingShadow = light.isCastingShadow();
-    }
-
-    auto operator = (ValueType const & light)
-        -> DirectionalLightUniform &
-    {
-        set(light);
-
-        return *this;
+        isCastingShadow.set(light.isCastingShadow());
     }
 
 public:
@@ -318,36 +278,43 @@ public:
 
     Uniform(ShaderProgram & program, std::string const & prefix)
         : point{program, prefix + ".point"}
+        , numOfPointLights{program, prefix + ".numOfPointLights"}
         , spot{program, prefix + ".spot"}
+        , numOfSpotLights{program, prefix + ".numOfSpotLights"}
         , directional{program, prefix + ".directional"}
+        , numOfDirectionalLights{program, prefix + ".numOfDirectionalLights"}
     {
     }
 
     auto set(ValueType const & lightSystem)
         -> void
     {
-        point = lightSystem.point;
+        point.set(lightSystem.point);
 
-        spot = lightSystem.spot;
+        numOfPointLights.set(static_cast<int>(lightSystem.point.size()));
 
-        directional = lightSystem.directional;
-    }
+        spot.set(lightSystem.spot);
 
-    auto operator = (ValueType const & light)
-        -> Uniform &
-    {
-        set(light);
+        numOfSpotLights.set(static_cast<int>(lightSystem.spot.size()));
 
-        return *this;
+        directional.set(lightSystem.directional);
+
+        numOfDirectionalLights.set(static_cast<int>(lightSystem.directional.size()));
     }
 
 public:
 
-    SizedVectorUniform<PointLightUniform> point;
+    UniformArray<PointLightUniform> point;
 
-    SizedVectorUniform<SpotLightUniform> spot;
+    Uniform<int> numOfPointLights;
 
-    SizedVectorUniform<DirectionalLightUniform> directional;
+    UniformArray<SpotLightUniform> spot;
+
+    Uniform<int> numOfSpotLights;
+
+    UniformArray<DirectionalLightUniform> directional;
+
+    Uniform<int> numOfDirectionalLights;
 
 };
 

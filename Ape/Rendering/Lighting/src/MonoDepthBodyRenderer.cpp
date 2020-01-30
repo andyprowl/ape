@@ -210,7 +210,7 @@ auto MonoDepthBodyRenderer::renderBodyPart(
 {
     auto const & worldTransformation = part.getWorldTransformation();
     
-    shader->lightTransformation = lightTransformation * worldTransformation;
+    shader->lightTransformation.set(lightTransformation * worldTransformation);
 
     for (auto const bodyMesh : part.getMeshes())
     {

@@ -34,9 +34,9 @@ auto EffectRenderer::renderWithEffect(
     EffectShaderProgram & effect) const
     -> void
 {
-    auto const shaderBinder = bind(effect);
+    auto const shaderBinder = glow::bind(effect);
 
-    effect.source = texture;
+    effect.source.set(texture);
 
     glDisable(GL_DEPTH_TEST);
 
@@ -48,7 +48,7 @@ auto EffectRenderer::renderWithEffect(
 auto EffectRenderer::drawQuad() const
     -> void
 {
-    auto const arrayObjectBinder = bind(planeShape.getArrayObject());
+    auto const arrayObjectBinder = glow::bind(planeShape.getArrayObject());
 
     auto const numOfVertices = planeShape.getNumOfVertices();
 

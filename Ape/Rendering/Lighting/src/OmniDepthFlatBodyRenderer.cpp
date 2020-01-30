@@ -125,7 +125,7 @@ auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
             continue;
         }
 
-        shader->lightPosition = lights[i].getPosition();
+        shader->lightPosition.set(lights[i].getPosition());
 
         auto const & lightView = lightViews[i];
 
@@ -220,7 +220,7 @@ auto OmniDepthFlatBodyRenderer::renderBodyPart(
 
     auto const & lightTransformation = lightView.getTransformation();
 
-    shader->lightTransformation = lightTransformation * worldTransformation;
+    shader->lightTransformation.set(lightTransformation * worldTransformation);
 
     for (auto const & bodyMesh : part.getMeshes())
     {

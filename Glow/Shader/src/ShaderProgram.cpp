@@ -157,19 +157,4 @@ auto ShaderProgram::link()
     checkShaderLinkingOutcome(id);
 }
 
-auto ShaderProgram::getUniformLocation(std::string_view name) const
-    -> int
-{
-    auto const id = resource.get();
-
-    auto const location = glGetUniformLocation(id, name.data());
-
-    if (location < 0)
-    {
-        throw UniformNotFound{std::string{name}};
-    }
-
-    return location;
-}
-
 } // namespace glow

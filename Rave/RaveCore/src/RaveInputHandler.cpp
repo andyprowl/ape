@@ -249,7 +249,9 @@ auto RaveInputHandler::toggleBlinnPhongModel() const
 {
     standardShader->bind();
 
-    standardShader->usePhongModel = !standardShader->usePhongModel;
+    auto const isPhongModelUsed = standardShader->usePhongModel.get();
+
+    standardShader->usePhongModel.set(not isPhongModelUsed);
 }
 
 auto RaveInputHandler::togglePercentageCloserFiltering() const
@@ -257,7 +259,9 @@ auto RaveInputHandler::togglePercentageCloserFiltering() const
 {
     standardShader->bind();
 
-    standardShader->usePercentageCloserFiltering = !standardShader->usePercentageCloserFiltering;
+    auto const isFilteringUsed = standardShader->usePercentageCloserFiltering.get();
+
+    standardShader->usePercentageCloserFiltering.set(not isFilteringUsed);
 }
 
 auto RaveInputHandler::toggleNormalMapping() const
@@ -265,7 +269,9 @@ auto RaveInputHandler::toggleNormalMapping() const
 {
     standardShader->bind();
 
-    standardShader->useNormalMapping = !standardShader->useNormalMapping;
+    auto const isNormalMappingUsed = standardShader->useNormalMapping.get();
+
+    standardShader->useNormalMapping.set(not isNormalMappingUsed);
 }
 
 auto RaveInputHandler::togglePickedObjects() const

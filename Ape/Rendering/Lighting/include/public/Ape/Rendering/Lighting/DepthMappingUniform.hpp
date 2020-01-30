@@ -6,7 +6,7 @@
 #include <Glow/Shader/CubeTextureUniform.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/TextureUniform.hpp>
-#include <Glow/Shader/VectorUniform.hpp>
+#include <Glow/Shader/UniformArray.hpp>
 
 #include <string>
 #include <vector>
@@ -59,11 +59,11 @@ public:
 
 public:
 
-    UnsizedVectorUniform<Uniform<CubeTexture>> point;
+    UniformArray<Uniform<CubeTexture>> point;
 
-    UnsizedVectorUniform<Uniform<Texture>> spot;
+    UniformArray<Uniform<Texture>> spot;
 
-    UnsizedVectorUniform<Uniform<Texture>> directional;
+    UniformArray<Uniform<Texture>> directional;
 
 private:
 
@@ -111,12 +111,14 @@ private:
     template<typename DepthMapType, typename TextureType>
     auto setTextures(
         std::vector<DepthMapType> const & source,
-        UnsizedVectorUniform<Uniform<TextureType>> & target)
+        UniformArray<Uniform<TextureType>> & target)
         -> void
     {
         for (auto i = 0; i < static_cast<int>(source.size()); ++i)
         {
-            target[i] = source[i].getTexture();
+            auto const & texture = source[i].getTexture();
+
+            target[i].set(texture);
         }
     }
 
