@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/matrix.hpp>
+
 #include <cstddef>
 #include <string_view>
 
@@ -47,6 +49,27 @@ private:
 
 };
 
+class BasicMatrixUniformBlockMember : public BasicUniformBlockMember
+{
+
+public:
+
+    BasicMatrixUniformBlockMember(UniformBlock & block, std::string_view name);
+
+    auto getStride() const
+        -> int;
+
+private:
+
+    auto fetchMatrixStride() const
+        -> int;
+
+private:
+
+    int stride;
+
+};
+
 } // namespace glow::detail
 
 namespace glow
@@ -58,12 +81,36 @@ class UniformBlockMember : public detail::BasicUniformBlockMember
 
 public:
 
+    using ValueType = T;
+
+public:
+
     using BasicUniformBlockMember::BasicUniformBlockMember;
 
     auto get(const std::byte * buffer)
-        -> const T &;
+        -> const ValueType &;
 
-    auto set(T const & value, std::byte * buffer)
+    auto set(ValueType const & value, std::byte * buffer)
+        -> void;
+
+};
+
+template<glm::length_t N, glm::qualifier Q>
+class UniformBlockMember<glm::mat<N, N, float, Q>> : public detail::BasicMatrixUniformBlockMember
+{
+
+public:
+
+    using ValueType = glm::mat<N, N, float, Q>;
+
+public:
+
+    using BasicMatrixUniformBlockMember::BasicMatrixUniformBlockMember;
+
+    auto get(const std::byte * buffer)
+        -> ValueType;
+
+    auto set(ValueType const & value, std::byte * buffer)
         -> void;
 
 };

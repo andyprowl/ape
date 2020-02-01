@@ -5,34 +5,34 @@
 namespace glow
 {
 
-template<typename T>
+template<typename UniformType>
 class UniformArray
 {
 
 public:
 
-    using ValueType = std::vector<typename T::ValueType>;
+    using ValueType = std::vector<typename UniformType::ValueType>;
 
     template<typename T>
-    using EnableIfGettable = std::enable_if_t<
+    using EnableIfUniformType = std::enable_if_t<
         std::is_same_v<decltype(std::declval<T>().get(), 0), int>>;
 
 public:
 
-    UniformArray(ShaderProgram & program, std::string prefix)
+    UniformArray(ShaderProgram & program, std::string name)
         : program{&program}
-        , prefix{std::move(prefix)}
+        , name{std::move(name)}
     {
     }
 
-    UniformArray(ShaderProgram & program, std::string prefix, int const size)
-        : UniformArray{program, std::move(prefix)}
+    UniformArray(ShaderProgram & program, std::string name, int const size)
+        : UniformArray{program, std::move(name)}
     {
         resize(size);
     }
 
     auto operator [] (int const i)
-        -> T &
+        -> UniformType &
     {
         if (i >= static_cast<int>(uniforms.size()))
         {
@@ -54,7 +54,7 @@ public:
         {
             for (auto i = static_cast<int>(uniforms.size()); i < newSize; ++i)
             {
-                uniforms.emplace_back(*program, prefix + "[" + std::to_string(i) + "]");
+                uniforms.emplace_back(*program, name + "[" + std::to_string(i) + "]");
             }
         }
         else
@@ -63,7 +63,7 @@ public:
         }
     }
 
-    template<typename T = ValueType, EnableIfGettable<T> * = nullptr>
+    template<typename T = ValueType, EnableIfUniformType<T> * = nullptr>
     auto get() const
         -> ValueType
     {
@@ -96,9 +96,9 @@ private:
 
     ShaderProgram * program;
 
-    std::string prefix;
+    std::string name;
 
-    std::vector<T> uniforms;
+    std::vector<UniformType> uniforms;
 
 };
 
