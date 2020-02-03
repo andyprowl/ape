@@ -3,6 +3,7 @@
 #include <Ape/Rendering/Lighting/DepthMappingUniform.hpp>
 #include <Ape/Rendering/Lighting/FogUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
+#include <Ape/Rendering/Lighting/LightSystemUniformBlock.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniform.hpp>
 #include <Ape/Rendering/Lighting/MaterialUniform.hpp>
 
@@ -28,7 +29,7 @@ public:
 
     glow::Uniform<glm::vec3> cameraPosition;
 
-    glow::Uniform<LightSystem> lightSystem;
+    LightSystemUniformBlock lightSystem;
 
     glow::Uniform<LightSystemView> lightSystemView;
 

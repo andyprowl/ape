@@ -87,7 +87,7 @@ public:
 
     using BasicUniformBlockMember::BasicUniformBlockMember;
 
-    auto get(const std::byte * buffer)
+    auto get(const std::byte * buffer) const
         -> const ValueType &;
 
     auto set(ValueType const & value, std::byte * buffer)
@@ -107,7 +107,7 @@ public:
 
     using BasicMatrixUniformBlockMember::BasicMatrixUniformBlockMember;
 
-    auto get(const std::byte * buffer)
+    auto get(const std::byte * buffer) const
         -> ValueType;
 
     auto set(ValueType const & value, std::byte * buffer)

@@ -6,6 +6,7 @@ namespace glow
 {
 
 class ShaderProgram;
+class UniformBufferObject;
 
 class UniformBlock
 {
@@ -48,5 +49,8 @@ private:
     int bindingPoint;
 
 };
+
+auto setBlockDataSource(UniformBufferObject & buffer, UniformBlock const & block)
+    -> void;
 
 } // namespace glow

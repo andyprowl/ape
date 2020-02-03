@@ -12,10 +12,11 @@
 #include <Ape/Engine/QtEngine/QtWindow.hpp>
 #include <Ape/Rendering/Effect/EffectCollection.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
 #include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
@@ -216,7 +217,7 @@ int main(int argc, char *argv[])
     
     auto scene = rave::createRaveScene(assets, doNotIncludeSponza);
 
-    auto standardShader = ape::BlinnPhongShaderProgram{};
+    auto blinnPhongShader = ape::BlinnPhongShaderProgram{};
 
     auto monoDepthShader = ape::MonoDepthShaderProgram{};
 
@@ -233,6 +234,10 @@ int main(int argc, char *argv[])
     auto effectCollection = rave::RaveEffectCollectionReader{}.read();
 
     auto skyboxCollection = rave::RaveSkyboxCollectionReader{}.read();
+
+    auto lightSystemSetter = ape::LightSystemUniformSetter{
+        scene.getLightSystem(),
+        blinnPhongShader.lightSystem};
 
     auto picker = ape::BodySelector{scene};
 
@@ -260,7 +265,10 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer1},
         {omniDepthFlatShader, *shapeRenderer1}};
 
-    auto blinnPhongRenderer1 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer1};
+    auto blinnPhongRenderer1 = ape::BlinnPhongBodyRenderer{
+        blinnPhongShader,
+        lightSystemSetter,
+        *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -304,7 +312,7 @@ int main(int argc, char *argv[])
         skyboxSelector1,
         effectSelector1,
         picker,
-        standardShader,
+        blinnPhongShader,
         wireframeStyleProvider,
         scene};
 
@@ -332,7 +340,10 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer2},
         {omniDepthFlatShader, *shapeRenderer2}};
 
-    auto blinnPhongRenderer2 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer2};
+    auto blinnPhongRenderer2 = ape::BlinnPhongBodyRenderer{
+        blinnPhongShader,
+        lightSystemSetter,
+        *shapeRenderer2};
 
     auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -376,7 +387,7 @@ int main(int argc, char *argv[])
         skyboxSelector2,
         effectSelector2,
         picker,
-        standardShader,
+        blinnPhongShader,
         wireframeStyleProvider,
         scene};
 
@@ -408,7 +419,10 @@ int main(int argc, char *argv[])
         {omniDepthCubeShader, *shapeRenderer3},
         {omniDepthFlatShader, *shapeRenderer3}};
 
-    auto blinnPhongRenderer3 = ape::BlinnPhongBodyRenderer{standardShader, *shapeRenderer3};
+    auto blinnPhongRenderer3 = ape::BlinnPhongBodyRenderer{
+        blinnPhongShader,
+        lightSystemSetter,
+        *shapeRenderer3};
 
     auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
         wireframeShader,
@@ -452,7 +466,7 @@ int main(int argc, char *argv[])
         skyboxSelector3,
         effectSelector3,
         picker,
-        standardShader,
+        blinnPhongShader,
         wireframeStyleProvider,
         scene};
 

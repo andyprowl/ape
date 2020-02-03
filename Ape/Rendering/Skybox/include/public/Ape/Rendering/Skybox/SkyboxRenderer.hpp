@@ -14,7 +14,6 @@ namespace ape
 
 class Camera;
 class Fog;
-class LightSystem;
 class SkyboxSelector;
 class SkyboxShaderProgram;
 
@@ -25,14 +24,13 @@ public:
 
     SkyboxRenderer(SkyboxShaderProgram & shader, SkyboxSelector & selector);
 
-    auto render(Camera const & camera, LightSystem const & lightSystem, Fog const & fog) const
+    auto render(Camera const & camera, Fog const & fog) const
         -> void;
 
 private:
 
     auto setupUniforms(
         Camera const & camera,
-        LightSystem const & lightSystem,
         Fog const & fog,
         glow::CubeTexture const & skybox) const
         -> void;

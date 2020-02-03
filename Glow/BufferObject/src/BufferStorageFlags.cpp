@@ -10,8 +10,7 @@ namespace glow
 namespace
 {
 
-constexpr auto const storageFlags = std::array<GLenum, 7u>{{
-    0,
+constexpr auto const storageFlags = std::array<GLenum, 6u>{{
     GL_DYNAMIC_STORAGE_BIT,
     GL_MAP_READ_BIT,
     GL_MAP_WRITE_BIT,
@@ -21,16 +20,28 @@ constexpr auto const storageFlags = std::array<GLenum, 7u>{{
 
 } // unnamed namespace
 
-auto convertToOpenGLFlags(BufferStorageFlags const flags)
+auto isFlagSet(BufferStorageFlags const flag, BufferStorageFlags const flagSet)
+    -> bool
+{
+    return ((flag & flagSet) == flag);
+}
+
+auto convertToOpenGLFlags(BufferStorageFlags const flagSet)
     -> GLenum
 {
-    return 
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::dynamicStorage)] |
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::mapRead)] |
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::mapWrite)] |
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::mapPersistent)] |
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::mapCoherent)] |
-        storageFlags[static_cast<std::size_t>(flags & BufferStorageFlags::clientStorage)];
+    auto flags = static_cast<GLenum>(0);
+
+    for (auto i = 0u; i < storageFlags.size(); ++i)
+    {
+        auto const flag = static_cast<BufferStorageFlags>(1 << i);
+
+        if (isFlagSet(flag, flagSet))
+        {
+            flags |= storageFlags[i];
+        }
+    }
+
+    return flags;
 }
 
 } // namespace glow

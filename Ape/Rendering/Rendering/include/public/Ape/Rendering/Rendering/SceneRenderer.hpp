@@ -6,8 +6,8 @@
 
 #include <Ape/Rendering/Effect/EffectRenderer.hpp>
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Skybox/SkyboxRenderer.hpp>
 #include <Ape/Rendering/Wireframe/WireframeBodyRenderer.hpp>
 

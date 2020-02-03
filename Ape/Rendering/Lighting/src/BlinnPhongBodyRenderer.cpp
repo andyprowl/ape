@@ -1,7 +1,8 @@
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 
-#include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
+#include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
 
@@ -41,8 +42,10 @@ auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
 
 BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     BlinnPhongShaderProgram & shader,
+    LightSystemUniformSetter & lightSystemSetter,
     ShapeDrawer & shapeRenderer)
     : shader{&shader}
+    , lightSystemSetter{&lightSystemSetter}
     , shapeRenderer{&shapeRenderer}
     , performFrustumCulling{true}
 {
@@ -51,14 +54,13 @@ BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
 auto BlinnPhongBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
-    LightSystem const & lightSystem,
     Fog const & fog,
     ShadowMapping const & shadowMapping) const
     -> void
 {
     auto const shaderBinder = bind(*shader);
 
-    setupInvariantUniforms(camera, lightSystem, fog, shadowMapping);
+    setupInvariantUniforms(camera, fog, shadowMapping);
 
     auto const sortedMeshes = getVisibleMeshesSortedByDistanceFromCamera(bodies, camera);
 
@@ -88,14 +90,15 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
 
 auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     Camera const & camera,
-    LightSystem const & lightSystem,
     Fog const & fog,
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    shader->cameraPosition.set(camera.getView().getPosition());
+    lightSystemSetter->flush();
 
-    shader->lightSystem.set(lightSystem);
+    glow::setBlockDataSource(lightSystemSetter->getUniformBuffer(), shader->lightSystem);
+
+    shader->cameraPosition.set(camera.getView().getPosition());
 
     shader->lightSystemView.set(shadowMapping.lightSystemView);
 

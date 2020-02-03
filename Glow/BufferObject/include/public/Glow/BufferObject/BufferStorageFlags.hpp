@@ -28,7 +28,7 @@ inline auto operator | (BufferStorageFlags const lhs, BufferStorageFlags rhs)
     return static_cast<BufferStorageFlags>(static_cast<int>(lhs) | static_cast<int>(rhs));
 }
 
-auto convertToOpenGLFlags(BufferStorageFlags flags)
+auto convertToOpenGLFlags(BufferStorageFlags flagSet)
     -> GLenum;
 
 } // namespace glow

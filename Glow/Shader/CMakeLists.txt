@@ -16,4 +16,5 @@ AddPrivateDependencies(
     3rdParty::glm
     3rdParty::Stb
     Basix::CompilerSupport
-    Basix::Range)
+    Basix::Range
+    Glow::BufferObject)

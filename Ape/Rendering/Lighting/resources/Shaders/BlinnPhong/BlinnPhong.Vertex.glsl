@@ -18,8 +18,6 @@ uniform Transform transform;
 
 uniform Camera camera;
 
-uniform LightSystem lightSystem;
-
 uniform LightSystemView lightSystemView;
 
 // This implements the so-called Gram-Schmidt process

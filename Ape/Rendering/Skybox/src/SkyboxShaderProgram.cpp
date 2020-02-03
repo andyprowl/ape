@@ -28,7 +28,6 @@ auto buildStandardShader()
 
 SkyboxShaderProgram::SkyboxShaderProgram()
     : ShaderProgram{buildStandardShader()}
-    , lightSystem{*this, "lightSystem"}
     , transform{*this, "transform"}
     , skybox{*this, "skybox", 0}
     , cameraPosition{*this, "camera.position"}

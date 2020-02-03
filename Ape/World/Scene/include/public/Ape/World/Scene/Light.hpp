@@ -10,8 +10,6 @@
 namespace ape
 {
 
-class ShaderProgram;
-
 class Light
 {
 

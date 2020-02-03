@@ -297,16 +297,9 @@ auto SceneRenderer::renderNonPickedBodies() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
-
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.blinnPhongBodyRenderer.render(
-        nonSelectedBodies,
-        *activeCamera,
-        lightSystem,
-        fog,
-        shadowMapping);
+    renderers.blinnPhongBodyRenderer.render(nonSelectedBodies, *activeCamera, fog, shadowMapping);
 }
 
 auto SceneRenderer::renderPickedBodies() const
@@ -325,16 +318,9 @@ auto SceneRenderer::renderPickedBodies() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
-
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.outlinedBodyRenderer.render(
-        selectedBodies,
-        *activeCamera,
-        lightSystem,
-        fog,
-        shadowMapping);
+    renderers.outlinedBodyRenderer.render(selectedBodies, *activeCamera, fog, shadowMapping);
 }
 
 auto SceneRenderer::renderBodyBounds() const
@@ -365,11 +351,9 @@ auto SceneRenderer::renderSkybox() const
 
     assert(activeCamera != nullptr);
 
-    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
-
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.skyboxRenderer.render(*activeCamera, lightSystem, fog);
+    renderers.skyboxRenderer.render(*activeCamera, fog);
 }
 
 auto SceneRenderer::renderOffscreenSurfaceToScreen() const

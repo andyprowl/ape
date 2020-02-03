@@ -2,6 +2,8 @@
 
 #include <Glow/Shader/ShaderProgram.hpp>
 
+#include <Glow/BufferObject/UniformBufferObject.hpp>
+
 #include <glad/glad.h>
 
 #include <cassert>
@@ -63,7 +65,13 @@ auto UniformBlock::fetchIndexInProgram(std::string_view const name) const
 {
     auto const shaderId = shader->getId();
 
-    return static_cast<int>(glGetUniformBlockIndex(shaderId, name.data()));
+    auto const blockIndex = static_cast<int>(glGetUniformBlockIndex(shaderId, name.data()));
+
+    assert(blockIndex >= 0);
+
+    assert(glGetError() == GL_NO_ERROR);
+    
+    return blockIndex;
 }
 
 auto UniformBlock::fetchSize() const
@@ -78,6 +86,14 @@ auto UniformBlock::fetchSize() const
     assert(glGetError() == GL_NO_ERROR);
 
     return blockSize;
+}
+
+auto setBlockDataSource(UniformBufferObject & buffer, UniformBlock const & block)
+    -> void
+{
+    auto const bindingPoint = block.getBindingPoint();
+
+    buffer.bind(bindingPoint);
 }
 
 } // namespace glow

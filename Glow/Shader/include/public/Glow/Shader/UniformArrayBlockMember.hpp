@@ -43,7 +43,7 @@ namespace glow
 {
 
 template<typename BMT>
-class UniformArrayBlockMember : public detail::BasicUniformArrayBlockMember
+class UniformArrayBlockMember
 {
 
 public:
@@ -54,9 +54,12 @@ public:
 
 public:
 
-    UniformArrayBlockMember(UniformBlock & block, std::string_view const name)
-        : BasicUniformArrayBlockMember{block, name}
-        , elements{makeElements(name)}
+    UniformArrayBlockMember(
+        UniformBlock & block,
+        std::string_view const name,
+        int const maxNumOfElements)
+        : block{&block}
+        , elements{makeElements(name, maxNumOfElements)}
     {
     }
     
@@ -94,24 +97,24 @@ public:
 
 private:
 
-    auto makeElements(std::string_view const name) const
-        -> void
+    auto makeElements(std::string_view const name, int const maxNumOfElements) const
+        -> std::vector<BlockMemberType>
     {
         auto arrayElements = std::vector<BlockMemberType>{};
 
-        auto const size = getMaxNumOfElements();
-
-        auto & block = getBlock();
-
-        for (auto i = 0; i < size; ++i)
+        for (auto i = 0; i < maxNumOfElements; ++i)
         {
-            arrayElements.emplace_back(block, std::string{name} + "[" + std::to_string(i) + "]");
+            auto const uniformName = std::string{name} + "[" + std::to_string(i) + "]";
+
+            arrayElements.emplace_back(*block, uniformName);
         }
 
         return arrayElements;
     }
 
 private:
+
+    UniformBlock * block;
 
     std::vector<BlockMemberType> elements;
 

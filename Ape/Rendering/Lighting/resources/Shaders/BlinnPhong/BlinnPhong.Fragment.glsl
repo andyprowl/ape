@@ -12,8 +12,6 @@ uniform Camera camera;
 
 uniform Material material;
 
-uniform LightSystem lightSystem;
-
 uniform LightSystemView lightSystemView;
 
 uniform DepthMapping depthMapping;

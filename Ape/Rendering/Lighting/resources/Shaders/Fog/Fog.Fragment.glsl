@@ -4,8 +4,6 @@
 
 uniform Camera camera;
 
-uniform LightSystem lightSystem;
-
 uniform Fog fog;
 
 // Returns a value in the range ]0.0, 1.0].

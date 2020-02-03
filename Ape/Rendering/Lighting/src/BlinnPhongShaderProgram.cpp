@@ -8,6 +8,8 @@ namespace ape
 namespace
 {
 
+auto const lightSystemBlockBindingPoint = 0;
+
 auto buildBlinnPhongShader()
     -> glow::ShaderProgram
 {
@@ -30,15 +32,16 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , cameraTransformation{*this, "transform.camera"}
     , normalTransformation{*this, "transform.normal"}
     , cameraPosition{*this, "camera.position"}
-    , lightSystem{*this, "lightSystem"}
+    , lightSystem{*this, "LightSystemUniformBlock"}
     , lightSystemView{*this, "lightSystemView"}
     , material{*this, "material", 0, 1, 2}
+    , fog{*this, "fog"}
     , depthMapping{*this, "depthMapping", 3}
     , usePhongModel{*this, "usePhongModel", false}
     , usePercentageCloserFiltering{*this, "usePercentageCloserFiltering", false}
     , useNormalMapping{*this, "useNormalMapping", true}
-    , fog{*this, "fog"}
 {
+    lightSystem.setBindingPoint(lightSystemBlockBindingPoint);
 }
 
 } // namespace ape

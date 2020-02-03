@@ -130,17 +130,17 @@ struct DirectionalLight
 struct LightSystem
 {
 
-    PointLight point[MAX_NUM_OF_POINT_LIGHTS];
-
     int numOfPointLights;
 
-    SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
+    PointLight point[MAX_NUM_OF_POINT_LIGHTS];
 
     int numOfSpotLights;
 
-    DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    SpotLight spot[MAX_NUM_OF_SPOT_LIGHTS];
 
     int numOfDirectionalLights;
+
+    DirectionalLight directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
 
@@ -179,5 +179,15 @@ struct LightSpacePositioning
     vec4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
     vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+
+};
+
+uniform LightSystemUniformBlock
+{
+
+    // TODO: REMOVE AFTER EXPERIMENTING
+    float f;
+
+    LightSystem lightSystem;
 
 };

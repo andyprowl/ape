@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 
+#include <cassert>
+
 namespace glow
 {
 
@@ -18,6 +20,8 @@ auto BufferObject::createStorage(
     auto const openGLFlags = convertToOpenGLFlags(flags);
 
     glNamedBufferStorage(id, sizeInBytes, data, openGLFlags);
+
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 } // namespace glow

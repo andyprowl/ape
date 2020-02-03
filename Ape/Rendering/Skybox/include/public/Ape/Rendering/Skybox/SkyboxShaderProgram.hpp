@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Ape/Rendering/Lighting/FogUniform.hpp>
-#include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
 
 #include <Glow/Shader/CubeTextureUniform.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
@@ -17,8 +16,6 @@ class SkyboxShaderProgram : public glow::ShaderProgram
 public:
 
     SkyboxShaderProgram();
-
-    glow::Uniform<ape::LightSystem> lightSystem;
 
     glow::Uniform<glm::mat4> transform;
 

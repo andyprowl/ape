@@ -10,6 +10,7 @@
 #include <Ape/Engine/GlfwEngine/GlfwGateway.hpp>
 #include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
+#include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
@@ -44,10 +45,18 @@ public:
         , window{gateway.createWindow("Rave", {1920, 1080})}
         , assets{createRaveAssets(doNotIncludeSponza)}
         , scene{createRaveScene(assets, doNotIncludeSponza)}
+        , blinnPhongShader{}
+        , monoDepthShader{}
+        , omniDepthCubeShader{}
+        , omniDepthFlatShader{}
+        , wireframeShader{}
+        , boundsShader{}
+        , skyboxShader{}
         , effectCollection{RaveEffectCollectionReader{}.read()}
         , effectSelector{effectCollection}
         , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
         , skyboxSelector{skyboxCollection}
+        , lightSystemSetter{scene.getLightSystem(), blinnPhongShader.lightSystem}
      // Using a VAO per shape seems to make performance worse...
      // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
      // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
@@ -58,7 +67,7 @@ public:
             {monoDepthShader, *shapeRenderer},
             {omniDepthCubeShader, *shapeRenderer},
             {omniDepthFlatShader, *shapeRenderer}}
-        , standardBodyRenderer{standardShader, *shapeRenderer}
+        , standardBodyRenderer{blinnPhongShader, lightSystemSetter, *shapeRenderer}
         , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
         , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
         , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
@@ -89,7 +98,7 @@ public:
             skyboxSelector,
             effectSelector,
             bodyPicker,
-            standardShader,
+            blinnPhongShader,
             wireframeStyleProvider,
             scene}
         , engine{window, sceneRenderer, inputHandler}
@@ -119,7 +128,7 @@ private:
 
     RaveScene scene;
 
-    ape::BlinnPhongShaderProgram standardShader;
+    ape::BlinnPhongShaderProgram blinnPhongShader;
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
@@ -140,6 +149,8 @@ private:
     ape::SkyboxCollection skyboxCollection;
 
     ape::SkyboxSelector skyboxSelector;
+
+    ape::LightSystemUniformSetter lightSystemSetter;
 
     std::unique_ptr<ape::ShapeDrawer> shapeRenderer;
 

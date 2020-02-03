@@ -46,13 +46,17 @@ auto BasicUniformBlockMember::fetchUniformIndex(std::string_view const name) con
 
     auto const nameData = name.data();
 
-    auto uniformIndex = 0u;
+    auto fetchedIndex = 0u;
 
-    glGetUniformIndices(shaderId, 1, &nameData, &uniformIndex);
+    glGetUniformIndices(shaderId, 1, &nameData, &fetchedIndex);
+
+    auto const uniformIndex = static_cast<int>(fetchedIndex);
+
+    assert(uniformIndex >= 0);
 
     assert(glGetError() == GL_NO_ERROR);
 
-    return static_cast<int>(uniformIndex);
+    return uniformIndex;
 }
 
 auto BasicUniformBlockMember::fetchUniformOffset() const
@@ -107,7 +111,7 @@ namespace glow
 {
 
 template<typename T>
-auto UniformBlockMember<T>::get(const std::byte * const buffer)
+auto UniformBlockMember<T>::get(const std::byte * const buffer) const
     -> const T &
 {
     auto const bufferOffset = getOffset();
@@ -131,7 +135,7 @@ auto UniformBlockMember<T>::set(T const & value, std::byte * const buffer)
 }
 
 template<glm::length_t N, glm::qualifier Q>
-auto UniformBlockMember<glm::mat<N, N, float, Q>>::get(const std::byte * const buffer)
+auto UniformBlockMember<glm::mat<N, N, float, Q>>::get(const std::byte * const buffer) const
     -> ValueType
 {
     auto const bufferOffset = getOffset();

@@ -15,7 +15,7 @@ class BodyPartMesh;
 class Camera;
 class Culler;
 class Fog;
-class LightSystem;
+class LightSystemUniformSetter;
 class Mesh;
 class ShadowMapping;
 class ShapeDrawer;
@@ -26,12 +26,14 @@ class BlinnPhongBodyRenderer
 
 public:
 
-    BlinnPhongBodyRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer & shapeRenderer);
+    BlinnPhongBodyRenderer(
+        BlinnPhongShaderProgram & shader,
+        LightSystemUniformSetter & lightSystemSetter,
+        ShapeDrawer & shapeRenderer);
 
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
-        LightSystem const & lightSystem,
         Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
@@ -46,7 +48,6 @@ private:
 
     auto setupInvariantUniforms(
         Camera const & camera,
-        LightSystem const & lightSystem,
         Fog const & fog,
         ShadowMapping const & shadowMapping) const
         -> void;
@@ -73,6 +74,8 @@ private:
 private:
 
     BlinnPhongShaderProgram * shader;
+
+    LightSystemUniformSetter * lightSystemSetter;
 
     ShapeDrawer * shapeRenderer;
 
