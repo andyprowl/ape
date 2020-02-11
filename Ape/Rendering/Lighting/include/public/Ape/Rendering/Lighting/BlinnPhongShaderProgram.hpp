@@ -2,9 +2,8 @@
 
 #include <Ape/Rendering/Lighting/DepthMappingUniform.hpp>
 #include <Ape/Rendering/Lighting/FogUniform.hpp>
-#include <Ape/Rendering/Lighting/LightSystemUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformBlock.hpp>
-#include <Ape/Rendering/Lighting/LightSystemViewUniform.hpp>
+#include <Ape/Rendering/Lighting/LightSystemViewUniformBlock.hpp>
 #include <Ape/Rendering/Lighting/MaterialUniform.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
@@ -31,7 +30,7 @@ public:
 
     LightSystemUniformBlock lightSystem;
 
-    glow::Uniform<LightSystemView> lightSystemView;
+    LightSystemViewUniformBlock lightSystemView;
 
     glow::Uniform<Material> material;
 

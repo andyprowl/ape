@@ -30,7 +30,7 @@ public:
 
 private:
 
-    auto getUniformLocation(std::string_view name) const
+    auto fetchUniformLocation(std::string_view name) const
         -> int;
 
 private:
@@ -73,5 +73,8 @@ public:
         -> void;
 
 };
+
+auto getUniformIndex(ShaderProgram const & shader, std::string_view const name)
+    -> int;
 
 } // namespace glow

@@ -10,6 +10,8 @@ namespace
 
 auto const lightSystemBlockBindingPoint = 0;
 
+auto const lightSystemViewBlockBindingPoint = 1;
+
 auto buildBlinnPhongShader()
     -> glow::ShaderProgram
 {
@@ -33,7 +35,7 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , normalTransformation{*this, "transform.normal"}
     , cameraPosition{*this, "camera.position"}
     , lightSystem{*this, "LightSystemUniformBlock"}
-    , lightSystemView{*this, "lightSystemView"}
+    , lightSystemView{*this, "LightSystemViewUniformBlock"}
     , material{*this, "material", 0, 1, 2}
     , fog{*this, "fog"}
     , depthMapping{*this, "depthMapping", 3}
@@ -42,6 +44,8 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , useNormalMapping{*this, "useNormalMapping", true}
 {
     lightSystem.setBindingPoint(lightSystemBlockBindingPoint);
+
+    lightSystemView.setBindingPoint(lightSystemViewBlockBindingPoint);
 }
 
 } // namespace ape

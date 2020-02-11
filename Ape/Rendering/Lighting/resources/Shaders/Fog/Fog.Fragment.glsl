@@ -2,6 +2,13 @@
 
 #include "BlinnPhong/BlinnPhong.Types.glsl"
 
+uniform LightSystemUniformBlock
+{
+
+    LightSystem lightSystem;
+
+};
+
 uniform Camera camera;
 
 uniform Fog fog;

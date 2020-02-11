@@ -25,7 +25,7 @@ namespace glow::detail
 
 BasicUniform::BasicUniform(ShaderProgram & shader, std::string_view name)
     : shader{&shader}
-    , location{getUniformLocation(name)}
+    , location{fetchUniformLocation(name)}
 {
 }
 
@@ -41,7 +41,7 @@ auto BasicUniform::getLocation() const
     return location;
 }
 
-auto BasicUniform::getUniformLocation(std::string_view const name) const
+auto BasicUniform::fetchUniformLocation(std::string_view const name) const
     -> int
 {
     auto const shaderId = shader->getId();
@@ -390,5 +390,25 @@ template class Uniform<glm::ivec3>;
 template class Uniform<glm::vec4>;
 
 template class Uniform<glm::ivec4>;
+
+auto getUniformIndex(ShaderProgram const & shader, std::string_view const name)
+    -> int
+{
+    auto const shaderId = shader.getId();
+
+    auto const nameData = name.data();
+
+    auto fetchedIndex = 0u;
+
+    glGetUniformIndices(shaderId, 1, &nameData, &fetchedIndex);
+
+    auto const uniformIndex = static_cast<int>(fetchedIndex);
+
+    assert(uniformIndex >= 0);
+
+    assert(glGetError() == GL_NO_ERROR);
+
+    return uniformIndex;
+}
 
 } // namespace glow::detail

@@ -12,7 +12,19 @@ uniform Camera camera;
 
 uniform Material material;
 
-uniform LightSystemView lightSystemView;
+uniform LightSystemUniformBlock
+{
+
+    LightSystem lightSystem;
+
+};
+
+uniform LightSystemViewUniformBlock
+{
+
+    LightSystemView lightSystemView;
+
+};
 
 uniform DepthMapping depthMapping;
 

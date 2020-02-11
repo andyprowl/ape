@@ -30,14 +30,6 @@ public:
         Uniform<glm::mat4>::set(normalizationMatrix * lightView.getCamera().getTransformation());
     }
 
-    auto operator = (ValueType const & lightView)
-        -> Uniform &
-    {
-        set(lightView);
-
-        return *this;
-    }
-
 };
 
 } // namespace glow

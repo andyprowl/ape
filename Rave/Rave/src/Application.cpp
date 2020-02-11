@@ -11,6 +11,7 @@
 #include <Ape/Rendering/Effect/EffectCollectionPopulator.hpp>
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
+#include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
@@ -56,20 +57,28 @@ public:
         , effectSelector{effectCollection}
         , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
         , skyboxSelector{skyboxCollection}
+        , shadowMapping{std::make_unique<ape::ShadowMapping>(
+            scene.getLightSystem(),
+            basix::Size<int>{1024, 1024})}
         , lightSystemSetter{scene.getLightSystem(), blinnPhongShader.lightSystem}
+        , lightSystemViewSetter{shadowMapping->lightSystemView, blinnPhongShader.lightSystemView}
      // Using a VAO per shape seems to make performance worse...
-     // , shapeRenderer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
-     // , shapeRenderer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
-        , shapeRenderer{std::make_unique<ape::SharedArrayBufferObjectDrawer>(assets.shapes)}
+     // , shapeDrawer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
+     // , shapeDrawer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
+     // , shapeDrawer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
+     // , shapeDrawer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
+        , shapeDrawer{std::make_unique<ape::SharedArrayBufferObjectDrawer>(assets.shapes)}
         , depthBodyRenderer{
-            {monoDepthShader, *shapeRenderer},
-            {omniDepthCubeShader, *shapeRenderer},
-            {omniDepthFlatShader, *shapeRenderer}}
-        , standardBodyRenderer{blinnPhongShader, lightSystemSetter, *shapeRenderer}
+            {monoDepthShader, *shapeDrawer},
+            {omniDepthCubeShader, *shapeDrawer},
+            {omniDepthFlatShader, *shapeDrawer}}
+        , standardBodyRenderer{
+            blinnPhongShader,
+            lightSystemSetter,
+            lightSystemViewSetter,
+            *shapeDrawer}
         , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
-        , wireframeBodyRenderer{wireframeShader, *shapeRenderer, wireframeStyleProvider}
+        , wireframeBodyRenderer{wireframeShader, *shapeDrawer, wireframeStyleProvider}
         , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
         , bodyBoundsRenderer{boundsShader}
         , skyboxRenderer{skyboxShader, skyboxSelector}
@@ -77,7 +86,6 @@ public:
         , cameraSelector{scene}
         , bodyPicker{scene}
         , sceneRenderer{
-            std::move(shapeRenderer),
             ape::SceneRenderer::RendererSet{
                 std::move(depthBodyRenderer),
                 std::move(standardBodyRenderer),
@@ -86,6 +94,8 @@ public:
                 std::move(bodyBoundsRenderer),
                 std::move(skyboxRenderer),
                 std::move(effectRenderer)},
+            std::move(shapeDrawer),
+            std::move(shadowMapping),
             cameraSelector,
             bodyPicker,
             window,
@@ -150,9 +160,13 @@ private:
 
     ape::SkyboxSelector skyboxSelector;
 
-    ape::LightSystemUniformSetter lightSystemSetter;
+    std::unique_ptr<ape::ShadowMapping> shadowMapping;
 
-    std::unique_ptr<ape::ShapeDrawer> shapeRenderer;
+    ape::LightSystemUniformSetter lightSystemSetter;
+    
+    ape::LightSystemViewUniformSetter lightSystemViewSetter;
+
+    std::unique_ptr<ape::ShapeDrawer> shapeDrawer;
 
     ape::DepthBodyRenderer depthBodyRenderer;
 

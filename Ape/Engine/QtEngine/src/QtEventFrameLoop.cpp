@@ -21,4 +21,4 @@ auto QtEventFrameLoop::stop()
     heartbeat.stop();
 }
 
-} // namepsace ape::qt
+} // namespace ape::qt

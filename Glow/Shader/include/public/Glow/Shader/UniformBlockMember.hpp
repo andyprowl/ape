@@ -1,9 +1,12 @@
 #pragma once
 
+#include <Glow/Shader/UniformTypeTraits.hpp>
+
 #include <glm/matrix.hpp>
 
 #include <cstddef>
 #include <string_view>
+#include <type_traits>
 
 namespace glow
 {
@@ -114,5 +117,45 @@ public:
         -> void;
 
 };
+
+template<typename MatrixType, std::enable_if_t<isMatrix<MatrixType>> * = nullptr>
+auto getMatrix(const std::byte * const source, int const matrixStride)
+    -> MatrixType
+{
+    constexpr auto const N = MatrixType::length();
+
+    auto value = MatrixType{};
+
+    for (auto col = 0; col < N; ++col)
+    {
+        auto const columnOffset = matrixStride * col;
+
+        auto const columnSource = std::next(source, columnOffset);
+
+        auto const columnTarget = reinterpret_cast<std::byte *>(&value[col]);
+
+        std::copy(columnSource, std::next(columnSource, N * sizeof(float)), columnTarget);
+    }
+
+    return value;
+}
+
+template<typename MatrixType>
+auto setMatrix(MatrixType const & value, std::byte * const target, int const matrixStride)
+    -> void
+{
+    constexpr auto const N = MatrixType::length();
+
+    for (auto col = 0; col < N; ++col)
+    {
+        auto const columnOffset = matrixStride * col;
+
+        auto const columnTarget = std::next(target, columnOffset);
+
+        auto const columnSource = reinterpret_cast<std::byte const *>(&value[col]);
+
+        std::copy(columnSource, std::next(columnSource, N * sizeof(float)), columnTarget);
+    }
+}
 
 } // namespace glow

@@ -14,11 +14,23 @@ out Vertex vertex;
 
 out LightSpacePositioning lightSpacePositioning;
 
+uniform LightSystemUniformBlock
+{
+
+    LightSystem lightSystem;
+
+};
+
+uniform LightSystemViewUniformBlock
+{
+
+    LightSystemView lightSystemView;
+
+};
+
 uniform Transform transform;
 
 uniform Camera camera;
-
-uniform LightSystemView lightSystemView;
 
 // This implements the so-called Gram-Schmidt process
 vec3 orthogonalize(vec3 v, vec3 reference)

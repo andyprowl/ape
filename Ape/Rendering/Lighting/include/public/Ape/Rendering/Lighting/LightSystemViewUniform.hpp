@@ -28,20 +28,12 @@ public:
     {
     }
 
-    auto set(ValueType const & lightSystem)
+    auto set(ValueType const & view)
         -> void
     {
-        spot.set(lightSystem.getSpotView());
+        spot.set(view.getSpotView());
 
-        directional.set(lightSystem.getDirectionalView());
-    }
-
-    auto operator = (ValueType const & lightSystem)
-        -> Uniform &
-    {
-        set(lightSystem);
-
-        return *this;
+        directional.set(view.getDirectionalView());
     }
 
 public:

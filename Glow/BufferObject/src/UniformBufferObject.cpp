@@ -35,6 +35,8 @@ auto UniformBufferObject::bind(int const bindingPoint) const
     auto const id = resource.get();
 
     glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, id);
+
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 auto UniformBufferObject::bind(int const bindingPoint, int const offset, int const size) const
@@ -45,6 +47,8 @@ auto UniformBufferObject::bind(int const bindingPoint, int const offset, int con
     auto const id = resource.get();
 
     glBindBufferRange(GL_UNIFORM_BUFFER, bindingPoint, id, offset, size);
+
+    assert(glGetError() == GL_NO_ERROR);
 }
 
 } // namespace glow

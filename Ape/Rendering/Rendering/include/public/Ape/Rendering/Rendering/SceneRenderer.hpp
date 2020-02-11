@@ -82,8 +82,9 @@ public:
 public:
 
     SceneRenderer(
-        std::unique_ptr<ShapeDrawer> shapeDrawer,
         RendererSet renderers,
+        std::unique_ptr<ShapeDrawer> shapeDrawer,
+        std::unique_ptr<ShadowMapping> shadowMapping,
         CameraSelector const & cameraSelector,
         BodySelector const & pickedBodySelector,
         Window & targetSurface,
@@ -173,9 +174,11 @@ private:
 
 private:
 
+    RendererSet renderers;
+
     std::unique_ptr<ShapeDrawer> shapeDrawer;
 
-    RendererSet renderers;
+    std::unique_ptr<ShadowMapping> shadowMapping;
 
     CameraSelector const * cameraSelector;
 
@@ -184,8 +187,6 @@ private:
     Window * targetSurface;
 
     Viewport viewport;
-
-    ShadowMapping shadowMapping;
 
     OffscreenSurface offscreenSurface;
 

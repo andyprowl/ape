@@ -2,6 +2,7 @@
 
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/UniformBlock.hpp>
+#include <Glow/Shader/Uniform.hpp>
 
 #include <glad/glad.h>
 
@@ -12,21 +13,14 @@ BasicUniformArrayBlockMember::BasicUniformArrayBlockMember(
     UniformBlock & block,
     std::string_view const name)
     : BasicUniformBlockMember{block, name}
-    , stride{fetchArrayStride()}
-    , maxNumOfElements{fetchMaxNumOfElements()}
+    , arrayStride{fetchArrayStride()}
 {
 }
 
-auto BasicUniformArrayBlockMember::getStride() const
+auto BasicUniformArrayBlockMember::getArrayStride() const
     -> int
 {
-    return stride;
-}
-
-auto BasicUniformArrayBlockMember::getMaxNumOfElements() const
-    -> int
-{
-    return maxNumOfElements;
+    return arrayStride;
 }
 
 auto BasicUniformArrayBlockMember::fetchArrayStride() const
@@ -36,29 +30,53 @@ auto BasicUniformArrayBlockMember::fetchArrayStride() const
 
     auto const uniformIndex = static_cast<GLuint>(getIndex());
 
-    auto arrayStride = 0;
+    auto stride = 0;
 
-    glGetActiveUniformsiv(shaderId, 1, &uniformIndex, GL_UNIFORM_ARRAY_STRIDE, &arrayStride);
+    glGetActiveUniformsiv(shaderId, 1, &uniformIndex, GL_UNIFORM_ARRAY_STRIDE, &stride);
 
     assert(glGetError() == GL_NO_ERROR);
 
-    return arrayStride;
+    return stride;
 }
 
-auto BasicUniformArrayBlockMember::fetchMaxNumOfElements() const
+BasicUniformMatrixArrayBlockMember::BasicUniformMatrixArrayBlockMember(
+    UniformBlock & block,
+    std::string_view const name)
+    : BasicUniformArrayBlockMember{block, name}
+    , matrixStride{fetchMatrixStride(name)}
+{
+}
+
+auto BasicUniformMatrixArrayBlockMember::getMatrixStride() const
     -> int
 {
-    auto const shaderId = getBlock().getShader().getId();
+    return matrixStride;
+}
 
-    auto const uniformIndex = static_cast<GLuint>(getIndex());
+auto BasicUniformMatrixArrayBlockMember::fetchMatrixStride(std::string_view const name) const
+    -> int
+{
+    auto const & shader = getBlock().getShader();
 
-    auto arraySize = 0;
+    auto uniformIndex = static_cast<GLuint>(fetchFirstElementUniformIndex(name));
 
-    glGetActiveUniformsiv(shaderId, 1, &uniformIndex, GL_UNIFORM_SIZE, &arraySize);
+    auto stride = 0;
+
+    glGetActiveUniformsiv(shader.getId(), 1, &uniformIndex, GL_UNIFORM_MATRIX_STRIDE, &stride);
 
     assert(glGetError() == GL_NO_ERROR);
 
-    return arraySize;
+    return stride;
+}
+
+auto BasicUniformMatrixArrayBlockMember::fetchFirstElementUniformIndex(std::string_view name) const
+    -> int
+{
+    auto const & shader = getBlock().getShader();
+
+    auto const firstElementName = std::string{name} + "[0]";
+
+    return getUniformIndex(shader, firstElementName);
 }
 
 } // namespace glow::detail

@@ -9,6 +9,7 @@
 namespace ape
 {
 
+class BlinnPhongShaderProgram;
 class Body;
 class BodyPart;
 class BodyPartMesh;
@@ -16,10 +17,10 @@ class Camera;
 class Culler;
 class Fog;
 class LightSystemUniformSetter;
+class LightSystemViewUniformSetter;
 class Mesh;
 class ShadowMapping;
 class ShapeDrawer;
-class BlinnPhongShaderProgram;
 
 class BlinnPhongBodyRenderer
 {
@@ -29,6 +30,7 @@ public:
     BlinnPhongBodyRenderer(
         BlinnPhongShaderProgram & shader,
         LightSystemUniformSetter & lightSystemSetter,
+        LightSystemViewUniformSetter & lightSystemViewSetter,
         ShapeDrawer & shapeRenderer);
 
     auto render(
@@ -76,6 +78,8 @@ private:
     BlinnPhongShaderProgram * shader;
 
     LightSystemUniformSetter * lightSystemSetter;
+
+    LightSystemViewUniformSetter * lightSystemViewSetter;
 
     ShapeDrawer * shapeRenderer;
 

@@ -2,6 +2,7 @@
 
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
+#include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
@@ -43,9 +44,11 @@ auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
 BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     BlinnPhongShaderProgram & shader,
     LightSystemUniformSetter & lightSystemSetter,
+    LightSystemViewUniformSetter & lightSystemViewSetter,
     ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , lightSystemSetter{&lightSystemSetter}
+    , lightSystemViewSetter{&lightSystemViewSetter}
     , shapeRenderer{&shapeRenderer}
     , performFrustumCulling{true}
 {
@@ -98,9 +101,11 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
 
     glow::setBlockDataSource(lightSystemSetter->getUniformBuffer(), shader->lightSystem);
 
-    shader->cameraPosition.set(camera.getView().getPosition());
+    lightSystemViewSetter->flush();
 
-    shader->lightSystemView.set(shadowMapping.lightSystemView);
+    glow::setBlockDataSource(lightSystemViewSetter->getUniformBuffer(), shader->lightSystemView);
+
+    shader->cameraPosition.set(camera.getView().getPosition());
 
     shader->depthMapping.set(shadowMapping.depthMapping);
 

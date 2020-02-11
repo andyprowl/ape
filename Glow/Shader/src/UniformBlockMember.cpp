@@ -42,21 +42,7 @@ auto BasicUniformBlockMember::getOffset() const
 auto BasicUniformBlockMember::fetchUniformIndex(std::string_view const name) const
     -> int
 {
-    auto const shaderId = block->getShader().getId();
-
-    auto const nameData = name.data();
-
-    auto fetchedIndex = 0u;
-
-    glGetUniformIndices(shaderId, 1, &nameData, &fetchedIndex);
-
-    auto const uniformIndex = static_cast<int>(fetchedIndex);
-
-    assert(uniformIndex >= 0);
-
-    assert(glGetError() == GL_NO_ERROR);
-
-    return uniformIndex;
+    return getUniformIndex(block->getShader(), name);
 }
 
 auto BasicUniformBlockMember::fetchUniformOffset() const
@@ -144,20 +130,9 @@ auto UniformBlockMember<glm::mat<N, N, float, Q>>::get(const std::byte * const b
 
     auto const source = std::next(buffer, bufferOffset);
 
-    auto value = ValueType{};
+    using MatrixType = glm::mat<N, N, float, Q>;
 
-    for (auto col = 0; col < N; ++col)
-    {
-        auto const columnOffset = matrixStride * col;
-
-        auto const columnSource = std::next(source, columnOffset);
-
-        auto const columnTarget = reinterpret_cast<std::byte *>(&value[col]);
-
-        std::copy(columnSource, std::next(columnSource, N * sizeof(float)), columnTarget);
-    }
-
-    return value;
+    return glow::getMatrix<MatrixType>(source, matrixStride);
 }
 
 template<glm::length_t N, glm::qualifier Q>
@@ -172,16 +147,7 @@ auto UniformBlockMember<glm::mat<N, N, float, Q>>::set(
 
     auto const target = std::next(buffer, bufferOffset);
 
-    for (auto col = 0; col < N; ++col)
-    {
-        auto const columnOffset = matrixStride * col;
-
-        auto const columnTarget = std::next(target, columnOffset);
-
-        auto const columnSource = reinterpret_cast<std::byte const *>(&value[col]);
-
-        std::copy(columnSource, std::next(columnSource, N * sizeof(float)), columnTarget);
-    }
+    glow::setMatrix(value, target, matrixStride);
 }
 
 template class UniformBlockMember<bool>;

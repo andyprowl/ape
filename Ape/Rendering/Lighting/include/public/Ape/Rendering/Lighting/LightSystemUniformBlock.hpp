@@ -299,15 +299,15 @@ public:
 
     UniformBlockMember<int> numOfPointLights;
 
-    UniformArrayBlockMember<UniformBlockMember<ape::PointLight>> point;
+    UniformArrayBlockMember<ape::PointLight> point;
 
     UniformBlockMember<int> numOfSpotLights;
 
-    UniformArrayBlockMember<UniformBlockMember<ape::SpotLight>> spot;
+    UniformArrayBlockMember<ape::SpotLight> spot;
 
     UniformBlockMember<int> numOfDirectionalLights;
 
-    UniformArrayBlockMember<UniformBlockMember<ape::DirectionalLight>> directional;
+    UniformArrayBlockMember<ape::DirectionalLight> directional;
 
 };
 
@@ -342,4 +342,4 @@ public:
 
 };
 
-} // namepsace ape
+} // namespace ape

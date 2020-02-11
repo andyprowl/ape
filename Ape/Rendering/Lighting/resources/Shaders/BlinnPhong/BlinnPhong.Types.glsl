@@ -181,13 +181,3 @@ struct LightSpacePositioning
     vec4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
 
 };
-
-uniform LightSystemUniformBlock
-{
-
-    // TODO: REMOVE AFTER EXPERIMENTING
-    float f;
-
-    LightSystem lightSystem;
-
-};

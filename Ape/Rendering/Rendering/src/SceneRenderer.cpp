@@ -22,20 +22,21 @@ namespace ape
 {
 
 SceneRenderer::SceneRenderer(
-    std::unique_ptr<ShapeDrawer> shapeDrawer,
     RendererSet renderers,
+    std::unique_ptr<ShapeDrawer> shapeDrawer,
+    std::unique_ptr<ShadowMapping> shadowMapping,
     CameraSelector const & cameraSelector,
     BodySelector const & pickedBodySelector,
     Window & targetSurface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
-    : shapeDrawer{std::move(shapeDrawer)}
-    , renderers{std::move(renderers)}
+    : renderers{std::move(renderers)}
+    , shapeDrawer{std::move(shapeDrawer)}
+    , shadowMapping{std::move(shadowMapping)}
     , cameraSelector{&cameraSelector}
     , pickedBodySelector{&pickedBodySelector}
     , targetSurface{&targetSurface}
     , viewport{viewport}
-    , shadowMapping{makeShadowMapping()}
     , offscreenSurface{targetSurface.getSize()}
     , backgroundColor{backgroundColor}
     , renderBoundingBoxes{false}
@@ -84,7 +85,7 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 
     offscreenSurface = OffscreenSurface{viewport.size};
 
-    shadowMapping.lightSystemView.setViewSize(viewport.size);
+    shadowMapping->lightSystemView.setViewSize(viewport.size);
 }
 
 // virtual (from Renderer)
@@ -252,8 +253,8 @@ auto SceneRenderer::renderDepthMapping()
     renderers.depthBodyRenderer.render(
         bodies,
         *camera,
-        shadowMapping.lightSystemView,
-        shadowMapping.depthMapping);
+        shadowMapping->lightSystemView,
+        shadowMapping->depthMapping);
 }
 
 auto SceneRenderer::renderSceneBodies()
@@ -299,7 +300,7 @@ auto SceneRenderer::renderNonPickedBodies() const
 
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.blinnPhongBodyRenderer.render(nonSelectedBodies, *activeCamera, fog, shadowMapping);
+    renderers.blinnPhongBodyRenderer.render(nonSelectedBodies, *activeCamera, fog, *shadowMapping);
 }
 
 auto SceneRenderer::renderPickedBodies() const
@@ -320,7 +321,7 @@ auto SceneRenderer::renderPickedBodies() const
 
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.outlinedBodyRenderer.render(selectedBodies, *activeCamera, fog, shadowMapping);
+    renderers.outlinedBodyRenderer.render(selectedBodies, *activeCamera, fog, *shadowMapping);
 }
 
 auto SceneRenderer::renderBodyBounds() const
