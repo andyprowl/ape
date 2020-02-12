@@ -85,7 +85,7 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 
     offscreenSurface = OffscreenSurface{viewport.size};
 
-    shadowMapping->lightSystemView.setViewSize(viewport.size);
+    shadowMapping->lightSystemView->setViewSize(viewport.size);
 }
 
 // virtual (from Renderer)
@@ -136,16 +136,6 @@ auto SceneRenderer::getRenderers()
     -> RendererSet &
 {
     return renderers;
-}
-
-auto SceneRenderer::makeShadowMapping() const
-    -> ShadowMapping
-{
-    auto const & lightSystem = cameraSelector->getScene().getLightSystem();
-
-    auto const depthMapSize = basix::Size<int>{1024, 1024};
-
-    return ShadowMapping{lightSystem, depthMapSize};
 }
 
 auto SceneRenderer::setupDrawingMode() const
@@ -253,7 +243,7 @@ auto SceneRenderer::renderDepthMapping()
     renderers.depthBodyRenderer.render(
         bodies,
         *camera,
-        shadowMapping->lightSystemView,
+        *shadowMapping->lightSystemView,
         shadowMapping->depthMapping);
 }
 

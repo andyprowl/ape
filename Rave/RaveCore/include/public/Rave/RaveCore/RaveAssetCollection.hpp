@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Ape/World/AssetLoader//AssetRepository.hpp>
+#include <Ape/World/AssetLoader/AssetRepository.hpp>
 
 namespace rave
 {

@@ -239,6 +239,10 @@ int main(int argc, char *argv[])
         scene.getLightSystem(),
         blinnPhongShader.lightSystem};
 
+    auto lightSystemViewSetter = ape::LightSystemUniformSetter{
+        depthMapping->getLightSystemView(),
+        blinnPhongShader.lightSystem};
+
     auto picker = ape::BodySelector{scene};
 
     auto wireframeStyleProvider = ape::LineStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
@@ -268,6 +272,7 @@ int main(int argc, char *argv[])
     auto blinnPhongRenderer1 = ape::BlinnPhongBodyRenderer{
         blinnPhongShader,
         lightSystemSetter,
+        lightSystemViewSetter,
         *shapeRenderer1};
 
     auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{

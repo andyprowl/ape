@@ -36,107 +36,13 @@
 namespace rave
 {
 
-class Application::Impl
+namespace
+{
+
+class RenderingShaders
 {
 
 public:
-
-    Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
-        : gateway{4, 5, enableDebugOutput}
-        , window{gateway.createWindow("Rave", {1920, 1080})}
-        , assets{createRaveAssets(doNotIncludeSponza)}
-        , scene{createRaveScene(assets, doNotIncludeSponza)}
-        , blinnPhongShader{}
-        , monoDepthShader{}
-        , omniDepthCubeShader{}
-        , omniDepthFlatShader{}
-        , wireframeShader{}
-        , boundsShader{}
-        , skyboxShader{}
-        , effectCollection{RaveEffectCollectionReader{}.read()}
-        , effectSelector{effectCollection}
-        , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
-        , skyboxSelector{skyboxCollection}
-        , shadowMapping{std::make_unique<ape::ShadowMapping>(
-            scene.getLightSystem(),
-            basix::Size<int>{1024, 1024})}
-        , lightSystemSetter{scene.getLightSystem(), blinnPhongShader.lightSystem}
-        , lightSystemViewSetter{shadowMapping->lightSystemView, blinnPhongShader.lightSystemView}
-     // Using a VAO per shape seems to make performance worse...
-     // , shapeDrawer{std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes)}
-     // , shapeDrawer{std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes)}
-     // , shapeDrawer{std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes)}
-     // , shapeDrawer{std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes)}
-        , shapeDrawer{std::make_unique<ape::SharedArrayBufferObjectDrawer>(assets.shapes)}
-        , depthBodyRenderer{
-            {monoDepthShader, *shapeDrawer},
-            {omniDepthCubeShader, *shapeDrawer},
-            {omniDepthFlatShader, *shapeDrawer}}
-        , standardBodyRenderer{
-            blinnPhongShader,
-            lightSystemSetter,
-            lightSystemViewSetter,
-            *shapeDrawer}
-        , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
-        , wireframeBodyRenderer{wireframeShader, *shapeDrawer, wireframeStyleProvider}
-        , outlinedBodyRenderer{standardBodyRenderer, wireframeBodyRenderer}
-        , bodyBoundsRenderer{boundsShader}
-        , skyboxRenderer{skyboxShader, skyboxSelector}
-        , effectRenderer{effectSelector}
-        , cameraSelector{scene}
-        , bodyPicker{scene}
-        , sceneRenderer{
-            ape::SceneRenderer::RendererSet{
-                std::move(depthBodyRenderer),
-                std::move(standardBodyRenderer),
-                std::move(wireframeBodyRenderer),
-                std::move(outlinedBodyRenderer),
-                std::move(bodyBoundsRenderer),
-                std::move(skyboxRenderer),
-                std::move(effectRenderer)},
-            std::move(shapeDrawer),
-            std::move(shadowMapping),
-            cameraSelector,
-            bodyPicker,
-            window,
-            ape::Viewport{{0, 0}, window.getSize()},
-            {0.0f, 0.0f, 0.0f}}
-        , inputHandler{
-            window,
-            sceneRenderer,
-            cameraSelector,
-            skyboxSelector,
-            effectSelector,
-            bodyPicker,
-            blinnPhongShader,
-            wireframeStyleProvider,
-            scene}
-        , engine{window, sceneRenderer, inputHandler}
-    {
-        skyboxSelector.activateSkybox(5);
-
-        effectSelector.activateEffect(4);
-    }
-
-    auto run()
-        -> void
-    {
-        window.captureMouse();
-
-        inputHandler.getCameraManipulator().activate();
-
-        engine.run();
-    }
-
-private:
-
-    ape::GlfwGateway gateway;
-
-    ape::GlfwWindow window;
-
-    RaveAssetCollection assets;
-
-    RaveScene scene;
 
     ape::BlinnPhongShaderProgram blinnPhongShader;
 
@@ -152,45 +58,178 @@ private:
 
     ape::SkyboxShaderProgram skyboxShader;
 
-    ape::EffectCollection effectCollection;
+};
 
-    ape::EffectSelector effectSelector;
+class SharedResources
+{
+
+public:
+
+    explicit SharedResources(bool doNotIncludeSponza)
+        : assets{createRaveAssets(doNotIncludeSponza)}
+        , effectCollection{RaveEffectCollectionReader{}.read()}
+        , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
+    {
+    }
+
+public:
+
+    RenderingShaders shaders;
+
+    RaveAssetCollection assets;
+
+    ape::EffectCollection effectCollection;
 
     ape::SkyboxCollection skyboxCollection;
 
+};
+
+} // unnamed namespace
+
+class Application::Impl
+{
+
+public:
+
+    Impl(bool const enableDebugOutput, bool const doNotIncludeSponza)
+        : gateway{4, 5, enableDebugOutput}
+        , window{gateway.createWindow("Rave", basix::Size<int>{1920, 1080})}
+        , resources{doNotIncludeSponza}
+        , scene{createRaveScene(resources.assets, doNotIncludeSponza)}
+        , effectSelector{resources.effectCollection}
+        , skyboxSelector{resources.skyboxCollection}
+        , cameraSelector{scene}
+        , bodyPicker{scene}
+        , lightSystemView{scene.getLightSystem(), basix::Size<int>{1024, 1024}}
+        , lightSystemSetter{scene.getLightSystem(), resources.shaders.blinnPhongShader.lightSystem}
+        , lightSystemViewSetter{lightSystemView, resources.shaders.blinnPhongShader.lightSystemView}
+        , wireframeStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}}
+        , sceneRenderer{makeSceneRenderer()}
+        , inputHandler{makeInputHandler()}
+        , engine{window, *sceneRenderer, *inputHandler}
+    {
+        skyboxSelector.activateSkybox(5);
+
+        effectSelector.activateEffect(4);
+    }
+
+    auto run()
+        -> void
+    {
+        window.captureMouse();
+
+        inputHandler->getCameraManipulator().activate();
+
+        engine.run();
+    }
+
+private:
+
+    auto makeSceneRenderer()
+        -> std::unique_ptr<ape::SceneRenderer>
+    {
+        auto shadowMapping = std::make_unique<ape::ShadowMapping>(
+            lightSystemView,
+            basix::Size<int>{1024, 1024});
+
+        auto & shapes = resources.assets.shapes;
+
+        // Using a VAO per shape seems to make performance worse...
+        // auto shapeDrawer = std::make_unique<ape::ShapeArrayObjectDrawer>(shapes);
+        // auto shapeDrawer = std::make_unique<ape::ShapeBufferObjectDrawer>(shapes);
+        // auto shapeDrawer = std::make_unique<ape::SharedArrayObjectDrawer>(shapes);
+        // auto shapeDrawer = std::make_unique<ape::SharedBufferObjectDrawer>(shapes);
+        auto shapeDrawer = std::make_unique<ape::SharedArrayBufferObjectDrawer>(shapes);
+
+        auto depthBodyRenderer = ape::DepthBodyRenderer{
+            {resources.shaders.monoDepthShader, *shapeDrawer},
+            {resources.shaders.omniDepthCubeShader, *shapeDrawer},
+            {resources.shaders.omniDepthFlatShader, *shapeDrawer}};
+
+        auto standardBodyRenderer = ape::BlinnPhongBodyRenderer{
+            resources.shaders.blinnPhongShader,
+            lightSystemSetter,
+            lightSystemViewSetter,
+            *shapeDrawer};
+
+         auto wireframeBodyRenderer = ape::WireframeBodyRenderer{
+             resources.shaders.wireframeShader,
+             *shapeDrawer, wireframeStyleProvider};
+
+         auto outlinedBodyRenderer = ape::OutlinedBodyRenderer{
+             standardBodyRenderer,
+             wireframeBodyRenderer};
+
+         auto bodyBoundsRenderer = ape::BodyBoundsRenderer{resources.shaders.boundsShader};
+
+         auto skyboxRenderer = ape::SkyboxRenderer{resources.shaders.skyboxShader, skyboxSelector};
+
+         auto effectRenderer = ape::EffectRenderer{effectSelector};
+
+         auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
+
+         return std::make_unique<ape::SceneRenderer>(
+            ape::SceneRenderer::RendererSet{
+                std::move(depthBodyRenderer),
+                std::move(standardBodyRenderer),
+                std::move(wireframeBodyRenderer),
+                std::move(outlinedBodyRenderer),
+                std::move(bodyBoundsRenderer),
+                std::move(skyboxRenderer),
+                std::move(effectRenderer)},
+            std::move(shapeDrawer),
+            std::move(shadowMapping),
+            cameraSelector,
+            bodyPicker,
+            window,
+            ape::Viewport{{0, 0}, window.getSize()},
+            backgroundColor);
+    }
+
+    auto makeInputHandler()
+        -> std::unique_ptr<RaveInputHandler>
+    {
+        return std::make_unique<RaveInputHandler>(
+            window,
+            *sceneRenderer,
+            cameraSelector,
+            skyboxSelector,
+            effectSelector,
+            bodyPicker,
+            resources.shaders.blinnPhongShader,
+            wireframeStyleProvider,
+            scene);
+    }
+
+private:
+
+    ape::GlfwGateway gateway;
+
+    ape::GlfwWindow window;
+
+    SharedResources resources;
+
+    RaveScene scene;
+
+    ape::EffectSelector effectSelector;
+
     ape::SkyboxSelector skyboxSelector;
-
-    std::unique_ptr<ape::ShadowMapping> shadowMapping;
-
-    ape::LightSystemUniformSetter lightSystemSetter;
-    
-    ape::LightSystemViewUniformSetter lightSystemViewSetter;
-
-    std::unique_ptr<ape::ShapeDrawer> shapeDrawer;
-
-    ape::DepthBodyRenderer depthBodyRenderer;
-
-    ape::BlinnPhongBodyRenderer standardBodyRenderer;
-
-    ape::LineStyleProvider wireframeStyleProvider;
-
-    ape::WireframeBodyRenderer wireframeBodyRenderer;
-
-    ape::OutlinedBodyRenderer outlinedBodyRenderer;
-
-    ape::BodyBoundsRenderer bodyBoundsRenderer;
-
-    ape::SkyboxRenderer skyboxRenderer;
-
-    ape::EffectRenderer effectRenderer;
 
     ape::CameraSelector cameraSelector;
 
     ape::BodySelector bodyPicker;
 
-    ape::SceneRenderer sceneRenderer;;
+    ape::LightSystemView lightSystemView;
 
-    RaveInputHandler inputHandler;
+    ape::LineStyleProvider wireframeStyleProvider;
+
+    ape::LightSystemUniformSetter lightSystemSetter;
+
+    ape::LightSystemViewUniformSetter lightSystemViewSetter;
+
+    std::unique_ptr<ape::SceneRenderer> sceneRenderer;
+
+    std::unique_ptr<RaveInputHandler> inputHandler;
 
     ape::GlfwEngine engine;
 

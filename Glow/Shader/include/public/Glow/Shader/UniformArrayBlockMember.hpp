@@ -321,7 +321,9 @@ public:
 
         auto const columnStride = getMatrixStride();
 
-        auto const target = std::next(buffer, arrayBaseOffset + i * elementStride);
+        auto const elementOffset = arrayBaseOffset + i * elementStride;
+
+        auto const target = std::next(buffer, elementOffset);
 
         glow::setMatrix(value, target, columnStride);
     }
@@ -339,7 +341,9 @@ public:
 
         for (auto i = 0; i < numOfValues; ++i)
         {
-            auto const target = std::next(buffer, arrayBaseOffset + i * elementStride);
+            auto const elementOffset = arrayBaseOffset + i * elementStride;
+
+            auto const target = std::next(buffer, elementOffset);
 
             glow::setMatrix(values[i], target, matrixStride);
         }

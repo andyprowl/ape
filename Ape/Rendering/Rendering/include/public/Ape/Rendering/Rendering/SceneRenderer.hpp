@@ -130,9 +130,6 @@ public:
 
 private:
 
-    auto makeShadowMapping() const
-        -> ShadowMapping;
-
     auto setupDrawingMode() const
         -> void;
 

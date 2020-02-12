@@ -11,15 +11,15 @@ class ShadowMapping
 
 public:
 
-    ShadowMapping(LightSystem const & lightSystem, basix::Size<int> const & mapSize)
-        : lightSystemView{lightSystem, mapSize}
-        , depthMapping{lightSystem, mapSize}
+    ShadowMapping(LightSystemView & lightSystemView, basix::Size<int> const & mapSize)
+        : lightSystemView{&lightSystemView}
+        , depthMapping{lightSystemView.getLightSystem(), mapSize}
     {
     }
 
 public:
 
-    LightSystemView lightSystemView;
+    LightSystemView * lightSystemView;
 
     DepthMapping depthMapping;
 
