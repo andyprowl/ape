@@ -1,6 +1,6 @@
 #include <Rave/RaveCore/RaveSceneBuilder.hpp>
 
-#include <Rave/RaveCore/RaveAssetBuilder.hpp>
+#include <Rave/RaveCore/RaveAssetCollection.hpp>
 
 #include <Ape/World/Shape/BoxShapeBuilder.hpp>
 
@@ -20,7 +20,7 @@ class StatefulSceneBuilder
 
 public:
 
-    StatefulSceneBuilder(RaveAssetCollection & assets, bool doNotIncludeSponza);
+    StatefulSceneBuilder(RaveAssetCollection & assets, bool excludeSponza);
 
     auto build()
         -> RaveScene;
@@ -208,7 +208,7 @@ private:
 
     RaveAssetCollection * assets;
 
-    bool doNotIncludeSponza;
+    bool excludeSponza;
 
     RaveScene scene;
 
@@ -216,9 +216,9 @@ private:
 
 StatefulSceneBuilder::StatefulSceneBuilder(
     RaveAssetCollection & assets,
-    bool const doNotIncludeSponza)
+    bool const excludeSponza)
     : assets{&assets}
-    , doNotIncludeSponza{doNotIncludeSponza}
+    , excludeSponza{excludeSponza}
 {
 }
 
@@ -283,9 +283,9 @@ auto StatefulSceneBuilder::createFloor()
 auto StatefulSceneBuilder::createTiledPlatform(const float z)
     -> void
 {
-    auto & concrete = assets->generalAssets.models[0];
+    auto & concrete = assets->getSimpleAssets().models[0];
 
-    auto & wood = assets->generalAssets.models[1];
+    auto & wood = assets->getSimpleAssets().models[1];
 
     for (auto row = -7; row < +7; ++row)
     {
@@ -321,7 +321,7 @@ auto StatefulSceneBuilder::createTile(
 auto StatefulSceneBuilder::createWalls()
     -> void
 {
-    auto & concrete = assets->generalAssets.models[0];
+    auto & concrete = assets->getSimpleAssets().models[0];
 
     auto const rotationAroundX = glm::rotate(
         glm::mat4{1.0f},
@@ -371,7 +371,7 @@ auto StatefulSceneBuilder::createContainers()
 auto StatefulSceneBuilder::createRandomRotatedContainers()
     -> void
 {
-    auto const & model = assets->generalAssets.models[2];
+    auto const & model = assets->getSimpleAssets().models[2];
 
     auto const positions = getRandomRotatedContainerPositions();
 
@@ -417,7 +417,7 @@ auto StatefulSceneBuilder::getRandomRotatedContainerPositions() const
 auto StatefulSceneBuilder::createCustomTransformedContainers()
     -> void
 {
-    auto const & model = assets->generalAssets.models[2];
+    auto const & model = assets->getSimpleAssets().models[2];
 
     auto const transformations = getCustomContainerTransformations();
 
@@ -470,7 +470,7 @@ auto StatefulSceneBuilder::getCustomContainerTransformations() const
 auto StatefulSceneBuilder::createLamps()
     -> void
 {
-    auto const & model = assets->generalAssets.models[3];
+    auto const & model = assets->getSimpleAssets().models[3];
 
     auto const positions = getPointLampPositions();
 
@@ -505,7 +505,7 @@ auto StatefulSceneBuilder::getPointLampPositions() const
 auto StatefulSceneBuilder::createFlashlights()
     -> void
 {
-    auto const & model = assets->generalAssets.models[4];
+    auto const & model = assets->getSimpleAssets().models[4];
 
     auto const positions = getFlashlightPositions();
 
@@ -557,7 +557,7 @@ auto StatefulSceneBuilder::computeFlashlightRotation(glm::vec3 const & position)
 auto StatefulSceneBuilder::createNanosuits()
     -> void
 {
-    auto const & model = assets->nanosuitAssets.models[0];
+    auto const & model = assets->getNanosuitModel();
 
     auto const positions = getNanosuitPositions();
 
@@ -588,7 +588,7 @@ auto StatefulSceneBuilder::getNanosuitPositions() const
 auto StatefulSceneBuilder::createDragons()
     -> void
 {
-    auto const & model = assets->dragonAssets.models[0];
+    auto const & model = assets->getDragonModel();
 
     auto const positions = getDragonPositions();
 
@@ -619,7 +619,7 @@ auto StatefulSceneBuilder::getDragonPositions() const
 auto StatefulSceneBuilder::createSpaceships()
     -> void
 {
-    auto const & model = assets->spaceshipAssets.models[0];
+    auto const & model = assets->getSpaceshipModel();
 
     auto const positions = getSpaceshipPositions();
 
@@ -643,7 +643,7 @@ auto StatefulSceneBuilder::getSpaceshipPositions() const
 auto StatefulSceneBuilder::createDynos()
     -> void
 {
-    auto const & model = assets->dynoAssets.models[0];
+    auto const & model = assets->getDynoModel();
 
     auto const positions = getDynoPositions();
 
@@ -675,7 +675,7 @@ auto StatefulSceneBuilder::getDynoPositions() const
 auto StatefulSceneBuilder::createCastles()
     -> void
 {
-    auto const & model = assets->castleAssets.models[0];
+    auto const & model = assets->getCastleModel();
 
     auto const positions = getCastlePositions();
 
@@ -700,7 +700,7 @@ auto StatefulSceneBuilder::getCastlePositions() const
 auto StatefulSceneBuilder::createTaverns()
     -> void
 {
-    auto const & model = assets->tavernAssets.models[0];
+    auto const & model = assets->getTavernModel();
 
     auto const positions = getTavernPositions();
 
@@ -729,7 +729,7 @@ auto StatefulSceneBuilder::getTavernPositions() const
 auto StatefulSceneBuilder::createHouses()
     -> void
 {
-    auto const & model = assets->houseAssets.models[0];
+    auto const & model = assets->getHouseModel();
 
     auto const positions = getHousePositions();
 
@@ -759,7 +759,7 @@ auto StatefulSceneBuilder::getHousePositions() const
 auto StatefulSceneBuilder::createCottages()
     -> void
 {
-    auto const & model = assets->cottageAssets.models[0];
+    auto const & model = assets->getCottageModel();
 
     auto const positions = getCottagePositions();
 
@@ -788,7 +788,7 @@ auto StatefulSceneBuilder::getCottagePositions() const
 auto StatefulSceneBuilder::createBridges()
     -> void
 {
-    auto const & model = assets->bridgeAssets.models[0];
+    auto const & model = assets->getBridgeModel();
 
     auto const positions = getBridgePositions();
 
@@ -812,7 +812,7 @@ auto StatefulSceneBuilder::getBridgePositions() const
 auto StatefulSceneBuilder::createLibertyStatues()
     -> void
 {
-    auto const & model = assets->libertyStatueAssets.models[0];
+    auto const & model = assets->getLibertyStatueModel();
 
     auto const positions = getLibertyStatuePositions();
 
@@ -838,12 +838,12 @@ auto StatefulSceneBuilder::getLibertyStatuePositions() const
 auto StatefulSceneBuilder::createSponzas()
     -> void
 {
-    if (doNotIncludeSponza)
+    if (excludeSponza)
     {
         return;
     }
 
-    auto const & model = assets->sponzaAssets.models[0];
+    auto const & model = assets->getSponzaModel();
 
     auto const positions = getSponzaPositions();
 
@@ -1177,16 +1177,16 @@ RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets)
 {
 }
 
-RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets, bool const doNotIncludeSponza)
+RaveSceneBuilder::RaveSceneBuilder(RaveAssetCollection & assets, bool const excludeSponza)
     : assets{&assets}
-    , doNotIncludeSponza{doNotIncludeSponza}
+    , excludeSponza{excludeSponza}
 {
 }
 
 auto RaveSceneBuilder::build() const
     -> RaveScene
 {
-    auto builder = StatefulSceneBuilder{*assets, doNotIncludeSponza};
+    auto builder = StatefulSceneBuilder{*assets, excludeSponza};
 
     return builder.build();
 }

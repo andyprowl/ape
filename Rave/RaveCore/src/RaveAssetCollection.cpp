@@ -1,6 +1,5 @@
-#include <Rave/RaveCore/RaveAssetBuilder.hpp>
+#include <Rave/RaveCore/RaveAssetCollection.hpp>
 
-#include <Ape/World/AssetLoader//AssetLoader.hpp>
 #include <Ape/World/Model/Material.hpp>
 #include <Ape/World/Model/Mesh.hpp>
 #include <Ape/World/Shape/BoxShapeBuilder.hpp>
@@ -16,6 +15,19 @@ namespace rave
 namespace
 {
 
+auto const simpleAssetRepositoryName = "Simple";
+auto const nanosuitModelName = "Nanosuit";
+auto const dragonModelName = "Dragon";
+auto const spaceshipModelName = "Spaceship";
+auto const dynoModelName = "Dyno";
+auto const castleModelName = "Castle";
+auto const tavernModelName = "Tavern";
+auto const houseModelName = "House";
+auto const cottageModelName = "Cottage";
+auto const bridgeModelName = "Bridge";
+auto const libertyStatueModelName = "LibertyStatus";
+auto const sponzaModelName = "Sponza";
+
 auto makeBox(ape::NormalDirection const normalDirection, glm::vec3 const & size)
     -> ape::Shape
 {
@@ -24,7 +36,13 @@ auto makeBox(ape::NormalDirection const normalDirection, glm::vec3 const & size)
     return builder.build(normalDirection, size);
 }
 
-class StatefulAssetBuilder
+auto resolveModelFilepath(std::filesystem::path relativePath)
+    -> std::filesystem::path
+{
+    return std::filesystem::path{resourceFolder} / "models" / std::move(relativePath);
+}
+
+class StatefulSimpleAssetBuilder
 {
 
 public:
@@ -96,7 +114,7 @@ private:
 
 };
 
-auto StatefulAssetBuilder::build()
+auto StatefulSimpleAssetBuilder::build()
     -> ape::AssetRepository
 {
     preventReallocation();
@@ -112,7 +130,7 @@ auto StatefulAssetBuilder::build()
     return std::move(assets);
 }
 
-auto StatefulAssetBuilder::preventReallocation()
+auto StatefulSimpleAssetBuilder::preventReallocation()
     -> void
 {
     assets.shapes.reserve(10u);
@@ -126,7 +144,7 @@ auto StatefulAssetBuilder::preventReallocation()
     assets.models.reserve(10u);
 }
 
-auto StatefulAssetBuilder::createGroundTileModels()
+auto StatefulSimpleAssetBuilder::createGroundTileModels()
     -> void
 {
     auto box = makeBox(ape::NormalDirection::outbound, {5.0f, 0.1f, 5.0f});
@@ -138,7 +156,7 @@ auto StatefulAssetBuilder::createGroundTileModels()
     createWoodenFloorTileModel(shape);
 }
 
-auto StatefulAssetBuilder::createConcreteGroundTileModel(ape::Shape const & shape)
+auto StatefulSimpleAssetBuilder::createConcreteGroundTileModel(ape::Shape const & shape)
     -> ape::Model &
 {
     auto const & material = createConcreteGroundMaterial();
@@ -146,7 +164,7 @@ auto StatefulAssetBuilder::createConcreteGroundTileModel(ape::Shape const & shap
     return createSingleMeshModel(shape, material, "Concrete Floor Tile");
 }
 
-auto StatefulAssetBuilder::createWoodenFloorTileModel(ape::Shape const & shape)
+auto StatefulSimpleAssetBuilder::createWoodenFloorTileModel(ape::Shape const & shape)
     -> ape::Model &
 {
     auto const & material = createWoodenFloorMaterial();
@@ -154,7 +172,7 @@ auto StatefulAssetBuilder::createWoodenFloorTileModel(ape::Shape const & shape)
     return createSingleMeshModel(shape, material, "Wooden Floor Tile");
 }
 
-auto StatefulAssetBuilder::createConcreteGroundMaterial()
+auto StatefulSimpleAssetBuilder::createConcreteGroundMaterial()
     -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
@@ -177,7 +195,7 @@ auto StatefulAssetBuilder::createConcreteGroundMaterial()
         shininess);
 }
 
-auto StatefulAssetBuilder::createWoodenFloorMaterial()
+auto StatefulSimpleAssetBuilder::createWoodenFloorMaterial()
     -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
@@ -200,7 +218,7 @@ auto StatefulAssetBuilder::createWoodenFloorMaterial()
         shininess);
 }
 
-auto StatefulAssetBuilder::createContainerModel()
+auto StatefulSimpleAssetBuilder::createContainerModel()
     -> ape::Model &
 {
     auto box = makeBox(ape::NormalDirection::outbound, {1.0f, 1.0f, 1.0f});
@@ -212,7 +230,7 @@ auto StatefulAssetBuilder::createContainerModel()
     return createSingleMeshModel(shape, material, "Container");
 }
 
-auto StatefulAssetBuilder::createContainerMaterial()
+auto StatefulSimpleAssetBuilder::createContainerMaterial()
     -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 0.5f, 0.31f};
@@ -233,7 +251,7 @@ auto StatefulAssetBuilder::createContainerMaterial()
         shininess);
 }
 
-auto StatefulAssetBuilder::createLampModel()
+auto StatefulSimpleAssetBuilder::createLampModel()
     -> ape::Model &
 {
     auto box = makeBox(ape::NormalDirection::inbound, {0.2f, 0.2f, 0.2f});
@@ -245,7 +263,7 @@ auto StatefulAssetBuilder::createLampModel()
     return createSingleMeshModel(shape, material, "Lamp");
 }
 
-auto StatefulAssetBuilder::createLampMaterial()
+auto StatefulSimpleAssetBuilder::createLampMaterial()
     -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
@@ -268,7 +286,7 @@ auto StatefulAssetBuilder::createLampMaterial()
         shininess);
 }
 
-auto StatefulAssetBuilder::createFlashlightModel()
+auto StatefulSimpleAssetBuilder::createFlashlightModel()
     -> ape::Model &
 {
     auto box = makeBox(ape::NormalDirection::inbound, {0.3f, 0.1f, 0.1f});
@@ -280,7 +298,7 @@ auto StatefulAssetBuilder::createFlashlightModel()
     return createSingleMeshModel(shape, material, "Flashlight");
 }
 
-auto StatefulAssetBuilder::createFlashlightMaterial()
+auto StatefulSimpleAssetBuilder::createFlashlightMaterial()
     -> ape::Material &
 {
     auto const ambientColor = glm::vec3{1.0f, 1.0f, 1.0f};
@@ -303,7 +321,7 @@ auto StatefulAssetBuilder::createFlashlightMaterial()
         shininess);
 }
 
-auto StatefulAssetBuilder::createSingleMeshModel(
+auto StatefulSimpleAssetBuilder::createSingleMeshModel(
     ape::Shape const & shape,
     ape::Material const & material,
     std::string name)
@@ -314,7 +332,7 @@ auto StatefulAssetBuilder::createSingleMeshModel(
     return createTrivialModelFromMesh(mesh);
 }
 
-auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
+auto StatefulSimpleAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
     -> ape::Model &
 {
     auto const meshName = mesh.getName();
@@ -326,19 +344,19 @@ auto StatefulAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & mesh)
     return assets.models.emplace_back(std::move(model));
 }
 
-auto StatefulAssetBuilder::createColorTextureFromLocalFile(std::string filename)
+auto StatefulSimpleAssetBuilder::createColorTextureFromLocalFile(std::string filename)
     -> glow::Texture &
 {
     return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::perceptual);
 }
 
-auto StatefulAssetBuilder::createDataTextureFromLocalFile(std::string filename)
+auto StatefulSimpleAssetBuilder::createDataTextureFromLocalFile(std::string filename)
     -> glow::Texture &
 {
     return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::linear);
 }
 
-auto StatefulAssetBuilder::createTextureFromLocalFile(
+auto StatefulSimpleAssetBuilder::createTextureFromLocalFile(
     std::string filename,
     glow::ColorSpace const colorSpace)
     -> glow::Texture &
@@ -361,98 +379,126 @@ auto StatefulAssetBuilder::createTextureFromLocalFile(
     return assets.textures.emplace_back(std::move(texture));
 }
 
-auto resolveModelFilepath(std::filesystem::path relativePath)
-    -> std::filesystem::path
-{
-    return std::filesystem::path{resourceFolder} / "models" / std::move(relativePath);
-}
-
-auto collectShapes(ape::AssetRepository & repository, RaveAssetCollection & collection)
-    -> void
-{
-    collection.shapes.reserve(collection.shapes.size() + repository.shapes.size());
-
-    for (auto & shape : repository.shapes)
-    {
-        collection.shapes.push_back(&shape);
-    }
-}
-
-auto createSimpleAssets(RaveAssetCollection & collection)
-    -> void
-{
-    auto builder = StatefulAssetBuilder{};
-
-    collection.generalAssets = builder.build();
-
-    collectShapes(collection.generalAssets, collection);
-}
-
-auto loadAssets(
-    std::filesystem::path const & path,
-    std::string modelName,
-    ape::AssetRepository & destination,
-    RaveAssetCollection & collection)
-    -> void
-{
-    auto const loader = ape::AssetLoader{};
-
-    auto const nanosuiteFilepath = resolveModelFilepath(path);
-
-    destination = loader.load(nanosuiteFilepath, modelName);
-
-    collectShapes(destination, collection);
-}
-
 } // unnamed namespace
 
-RaveAssetBuilder::RaveAssetBuilder()
-    : RaveAssetBuilder{true}
+RaveAssetCollection::RaveAssetCollection(bool excludeSponza)
 {
-}
+    createSimpleAssets();
 
-RaveAssetBuilder::RaveAssetBuilder(bool const doNotIncludeSponza)
-    : doNotIncludeSponza{doNotIncludeSponza}
-{
-}
-
-auto RaveAssetBuilder::build() const
-    -> RaveAssetCollection
-{
-    auto collection = RaveAssetCollection{};
-
-    createSimpleAssets(collection);
-
-    loadAssets("Nanosuit/nanosuit.obj", "Nanosuit", collection.nanosuitAssets, collection);
+    loadAssets("Nanosuit/nanosuit.obj", nanosuitModelName);
     
-    loadAssets("Dragon/Dragon.obj", "Dragon", collection.dragonAssets, collection);
+    loadAssets("Dragon/Dragon.obj", dragonModelName);
 
-    loadAssets("Spaceship/Spaceship.obj", "Spaceship", collection.spaceshipAssets, collection);
+    loadAssets("Spaceship/Spaceship.obj", spaceshipModelName);
 
-    loadAssets("Dyno/Apatosaurus.obj", "Dyno", collection.dynoAssets, collection);
+    loadAssets("Dyno/Apatosaurus.obj", dynoModelName);
 
-    loadAssets("Castle/Castle.obj", "Castle", collection.castleAssets, collection);
+    loadAssets("Castle/Castle.obj", castleModelName);
 
-    loadAssets("Tavern/Tavern.obj", "Tavern", collection.tavernAssets, collection);
+    loadAssets("Tavern/Tavern.obj", tavernModelName);
 
-    loadAssets("House/House.obj", "House", collection.houseAssets, collection);
+    loadAssets("House/House.obj", houseModelName);
 
-    loadAssets("Cottage/Cottage.obj", "Cottage", collection.cottageAssets, collection);
+    loadAssets("Cottage/Cottage.obj", cottageModelName);
 
-    loadAssets("Bridge/Bridge.obj", "Bridge", collection.bridgeAssets, collection);
+    loadAssets("Bridge/Bridge.obj", bridgeModelName);
 
-    loadAssets(
-        "LibertyStatue/LibertyStatue.obj",
-        "LibertyStatue",
-        collection.libertyStatueAssets,
-        collection);
+    loadAssets("LibertyStatue/LibertyStatue.obj", libertyStatueModelName);
 
-    if (!doNotIncludeSponza)
+    if (not excludeSponza)
     {
-        loadAssets("Sponza/sponza.obj", "Sponza", collection.sponzaAssets, collection);
+        loadAssets("Sponza/sponza.obj", sponzaModelName);
     }
-    
-    return collection;
+}
+
+auto RaveAssetCollection::getSimpleAssets()
+    -> ape::AssetRepository &
+{
+    return getAssets(simpleAssetRepositoryName);
+}
+
+auto RaveAssetCollection::getNanosuitModel()
+    -> ape::Model &
+{
+    return getAssets(nanosuitModelName).models[0];
+}
+
+auto RaveAssetCollection::getDragonModel()
+    -> ape::Model &
+{
+    return getAssets(dragonModelName).models[0];
+}
+
+auto RaveAssetCollection::getSpaceshipModel()
+    -> ape::Model &
+{
+    return getAssets(spaceshipModelName).models[0];
+}
+
+auto RaveAssetCollection::getDynoModel()
+    -> ape::Model &
+{
+    return getAssets(dynoModelName).models[0];
+}
+
+auto RaveAssetCollection::getCastleModel()
+    -> ape::Model &
+{
+    return getAssets(castleModelName).models[0];
+}
+
+auto RaveAssetCollection::getTavernModel()
+    -> ape::Model &
+{
+    return getAssets(tavernModelName).models[0];
+}
+
+auto RaveAssetCollection::getHouseModel()
+    -> ape::Model &
+{
+    return getAssets(houseModelName).models[0];
+}
+
+auto RaveAssetCollection::getCottageModel()
+    -> ape::Model &
+{
+    return getAssets(cottageModelName).models[0];
+}
+
+auto RaveAssetCollection::getBridgeModel()
+    -> ape::Model &
+{
+    return getAssets(bridgeModelName).models[0];
+}
+
+auto RaveAssetCollection::getLibertyStatueModel()
+    -> ape::Model &
+{
+    return getAssets(libertyStatueModelName).models[0];
+}
+
+auto RaveAssetCollection::getSponzaModel()
+    -> ape::Model &
+{
+    return getAssets(sponzaModelName).models[0];
+}
+
+void RaveAssetCollection::createSimpleAssets()
+{
+    auto builder = StatefulSimpleAssetBuilder{};
+
+    auto repository = builder.build();
+
+    addAssets(simpleAssetRepositoryName, std::move(repository));
+}
+
+void RaveAssetCollection::loadAssets(std::filesystem::path const & path, std::string modelName)
+{
+    auto const resolvedPath = resolveModelFilepath(path);
+
+    auto repository = loader.load(resolvedPath, modelName);
+
+    addAssets(std::move(modelName), std::move(repository));
 }
 
 } // namespace rave
