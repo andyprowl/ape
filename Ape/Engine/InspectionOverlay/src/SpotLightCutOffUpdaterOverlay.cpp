@@ -12,7 +12,7 @@ auto SpotLightCutoffUpdaterOverlay::updateLightCutoff(SpotLight & light)
 {
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-    if (!ImGui::TreeNode("Cutoff angle"))
+    if (not ImGui::TreeNode("Cutoff angle"))
     {
         return;
     }

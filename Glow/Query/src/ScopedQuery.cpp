@@ -82,7 +82,7 @@ auto ScopedQuery::activateQuery() const
 
     auto const canActivate = activeQuery.compare_exchange_strong(expectedActiveQueryId, id);
 
-    if (!canActivate)
+    if (not canActivate)
     {
         throw QueryOfSameTypeStillActive{};
     }

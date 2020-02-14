@@ -39,14 +39,14 @@ public:
         Engine & parent,
         Window & window,
         EventSystem & eventSystem,
-        Renderer & renderer,
-        InputHandler & inputHandler,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler,
         ImGuiEventDispatcher & dispatcher,
         FrameLoop & frameLoop)
         : window{&window}
         , eventSystem{&eventSystem}
-        , renderer{&renderer}
-        , inputHandler{&inputHandler}
+        , renderer{std::move(renderer)}
+        , inputHandler{std::move(inputHandler)}
         , imGuiDispatcher{&dispatcher}
         , frameLoop{&frameLoop}
         , timeTracker{stopwatch}
@@ -60,9 +60,9 @@ public:
         , activeCameraChangeConnection{registerActiveCameraChangeHandler()}
         , isInspectionOverlayShown{false}
     {
-        renderer.setProfiler(profiler);
+        this->renderer->setProfiler(profiler);
 
-        inputHandler.setEngine(parent);
+        this->inputHandler->setEngine(parent);
 
         initializeViewport();
 
@@ -104,6 +104,18 @@ public:
         -> void
     {
         isInspectionOverlayShown = false;
+    }
+
+    auto getRenderer() const
+        -> Renderer &
+    {
+        return *renderer;
+    }
+
+    auto getInputHandler()
+        -> InputHandler &
+    {
+        return *inputHandler;
     }
 
 private:
@@ -250,7 +262,7 @@ private:
     auto recordLastFrameProfile()
         -> void
     {
-        if (!profiler.isCpuProfilingEnabled() && !profiler.isGpuProfilingEnabled())
+        if (not profiler.isCpuProfilingEnabled() && not profiler.isGpuProfilingEnabled())
         {
             return;
         }
@@ -304,7 +316,7 @@ private:
     auto render()
         -> void
     {
-        if (!isWindowReady())
+        if (not isWindowReady())
         {
             return;
         }
@@ -317,7 +329,7 @@ private:
     auto updateInspectionOverlays()
         -> void
     {
-        if (!isInspectionOverlayShown)
+        if (not isInspectionOverlayShown)
         {
             return;
         }
@@ -365,9 +377,9 @@ private:
 
     EventSystem * eventSystem;
 
-    Renderer * renderer;
+    std::unique_ptr<Renderer> renderer;
 
-    InputHandler * inputHandler;
+    std::unique_ptr<InputHandler> inputHandler;
 
     ImGuiEventDispatcher * imGuiDispatcher;
 
@@ -398,16 +410,16 @@ private:
 Engine::Engine(
     Window & window,
     EventSystem & eventSystem,
-    Renderer & renderer,
-    InputHandler & inputHandler,
+    std::unique_ptr<Renderer> renderer,
+    std::unique_ptr<InputHandler> inputHandler,
     ImGuiEventDispatcher & dispatcher,
     FrameLoop & frameLoop)
     : impl{std::make_unique<Impl>(
         *this,
         window,
         eventSystem,
-        renderer,
-        inputHandler,
+        std::move(renderer),
+        std::move(inputHandler),
         dispatcher,
         frameLoop)}
 {
@@ -420,39 +432,64 @@ auto Engine::operator = (Engine &&) noexcept
 
 Engine::~Engine() = default;
 
-// virtual (from Engine)
 auto Engine::run()
     -> void
 {
     return impl->run();
 }
 
-// virtual (from Engine)
 auto Engine::pause()
     -> void
 {
     return impl->pause();
 }
 
-// virtual (from Engine)
 auto Engine::isInspectionOverlayVisible() const
     -> bool
 {
     return impl->isInspectionOverlayVisible();
 }
 
-// virtual (from Engine)
 auto Engine::showInspectionOverlay()
     -> void
 {
     return impl->showInspectionOverlay();
 }
 
-// virtual (from Engine)
 auto Engine::hideInspectionOverlay()
     -> void
 {
     return impl->hideInspectionOverlay();
+}
+
+auto Engine::getRenderer() const
+    -> Renderer &
+{
+    return impl->getRenderer();
+}
+
+auto Engine::getInputHandler()
+    -> InputHandler &
+{
+    return impl->getInputHandler();
+}
+
+auto getScene(Engine const & engine)
+    -> Scene &
+{
+    auto & renderer = engine.getRenderer();
+
+    auto & cameraSelector = renderer.getCameraSelector();
+
+    return cameraSelector.getScene();
+}
+
+auto getWindow(Engine const & engine)
+    -> Window &
+{
+    auto & renderer = engine.getRenderer();
+
+    return renderer.getTargetSurface();
 }
 
 } // namespace ape

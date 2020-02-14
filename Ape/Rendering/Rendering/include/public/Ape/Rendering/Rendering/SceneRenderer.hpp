@@ -85,8 +85,8 @@ public:
         RendererSet renderers,
         std::unique_ptr<ShapeDrawer> shapeDrawer,
         std::unique_ptr<ShadowMapping> shadowMapping,
-        CameraSelector const & cameraSelector,
-        BodySelector const & pickedBodySelector,
+        CameraSelector & cameraSelector,
+        BodySelector & pickedBodySelector,
         Window & targetSurface,
         Viewport const & viewport,
         glm::vec3 const & backgroundColor);
@@ -105,11 +105,15 @@ public:
 
     // virtual (from Renderer)
     auto getCameraSelector() const
-        -> CameraSelector const & override;
+        -> CameraSelector & override;
 
     // virtual (from Renderer)
-    auto setCameraSelector(CameraSelector const & newSelector)
+    auto setCameraSelector(CameraSelector & newSelector)
         -> void;
+
+    // virtual (from Renderer)
+    auto getTargetSurface()
+        -> Window & override;
 
     // virtual (from Renderer)
     auto getProfiler() const
@@ -177,9 +181,9 @@ private:
 
     std::unique_ptr<ShadowMapping> shadowMapping;
 
-    CameraSelector const * cameraSelector;
+    CameraSelector * cameraSelector;
 
-    BodySelector const * pickedBodySelector;
+    BodySelector * pickedBodySelector;
 
     Window * targetSurface;
 

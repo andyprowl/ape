@@ -25,7 +25,10 @@ class QtEngine : public Engine
 
 public:
 
-    QtEngine(QtWindow & window, Renderer & renderer, InputHandler & inputHandler);
+    QtEngine(
+        QtWindow & window,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler);
 
 private:
 
@@ -46,8 +49,8 @@ private:
 
     QtEngine(
         QtWindow & window,
-        Renderer & renderer,
-        InputHandler & inputHandler,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler,
         std::unique_ptr<EngineObjects> engineObjects);
 
 private:

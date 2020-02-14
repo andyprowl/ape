@@ -14,7 +14,7 @@ auto LightAttenuationUpdaterOverlay<LightType>::updateLightAttenuation(LightType
 {
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-    if (!ImGui::TreeNode("Attenuation"))
+    if (not ImGui::TreeNode("Attenuation"))
     {
         return;
     }

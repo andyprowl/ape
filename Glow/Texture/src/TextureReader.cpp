@@ -64,7 +64,7 @@ auto TextureReader::resolveToPathOfExistingFile(std::filesystem::path const & pa
 {
     auto const existingFilePath = fileFinder.findExistingPath(path);
 
-    if (!existingFilePath)
+    if (not existingFilePath.has_value())
     {
         throw CouldNotFindImageFile{path};
     }

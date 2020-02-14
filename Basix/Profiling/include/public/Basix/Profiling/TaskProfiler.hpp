@@ -104,7 +104,7 @@ private:
     auto extractMetrics(std::optional<MetricsCollector> & collector) const
         -> std::unique_ptr<TaskProfileMetrics>
     {
-        if (!collector)
+        if (not collector.has_value())
         {
             return nullptr;
         }

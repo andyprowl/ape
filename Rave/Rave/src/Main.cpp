@@ -26,11 +26,11 @@ auto main(int argc, char const * * argv)
 
     auto const enableDebugOutput = isDebugOutputEnabled(arguments);
 
-    auto const doNotIncludeSponza = isSponzaExcluded(arguments);
+    auto const excludeSponza = isSponzaExcluded(arguments);
 
     try
     {
-        auto app = rave::Application{enableDebugOutput, doNotIncludeSponza};
+        auto app = rave::Application{enableDebugOutput, excludeSponza};
 
         app.run();
     }

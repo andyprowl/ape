@@ -23,14 +23,14 @@ auto RadarFrustumCuller::PointCuller::computeContainment() const
 {
     auto const cameraZ = computeCameraZ();
 
-    if (!isContainedOnZ(cameraZ))
+    if (not isContainedOnZ(cameraZ))
     {
         return false;
     }
 
     auto const cameraY = computeCameraY();
 
-    if (!isContainedOnY(cameraY, cameraZ))
+    if (not isContainedOnY(cameraY, cameraZ))
     {
         return false;
     }

@@ -57,7 +57,7 @@ auto SkyboxSelector::getAvailableSkyboxes() const
 auto SkyboxSelector::getActiveSkybox() const
     -> glow::CubeTexture *
 {
-    if (!activeSkyboxIndex)
+    if (not activeSkyboxIndex)
     {
         return nullptr;
     }
@@ -94,7 +94,7 @@ auto SkyboxSelector::activateSkybox(glow::CubeTexture const & effect)
 auto SkyboxSelector::activateNextSkybox()
     -> void
 {
-    if (!activeSkyboxIndex)
+    if (not activeSkyboxIndex)
     {
         activeSkyboxIndex = tryGetFirstSkyboxIndex();
     }
@@ -111,7 +111,7 @@ auto SkyboxSelector::activateNextSkybox()
 auto SkyboxSelector::activatePreviousSkybox()
     -> void
 {
-    if (!activeSkyboxIndex)
+    if (not activeSkyboxIndex)
     {
         activeSkyboxIndex = tryGetLastSkyboxIndex();
     }

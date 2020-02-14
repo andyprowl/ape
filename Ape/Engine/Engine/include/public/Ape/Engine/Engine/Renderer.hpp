@@ -7,8 +7,9 @@ namespace ape
 
 class CameraSelector;
 class Scene;
-class Viewport;
 class TaskTimeProfiler;
+class Viewport;
+class Window;
 
 class Renderer
 {
@@ -27,10 +28,13 @@ public:
         -> void = 0;
     
     virtual auto getCameraSelector() const
-        -> CameraSelector const & = 0;
+        -> CameraSelector & = 0;
 
-    virtual auto setCameraSelector(CameraSelector const & newSelector)
+    virtual auto setCameraSelector(CameraSelector & newSelector)
         -> void = 0;
+
+    virtual auto getTargetSurface()
+        -> Window & = 0;
 
     virtual auto setProfiler(TaskTimeProfiler & profiler)
         -> void = 0;

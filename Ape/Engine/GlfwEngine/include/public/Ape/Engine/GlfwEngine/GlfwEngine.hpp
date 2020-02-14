@@ -19,7 +19,10 @@ class GlfwEngine : public Engine
 
 public:
 
-    GlfwEngine(GlfwWindow & window, Renderer & renderer, InputHandler & inputHandler);
+    GlfwEngine(
+        GlfwWindow & window,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler);
 
 private:
 
@@ -40,8 +43,8 @@ private:
 
     GlfwEngine(
         GlfwWindow & window,
-        Renderer & renderer,
-        InputHandler & inputHandler,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler,
         std::unique_ptr<EngineObjects> engineObjects);
 
 private:

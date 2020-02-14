@@ -172,7 +172,7 @@ auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
 auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const & culler) const
     -> bool
 {
-    if (!isFrustumCullingEnabled())
+    if (not isFrustumCullingEnabled())
     {
         return true;
     }

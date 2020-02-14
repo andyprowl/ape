@@ -118,6 +118,8 @@ auto StandardInputHandler::onFocusAcquired()
     -> void
 {
     cameraManipulator.activate();
+
+    getWindow().captureMouse();
 }
 
 // virtual
@@ -225,7 +227,7 @@ auto StandardInputHandler::processFullScreenToggling(
         return;
     }
 
-    if (!handledWindow->isFullScreen())
+    if (not handledWindow->isFullScreen())
     {
         handledWindow->setFullScreen();
     }

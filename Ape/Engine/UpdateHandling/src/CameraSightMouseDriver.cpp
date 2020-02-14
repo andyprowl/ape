@@ -91,7 +91,7 @@ auto CameraSightMouseDriver::onFrame()
 {
     auto const mouseOffset = mouseMovementTracker.updatePosition(window->getMousePosition());
 
-    if (!isActive())
+    if (not isActive())
     {
         return;
     }
@@ -118,7 +118,7 @@ auto CameraSightMouseDriver::onFrame()
 auto CameraSightMouseDriver::onMouseWheel(basix::Offset<int> const offset)
     -> void
 {
-    if (!isActive())
+    if (not isActive())
     {
         return;
     }

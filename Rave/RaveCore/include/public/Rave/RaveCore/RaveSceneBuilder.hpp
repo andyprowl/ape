@@ -14,7 +14,7 @@ public:
 
     explicit RaveSceneBuilder(RaveAssetCollection & assets);
 
-    RaveSceneBuilder(RaveAssetCollection & assets, bool doNotIncludeSponza);
+    RaveSceneBuilder(RaveAssetCollection & assets, bool excludeSponza);
 
     auto build() const
         -> RaveScene;
@@ -23,14 +23,14 @@ private:
 
     RaveAssetCollection * assets;
 
-    bool doNotIncludeSponza;
+    bool excludeSponza;
 
 };
 
-inline auto createRaveScene(RaveAssetCollection & assets, bool const doNotIncludeSponza)
+inline auto createRaveScene(RaveAssetCollection & assets, bool const excludeSponza)
     -> RaveScene
 {
-    auto const builder = RaveSceneBuilder{assets, doNotIncludeSponza};
+    auto const builder = RaveSceneBuilder{assets, excludeSponza};
 
     return builder.build();
 }

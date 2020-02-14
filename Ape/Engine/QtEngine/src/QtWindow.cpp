@@ -201,6 +201,8 @@ auto QtWindow::captureMouse()
 {
     QOpenGLWidget::grabMouse();
 
+    setCursor(Qt::BlankCursor);
+
     isMouseGrabbed = true;
 }
 
@@ -209,6 +211,8 @@ auto QtWindow::releaseMouse()
     -> void
 {
     QOpenGLWidget::releaseMouse();
+
+    setCursor(Qt::ArrowCursor);
     
     isMouseGrabbed = false;
 }
@@ -309,7 +313,7 @@ auto QtWindow::mousePressEvent(QMouseEvent * const e)
         }
     }
 
-    if (!ImGui::GetIO().WantCaptureMouse)
+    if (not ImGui::GetIO().WantCaptureMouse)
     {
         QOpenGLWidget::mousePressEvent(e);
     }
@@ -332,7 +336,7 @@ auto QtWindow::mouseReleaseEvent(QMouseEvent * const e)
         }
     }
 
-    if (!ImGui::GetIO().WantCaptureMouse)
+    if (not ImGui::GetIO().WantCaptureMouse)
     {
         QOpenGLWidget::mouseReleaseEvent(e);
     }
@@ -385,7 +389,7 @@ auto QtWindow::handleKeyEvent(QKeyEvent & e, KeyStatus status, F inputHandlerNot
 {
     auto const key = getKey(e);
 
-    if (!key)
+    if (not key)
     {
         return;
     }

@@ -8,7 +8,7 @@ auto TextureCache::registerTexture(glow::Texture & texture, std::filesystem::pat
 {
     auto const result = cache.emplace(path.string(), &texture);
 
-    if (!result.second)
+    if (not result.second)
     {
         throw TexturePathNotUnique{path};
     }

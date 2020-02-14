@@ -28,7 +28,7 @@ auto DirectionalLightOverlayPane::updateViewProperties(DirectionalLight & light)
 {
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-    if (!ImGui::TreeNode("View"))
+    if (not ImGui::TreeNode("View"))
     {
         return;
     }

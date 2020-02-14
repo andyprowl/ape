@@ -53,7 +53,7 @@ auto Light::turnOn()
 auto Light::turnOff()
     -> void
 {
-    if (!isOn)
+    if (not isOn)
     {
         return;
     }
@@ -93,7 +93,7 @@ auto Light::enableShadowCasting()
 auto Light::disableShadowCasting()
     -> void
 {
-    if (!castsShadow)
+    if (not castsShadow)
     {
         return;
     }

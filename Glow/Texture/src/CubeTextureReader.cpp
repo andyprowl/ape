@@ -124,7 +124,7 @@ auto CubeTextureReader::resolveToPathOfExistingFolder(std::filesystem::path cons
 {
     auto const existingFilePath = fileFinder.findExistingPath(path);
 
-    if (!existingFilePath)
+    if (not existingFilePath.has_value())
     {
         throw CouldNotFindImageFolder{path};
     }

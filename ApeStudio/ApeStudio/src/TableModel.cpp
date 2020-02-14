@@ -83,7 +83,7 @@ auto TableModel::setData(QModelIndex const & index, QVariant const & value, int 
         return false;
     }
 
-    if (!checkIndex(index))
+    if (not checkIndex(index))
     {
         return false;
     }

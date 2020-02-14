@@ -12,6 +12,7 @@ class FrameLoop;
 class ImGuiEventDispatcher;
 class InputHandler;
 class Renderer;
+class Scene;
 class Window;
 
 class Engine
@@ -22,8 +23,8 @@ public:
     Engine(
         Window & window,
         EventSystem & eventSystem,
-        Renderer & renderer,
-        InputHandler & inputHandler,
+        std::unique_ptr<Renderer> renderer,
+        std::unique_ptr<InputHandler> inputHandler,
         ImGuiEventDispatcher & dispatcher,
         FrameLoop & frameLoop);
 
@@ -54,6 +55,12 @@ public:
     auto hideInspectionOverlay()
         -> void;
 
+    auto getRenderer() const
+        -> Renderer &;
+
+    auto getInputHandler()
+        -> InputHandler &;
+
 private:
 
     class Impl;
@@ -63,5 +70,11 @@ private:
     std::unique_ptr<Impl> impl;
 
 };
+
+auto getScene(Engine const & engine)
+    -> Scene &;
+
+auto getWindow(Engine const & engine)
+    -> Window &;
 
 } // namespace ape

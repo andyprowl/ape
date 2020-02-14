@@ -32,7 +32,7 @@ public:
         std::string_view const description = "")
         -> basix::ScopedCpuTimeProfiling
     {
-        if (!collectCpuTime)
+        if (not collectCpuTime)
         {
             return basix::ScopedCpuTimeProfiling{};
         }
@@ -49,7 +49,7 @@ public:
         std::string_view const description = "")
         -> ScopedCpuGpuTimeProfiling<QueryType>
     {
-        if (!collectCpuTime && !collectGpuTime)
+        if (not collectCpuTime && not collectGpuTime)
         {
             return {};
         }
@@ -75,7 +75,7 @@ public:
     auto fetchGpuTimingResults()
         -> void
     {
-        if (!collectGpuTime)
+        if (not collectGpuTime)
         {
             return;
         }

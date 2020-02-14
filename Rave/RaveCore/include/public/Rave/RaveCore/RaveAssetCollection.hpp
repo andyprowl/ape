@@ -1,40 +1,66 @@
 #pragma once
 
-#include <Ape/World/AssetLoader/AssetRepository.hpp>
+#include <Ape/World/AssetLoader/AssetCollection.hpp>
+#include <Ape/World/AssetLoader/AssetLoader.hpp>
+
+#include <filesystem>
+#include <string>
 
 namespace rave
 {
 
-class RaveAssetCollection
+class RaveAssetCollection : public ape::AssetCollection
 {
 
 public:
 
-    ape::AssetRepository generalAssets;
+    explicit RaveAssetCollection(bool excludeSponza);
 
-    ape::AssetRepository nanosuitAssets;
+    auto getSimpleAssets()
+        -> ape::AssetRepository &;
 
-    ape::AssetRepository dragonAssets;
+    auto getNanosuitModel()
+        -> ape::Model &;
 
-    ape::AssetRepository spaceshipAssets;
+    auto getDragonModel()
+        -> ape::Model &;
 
-    ape::AssetRepository dynoAssets;
+    auto getSpaceshipModel()
+        -> ape::Model &;
 
-    ape::AssetRepository castleAssets;
+    auto getDynoModel()
+        -> ape::Model &;
 
-    ape::AssetRepository tavernAssets;
+    auto getCastleModel()
+        -> ape::Model &;
 
-    ape::AssetRepository houseAssets;
+    auto getTavernModel()
+        -> ape::Model &;
 
-    ape::AssetRepository cottageAssets;
+    auto getHouseModel()
+        -> ape::Model &;
 
-    ape::AssetRepository bridgeAssets;
+    auto getCottageModel()
+        -> ape::Model &;
 
-    ape::AssetRepository libertyStatueAssets;
+    auto getBridgeModel()
+        -> ape::Model &;
 
-    ape::AssetRepository sponzaAssets;
+    auto getLibertyStatueModel()
+        -> ape::Model &;
 
-    std::vector<ape::Shape *> shapes;
+    auto getSponzaModel()
+        -> ape::Model &;
+
+private:
+
+    void createSimpleAssets();
+
+    void loadAssets(std::filesystem::path const & path, std::string modelName);
+
+private:
+
+    ape::AssetLoader loader;
 
 };
 

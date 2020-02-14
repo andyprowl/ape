@@ -119,7 +119,7 @@ auto BodySelector::deselectBody(Body const & body)
 {
     auto & mutableBody = asMutableBodyFromScene(body, *scene);
 
-    if (!isBodySelected(body))
+    if (not isBodySelected(body))
     {
         return;
     }

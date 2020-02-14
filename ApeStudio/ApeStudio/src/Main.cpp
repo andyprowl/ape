@@ -1,35 +1,12 @@
 #include "MainWindow.hpp"
 #include "TableModel.hpp"
 
-#include <Rave/RaveCore/RaveAssetBuilder.hpp>
-#include <Rave/RaveCore/RaveEffectCollectionReader.hpp>
-#include <Rave/RaveCore/RaveInputHandler.hpp>
-#include <Rave/RaveCore/RaveSceneBuilder.hpp>
-#include <Rave/RaveCore/RaveSkyboxCollectionReader.hpp>
+#include <Rave/RaveCore/RaveEngineFactory.hpp>
 
 #include <Ape/Engine/QtEngine/QtEngine.hpp>
 #include <Ape/Engine/QtEngine/QtGateway.hpp>
 #include <Ape/Engine/QtEngine/QtWindow.hpp>
-#include <Ape/Rendering/Effect/EffectCollection.hpp>
-#include <Ape/Rendering/Effect/EffectSelector.hpp>
-#include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
-#include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
-#include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
-#include <Ape/Rendering/Rendering/SceneRenderer.hpp>
-#include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
-#include <Ape/Rendering/Skybox/SkyboxSelector.hpp>
-#include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
-#include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
-#include <Ape/Rendering/Wireframe/WireframeShaderProgram.hpp>
-#include <Ape/World/Scene/BodySelector.hpp>
 #include <Ape/World/Scene/CameraSelector.hpp>
-#include <Ape/World/Shape/ShapeArrayObjectDrawer.hpp>
-#include <Ape/World/Shape/ShapeBufferObjectDrawer.hpp>
-#include <Ape/World/Shape/SharedArrayObjectDrawer.hpp>
-#include <Ape/World/Shape/SharedBufferObjectDrawer.hpp>
 
 #include <Basix/Range/Search.hpp>
 
@@ -131,7 +108,7 @@ int main(int argc, char *argv[])
 
     auto const enableDebugOutput = isDebugOutputEnabled(arguments);
 
-    auto const doNotIncludeSponza = isSponzaExcluded(arguments);
+    auto const excludeSponza = isSponzaExcluded(arguments);
 
     auto gateway = ape::qt::QtGateway{enableDebugOutput};
 
@@ -213,275 +190,31 @@ int main(int argc, char *argv[])
 
     sceneView1.makeCurrent();
 
-    auto assets = rave::createRaveAssets(doNotIncludeSponza);
-    
-    auto scene = rave::createRaveScene(assets, doNotIncludeSponza);
-
-    auto blinnPhongShader = ape::BlinnPhongShaderProgram{};
-
-    auto monoDepthShader = ape::MonoDepthShaderProgram{};
-
-    auto omniDepthCubeShader = ape::OmniDepthCubeShaderProgram{};
-
-    auto omniDepthFlatShader = ape::OmniDepthFlatShaderProgram{};
-
-    auto wireframeShader = ape::WireframeShaderProgram{};
-
-    auto boundsShader = ape::BodyBoundsShaderProgram{};
-
-    auto skyboxShader = ape::SkyboxShaderProgram{};
-
-    auto effectCollection = rave::RaveEffectCollectionReader{}.read();
-
-    auto skyboxCollection = rave::RaveSkyboxCollectionReader{}.read();
-
-    auto lightSystemSetter = ape::LightSystemUniformSetter{
-        scene.getLightSystem(),
-        blinnPhongShader.lightSystem};
-
-    auto lightSystemViewSetter = ape::LightSystemUniformSetter{
-        depthMapping->getLightSystemView(),
-        blinnPhongShader.lightSystem};
-
-    auto picker = ape::BodySelector{scene};
-
-    auto wireframeStyleProvider = ape::LineStyleProvider{{0.05f, {0.2f, 0.2f, 1.0f}}};
+    auto engineFactory = rave::RaveEngineFactory{excludeSponza};
 
     auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
     
     /// ---
-
-    auto cameraSelector1 = ape::CameraSelector{scene};
-
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
-    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
-    // must be created in the corresponding renderer context.
-    sceneView1.makeCurrent();
     
-    // Using a VAO per shape seems to make performance worse...
-    //auto shapeRenderer1 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer1 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    //auto shapeRenderer1 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
-    auto shapeRenderer1 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
+    auto const engine1 = engineFactory.makeEngine<ape::qt::QtEngine>(sceneView1);
 
-    auto depthBodyRenderer1 = ape::DepthBodyRenderer{
-        {monoDepthShader, *shapeRenderer1},
-        {omniDepthCubeShader, *shapeRenderer1},
-        {omniDepthFlatShader, *shapeRenderer1}};
+    engine1->getRenderer().getCameraSelector().activateNextCamera();
 
-    auto blinnPhongRenderer1 = ape::BlinnPhongBodyRenderer{
-        blinnPhongShader,
-        lightSystemSetter,
-        lightSystemViewSetter,
-        *shapeRenderer1};
-
-    auto wireframeBodyRenderer1 = ape::WireframeBodyRenderer{
-        wireframeShader,
-        *shapeRenderer1,
-        wireframeStyleProvider};
-
-    auto outlinedBodyRenderer1 = ape::OutlinedBodyRenderer{
-        blinnPhongRenderer1,
-        wireframeBodyRenderer1};
-
-    auto boundsRenderer1 = ape::BodyBoundsRenderer{boundsShader};
-
-    auto skyboxSelector1 = ape::SkyboxSelector{skyboxCollection};
-
-    auto skyboxRenderer1 = ape::SkyboxRenderer{skyboxShader, skyboxSelector1};
-
-    auto effectSelector1 = ape::EffectSelector{effectCollection};
-
-    auto effectRenderer1 = ape::EffectRenderer{effectSelector1};
-
-    auto renderer1 = ape::SceneRenderer{
-        std::move(shapeRenderer1),
-        ape::SceneRenderer::RendererSet{
-            std::move(depthBodyRenderer1),
-            std::move(blinnPhongRenderer1),
-            std::move(wireframeBodyRenderer1),
-            std::move(outlinedBodyRenderer1),
-            std::move(boundsRenderer1),
-            std::move(skyboxRenderer1),
-            std::move(effectRenderer1)},
-        cameraSelector1,
-        picker,
-        sceneView1,
-        ape::Viewport{{0, 0}, sceneView1.getSize()},
-        backgroundColor};
-
-    auto inputHandler1 = rave::RaveInputHandler{
-        sceneView1,
-        renderer1,
-        cameraSelector1,
-        skyboxSelector1,
-        effectSelector1,
-        picker,
-        blinnPhongShader,
-        wireframeStyleProvider,
-        scene};
-
-    auto engine1 = ape::qt::QtEngine{sceneView1, renderer1, inputHandler1};
-
-    engine1.run();
+    engine1->run();
 
     /// ---
 
-    auto cameraSelector2 = ape::CameraSelector{scene};
+    auto const engine2 = engineFactory.makeEngine<ape::qt::QtEngine>(sceneView2);
 
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
-    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
-    // must be created in the corresponding renderer context.
-    sceneView2.makeCurrent();
-
-    // Using a VAO per shape seems to make performance worse...
-    //auto shapeRenderer2 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer2 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    //auto shapeRenderer2 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
-    auto shapeRenderer2 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
-
-    auto depthBodyRenderer2 = ape::DepthBodyRenderer{
-        {monoDepthShader, *shapeRenderer2},
-        {omniDepthCubeShader, *shapeRenderer2},
-        {omniDepthFlatShader, *shapeRenderer2}};
-
-    auto blinnPhongRenderer2 = ape::BlinnPhongBodyRenderer{
-        blinnPhongShader,
-        lightSystemSetter,
-        *shapeRenderer2};
-
-    auto wireframeBodyRenderer2 = ape::WireframeBodyRenderer{
-        wireframeShader,
-        *shapeRenderer2,
-        wireframeStyleProvider};
-
-    auto outlinedBodyRenderer2 = ape::OutlinedBodyRenderer{
-        blinnPhongRenderer2,
-        wireframeBodyRenderer2};
-    
-    auto boundsRenderer2 = ape::BodyBoundsRenderer{boundsShader};
-
-    auto skyboxSelector2 = ape::SkyboxSelector{skyboxCollection};
-
-    auto skyboxRenderer2 = ape::SkyboxRenderer{skyboxShader, skyboxSelector2};
-
-    auto effectSelector2 = ape::EffectSelector{effectCollection};
-
-    auto effectRenderer2 = ape::EffectRenderer{effectSelector2};
-
-    auto renderer2 = ape::SceneRenderer{
-        std::move(shapeRenderer2),
-        ape::SceneRenderer::RendererSet{
-            std::move(depthBodyRenderer2),
-            std::move(blinnPhongRenderer2),
-            std::move(wireframeBodyRenderer2),
-            std::move(outlinedBodyRenderer2),
-            std::move(boundsRenderer2),
-            std::move(skyboxRenderer2),
-            std::move(effectRenderer2)},
-        cameraSelector2,
-        picker,
-        sceneView2,
-        ape::Viewport{{0, 0}, sceneView2.getSize()},
-        backgroundColor};
-
-    auto inputHandler2 = rave::RaveInputHandler{
-        sceneView2,
-        renderer2,
-        cameraSelector2,
-        skyboxSelector2,
-        effectSelector2,
-        picker,
-        blinnPhongShader,
-        wireframeStyleProvider,
-        scene};
-
-    auto engine2 = ape::qt::QtEngine{sceneView2, renderer2, inputHandler2};
-
-    effectSelector2.activateNextEffect();
-
-    cameraSelector2.activateNextCamera();
-
-    engine2.run();
+    engine2->run();
     
     /// ---
-    
-    auto cameraSelector3 = ape::CameraSelector{scene};
 
-    // IMPORTANT: fallback VAO in renderer as well as VAOs in ShapeDrawer must be created in the
-    // corresponding rendering context! Also, the flat quad VAO for rendering of offscreen texture
-    // must be created in the corresponding renderer context.
-    sceneView3.makeCurrent();
+    auto const engine3 = engineFactory.makeEngine<ape::qt::QtEngine>(sceneView3);
 
-    // Using a VAO per shape seems to make performance worse...
-    //auto shapeRenderer3 = std::make_unique<ape::ShapeArrayObjectDrawer>(assets.shapes);
-    //auto shapeRenderer3 = std::make_unique<ape::ShapeBufferObjectDrawer>(assets.shapes);
-    //auto shapeRenderer3 = std::make_unique<ape::SharedArrayObjectDrawer>(assets.shapes);
-    auto shapeRenderer3 = std::make_unique<ape::SharedBufferObjectDrawer>(assets.shapes);
+    engine3->getRenderer().getCameraSelector().activatePreviousCamera();
 
-    auto depthBodyRenderer3 = ape::DepthBodyRenderer{
-        {monoDepthShader, *shapeRenderer3},
-        {omniDepthCubeShader, *shapeRenderer3},
-        {omniDepthFlatShader, *shapeRenderer3}};
-
-    auto blinnPhongRenderer3 = ape::BlinnPhongBodyRenderer{
-        blinnPhongShader,
-        lightSystemSetter,
-        *shapeRenderer3};
-
-    auto wireframeBodyRenderer3 = ape::WireframeBodyRenderer{
-        wireframeShader,
-        *shapeRenderer3,
-        wireframeStyleProvider};
-
-    auto outlinedBodyRenderer3 = ape::OutlinedBodyRenderer{
-        blinnPhongRenderer3,
-        wireframeBodyRenderer3};
-
-    auto boundsRenderer3 = ape::BodyBoundsRenderer{boundsShader};
-
-    auto skyboxSelector3 = ape::SkyboxSelector{skyboxCollection};
-
-    auto skyboxRenderer3 = ape::SkyboxRenderer{skyboxShader, skyboxSelector3};
-
-    auto effectSelector3 = ape::EffectSelector{effectCollection};
-
-    auto effectRenderer3 = ape::EffectRenderer{effectSelector3};
-
-    auto renderer3 = ape::SceneRenderer{
-        std::move(shapeRenderer3),
-        ape::SceneRenderer::RendererSet{
-            std::move(depthBodyRenderer3),
-            std::move(blinnPhongRenderer3),
-            std::move(wireframeBodyRenderer3),
-            std::move(outlinedBodyRenderer3),
-            std::move(boundsRenderer3),
-            std::move(skyboxRenderer3),
-            std::move(effectRenderer3)},
-        cameraSelector3,
-        picker,
-        sceneView3,
-        ape::Viewport{{0, 0}, sceneView3.getSize()},
-        backgroundColor};
-
-    auto inputHandler3 = rave::RaveInputHandler{
-        sceneView3,
-        renderer3,
-        cameraSelector3,
-        skyboxSelector3,
-        effectSelector3,
-        picker,
-        blinnPhongShader,
-        wireframeStyleProvider,
-        scene};
-
-    auto engine3 = ape::qt::QtEngine{sceneView3, renderer3, inputHandler3};
-
-    effectSelector3.activatePreviousEffect();
-
-    cameraSelector3.activatePreviousCamera();
-
-    engine3.run();
+    engine3->run();
     
     // ---
 

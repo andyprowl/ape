@@ -51,7 +51,7 @@ auto EffectSelector::getAvailableEffects() const
 auto EffectSelector::getActiveEffect() const
     -> EffectShaderProgram *
 {
-    if (!activeEffectIndex)
+    if (not activeEffectIndex)
     {
         return nullptr;
     }
@@ -88,7 +88,7 @@ auto EffectSelector::activateEffect(EffectShaderProgram const & effect)
 auto EffectSelector::activateNextEffect()
     -> void
 {
-    if (!activeEffectIndex)
+    if (not activeEffectIndex)
     {
         activeEffectIndex = tryGetFirstEffectIndex();
     }
@@ -105,7 +105,7 @@ auto EffectSelector::activateNextEffect()
 auto EffectSelector::activatePreviousEffect()
     -> void
 {
-    if (!activeEffectIndex)
+    if (not activeEffectIndex)
     {
         activeEffectIndex = tryGetLastEffectIndex();
     }

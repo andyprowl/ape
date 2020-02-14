@@ -262,7 +262,7 @@ auto FrameProfilingOverlay::updateFrameProcessingSubTask(basix::ProfiledTask con
 {
     auto const isExpanded = updateFrameProcessingSubTaskOwnMetrics(profile);
 
-    if (!isExpanded)
+    if (not isExpanded)
     {
         return 1;
     }

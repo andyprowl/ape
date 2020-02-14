@@ -84,7 +84,7 @@ auto CameraSelector::getAvailableCameras() const
 auto CameraSelector::getActiveCamera() const
     -> Camera *
 {
-    if (!activeCameraIndex)
+    if (not activeCameraIndex)
     {
         return nullptr;
     }
@@ -130,7 +130,7 @@ auto CameraSelector::activateCamera(Camera const & camera)
 auto CameraSelector::activateNextCamera()
     -> void
 {
-    if (!activeCameraIndex)
+    if (not activeCameraIndex)
     {
         activeCameraIndex = tryGetFirstCameraIndex();
     }
@@ -147,7 +147,7 @@ auto CameraSelector::activateNextCamera()
 auto CameraSelector::activatePreviousCamera()
     -> void
 {
-    if (!activeCameraIndex)
+    if (not activeCameraIndex)
     {
         activeCameraIndex = tryGetLastCameraIndex();
     }

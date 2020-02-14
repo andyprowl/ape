@@ -17,7 +17,7 @@ auto const effectShaderSuffix = ".Fragment.glsl";
 auto isCubeFaceBackTextureFile(std::filesystem::directory_entry const & entry)
     -> bool
 {
-    if (!entry.is_regular_file())
+    if (not entry.is_regular_file())
     {
         return false;
     }
@@ -38,7 +38,7 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 {
     for (auto const & entry : std::filesystem::recursive_directory_iterator{skyboxFolder})
     {
-        if (!isCubeFaceBackTextureFile(entry))
+        if (not isCubeFaceBackTextureFile(entry))
         {
             continue;
         }

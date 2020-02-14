@@ -221,7 +221,7 @@ private:
     auto insert(T && value)
         -> void
     {
-        if (!full())
+        if (not full())
         {
             new (&storage[numOfElements++]) T{std::forward<T>(value)};
         }

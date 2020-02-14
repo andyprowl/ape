@@ -12,7 +12,7 @@ auto LightColorUpdaterOverlay::updateLightColor(Light & light)
 {
     ImGui::SetNextTreeNodeOpen(true, ImGuiCond_Once);
 
-    if (!ImGui::TreeNode("Color"))
+    if (not ImGui::TreeNode("Color"))
     {
         return;
     }

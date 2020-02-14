@@ -25,8 +25,8 @@ SceneRenderer::SceneRenderer(
     RendererSet renderers,
     std::unique_ptr<ShapeDrawer> shapeDrawer,
     std::unique_ptr<ShadowMapping> shadowMapping,
-    CameraSelector const & cameraSelector,
-    BodySelector const & pickedBodySelector,
+    CameraSelector & cameraSelector,
+    BodySelector & pickedBodySelector,
     Window & targetSurface,
     Viewport const & viewport,
     glm::vec3 const & backgroundColor)
@@ -49,7 +49,7 @@ SceneRenderer::SceneRenderer(
 auto SceneRenderer::render()
     -> void
 {
-    if (!hasActiveCamera())
+    if (not hasActiveCamera())
     {
         return;
     }
@@ -90,16 +90,23 @@ auto SceneRenderer::setViewport(Viewport const & newViewport)
 
 // virtual (from Renderer)
 auto SceneRenderer::getCameraSelector() const
-    -> CameraSelector const &
+    -> CameraSelector &
 {
     return *cameraSelector;
 }
 
 // virtual (from Renderer)
-auto SceneRenderer::setCameraSelector(CameraSelector const & newSelector)
+auto SceneRenderer::setCameraSelector(CameraSelector & newSelector)
     -> void
 {
     cameraSelector = &newSelector;
+}
+
+// virtual (from Renderer)
+auto SceneRenderer::getTargetSurface()
+    -> Window &
+{
+    return *targetSurface;
 }
 
 // virtual (from Renderer)
@@ -317,7 +324,7 @@ auto SceneRenderer::renderPickedBodies() const
 auto SceneRenderer::renderBodyBounds() const
     -> void
 {
-    if (!renderBoundingBoxes)
+    if (not renderBoundingBoxes)
     {
         return;
     }

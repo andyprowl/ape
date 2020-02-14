@@ -254,7 +254,7 @@ auto GlfwWindow::setFullScreen()
 auto GlfwWindow::exitFullScreen()
     -> void
 {
-    if (!isFullScreen())
+    if (not isFullScreen())
     {
         return;
     }

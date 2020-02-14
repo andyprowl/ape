@@ -148,7 +148,7 @@ private:
     {
         auto const lightToEdge = edge.first - lightPosition;
 
-        if (!isPlaneFacingAwayFromLight(f1, lightToEdge))
+        if (not isPlaneFacingAwayFromLight(f1, lightToEdge))
         {
             return false;
         }

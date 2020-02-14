@@ -99,7 +99,7 @@ auto CameraManipulator::onFrame(std::chrono::nanoseconds const frameDuration)
 {
     sightDriver.onFrame();
 
-    if (!isActive())
+    if (not isActive())
     {
         return;
     }

@@ -65,7 +65,7 @@ auto OpenGLLoader::loadFunctions()
         return;
     }
 
-    if (!gladLoadGL())
+    if (not gladLoadGL())
     {
         throw CouldNotLoadOpenGLFunctions{};
     }

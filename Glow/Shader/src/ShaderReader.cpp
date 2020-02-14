@@ -13,7 +13,7 @@ auto readShaderCode(std::filesystem::path const & path)
 {
     auto shaderFile = std::ifstream{path, std::ifstream::ate | std::ifstream::binary};
 
-    if (!shaderFile)
+    if (not shaderFile)
     {
         throw CouldNotOpenShaderFile{path};
     }
@@ -55,7 +55,7 @@ auto ShaderReader::resolveToPathOfExistingFile(std::filesystem::path const & pat
 {
     auto existingFilePath = fileFinder.findExistingPath(path);
 
-    if (!existingFilePath)
+    if (not existingFilePath.has_value())
     {
         throw CouldNotFindShaderFile{path};
     }

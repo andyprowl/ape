@@ -117,7 +117,7 @@ public:
     {
         isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn.get())
+        if (not isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
@@ -172,7 +172,7 @@ public:
     {
         isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn.get())
+        if (not isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
@@ -238,7 +238,7 @@ public:
     {
         isTurnedOn.set(light.isTurnedOn());
 
-        if (!isTurnedOn.get())
+        if (not isTurnedOn.get())
         {
             // The shader will not need light data if it is turned off.
             return;
