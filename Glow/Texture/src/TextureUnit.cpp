@@ -43,17 +43,17 @@ template<typename TextureType>
 auto TextureUnit::setTexture(TextureType const * texture, TextureType const * & activeTexture)
     -> void
 {
+    if (texture == activeTexture)
+    {
+        return;
+    }
+
     if (texture == nullptr)
     {
         activate();
 
         this->resetActiveTexture(activeTexture);
 
-        return;
-    }
-
-    if (texture == activeTexture)
-    {
         return;
     }
 
