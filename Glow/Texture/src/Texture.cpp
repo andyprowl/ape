@@ -147,14 +147,6 @@ auto Texture::getId() const
     return resource.get();
 }
 
-auto Texture::activate(int const unit) const
-    -> void
-{
-    glActiveTexture(GL_TEXTURE0 + unit);
-
-    bind();
-}
-
 auto Texture::bind() const
     -> void
 {

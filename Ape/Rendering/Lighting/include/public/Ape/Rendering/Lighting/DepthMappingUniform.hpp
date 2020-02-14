@@ -76,17 +76,17 @@ private:
 
         for (auto i = 0; i < maxNumOfPointLights; ++i)
         {
-            point[i].bind(index++);
+            point[i].setTextureUnit(index++);
         }
 
         for (auto i = 0; i < maxNumOfSpotLights; ++i)
         {
-            spot[i].bind(index++);
+            spot[i].setTextureUnit(index++);
         }
 
         for (auto i = 0; i < maxNumOfDirectionalLights; ++i)
         {
-            directional[i].bind(index++);
+            directional[i].setTextureUnit(index++);
         }
     }
 

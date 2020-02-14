@@ -168,14 +168,6 @@ auto CubeTexture::getId() const
     return resource.get();
 }
 
-auto CubeTexture::activate(int const unit) const
-    -> void
-{
-    glActiveTexture(GL_TEXTURE0 + unit);
-
-    bind();
-}
-
 auto CubeTexture::bind() const
     -> void
 {

@@ -3,6 +3,8 @@
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/Uniform.hpp>
 
+#include <Glow/Texture/TextureUnitSet.hpp>
+
 #include <string_view>
 
 namespace glow::detail
@@ -19,21 +21,21 @@ public:
 public:
  
     GenericTextureUniform(ShaderProgram & program, std::string_view name)
-        : textureUnit{-1}
+        : textureUnit{nullptr}
         , sampler{program, name}
     {
     }
 
     GenericTextureUniform(ShaderProgram & program, std::string_view name, int const textureUnit)
-        : textureUnit{textureUnit}
+        : textureUnit{&textureUnits[textureUnit]}
         , sampler{program, name, textureUnit}
     {
     }
 
-    auto bind(int const newTextureUnit)
+    auto setTextureUnit(int const newTextureUnit)
         -> void
     {
-        textureUnit = newTextureUnit;
+        textureUnit = &textureUnits[newTextureUnit];
 
         sampler.set(newTextureUnit);
     }
@@ -41,7 +43,7 @@ public:
     auto set(ValueType const & texture)
         -> void
     {
-        texture.activate(textureUnit);
+        textureUnit->setTexture(&texture);
     }
 
     auto getUnit() const
@@ -52,7 +54,7 @@ public:
 
 public:
 
-    int textureUnit;
+    TextureUnit * textureUnit;
 
     Uniform<int> sampler;
 

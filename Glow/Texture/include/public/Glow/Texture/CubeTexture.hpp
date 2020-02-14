@@ -25,9 +25,6 @@ public:
     auto getId() const
         -> GpuResource::Id;
 
-    auto activate(int unit) const
-        -> void;
-
     auto bind() const
         -> void;
 
