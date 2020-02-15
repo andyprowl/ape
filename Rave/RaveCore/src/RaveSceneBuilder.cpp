@@ -965,7 +965,7 @@ auto StatefulSceneBuilder::createPointLights()
 
         auto & light = createPointLight(position, color, "PointLight_" + std::to_string(i));
 
-        if ((i >= 2) && (i <= 9))
+        if ((i >= 4) && (i <= 9))
         {
             light.turnOff();
         }

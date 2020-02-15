@@ -15,24 +15,14 @@ LightSystemViewUniformSetter::LightSystemViewUniformSetter(
     : lightSystemView{&lightSystemView}
     , block{&block}
     , uniformBuffer{makeUniformBuffer()}
+    , mappedBuffer{mapUniformBuffer()}
 {
-    auto const mappingFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
-
-    auto const mappedBuffer = glMapNamedBufferRange(
-        uniformBuffer.getId(),
-        0,
-        block.getSize(),
-        mappingFlags);
-
-    assert(mappedBuffer != nullptr);
-
-    data = reinterpret_cast<std::byte *>(mappedBuffer);
 }
 
 auto LightSystemViewUniformSetter::flush()
     -> void
 {
-    block->set(*lightSystemView, data);
+    block->set(*lightSystemView, mappedBuffer);
 }
 
 auto LightSystemViewUniformSetter::getUniformBuffer()
@@ -56,6 +46,22 @@ auto LightSystemViewUniformSetter::makeUniformBuffer() const
     buffer.createStorage(nullptr, size, storageFlags);
 
     return buffer;
+}
+
+auto LightSystemViewUniformSetter::mapUniformBuffer() const
+    -> std::byte *
+{
+    auto const mappingFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
+
+    auto const bytes = glMapNamedBufferRange(
+        uniformBuffer.getId(),
+        0,
+        block->getSize(),
+        mappingFlags);
+
+    assert(bytes != nullptr);
+
+    return reinterpret_cast<std::byte *>(bytes);
 }
 
 } // namespace ape

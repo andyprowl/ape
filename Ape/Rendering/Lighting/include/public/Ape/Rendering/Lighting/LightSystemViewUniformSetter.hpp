@@ -28,6 +28,9 @@ private:
     auto makeUniformBuffer() const
         -> glow::UniformBufferObject;
 
+    auto mapUniformBuffer() const
+        -> std::byte *;
+
 private:
 
     LightSystemView * lightSystemView;
@@ -36,7 +39,7 @@ private:
 
     glow::UniformBufferObject uniformBuffer;
 
-    std::byte * data;
+    std::byte * mappedBuffer;
 
 };
 
