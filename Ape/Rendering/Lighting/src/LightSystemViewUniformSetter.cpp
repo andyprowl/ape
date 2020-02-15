@@ -16,24 +16,23 @@ LightSystemViewUniformSetter::LightSystemViewUniformSetter(
     , block{&block}
     , uniformBuffer{makeUniformBuffer()}
 {
+    auto const mappingFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+
+    auto const mappedBuffer = glMapNamedBufferRange(
+        uniformBuffer.getId(),
+        0,
+        block.getSize(),
+        mappingFlags);
+
+    assert(mappedBuffer != nullptr);
+
+    data = reinterpret_cast<std::byte *>(mappedBuffer);
 }
 
 auto LightSystemViewUniformSetter::flush()
     -> void
 {
-    auto const mappingFlags = GL_MAP_WRITE_BIT;
-
-    auto const buffer = glMapNamedBufferRange(
-        uniformBuffer.getId(),
-        0,
-        block->getSize(),
-        mappingFlags);
-
-    assert(buffer != nullptr);
-
-    block->set(*lightSystemView, reinterpret_cast<std::byte *>(buffer));
-
-    glUnmapNamedBuffer(uniformBuffer.getId());
+    block->set(*lightSystemView, data);
 }
 
 auto LightSystemViewUniformSetter::getUniformBuffer()
@@ -49,7 +48,10 @@ auto LightSystemViewUniformSetter::makeUniformBuffer() const
 
     auto const size = block->getSize();
 
-    auto const storageFlags = glow::BufferStorageFlags::mapWrite;
+    auto const storageFlags = 
+        glow::BufferStorageFlags::mapWrite |
+        glow::BufferStorageFlags::mapPersistent |
+        glow::BufferStorageFlags::mapCoherent;
 
     buffer.createStorage(nullptr, size, storageFlags);
 

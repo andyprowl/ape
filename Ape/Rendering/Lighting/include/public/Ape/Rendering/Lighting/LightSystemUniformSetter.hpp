@@ -34,6 +34,8 @@ private:
 
     glow::UniformBufferObject uniformBuffer;
 
+    std::byte * data;
+
 };
 
 } // namespace
