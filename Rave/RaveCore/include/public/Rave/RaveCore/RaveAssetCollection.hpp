@@ -49,6 +49,9 @@ public:
     auto getLibertyStatueModel()
         -> ape::Model &;
 
+    auto getChildStatueModel()
+        -> ape::Model &;
+
     auto getSponzaModel()
         -> ape::Model &;
 

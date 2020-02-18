@@ -25,7 +25,8 @@ auto const tavernModelName = "Tavern";
 auto const houseModelName = "House";
 auto const cottageModelName = "Cottage";
 auto const bridgeModelName = "Bridge";
-auto const libertyStatueModelName = "LibertyStatus";
+auto const libertyStatueModelName = "LibertyStatue";
+auto const childStatueModelName = "ChildStatue";
 auto const sponzaModelName = "Sponza";
 
 auto makeBox(ape::NormalDirection const normalDirection, glm::vec3 const & size)
@@ -405,6 +406,8 @@ RaveAssetCollection::RaveAssetCollection(bool excludeSponza)
 
     loadAssets("LibertyStatue/LibertyStatue.obj", libertyStatueModelName);
 
+    loadAssets("ChildStatue/ChildStatue.obj", childStatueModelName);
+
     if (not excludeSponza)
     {
         loadAssets("Sponza/sponza.obj", sponzaModelName);
@@ -475,6 +478,12 @@ auto RaveAssetCollection::getLibertyStatueModel()
     -> ape::Model &
 {
     return getAssets(libertyStatueModelName).models[0];
+}
+
+auto RaveAssetCollection::getChildStatueModel()
+    -> ape::Model &
+{
+    return getAssets(childStatueModelName).models[0];
 }
 
 auto RaveAssetCollection::getSponzaModel()

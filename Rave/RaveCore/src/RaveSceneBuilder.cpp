@@ -142,6 +142,12 @@ private:
 
     auto getLibertyStatuePositions() const
         -> std::vector<glm::vec3>;
+    
+    auto createChildStatues()
+        -> void;
+
+    auto getChildStatuePositions() const
+        -> std::vector<glm::vec3>;
 
     auto createSponzas()
         -> void;
@@ -270,6 +276,8 @@ auto StatefulSceneBuilder::createBodies()
     createBridges();
     
     createLibertyStatues();
+
+    createChildStatues();
     
     createSponzas();
 }
@@ -833,6 +841,30 @@ auto StatefulSceneBuilder::getLibertyStatuePositions() const
         {-16.0f, -2.5f, -14.0f},
         {-14.0f, -2.5f, -7.0f},
         {-6.0f, -2.5f, 0.0f}};
+}
+
+auto StatefulSceneBuilder::createChildStatues()
+    -> void
+{
+    auto const & model = assets->getChildStatueModel();
+
+    auto const positions = getChildStatuePositions();
+
+    auto const scaling = glm::scale(glm::mat4{1.0f}, {0.2f, 0.2f, 0.2f});
+
+    for (auto const & position : positions)
+    {
+        auto const translation = glm::translate(glm::mat4{1.0f}, position);
+
+        addBody(translation * scaling, model);
+    }
+}
+
+auto StatefulSceneBuilder::getChildStatuePositions() const
+    -> std::vector<glm::vec3>
+{
+    return {
+        {-14.0f, -0.55f, -14.0f}};
 }
 
 auto StatefulSceneBuilder::createSponzas()
