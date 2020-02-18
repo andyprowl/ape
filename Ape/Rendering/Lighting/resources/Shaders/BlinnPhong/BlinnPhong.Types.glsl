@@ -40,19 +40,24 @@ struct Material
 
     vec3 ambient;
 
-    bool hasDiffuseMap;
+    float shininess;
 
-    sampler2D diffuseMap;
+    bool hasDiffuseMap;
 
     bool hasSpecularMap;
 
-    sampler2D specularMap;
-
     bool hasNormalMap;
 
-    sampler2D normalMap;
+};
 
-    float shininess;
+struct MaterialMaps
+{
+
+    sampler2D diffuseMap;
+
+    sampler2D specularMap;
+
+    sampler2D normalMap;
 
 };
 

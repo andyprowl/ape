@@ -5,11 +5,10 @@
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/TextureUniform.hpp>
 
-namespace glow
+namespace ape
 {
 
-template<>
-class Uniform<ape::Material>
+class MaterialMapsUniform
 {
 
 public:
@@ -18,19 +17,14 @@ public:
 
 public:
 
-    Uniform(
-        ShaderProgram & program,
+    MaterialMapsUniform(
+        glow::ShaderProgram & program,
         std::string const & prefix,
         int const diffuseMapUnit,
         int const specularMapUnit,
         int const normalMapUnit)
-        : ambient{program, prefix + ".ambient"}
-        , shininess{program, prefix + ".shininess"}
-        , hasDiffuseMap{program, prefix + ".hasDiffuseMap"}
-        , diffuseMap{program, prefix + ".diffuseMap", diffuseMapUnit}
-        , hasSpecularMap{program, prefix + ".hasSpecularMap"}
+        : diffuseMap{program, prefix + ".diffuseMap", diffuseMapUnit}
         , specularMap{program, prefix + ".specularMap", specularMapUnit}
-        , hasNormalMap{program, prefix + ".hasNormalMap"}
         , normalMap{program, prefix + ".normalMap", normalMapUnit}
     {
     }
@@ -38,10 +32,6 @@ public:
     auto set(ape::Material const & material)
         -> void
     {
-        ambient.set(material.ambient);
-
-        shininess.set(material.shininess);
-
         setDiffuseMap(material);
     
         setSpecularMap(material);
@@ -49,21 +39,11 @@ public:
         setNormalMap(material);
     }
 
-    auto operator = (ValueType const & material)
-        -> Uniform &
-    {
-        set(material);
-
-        return *this;
-    }
-
 private:
 
     auto setDiffuseMap(ape::Material const & material)
         -> void
     {
-        hasDiffuseMap.set(material.diffuseMap != nullptr);
-
         if (material.diffuseMap != nullptr)
         {
             diffuseMap.set(*material.diffuseMap);
@@ -73,8 +53,6 @@ private:
     auto setSpecularMap(ape::Material const & material)
         -> void
     {
-        hasSpecularMap.set(material.specularMap != nullptr);
-
         if (material.specularMap != nullptr)
         {
             specularMap.set(*material.specularMap);
@@ -84,8 +62,6 @@ private:
     auto setNormalMap(ape::Material const & material)
         -> void
     {
-        hasNormalMap.set(material.normalMap != nullptr);
-
         if (material.normalMap != nullptr)
         {
             normalMap.set(*material.normalMap);
@@ -94,22 +70,12 @@ private:
 
 public:
 
-    Uniform<glm::vec3> ambient;
+    glow::Uniform<glow::Texture> diffuseMap;
 
-    Uniform<float> shininess;
+    glow::Uniform<glow::Texture> specularMap;
 
-    Uniform<bool> hasDiffuseMap;
-
-    Uniform<Texture> diffuseMap;
-
-    Uniform<bool> hasSpecularMap;
-
-    Uniform<Texture> specularMap;
-
-    Uniform<bool> hasNormalMap;
-
-    Uniform<Texture> normalMap;
+    glow::Uniform<glow::Texture> normalMap;
 
 };
 
-} // namespace glow
+} // namespace ape

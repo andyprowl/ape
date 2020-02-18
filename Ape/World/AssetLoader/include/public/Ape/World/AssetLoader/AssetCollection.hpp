@@ -38,9 +38,15 @@ public:
     auto getShapes() const
         -> std::vector<Shape *> const &;
 
+    auto getMaterials() const
+        -> std::vector<Material *> const &;
+
 private:
 
     auto collectShapes(AssetRepository & repository)
+        -> void;
+
+    auto collectMaterials(AssetRepository & repository)
         -> void;
 
 private:
@@ -48,6 +54,8 @@ private:
     std::unordered_map<std::string, AssetRepository> assetMap;
 
     std::vector<Shape *> shapes;
+
+    std::vector<Material *> materials;
 
 };
 

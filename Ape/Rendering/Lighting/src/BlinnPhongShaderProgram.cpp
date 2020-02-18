@@ -12,6 +12,8 @@ auto const lightSystemBlockBindingPoint = 0;
 
 auto const lightSystemViewBlockBindingPoint = 1;
 
+auto const materialSetBindingPoint = 2;
+
 auto buildBlinnPhongShader()
     -> glow::ShaderProgram
 {
@@ -36,7 +38,9 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     , cameraPosition{*this, "camera.position"}
     , lightSystem{*this, "LightSystemUniformBlock"}
     , lightSystemView{*this, "LightSystemViewUniformBlock"}
-    , material{*this, "material", 0, 1, 2}
+    , materialSet{*this, "MaterialSetBlock"}
+    , materialMaps{*this, "materialMaps", 0, 1, 2}
+    , activeMaterialIndex{*this, "activeMaterialIndex"}
     , fog{*this, "fog"}
     , depthMapping{*this, "depthMapping", 3}
     , usePhongModel{*this, "usePhongModel", false}
@@ -46,6 +50,8 @@ BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     lightSystem.setBindingPoint(lightSystemBlockBindingPoint);
 
     lightSystemView.setBindingPoint(lightSystemViewBlockBindingPoint);
+
+    materialSet.setBindingPoint(materialSetBindingPoint);
 }
 
 } // namespace ape

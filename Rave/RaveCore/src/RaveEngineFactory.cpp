@@ -10,6 +10,7 @@
 #include <Ape/Rendering/Effect/EffectSelector.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
+#include <Ape/Rendering/Lighting/MaterialSetUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
@@ -94,6 +95,7 @@ public:
         , lightSystemView{scene.getLightSystem(), basix::Size<int>{1024, 1024}}
         , lightSystemSetter{scene.getLightSystem(), shaders.blinnPhongShader.lightSystem}
         , lightSystemViewSetter{lightSystemView, shaders.blinnPhongShader.lightSystemView}
+        , materialSetSetter{resources.assets.getMaterials(), shaders.blinnPhongShader.materialSet}
         , effectSelector{resources.effectCollection}
         , skyboxSelector{resources.skyboxCollection}
         , bodyPicker{scene}
@@ -117,6 +119,8 @@ public:
     ape::LightSystemUniformSetter lightSystemSetter;
 
     ape::LightSystemViewUniformSetter lightSystemViewSetter;
+
+    ape::MaterialSetUniformSetter materialSetSetter;
 
     ape::EffectSelector effectSelector;
 
@@ -178,6 +182,7 @@ auto RaveEngineFactory::makeSceneRenderer(
         engineObjects->shaders.blinnPhongShader,
         engineObjects->lightSystemSetter,
         engineObjects->lightSystemViewSetter,
+        engineObjects->materialSetSetter,
         *shapeDrawer};
 
     auto wireframeBodyRenderer = ape::WireframeBodyRenderer{

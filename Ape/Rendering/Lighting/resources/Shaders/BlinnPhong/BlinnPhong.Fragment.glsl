@@ -8,10 +8,6 @@ in LightSpacePositioning lightSpacePositioning;
 
 out vec4 fragmentColor;
 
-uniform Camera camera;
-
-uniform Material material;
-
 uniform LightSystemUniformBlock
 {
 
@@ -28,6 +24,21 @@ uniform LightSystemViewUniformBlock
 
 uniform DepthMapping depthMapping;
 
+uniform Camera camera;
+
+uniform MaterialSetBlock
+{
+
+    int numOfMaterials;
+
+    Material materials[1024];
+
+};
+
+uniform MaterialMaps materialMaps;
+
+uniform int activeMaterialIndex;
+
 uniform bool usePhongModel = false;
 
 uniform bool usePercentageCloserFiltering = false;
@@ -36,9 +47,11 @@ uniform bool useNormalMapping = true;
 
 uniform bool renderNormals = false;
 
+const Material material = materials[activeMaterialIndex];
+
 vec3 getMappedNormalInTangentSpace()
 {
-    const vec3 sampledNormal = vec3(texture(material.normalMap, vertex.textureCoords));
+    const vec3 sampledNormal = vec3(texture(materialMaps.normalMap, vertex.textureCoords));
 
     return normalize(sampledNormal * 2.0 - vec3(1.0, 1.0, 1.0));
 }
@@ -174,7 +187,7 @@ float calculateOmnidirectionalShadowFactor(
 
 vec3 computeAmbientLight(const LightColor color)
 {
-    const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
+    const vec3 diffuseColor = vec3(texture(materialMaps.diffuseMap, vertex.textureCoords));
 
     return (color.ambient * material.ambient * diffuseColor);
 }
@@ -195,7 +208,7 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
 
     const float cappedDiffusion = max(correctedDiffusion, 0.0);
 
-    const vec3 diffuseColor = vec3(texture(material.diffuseMap, vertex.textureCoords));
+    const vec3 diffuseColor = vec3(texture(materialMaps.diffuseMap, vertex.textureCoords));
 
     return (color.diffuse * (cappedDiffusion * diffuseColor));
 }
@@ -242,7 +255,7 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
     const float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
 
-    const vec3 specularColor = vec3(texture(material.specularMap, vertex.textureCoords));
+    const vec3 specularColor = vec3(texture(materialMaps.specularMap, vertex.textureCoords));
 
     return (color.specular * (correctedReflectivity * specularColor));
 }

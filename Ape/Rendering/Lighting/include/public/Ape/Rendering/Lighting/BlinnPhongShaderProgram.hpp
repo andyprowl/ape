@@ -4,7 +4,8 @@
 #include <Ape/Rendering/Lighting/FogUniform.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformBlock.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniformBlock.hpp>
-#include <Ape/Rendering/Lighting/MaterialUniform.hpp>
+#include <Ape/Rendering/Lighting/MaterialMapsUniform.hpp>
+#include <Ape/Rendering/Lighting/MaterialSetUniformBlock.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
 
@@ -32,7 +33,11 @@ public:
 
     LightSystemViewUniformBlock lightSystemView;
 
-    glow::Uniform<Material> material;
+    MaterialSetUniformBlock materialSet;
+
+    MaterialMapsUniform materialMaps;
+
+    glow::Uniform<int> activeMaterialIndex;
 
     glow::Uniform<Fog> fog;
 

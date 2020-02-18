@@ -3,6 +3,7 @@
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
+#include <Ape/Rendering/Lighting/MaterialSetUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/ShadowMapping.hpp>
 
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
@@ -45,10 +46,12 @@ BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     BlinnPhongShaderProgram & shader,
     LightSystemUniformSetter & lightSystemSetter,
     LightSystemViewUniformSetter & lightSystemViewSetter,
+    MaterialSetUniformSetter & materialSetSetter,
     ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , lightSystemSetter{&lightSystemSetter}
     , lightSystemViewSetter{&lightSystemViewSetter}
+    , materialSetSetter{&materialSetSetter}
     , shapeRenderer{&shapeRenderer}
     , performFrustumCulling{true}
 {
@@ -104,6 +107,10 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     lightSystemViewSetter->flush();
 
     glow::setBlockDataSource(lightSystemViewSetter->getUniformBuffer(), shader->lightSystemView);
+
+    materialSetSetter->flush();
+
+    glow::setBlockDataSource(materialSetSetter->getUniformBuffer(), shader->materialSet);
 
     shader->cameraPosition.set(camera.getView().getPosition());
 
@@ -191,7 +198,9 @@ auto BlinnPhongBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
 
     auto const & material = meshModel.getMaterial();
 
-    shader->material = material;
+    shader->materialMaps.set(material);
+
+    shader->activeMaterialIndex.set(material.getInstanceIndex());
 
     auto const & shape = meshModel.getShape();
     

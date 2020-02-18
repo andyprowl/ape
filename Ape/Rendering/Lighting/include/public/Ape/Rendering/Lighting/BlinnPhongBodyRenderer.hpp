@@ -18,6 +18,7 @@ class Culler;
 class Fog;
 class LightSystemUniformSetter;
 class LightSystemViewUniformSetter;
+class MaterialSetUniformSetter;
 class Mesh;
 class ShadowMapping;
 class ShapeDrawer;
@@ -31,6 +32,7 @@ public:
         BlinnPhongShaderProgram & shader,
         LightSystemUniformSetter & lightSystemSetter,
         LightSystemViewUniformSetter & lightSystemViewSetter,
+        MaterialSetUniformSetter & materialSetSetter,
         ShapeDrawer & shapeRenderer);
 
     auto render(
@@ -80,6 +82,8 @@ private:
     LightSystemUniformSetter * lightSystemSetter;
 
     LightSystemViewUniformSetter * lightSystemViewSetter;
+
+    MaterialSetUniformSetter * materialSetSetter;
 
     ShapeDrawer * shapeRenderer;
 
