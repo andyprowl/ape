@@ -58,9 +58,9 @@ void main()
 {
     const vec4 rawPosition = vec4(positionAttribute, 1.0);
 
-    const vec4 worldPosition = transform.model * rawPosition;
+    const vec4 worldPosition = transform.objectToWorld * rawPosition;
 
-    gl_Position = transform.camera * rawPosition;
+    gl_Position = transform.worldToClip * worldPosition;
 
     vertex.position = vec3(worldPosition);
 

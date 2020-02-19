@@ -20,9 +20,9 @@ struct Vertex
 struct Transform
 {
 
-    mat4 model;
+    mat4 worldToClip;
 
-    mat4 camera;
+    mat4 objectToWorld;
 
     mat3 normal;
 

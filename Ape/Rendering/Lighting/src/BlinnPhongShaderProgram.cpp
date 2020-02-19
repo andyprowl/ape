@@ -32,8 +32,8 @@ auto buildBlinnPhongShader()
 
 BlinnPhongShaderProgram::BlinnPhongShaderProgram()
     : ShaderProgram{buildBlinnPhongShader()}
-    , worldTransformation{*this, "transform.model"}
-    , cameraTransformation{*this, "transform.camera"}
+    , objectToWorldTransformation{*this, "transform.objectToWorld"}
+    , worldToClipTransformation{*this, "transform.worldToClip"}
     , normalTransformation{*this, "transform.normal"}
     , cameraPosition{*this, "camera.position"}
     , lightSystem{*this, "LightSystemUniformBlock"}

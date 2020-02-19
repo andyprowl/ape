@@ -64,9 +64,7 @@ private:
     auto getVisibleMeshes(BodyRange const & bodies, Camera const & camera) const
         -> std::vector<const BodyPartMesh *>;
 
-    auto setupBodyPartUniforms(
-        BodyPart const & part,
-        glm::mat4 const & cameraTransformation) const
+    auto setupBodyPartUniforms(BodyPart const & part) const
         -> void;
 
     auto isVisible(BodyPartMesh const & mesh, Culler const & culler) const

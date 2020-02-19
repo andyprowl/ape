@@ -70,13 +70,11 @@ auto BlinnPhongBodyRenderer::render(
 
     auto const sortedMeshes = getVisibleMeshesSortedByDistanceFromCamera(bodies, camera);
 
-    auto const & cameraTransformation = camera.getTransformation();
-
     for (auto const mesh : sortedMeshes)
     {
         auto const & part = mesh->getPart();
 
-        setupBodyPartUniforms(part, cameraTransformation);
+        setupBodyPartUniforms(part);
     
         renderMesh(*mesh);
     }
@@ -113,6 +111,8 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     glow::setBlockDataSource(materialSetSetter->getUniformBuffer(), shader->materialSet);
 
     shader->cameraPosition.set(camera.getView().getPosition());
+    
+    shader->worldToClipTransformation.set(camera.getTransformation());
 
     shader->depthMapping.set(shadowMapping.depthMapping);
 
@@ -162,18 +162,16 @@ auto BlinnPhongBodyRenderer::getVisibleMeshes(
     return meshes;
 }
 
-auto BlinnPhongBodyRenderer::setupBodyPartUniforms(
-    BodyPart const & part,
-    glm::mat4 const & cameraTransformation) const
+auto BlinnPhongBodyRenderer::setupBodyPartUniforms(BodyPart const & part) const
     -> void
 {
     auto const & worldTransformation = part.getWorldTransformation();
 
-    shader->worldTransformation.set(worldTransformation);
-    
-    shader->cameraTransformation.set(cameraTransformation * worldTransformation);
+    shader->objectToWorldTransformation.set(worldTransformation);
 
-    shader->normalTransformation.set(part.getWorldNormalTransformation());
+    auto const & normalTransformation = part.getWorldNormalTransformation();
+
+    shader->normalTransformation.set(normalTransformation);
 }
 
 auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const & culler) const
