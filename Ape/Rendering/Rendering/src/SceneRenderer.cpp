@@ -168,6 +168,8 @@ auto SceneRenderer::setupDrawingMode() const
     glCullFace(GL_BACK);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
 }
 
 auto SceneRenderer::setupViewport() const
@@ -274,8 +276,6 @@ auto SceneRenderer::renderSceneBodies()
 auto SceneRenderer::clearTargetBuffers()
     -> void
 {
-    glClearColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, 1.0f);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -360,8 +360,6 @@ auto SceneRenderer::renderOffscreenSurfaceToScreen() const
     auto const profiling = profiler->startTimingCpuGpuTask("Post-processing effects");
 
     targetSurface->makeCurrent();
-
-    setupViewport();
 
     auto const & texture = offscreenSurface.getColorBuffer();
 
