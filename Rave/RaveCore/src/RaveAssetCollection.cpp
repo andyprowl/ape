@@ -387,7 +387,7 @@ RaveAssetCollection::RaveAssetCollection(bool excludeSponza)
     createSimpleAssets();
 
     loadAssets("Nanosuit/nanosuit.obj", nanosuitModelName);
-    
+
     loadAssets("Dragon/Dragon.obj", dragonModelName);
 
     loadAssets("Spaceship/Spaceship.obj", spaceshipModelName);

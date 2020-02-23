@@ -6,11 +6,13 @@
 #include <Glow/BufferObject/VertexLayout.hpp>
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
+#include <Basix/Meta/Tag.hpp>
 #include <Basix/Range/Insertion.hpp>
 
 #include <glad/glad.h>
 
 #include <algorithm>
+#include <numeric>
 
 namespace ape
 {
@@ -18,30 +20,98 @@ namespace ape
 namespace
 {
 
-auto makeVertexBufferObject(std::vector<ShapeVertex> const & vertices)
+auto asVoidPointer(int const value)
+    -> void *
+{
+    return reinterpret_cast<void *>(static_cast<std::uintptr_t>(value));
+}
+
+auto appendVertexBytes(std::vector<std::byte> & buffer, std::vector<ShapeVertex> const & vertices)
+    -> void
+{
+    auto const begin = reinterpret_cast<std::byte const *>(vertices.data());
+
+    auto const end = std::next(begin, vertices.size() * sizeof(ShapeVertex));
+
+    buffer.insert(std::end(buffer), begin, end);
+}
+
+template<typename T>
+auto appendIndexBytes(std::vector<std::byte> & buffer, std::vector<unsigned int> const & indices)
+    -> void
+{
+    for (auto const index : indices)
+    {
+        auto const castIndex = static_cast<T>(index);
+
+        std::copy(
+            reinterpret_cast<std::byte const *>(&castIndex),
+            reinterpret_cast<std::byte const *>(&castIndex) + sizeof(T),
+            std::back_inserter(buffer));
+    }
+}
+
+auto appendIndexBytes(
+    std::vector<std::byte> & buffer,
+    std::vector<ShapeVertex> const & vertices,
+    std::vector<unsigned int> const & indices)
+    -> void
+{
+    if (vertices.size() > std::numeric_limits<std::uint16_t>::max())
+    {
+        appendIndexBytes<std::uint32_t>(buffer, indices);
+    }
+    else if (vertices.size() > std::numeric_limits<std::uint8_t>::max())
+    {
+        appendIndexBytes<std::uint16_t>(buffer, indices);
+    }
+    else
+    {
+        appendIndexBytes<std::uint8_t>(buffer, indices);
+    }
+}
+
+auto getIndexElementType(std::vector<ShapeVertex> const & vertices)
+    -> int
+{
+    if (vertices.size() > std::numeric_limits<std::uint16_t>::max())
+    {
+        return GL_UNSIGNED_INT;
+    }
+    else if (vertices.size() > std::numeric_limits<std::uint8_t>::max())
+    {
+        return GL_UNSIGNED_SHORT;
+    }
+    else
+    {
+        return GL_UNSIGNED_BYTE;
+    }
+}
+
+auto makeVertexBufferObject(std::vector<std::byte> const & data)
     -> glow::VertexBufferObject
 {
     auto vbo = glow::VertexBufferObject{};
 
-    auto const vertexData = static_cast<void const *>(vertices.data());
+    auto const vertexBufferData = static_cast<void const *>(data.data());
 
-    auto const vertexBufferSize = vertices.size() * sizeof(ShapeVertex);
+    auto const vertexBufferSize = data.size();
 
-    vbo.createStorage(vertexData, vertexBufferSize);
+    vbo.createStorage(vertexBufferData, vertexBufferSize);
 
     return vbo;
 }
 
-auto makeIndexBufferObject(std::vector<unsigned int> const & indices)
+auto makeIndexBufferObject(std::vector<std::byte> const & data)
     -> glow::ElementBufferObject
 {
     auto ebo = glow::ElementBufferObject{};
 
-    auto const indexData = static_cast<void const *>(indices.data());
+    auto const indexBufferData = static_cast<void const *>(data.data());
 
-    auto const indexBufferSize = indices.size() * sizeof(unsigned int);
+    auto const indexBufferSize = data.size();
 
-    ebo.createStorage(indexData, indexBufferSize);
+    ebo.createStorage(indexBufferData, indexBufferSize);
 
     return ebo;
 }
@@ -64,18 +134,16 @@ auto SharedArrayBufferObjectDrawer::beginRenderBatch()
 auto SharedArrayBufferObjectDrawer::render(Shape const & shape)
     -> void
 {
-    auto const & offsets = getBufferOffsetsForShape(shape);
+    auto const & bufferPortion = getBufferPortionForShape(shape);
     
     auto const numOfIndices = getNumOfIndices(shape);
-
-    auto const indexBufferOffset = offsets.elementBufferOffset * sizeof(unsigned int);
 
     glDrawElementsBaseVertex(
         GL_TRIANGLES,
         numOfIndices,
-        GL_UNSIGNED_INT,
-        reinterpret_cast<void *>(static_cast<std::uintptr_t>(indexBufferOffset)),
-        offsets.vertexBufferOffset);
+        bufferPortion.indexBufferElementType,
+        asVoidPointer(bufferPortion.indexBufferByteOffset),
+        bufferPortion.vertexBufferOffset);
 }
 
 // virtual (from ShapeDrawer)
@@ -88,19 +156,19 @@ auto SharedArrayBufferObjectDrawer::endRenderBatch()
 SharedArrayBufferObjectDrawer::SharedArrayBufferObjectDrawer(ShapeGeometry geometry)
     : bufferObjects{
         glow::VertexArrayObject{},
-        makeVertexBufferObject(geometry.vertices),
-        makeIndexBufferObject(geometry.indices)}
-    , bufferOffsets{std::move(geometry.offsets)}
+        makeVertexBufferObject(geometry.vertexBufferData),
+        makeIndexBufferObject(geometry.indexBufferData)}
+    , bufferPortions{std::move(geometry.bufferPortions)}
 {
     setupVertexFormat();
 }
 
-auto SharedArrayBufferObjectDrawer::getBufferOffsetsForShape(Shape const & shape) const
-    -> const ShapeBufferOffset &
+auto SharedArrayBufferObjectDrawer::getBufferPortionForShape(Shape const & shape) const
+    -> const ShapeBufferPortion &
 {
     auto const shapeIndex = shape.getInstanceIndex();
 
-    return bufferOffsets[shapeIndex];
+    return bufferPortions[shapeIndex];
 }
 
 auto SharedArrayBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> const & shapes) const
@@ -108,15 +176,21 @@ auto SharedArrayBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> cons
 {
     auto geometry = ShapeGeometry{};
 
+    auto bufferPortion = ShapeBufferPortion{0, 0, 0};
+
     for (auto const shape : shapes)
     {
-        geometry.offsets.emplace_back(
-            static_cast<int>(geometry.vertices.size()),
-            static_cast<int>(geometry.indices.size()));
+        appendVertexBytes(geometry.vertexBufferData, shape->getVertices());
 
-        basix::append(geometry.vertices, shape->getVertices());
+        appendIndexBytes(geometry.indexBufferData, shape->getVertices(), shape->getIndices());
 
-        basix::append(geometry.indices, shape->getIndices());
+        bufferPortion.indexBufferElementType = getIndexElementType(shape->getVertices());
+
+        geometry.bufferPortions.push_back(bufferPortion);
+
+        bufferPortion.vertexBufferOffset += static_cast<int>(shape->getVertices().size());
+
+        bufferPortion.indexBufferByteOffset = static_cast<int>(geometry.indexBufferData.size());
     }
 
     return geometry;

@@ -46,14 +46,23 @@ private:
     
     };
 
-    class ShapeBufferOffset
+    class ShapeBufferPortion
     {
 
     public:
 
-        ShapeBufferOffset(int const vertexBufferOffset, int const elementBufferOffset)
+        ShapeBufferPortion()
+            : ShapeBufferPortion{0, 0, 0}
+        {
+        }
+
+        ShapeBufferPortion(
+            int const vertexBufferOffset,
+            int const indexBufferByteOffset,
+            int const indexBufferElementType)
             : vertexBufferOffset{vertexBufferOffset}
-            , elementBufferOffset{elementBufferOffset}
+            , indexBufferByteOffset{indexBufferByteOffset}
+            , indexBufferElementType{indexBufferElementType}
         {
         }
 
@@ -61,7 +70,9 @@ private:
 
         int vertexBufferOffset;
 
-        int elementBufferOffset;
+        int indexBufferByteOffset;
+
+        int indexBufferElementType;
 
     };
 
@@ -70,11 +81,11 @@ private:
 
     public:
 
-        std::vector<ShapeVertex> vertices;
+        std::vector<std::byte> vertexBufferData;
 
-        std::vector<unsigned int> indices;
+        std::vector<std::byte> indexBufferData;
 
-        std::vector<ShapeBufferOffset> offsets;
+        std::vector<ShapeBufferPortion> bufferPortions;
 
     };
 
@@ -82,8 +93,8 @@ private:
 
     explicit SharedArrayBufferObjectDrawer(ShapeGeometry geometry);
 
-    auto getBufferOffsetsForShape(Shape const & shape) const
-        -> const ShapeBufferOffset &;
+    auto getBufferPortionForShape(Shape const & shape) const
+        -> const ShapeBufferPortion &;
 
     auto mergeShapeGeometry(std::vector<Shape *> const & shapes) const
         -> ShapeGeometry;
@@ -95,7 +106,7 @@ private:
 
     BufferObjectSet bufferObjects;
 
-    std::vector<ShapeBufferOffset> bufferOffsets;
+    std::vector<ShapeBufferPortion> bufferPortions;
 
 };
 
