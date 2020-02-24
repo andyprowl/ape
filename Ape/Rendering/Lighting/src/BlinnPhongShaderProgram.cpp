@@ -1,6 +1,9 @@
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilderStreamLogger.hpp>
+
+#include <iostream>
 
 namespace ape
 {
@@ -17,7 +20,9 @@ auto const materialSetBindingPoint = 2;
 auto buildBlinnPhongShader()
     -> glow::ShaderProgram
 {
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}, logger};
 
     return builder.buildProgram(
         std::vector<glow::VertexShaderPath>{"BlinnPhong/BlinnPhong.Vertex.glsl"},

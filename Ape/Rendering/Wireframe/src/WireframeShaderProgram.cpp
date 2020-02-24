@@ -1,6 +1,9 @@
 #include <Ape/Rendering/Wireframe/WireframeShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilderStreamLogger.hpp>
+
+#include <iostream>
 
 namespace ape
 {
@@ -11,7 +14,9 @@ namespace
 auto buildWireframeShader()
     -> glow::ShaderProgram
 {
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}, logger};
 
     return builder.buildProgram(
         glow::VertexShaderPath{"Wireframe/Wire.Vertex.glsl"},

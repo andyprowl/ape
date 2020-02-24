@@ -40,6 +40,8 @@ template<typename T>
 auto appendIndexBytes(std::vector<std::byte> & buffer, std::vector<unsigned int> const & indices)
     -> void
 {
+    buffer.reserve(buffer.size() + indices.size() * sizeof(T));
+
     for (auto const index : indices)
     {
         auto const castIndex = static_cast<T>(index);
@@ -57,6 +59,8 @@ auto appendIndexBytes(
     std::vector<unsigned int> const & indices)
     -> void
 {
+//   appendIndexBytes<std::uint16_t>(buffer, indices);
+
     if (vertices.size() > std::numeric_limits<std::uint16_t>::max())
     {
         appendIndexBytes<std::uint32_t>(buffer, indices);
@@ -74,6 +78,8 @@ auto appendIndexBytes(
 auto getIndexElementType(std::vector<ShapeVertex> const & vertices)
     -> int
 {
+//    return GL_UNSIGNED_SHORT;
+
     if (vertices.size() > std::numeric_limits<std::uint16_t>::max())
     {
         return GL_UNSIGNED_INT;
@@ -180,11 +186,13 @@ auto SharedArrayBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> cons
 
     for (auto const shape : shapes)
     {
+        bufferPortion.indexBufferElementType = getIndexElementType(shape->getVertices());
+
+        addPaddingToAlignNextIndexBufferPortion(geometry, bufferPortion);
+
         appendVertexBytes(geometry.vertexBufferData, shape->getVertices());
 
         appendIndexBytes(geometry.indexBufferData, shape->getVertices(), shape->getIndices());
-
-        bufferPortion.indexBufferElementType = getIndexElementType(shape->getVertices());
 
         geometry.bufferPortions.push_back(bufferPortion);
 
@@ -194,6 +202,41 @@ auto SharedArrayBufferObjectDrawer::mergeShapeGeometry(std::vector<Shape *> cons
     }
 
     return geometry;
+}
+
+auto SharedArrayBufferObjectDrawer::addPaddingToAlignNextIndexBufferPortion(
+    ShapeGeometry & geometry,
+    ShapeBufferPortion & bufferPortion) const
+    -> void
+{
+    if (bufferPortion.indexBufferElementType == GL_UNSIGNED_INT)
+    {
+        addPaddingToAlignNextIndexBufferPortion<4>(geometry, bufferPortion);
+    }
+    else if (bufferPortion.indexBufferElementType == GL_UNSIGNED_SHORT)
+    {
+        addPaddingToAlignNextIndexBufferPortion<2>(geometry, bufferPortion);
+    }
+}
+
+template<int IndexElementSize>
+auto SharedArrayBufferObjectDrawer::addPaddingToAlignNextIndexBufferPortion(
+    ShapeGeometry & geometry,
+    ShapeBufferPortion & bufferPortion) const
+    -> void
+{
+    auto const misalignment = geometry.indexBufferData.size() % IndexElementSize;
+
+    if (misalignment == 0)
+    {
+        return;
+    }
+
+    auto const padding = IndexElementSize - misalignment;
+
+    std::fill_n(std::back_inserter(geometry.indexBufferData), padding, std::byte{0});
+
+    bufferPortion.indexBufferByteOffset += static_cast<int>(padding);
 }
 
 auto SharedArrayBufferObjectDrawer::setupVertexFormat()

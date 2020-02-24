@@ -1,6 +1,9 @@
 #include <Ape/Rendering/Effect/EffectShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilderStreamLogger.hpp>
+
+#include <iostream>
 
 namespace ape
 {
@@ -13,7 +16,9 @@ auto const screenTextureUnit = 0;
 auto buildVertexShader()
     -> glow::VertexShader
 {
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders/Effects"}};
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders/Effects"}, logger};
 
     return builder.buildVertexShader("Effect.Vertex.glsl", "Effect.Vertex");
 }
@@ -21,7 +26,9 @@ auto buildVertexShader()
 auto buildFragmentShader(std::filesystem::path fragmentShaderPath)
     -> glow::FragmentShader
 {
-    auto const builder = glow::ShaderBuilder{{fragmentShaderPath.parent_path()}};
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
+    auto const builder = glow::ShaderBuilder{{fragmentShaderPath.parent_path()}, logger};
 
     return builder.buildFragmentShader(fragmentShaderPath.filename(), "Effect.Fragment");
 }

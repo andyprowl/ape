@@ -1,6 +1,9 @@
 #include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilderStreamLogger.hpp>
+
+#include <iostream>
 
 namespace ape
 {
@@ -11,7 +14,9 @@ namespace
 auto buildOmnidirectionalCubeDepthShader()
     -> glow::ShaderProgram
 {
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}};
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
+    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}, logger};
 
     return builder.buildProgram(
         glow::VertexShaderPath{"Depth/Omni.Depth.Cube.Vertex.glsl"},

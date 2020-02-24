@@ -12,13 +12,17 @@ class FragmentShader : public Shader
 
 public:
 
+    static constexpr auto type = Shader::Type::fragment;
+
+public:
+
     explicit FragmentShader(std::string_view const sourceCode)
         : FragmentShader{sourceCode, ""}
     {
     }
 
     FragmentShader(std::string_view const sourceCode, std::string_view const label)
-        : Shader{Shader::Type::fragment, sourceCode, label}
+        : Shader{type, sourceCode, label}
     {
     }
 

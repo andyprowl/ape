@@ -9,6 +9,13 @@
 #include <string_view>
 #include <vector>
 
+namespace glow::logging
+{
+
+class ShaderBuilderLogger;
+
+} // namespace glow::logging
+
 namespace glow
 {
 
@@ -17,9 +24,11 @@ class ShaderBuilder
 
 public:
 
-    ShaderBuilder();
+    explicit ShaderBuilder(logging::ShaderBuilderLogger & logger);
 
-    explicit ShaderBuilder(std::vector<std::filesystem::path> searchPaths);
+    ShaderBuilder(
+        std::vector<std::filesystem::path> searchPaths,
+        logging::ShaderBuilderLogger & logger);
 
     auto getReader()
         -> ShaderReader &;
@@ -69,6 +78,8 @@ private:
         -> ShaderType;
 
 private:
+
+    logging::ShaderBuilderLogger * logger;
 
     ShaderReader reader;
 

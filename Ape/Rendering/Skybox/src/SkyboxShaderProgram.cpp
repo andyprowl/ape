@@ -1,6 +1,9 @@
 #include <Ape/Rendering/Skybox/SkyboxShaderProgram.hpp>
 
 #include <Glow/Shader/ShaderBuilder.hpp>
+#include <Glow/Shader/ShaderBuilderStreamLogger.hpp>
+
+#include <iostream>
 
 namespace ape
 {
@@ -8,12 +11,15 @@ namespace ape
 namespace
 {
 
-auto buildStandardShader()
+auto buildSkyboxShader()
     -> glow::ShaderProgram
 {
+    auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
+
     auto const builder = glow::ShaderBuilder{{
         resourceFolder "/shaders",
-        resourceFolder_Ape_Rendering_Lighting "/shaders"}};
+        resourceFolder_Ape_Rendering_Lighting "/shaders"},
+        logger};
 
     return builder.buildProgram(
         std::vector<glow::VertexShaderPath>{"Skybox/Skybox.Vertex.glsl"},
@@ -27,7 +33,7 @@ auto buildStandardShader()
 } // unnamed namespace
 
 SkyboxShaderProgram::SkyboxShaderProgram()
-    : ShaderProgram{buildStandardShader()}
+    : ShaderProgram{buildSkyboxShader()}
     , transform{*this, "transform"}
     , skybox{*this, "skybox", 0}
     , cameraPosition{*this, "camera.position"}

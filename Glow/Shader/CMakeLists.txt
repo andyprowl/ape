@@ -5,6 +5,7 @@ AddLibrary(${PROJECT_NAME})
 AddPublicDependencies(
     ${PROJECT_NAME}
     Basix::FileSystem
+    Basix::Logging
     Basix::Mathematics
     Basix::Meta
     Glow::GpuResource

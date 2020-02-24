@@ -1,5 +1,7 @@
 #include <Glow/Shader/ShaderBuilder.hpp>
 
+#include <Glow/Shader/ShaderBuilderLogger.hpp>
+
 #include <Basix/Range/Transform.hpp>
 
 namespace glow
@@ -39,13 +41,16 @@ auto makeProgramFragmentShaderLabel(std::string_view const programLabel)
 
 } // unnamed namespace
 
-ShaderBuilder::ShaderBuilder()
-    : ShaderBuilder{{}}
+ShaderBuilder::ShaderBuilder(logging::ShaderBuilderLogger & logger)
+    : ShaderBuilder{{}, logger}
 {
 }
 
-ShaderBuilder::ShaderBuilder(std::vector<std::filesystem::path> searchPaths)
-    : reader{std::move(searchPaths)}
+ShaderBuilder::ShaderBuilder(
+    std::vector<std::filesystem::path> searchPaths,
+    logging::ShaderBuilderLogger & logger)
+    : logger{&logger}
+    , reader{std::move(searchPaths)}
     , preprocessor{reader}
 {
 }
@@ -74,9 +79,17 @@ auto ShaderBuilder::buildProgram(
     std::string_view const label) const
     -> ShaderProgram
 {
-    return {
+    using Entry = logging::ProgramBuildProgressLogEntry;
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::started});
+
+    auto program = ShaderProgram{
         buildVertexShader(vertexShaderPath, makeProgramVertexShaderLabel(label)),
         buildFragmentShader(fragmentShaderPath, makeProgramFragmentShaderLabel(label))};
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::finished});
+
+    return program;
 }
 
 auto ShaderBuilder::buildProgram(
@@ -86,10 +99,18 @@ auto ShaderBuilder::buildProgram(
     std::string_view const label) const
     -> ShaderProgram
 {
-    return {
+    using Entry = logging::ProgramBuildProgressLogEntry;
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::started});
+
+    auto program = ShaderProgram{
         buildVertexShader(vertexShaderPath, makeProgramVertexShaderLabel(label)),
         buildGeometryShader(geometryShaderPath, makeProgramGeometryShaderLabel(label)),
         buildFragmentShader(fragmentShaderPath, makeProgramFragmentShaderLabel(label))};
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::finished});
+
+    return program;
 }
 
 auto ShaderBuilder::buildProgram(
@@ -99,6 +120,10 @@ auto ShaderBuilder::buildProgram(
     std::string_view label) const
     -> ShaderProgram
 {
+    using Entry = logging::ProgramBuildProgressLogEntry;
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::started});
+
     auto vertexShaders = basix::transform(
         vertexShaderPaths,
         [&] (std::filesystem::path const & path)
@@ -120,7 +145,14 @@ auto ShaderBuilder::buildProgram(
         return buildFragmentShader(path, makeProgramFragmentShaderLabel(label));
     });
 
-    return {std::move(vertexShaders), std::move(geometryShaders), std::move(fragmentShaders)};
+    auto program = ShaderProgram{
+        std::move(vertexShaders),
+        std::move(geometryShaders),
+        std::move(fragmentShaders)};
+
+    logger->log(Entry{logging::ShaderBuilderOperationStatus::finished});
+
+    return program;
 }
 
 auto ShaderBuilder::buildVertexShader(
@@ -153,9 +185,17 @@ auto ShaderBuilder::buildShader(
     std::string_view const label) const
     -> ShaderType
 {
+    using Entry = logging::ShaderBuildProgressLogEntry;
+
+    logger->log(Entry{path, ShaderType::type, logging::ShaderBuilderOperationStatus::started});
+
     auto sourceCode = preprocessShader(path);
 
-    return ShaderType{std::move(sourceCode), label};
+    auto shader = ShaderType{std::move(sourceCode), label};
+
+    logger->log(Entry{path, ShaderType::type, logging::ShaderBuilderOperationStatus::finished});
+
+    return shader;
 }
 
 auto ShaderBuilder::preprocessShader(std::filesystem::path const & path) const

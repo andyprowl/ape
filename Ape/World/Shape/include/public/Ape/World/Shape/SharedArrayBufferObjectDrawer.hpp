@@ -99,6 +99,17 @@ private:
     auto mergeShapeGeometry(std::vector<Shape *> const & shapes) const
         -> ShapeGeometry;
 
+    auto addPaddingToAlignNextIndexBufferPortion(
+        ShapeGeometry & geometry,
+        ShapeBufferPortion & bufferPortion) const
+        -> void;
+
+    template<int IndexElementSize>
+    auto addPaddingToAlignNextIndexBufferPortion(
+        ShapeGeometry & geometry,
+        ShapeBufferPortion & bufferPortion) const
+        -> void;
+
     auto setupVertexFormat()
         -> void;
 

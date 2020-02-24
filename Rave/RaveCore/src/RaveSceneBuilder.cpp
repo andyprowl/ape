@@ -252,7 +252,7 @@ auto StatefulSceneBuilder::createBodies()
     createWalls();
 
     createContainers();
-    
+
     createLamps();
 
     createFlashlights();
@@ -266,19 +266,19 @@ auto StatefulSceneBuilder::createBodies()
     createDynos();
 
     createCastles();
-    
+ 
     createTaverns();
 
     createHouses();
-    
+
     createCottages();
-    
+
     createBridges();
-    
+ 
     createLibertyStatues();
 
     createChildStatues();
-    
+
     createSponzas();
 }
 

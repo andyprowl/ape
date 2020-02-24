@@ -22,8 +22,6 @@ auto checkShaderLinkingOutcome(int const shaderId)
 
     if (success)
     {
-        std::cout << "Shader program successfully linked\n";
-
         return;
     }
 

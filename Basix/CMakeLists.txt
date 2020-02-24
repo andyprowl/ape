@@ -6,6 +6,8 @@ add_subdirectory(Container)
 
 add_subdirectory(FileSystem)
 
+add_subdirectory(Logging)
+
 add_subdirectory(Mathematics)
 
 add_subdirectory(Memory)

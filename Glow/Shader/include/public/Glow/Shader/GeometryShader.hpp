@@ -12,13 +12,17 @@ class GeometryShader : public Shader
 
 public:
 
+    static constexpr auto type = Shader::Type::geometry;
+
+public:
+
     explicit GeometryShader(std::string_view sourceCode)
         : GeometryShader{sourceCode, ""}
     {
     }
 
     GeometryShader(std::string_view const sourceCode, std::string_view const label)
-        : Shader{Shader::Type::geometry, sourceCode, label}
+        : Shader{type, sourceCode, label}
     {
     }
 
