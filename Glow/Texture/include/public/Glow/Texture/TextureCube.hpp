@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/CubeTextureDescriptor.hpp>
+#include <Glow/Texture/TextureCubeDescriptor.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Glow/GpuResource/GpuResource.hpp>
@@ -10,15 +10,15 @@ namespace glow
 
 enum class TextureStorageType;
 
-class CubeTexture
+class TextureCube
 {
 
 public:
 
-    explicit CubeTexture(CubeTextureDescriptor const & descriptor);
+    explicit TextureCube(TextureCubeDescriptor const & descriptor);
 
-    CubeTexture(
-        CubeTextureDescriptor const & descriptor,
+    TextureCube(
+        TextureCubeDescriptor const & descriptor,
         bool createMipmap,
         std::string_view label);
 

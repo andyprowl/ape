@@ -2,7 +2,7 @@
 
 #include <Glow/BufferObject/FrameBufferObject.hpp>
 #include <Glow/BufferObject/RenderBufferObject.hpp>
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <Basix/Mathematics/Size.hpp>
 
@@ -14,10 +14,10 @@ class OffscreenSurface
 
 public:
 
-    explicit OffscreenSurface(basix::Size<int> const & size);
+    explicit OffscreenSurface(basix::Size2d<int> const & size);
 
     auto getColorBuffer() const
-        -> glow::Texture const &;
+        -> glow::Texture2d const &;
 
     auto getDepthAndStencilBuffer() const
         -> glow::RenderBufferObject const &;
@@ -26,17 +26,17 @@ public:
         -> glow::FrameBufferObject const &;
 
     auto getSize() const
-        -> basix::Size<int>;
+        -> basix::Size2d<int>;
 
 private:
 
-    glow::Texture colorBuffer;
+    glow::Texture2d colorBuffer;
 
     glow::RenderBufferObject depthAndStencilBuffer;
 
     glow::FrameBufferObject frameBuffer;
 
-    basix::Size<int> size;
+    basix::Size2d<int> size;
 
 };
 

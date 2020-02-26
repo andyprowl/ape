@@ -14,9 +14,9 @@ class RenderBufferObject : public BufferObject
 
 public:
     
-    explicit RenderBufferObject(basix::Size<int> size);
+    explicit RenderBufferObject(basix::Size2d<int> size);
 
-    RenderBufferObject(basix::Size<int> size, std::string_view label);
+    RenderBufferObject(basix::Size2d<int> size, std::string_view label);
 
     auto bind() const
         -> void;
@@ -24,7 +24,7 @@ public:
     auto unbind() const
         -> void;
 
-    auto setStorage(basix::Size<int> size)
+    auto setStorage(basix::Size2d<int> size)
         -> void;
 
     auto setLabel(std::string_view label)

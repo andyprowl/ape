@@ -48,7 +48,7 @@ class StatefulBuilder
 
 public:
 
-    using Size = BoxShapeBuilder::Size;
+    using Size2d = BoxShapeBuilder::Size2d;
 
     using Position = BoxShapeBuilder::Position;
 
@@ -62,7 +62,7 @@ public:
 
     StatefulBuilder(
         NormalDirection const normalDirection,
-        Size const & size,
+        Size2d const & size,
         Position const & center,
         glm::vec2 const & textureTopRight)
         : normalDirection{normalDirection}
@@ -175,7 +175,7 @@ private:
 
     NormalDirection normalDirection;
 
-    Size size;
+    Size2d size;
 
     Position center;
 
@@ -191,7 +191,7 @@ private:
 
 auto BoxShapeBuilder::build(
     NormalDirection const normalDirection,
-    Size const & size,
+    Size2d const & size,
     Position const & center,
     glm::vec2 const & textureTopRight) const
     -> Shape

@@ -107,7 +107,7 @@ auto StandardInputHandler::onKeyRelease(Key const /*key*/, KeyModifier const /*m
 }
 
 // virtual
-auto StandardInputHandler::onMouseWheel(basix::Offset<int> const offset)
+auto StandardInputHandler::onMouseWheel(basix::Offset2d<int> const offset)
     -> void
 {
     cameraManipulator.onMouseWheel(offset);
@@ -149,7 +149,7 @@ auto StandardInputHandler::registerKeyboardHandlerConnection()
 auto StandardInputHandler::registerMouseWheelHandlerConnection()
     -> basix::ScopedSignalConnection
 {
-    return handledWindow->onMouseWheel.registerHandler([this] (basix::Offset<int> const & offset)
+    return handledWindow->onMouseWheel.registerHandler([this] (basix::Offset2d<int> const & offset)
     {
         onMouseWheel(offset);
     });

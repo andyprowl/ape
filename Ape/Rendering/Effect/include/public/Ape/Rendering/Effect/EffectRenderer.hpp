@@ -5,7 +5,7 @@
 namespace glow
 {
 
-class Texture;
+class Texture2d;
 
 } // namespace glow
 
@@ -22,12 +22,12 @@ public:
 
     explicit EffectRenderer(EffectSelector & selector);
 
-    auto render(glow::Texture const & texture) const
+    auto render(glow::Texture2d const & texture) const
         -> void;
 
 private:
 
-    auto renderWithEffect(glow::Texture const & texture, EffectShaderProgram & effect) const
+    auto renderWithEffect(glow::Texture2d const & texture, EffectShaderProgram & effect) const
         -> void;
 
     auto drawQuad() const

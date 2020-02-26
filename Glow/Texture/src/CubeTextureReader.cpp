@@ -1,6 +1,6 @@
-#include <Glow/Texture/CubeTextureReader.hpp>
+#include <Glow/Texture/TextureCubeReader.hpp>
 
-#include <Glow/Texture/CubeTextureFace.hpp>
+#include <Glow/Texture/TextureCubeFace.hpp>
 
 #include <Stb/stb_image.h>
 
@@ -14,13 +14,13 @@ namespace glow
 namespace
 {
 
-auto const faceCodeMap = std::unordered_map<CubeTextureFace, std::string>{
-    {CubeTextureFace::right, "right"},
-    {CubeTextureFace::left, "left"},
-    {CubeTextureFace::top, "top"},
-    {CubeTextureFace::bottom, "bottom"},
-    {CubeTextureFace::front, "front"},
-    {CubeTextureFace::back, "back"}};
+auto const faceCodeMap = std::unordered_map<TextureCubeFace, std::string>{
+    {TextureCubeFace::right, "right"},
+    {TextureCubeFace::left, "left"},
+    {TextureCubeFace::top, "top"},
+    {TextureCubeFace::bottom, "bottom"},
+    {TextureCubeFace::front, "front"},
+    {TextureCubeFace::back, "back"}};
 
 class CubeTextureFacePathProvider
 {
@@ -33,7 +33,7 @@ public:
     {
     }
 
-    auto getFacePath(CubeTextureFace const face) const
+    auto getFacePath(TextureCubeFace const face) const
         -> std::filesystem::path
     {
         auto faceFileName = faceCodeMap.at(face) + extension;
@@ -50,7 +50,7 @@ private:
 };
 
 auto readImageSetFromFolder(std::filesystem::path const & folderPath)
-    -> CubeTextureImageSet
+    -> TextureCubeImageSet
 {
     if (std::filesystem::is_empty(folderPath))
     {
@@ -62,12 +62,12 @@ auto readImageSetFromFolder(std::filesystem::path const & folderPath)
     auto const facePathProvider = CubeTextureFacePathProvider{it->path()};
 
     return {
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::right), false),
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::left), false),
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::top), false),
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::bottom), false),
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::front), false),
-        readImageFromFile(facePathProvider.getFacePath(CubeTextureFace::back), false)};
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::right), false),
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::left), false),
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::top), false),
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::bottom), false),
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::front), false),
+        readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::back), false)};
 }
 
 auto readTextureDescriptor(
@@ -76,7 +76,7 @@ auto readTextureDescriptor(
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels)
-    -> CubeTextureDescriptor
+    -> TextureCubeDescriptor
 {
     auto imageSet = readImageSetFromFolder(folder);
 
@@ -87,19 +87,19 @@ auto readTextureDescriptor(
 
 } // unnamed namespace
 
-CubeTextureReader::CubeTextureReader(std::vector<std::filesystem::path> searchPaths)
+TextureCubeReader::TextureCubeReader(std::vector<std::filesystem::path> searchPaths)
     : fileFinder{std::move(searchPaths)}
 {
 }
 
-auto CubeTextureReader::read(
+auto TextureCubeReader::read(
     std::filesystem::path const & folderPath,
     ColorSpace const imageColorSpace,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels,
     std::string_view const label) const
-    -> CubeTexture
+    -> TextureCube
 {
     auto const absolutePath = resolveToPathOfExistingFolder(folderPath);
 
@@ -110,16 +110,16 @@ auto CubeTextureReader::read(
         wrapping,
         numOfMipmapLevels);
     
-    return CubeTexture{descriptor, true, label};
+    return TextureCube{descriptor, true, label};
 }
 
-auto CubeTextureReader::getSearchPaths() const
+auto TextureCubeReader::getSearchPaths() const
     -> std::vector<std::filesystem::path>
 {
     return fileFinder.getSearchPaths();
 }
 
-auto CubeTextureReader::resolveToPathOfExistingFolder(std::filesystem::path const & path) const
+auto TextureCubeReader::resolveToPathOfExistingFolder(std::filesystem::path const & path) const
     -> std::filesystem::path
 {
     auto const existingFilePath = fileFinder.findExistingPath(path);

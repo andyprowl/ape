@@ -92,7 +92,7 @@ public:
         : shaders{}
         , resources{excludeSponza}
         , scene{createRaveScene(resources.assets, excludeSponza)}
-        , lightSystemView{scene.getLightSystem(), basix::Size<int>{1024, 1024}}
+        , lightSystemView{scene.getLightSystem(), basix::Size2d<int>{1024, 1024}}
         , lightSystemSetter{scene.getLightSystem(), shaders.blinnPhongShader.lightSystem}
         , lightSystemViewSetter{lightSystemView, shaders.blinnPhongShader.lightSystemView}
         , materialSetSetter{resources.assets.getMaterials(), shaders.blinnPhongShader.materialSet}
@@ -162,7 +162,7 @@ auto RaveEngineFactory::makeSceneRenderer(
 
     auto shadowMapping = std::make_unique<ape::ShadowMapping>(
         engineObjects->lightSystemView,
-        basix::Size<int>{1024, 1024});
+        basix::Size2d<int>{1024, 1024});
 
     auto & shapes = engineObjects->resources.assets.getShapes();
 

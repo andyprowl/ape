@@ -17,7 +17,7 @@ public:
 
 public:
 
-    glow::Uniform<glow::Texture> source;
+    glow::Uniform<glow::Texture2d> source;
 
 };
 

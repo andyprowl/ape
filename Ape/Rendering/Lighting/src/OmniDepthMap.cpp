@@ -10,14 +10,14 @@ namespace ape
 namespace
 {
 
-auto makeOmniDepthMapFaceImage(basix::Size<int> const & size)
+auto makeOmniDepthMapFaceImage(basix::Size2d<int> const & size)
     -> glow::TextureImage
 {
     return {nullptr, size, glow::TextureImageFormat::depth, glow::PixelType::floatingPoint};
 }
 
-auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
-    -> glow::CubeTextureImageSet
+auto makeOmniDepthMapImageSet(basix::Size2d<int> const & size)
+    -> glow::TextureCubeImageSet
 {
     return {
         makeOmniDepthMapFaceImage(size),
@@ -28,7 +28,7 @@ auto makeOmniDepthMapImageSet(basix::Size<int> const & size)
         makeOmniDepthMapFaceImage(size)};
 }
 
-auto enableShadowSampling(glow::CubeTexture & texture)
+auto enableShadowSampling(glow::TextureCube & texture)
     -> void
 {
     glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
@@ -37,9 +37,9 @@ auto enableShadowSampling(glow::CubeTexture & texture)
 }
 
 auto makeOmniDepthMapTexture(
-    basix::Size<int> const & size,
+    basix::Size2d<int> const & size,
     std::string_view const labelPrefix)
-    -> glow::CubeTexture
+    -> glow::TextureCube
 {
     auto imageSet = makeOmniDepthMapImageSet(size);
 
@@ -47,7 +47,7 @@ auto makeOmniDepthMapTexture(
     auto numOfMipmapLevels = 1;
 
     // TODO: Should we use depth32 or depth32f here?
-    auto const descriptor = glow::CubeTextureDescriptor{
+    auto const descriptor = glow::TextureCubeDescriptor{
         std::move(imageSet),
         glow::TextureInternalFormat::depth32,
         glow::TextureFiltering{
@@ -56,7 +56,7 @@ auto makeOmniDepthMapTexture(
         glow::TextureWrapping::clampToEdge,
         numOfMipmapLevels};
 
-    auto texture = glow::CubeTexture{descriptor, false, std::string{labelPrefix} + ".Texture"};
+    auto texture = glow::TextureCube{descriptor, false, std::string{labelPrefix} + ".Texture2d"};
 
     enableShadowSampling(texture);
 
@@ -64,7 +64,7 @@ auto makeOmniDepthMapTexture(
 }
 
 auto makeOmniDepthMapFrameBuffer(
-    glow::CubeTexture & depthMapTexture,
+    glow::TextureCube & depthMapTexture,
     std::string_view const labelPrefix)
     -> glow::FrameBufferObject
 {
@@ -83,12 +83,12 @@ auto makeOmniDepthMapFrameBuffer(
 
 } // unnamed namespace
 
-OmniDepthMap::OmniDepthMap(basix::Size<int> const & size)
+OmniDepthMap::OmniDepthMap(basix::Size2d<int> const & size)
     : OmniDepthMap{size, ""}
 {
 }
 
-OmniDepthMap::OmniDepthMap(basix::Size<int> const & size, std::string_view const label)
+OmniDepthMap::OmniDepthMap(basix::Size2d<int> const & size, std::string_view const label)
     : texture{makeOmniDepthMapTexture(size, label)}
     , frameBuffer{makeOmniDepthMapFrameBuffer(texture, label)}
     , size{size}
@@ -96,13 +96,13 @@ OmniDepthMap::OmniDepthMap(basix::Size<int> const & size, std::string_view const
 }
 
 auto OmniDepthMap::getTexture()
-    -> glow::CubeTexture &
+    -> glow::TextureCube &
 {
     return texture;
 }
 
 auto OmniDepthMap::getTexture() const
-    -> glow::CubeTexture const &
+    -> glow::TextureCube const &
 {
     return texture;
 }
@@ -120,7 +120,7 @@ auto OmniDepthMap::getFrameBuffer() const
 }
 
 auto OmniDepthMap::getSize() const
-    -> basix::Size<int>
+    -> basix::Size2d<int>
 {
     return size;
 }

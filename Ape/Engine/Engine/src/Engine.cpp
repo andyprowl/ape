@@ -123,9 +123,9 @@ private:
     auto makeFrameProfilingOverlay()
         -> FrameProfilingOverlay
     {
-        auto const initialPosition =  basix::Position<int>{10, 10};
+        auto const initialPosition =  basix::Position2d<int>{10, 10};
 
-        auto const initialSize = basix::Size<int>{window->getSize().width - 20, 280};
+        auto const initialSize = basix::Size2d<int>{window->getSize().width - 20, 280};
 
         return {initialPosition, initialSize, profiler, lastFrameProfiles, frameRateCalculator};
     }
@@ -133,9 +133,9 @@ private:
     auto makeLightSystemOverlay() const
         -> LightSystemOverlay
     {
-        auto const initialPosition =  basix::Position<int>{10, 280};
+        auto const initialPosition =  basix::Position2d<int>{10, 280};
 
-        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 550};
+        auto const initialSize = basix::Size2d<int>{(window->getSize().width - 20) / 2, 550};
 
         auto & scene = renderer->getCameraSelector().getScene();
 
@@ -145,9 +145,9 @@ private:
     auto makeFogOverlay() const
         -> FogOverlay
     {
-        auto const initialPosition =  basix::Position<int>{10, 280 + 550};
+        auto const initialPosition =  basix::Position2d<int>{10, 280 + 550};
 
-        auto const initialSize = basix::Size<int>{(window->getSize().width - 20) / 2, 120};
+        auto const initialSize = basix::Size2d<int>{(window->getSize().width - 20) / 2, 120};
 
         auto & scene = renderer->getCameraSelector().getScene();
 
@@ -157,7 +157,7 @@ private:
     auto registerWindowResizeHandler()
         -> basix::ScopedSignalConnection
     {
-        return window->onResize.registerHandler([this] (basix::Size<int> const & newSize)
+        return window->onResize.registerHandler([this] (basix::Size2d<int> const & newSize)
         {
             setViewport(newSize);
         });
@@ -184,7 +184,7 @@ private:
         setViewport(size);
     }
 
-    auto setViewport(basix::Size<int> const & size)
+    auto setViewport(basix::Size2d<int> const & size)
         -> void
     {
         if (size.height == 0)
@@ -192,7 +192,7 @@ private:
             return;
         }
 
-        auto const origin = basix::Position{0, 0};
+        auto const origin = basix::Position2d{0, 0};
 
         renderer->setViewport({origin, size});
 
@@ -221,7 +221,7 @@ private:
         io.Fonts->AddFontFromFileTTF(fontFilePath,  26);
     }
 
-    auto updateActiveCameraAspectRatio(basix::Size<int> const & size)
+    auto updateActiveCameraAspectRatio(basix::Size2d<int> const & size)
         -> void
     {
         auto const camera = renderer->getCameraSelector().getActiveCamera();

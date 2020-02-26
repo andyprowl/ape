@@ -10,8 +10,8 @@ namespace ape
 namespace
 {
 
-auto makeColorBuffer(basix::Size<int> const & size)
-    -> glow::Texture
+auto makeColorBuffer(basix::Size2d<int> const & size)
+    -> glow::Texture2d
 {
     auto image = glow::TextureImage{
         nullptr,
@@ -19,7 +19,7 @@ auto makeColorBuffer(basix::Size<int> const & size)
         glow::TextureImageFormat::rgb,
         glow::PixelType::unsignedByte};
 
-    auto const descriptor = glow::TextureDescriptor{
+    auto const descriptor = glow::Texture2dDescriptor{
         std::move(image),
         glow::TextureInternalFormat::srgb8,
         glow::TextureFiltering{
@@ -27,17 +27,17 @@ auto makeColorBuffer(basix::Size<int> const & size)
             glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge};
 
-    return glow::Texture{descriptor};
+    return glow::Texture2d{descriptor};
 }
 
-auto makeDepthAndStencilBuffer(basix::Size<int> const & size)
+auto makeDepthAndStencilBuffer(basix::Size2d<int> const & size)
     -> glow::RenderBufferObject
 {
     return glow::RenderBufferObject{size};
 }
 
 auto makeFrameBufferForTarget(
-    glow::Texture & colorBuffer,
+    glow::Texture2d & colorBuffer,
     glow::RenderBufferObject & depthAndStencilBuffer)
     -> glow::FrameBufferObject
 {
@@ -54,7 +54,7 @@ auto makeFrameBufferForTarget(
 
 } // unnamed namespace
 
-OffscreenSurface::OffscreenSurface(basix::Size<int> const & size)
+OffscreenSurface::OffscreenSurface(basix::Size2d<int> const & size)
     : colorBuffer{makeColorBuffer(size)}
     , depthAndStencilBuffer{makeDepthAndStencilBuffer(size)}
     , frameBuffer{makeFrameBufferForTarget(colorBuffer, depthAndStencilBuffer)}
@@ -63,7 +63,7 @@ OffscreenSurface::OffscreenSurface(basix::Size<int> const & size)
 }
 
 auto OffscreenSurface::getColorBuffer() const
-    -> glow::Texture const &
+    -> glow::Texture2d const &
 {
     return colorBuffer;
 }
@@ -81,7 +81,7 @@ auto OffscreenSurface::getFrameBuffer() const
 }
 
 auto OffscreenSurface::getSize() const
-    -> basix::Size<int>
+    -> basix::Size2d<int>
 {
     return size;
 }

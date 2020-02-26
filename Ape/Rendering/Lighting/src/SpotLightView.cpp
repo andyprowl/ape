@@ -5,7 +5,7 @@
 namespace ape
 {
 
-SpotLightView::SpotLightView(SpotLight const & light, basix::Size<int> const & viewSize)
+SpotLightView::SpotLightView(SpotLight const & light, basix::Size2d<int> const & viewSize)
     : light{&light}
     , viewSize{viewSize}
     , camera{makeLightCamera()}
@@ -41,7 +41,7 @@ auto SpotLightView::getCamera() const
     return camera;
 }
 
-auto SpotLightView::setViewSize(basix::Size<int> const & newViewSize)
+auto SpotLightView::setViewSize(basix::Size2d<int> const & newViewSize)
     -> void
 {
     viewSize = newViewSize;

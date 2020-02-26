@@ -17,7 +17,7 @@
 #include <Ape/World/Shape/ShapeDrawer.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Texture/CubeTextureFace.hpp>
+#include <Glow/Texture/TextureCubeFace.hpp>
 
 #include <glad/glad.h>
 
@@ -43,7 +43,7 @@ auto asReference(Body * const body)
 
 auto getFaceCamera(
     PointLightView::FaceCameraSet const & faceCameras,
-    glow::CubeTextureFace const face)
+    glow::TextureCubeFace const face)
     -> Camera const &
 {
     using CameraMemberPtr = Camera PointLightView::FaceCameraSet:: *;

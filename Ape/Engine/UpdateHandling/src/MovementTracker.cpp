@@ -5,16 +5,16 @@
 namespace ape
 {
 
-MovementTracker::MovementTracker(basix::Position<int> initialPosition)
+MovementTracker::MovementTracker(basix::Position2d<int> initialPosition)
     : lastPosition{initialPosition}
     , lastMovement{0, 0}
 {
 }
 
-auto MovementTracker::updatePosition(basix::Position<int> position)
-    -> basix::Offset<int>
+auto MovementTracker::updatePosition(basix::Position2d<int> position)
+    -> basix::Offset2d<int>
 {
-    lastMovement = basix::Offset{position.x - lastPosition.x, position.y - lastPosition.y};
+    lastMovement = basix::Offset2d{position.x - lastPosition.x, position.y - lastPosition.y};
 
     lastPosition = position;
 
@@ -22,7 +22,7 @@ auto MovementTracker::updatePosition(basix::Position<int> position)
 }
 
 auto MovementTracker::getLastMovement() const
-    -> basix::Offset<int>
+    -> basix::Offset2d<int>
 {
     return lastMovement;
 }

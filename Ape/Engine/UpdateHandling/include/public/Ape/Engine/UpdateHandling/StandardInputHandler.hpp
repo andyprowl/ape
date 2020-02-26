@@ -62,7 +62,7 @@ protected:
     virtual auto onKeyRelease(Key key, KeyModifier modifier)
         -> void;
 
-    virtual auto onMouseWheel(basix::Offset<int> position)
+    virtual auto onMouseWheel(basix::Offset2d<int> position)
         -> void;
 
     virtual auto onFocusAcquired()

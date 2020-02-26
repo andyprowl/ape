@@ -13,12 +13,12 @@
 namespace glow
 {
 
-class TextureDescriptor
+class Texture2dDescriptor
 {
 
 public:
 
-    TextureDescriptor(
+    Texture2dDescriptor(
         TextureImage image,
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,

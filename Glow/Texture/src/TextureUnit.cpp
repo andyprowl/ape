@@ -1,7 +1,7 @@
 #include <Glow/Texture/TextureUnit.hpp>
 
-#include <Glow/Texture/CubeTexture.hpp>
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <glad/glad.h>
 
@@ -27,13 +27,13 @@ auto TextureUnit::activate()
     glActiveTexture(GL_TEXTURE0 + unitIndex);
 }
 
-auto TextureUnit::setTexture(Texture const * texture)
+auto TextureUnit::setTexture(Texture2d const * texture)
     -> void
 {
     setTexture(texture, activeTexture2d);
 }
 
-auto TextureUnit::setTexture(CubeTexture const * texture)
+auto TextureUnit::setTexture(TextureCube const * texture)
     -> void
 {
     setTexture(texture, activeCubeTexture);

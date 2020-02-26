@@ -10,8 +10,8 @@ namespace ape
 {
 
 LightSystemOverlay::LightSystemOverlay(
-    basix::Position<int> const & initialPosition,
-    basix::Size<int> const & initialSize,
+    basix::Position2d<int> const & initialPosition,
+    basix::Size2d<int> const & initialSize,
     LightSystem & lightSystem)
     : initialPosition{initialPosition}
     , initialSize{initialSize}

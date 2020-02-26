@@ -1,4 +1,4 @@
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <Glow/Texture/TextureSwizzleMask.hpp>
 
@@ -18,7 +18,7 @@ namespace glow
 namespace
 {
 
-auto setTextureFiltering(GpuResource::Id const textureId, TextureDescriptor const & descriptor)
+auto setTextureFiltering(GpuResource::Id const textureId, Texture2dDescriptor const & descriptor)
     -> void
 {
     auto const magnification = convertToOpenGLTextureMagnificationFilter(
@@ -32,7 +32,7 @@ auto setTextureFiltering(GpuResource::Id const textureId, TextureDescriptor cons
     glTextureParameteri(textureId, GL_TEXTURE_MIN_FILTER, minification);
 }
 
-auto setTextureWrapping(GpuResource::Id const textureId, TextureDescriptor const & descriptor)
+auto setTextureWrapping(GpuResource::Id const textureId, Texture2dDescriptor const & descriptor)
     -> void
 {
     auto const wrapping = convertToOpenGLTextureWrapping(descriptor.wrapping);
@@ -42,7 +42,7 @@ auto setTextureWrapping(GpuResource::Id const textureId, TextureDescriptor const
     glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, wrapping);
 }
 
-auto determineNumOfMipmapLevels(TextureDescriptor const & descriptor)
+auto determineNumOfMipmapLevels(Texture2dDescriptor const & descriptor)
     -> int
 {
     if (descriptor.numOfMipmapLevels > 0)
@@ -57,7 +57,7 @@ auto determineNumOfMipmapLevels(TextureDescriptor const & descriptor)
 
 auto setImmutableTextureImageData(
     GpuResource::Id const textureId,
-    TextureDescriptor const & descriptor)
+    Texture2dDescriptor const & descriptor)
     -> void
 {
     auto const imageFormat = convertToOpenGLImageFormat(descriptor.image.format);
@@ -92,7 +92,7 @@ auto setImmutableTextureImageData(
 
 auto setTextureImageData(
     GpuResource::Id const textureId,
-    TextureDescriptor const & descriptor,
+    Texture2dDescriptor const & descriptor,
     bool const createMipmap)
     -> void
 {
@@ -104,7 +104,7 @@ auto setTextureImageData(
     }
 }
 
-auto makeOpenGLTextureObject(TextureDescriptor const & descriptor, bool const createMipmap)
+auto makeOpenGLTextureObject(Texture2dDescriptor const & descriptor, bool const createMipmap)
     -> GpuResource
 {
     auto textureId = GpuResource::Id{};
@@ -122,13 +122,13 @@ auto makeOpenGLTextureObject(TextureDescriptor const & descriptor, bool const cr
 
 } // unnamed namespace
 
-Texture::Texture(TextureDescriptor const & descriptor)
-    : Texture{descriptor, false, ""}
+Texture2d::Texture2d(Texture2dDescriptor const & descriptor)
+    : Texture2d{descriptor, false, ""}
 {
 }
 
-Texture::Texture(
-    TextureDescriptor const & descriptor,
+Texture2d::Texture2d(
+    Texture2dDescriptor const & descriptor,
     bool const createMipmap,
     std::string_view const label)
     : resource{makeOpenGLTextureObject(descriptor, createMipmap)}
@@ -141,13 +141,13 @@ Texture::Texture(
     setLabel(label);
 }
 
-auto Texture::getId() const
+auto Texture2d::getId() const
     -> GpuResource::Id
 {
     return resource.get();
 }
 
-auto Texture::bind() const
+auto Texture2d::bind() const
     -> void
 {
     auto const id = resource.get();
@@ -155,31 +155,31 @@ auto Texture::bind() const
     glBindTexture(GL_TEXTURE_2D, id);
 }
 
-auto Texture::unbind() const
+auto Texture2d::unbind() const
     -> void
 {
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-auto Texture::getImageFormat() const
+auto Texture2d::getImageFormat() const
     -> TextureImageFormat
 {
     return imageFormat;
 }
 
-auto Texture::getInternalFormat() const
+auto Texture2d::getInternalFormat() const
     -> TextureInternalFormat
 {
     return internalFormat;
 }
 
-auto Texture::getSize() const
-    -> basix::Size<int>
+auto Texture2d::getSize() const
+    -> basix::Size2d<int>
 {
     return size;
 }
 
-auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
+auto Texture2d::setSwizzleMask(TextureSwizzleMask const & mask)
     -> void
 {
     auto const swizzleMask = convertToOpenGLSwizzleMask(mask);
@@ -189,13 +189,13 @@ auto Texture::setSwizzleMask(TextureSwizzleMask const & mask)
     assert(glGetError() == GL_NO_ERROR);
 }
 
-auto Texture::generateMipmap()
+auto Texture2d::generateMipmap()
     -> void
 {
     glGenerateTextureMipmap(getId());
 }
 
-auto Texture::setLabel(std::string_view const label)
+auto Texture2d::setLabel(std::string_view const label)
     -> void
 {
     glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());

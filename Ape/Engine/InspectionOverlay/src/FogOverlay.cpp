@@ -10,8 +10,8 @@ namespace ape
 {
 
 FogOverlay::FogOverlay(
-    basix::Position<int> const & initialPosition,
-    basix::Size<int> const & initialSize,
+    basix::Position2d<int> const & initialPosition,
+    basix::Size2d<int> const & initialSize,
     Fog & fog)
     : initialPosition{initialPosition}
     , initialSize{initialSize}

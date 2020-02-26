@@ -8,7 +8,7 @@
 namespace glow
 {
 
-class Texture;
+class Texture2d;
 
 } // namespace glow
 
@@ -32,15 +32,15 @@ class TextureCache
 
 public:
 
-    auto registerTexture(glow::Texture & texture, std::filesystem::path const & path)
+    auto registerTexture(glow::Texture2d & texture, std::filesystem::path const & path)
         -> void;
 
     auto findTexture(std::filesystem::path const & path) const
-        -> glow::Texture *;
+        -> glow::Texture2d *;
 
 private:
 
-    std::unordered_map<std::string, glow::Texture *> cache;
+    std::unordered_map<std::string, glow::Texture2d *> cache;
 
 };
 

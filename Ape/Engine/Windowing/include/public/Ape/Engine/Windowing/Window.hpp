@@ -48,13 +48,13 @@ public:
         -> float = 0;
 
     virtual auto getSize() const
-        -> basix::Size<int> = 0;
+        -> basix::Size2d<int> = 0;
 
     virtual auto getPosition() const
-        -> basix::Position<int> = 0;
+        -> basix::Position2d<int> = 0;
 
     virtual auto getMousePosition() const
-        -> basix::Position<int> = 0;
+        -> basix::Position2d<int> = 0;
 
     virtual auto isFullScreen() const
         -> bool = 0;
@@ -91,9 +91,9 @@ public:
 
 public:
 
-    basix::Signal<auto (basix::Size<int> const & size) -> void> onResize;
+    basix::Signal<auto (basix::Size2d<int> const & size) -> void> onResize;
 
-    basix::Signal<auto (basix::Offset<int> const & offset) -> void> onMouseWheel;
+    basix::Signal<auto (basix::Offset2d<int> const & offset) -> void> onMouseWheel;
 
     basix::Signal<auto (Key key, KeyAction action, KeyModifier modifier) -> void> onKeyboard;
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/TextureDescriptor.hpp>
+#include <Glow/Texture/Texture2dDescriptor.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Glow/GpuResource/GpuResource.hpp>
@@ -12,14 +12,14 @@ namespace glow
 
 class TextureSwizzleMask;
 
-class Texture
+class Texture2d
 {
 
 public:
 
-    explicit Texture(TextureDescriptor const & descriptor);
+    explicit Texture2d(Texture2dDescriptor const & descriptor);
 
-    Texture(TextureDescriptor const & descriptor, bool createMipmap, std::string_view label);
+    Texture2d(Texture2dDescriptor const & descriptor, bool createMipmap, std::string_view label);
 
     auto getId() const
         -> GpuResource::Id;
@@ -37,7 +37,7 @@ public:
         -> TextureInternalFormat;
 
     auto getSize() const
-        -> basix::Size<int>;
+        -> basix::Size2d<int>;
 
     auto setSwizzleMask(TextureSwizzleMask const & mask)
         -> void;
@@ -52,7 +52,7 @@ private:
 
     GpuResource resource;
 
-    basix::Size<int> size;
+    basix::Size2d<int> size;
 
     TextureImageFormat imageFormat;
 

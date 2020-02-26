@@ -19,7 +19,7 @@ public:
 
     glow::Uniform<glm::mat4> transform;
 
-    glow::Uniform<glow::CubeTexture> skybox;
+    glow::Uniform<glow::TextureCube> skybox;
 
     glow::Uniform<glm::vec3> cameraPosition;
 

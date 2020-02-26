@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Glow/BufferObject/FrameBufferObject.hpp>
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <string_view>
 
@@ -13,26 +13,26 @@ class MonoDepthMap
 
 public:
 
-    explicit MonoDepthMap(basix::Size<int> const & size);
+    explicit MonoDepthMap(basix::Size2d<int> const & size);
 
-    MonoDepthMap(basix::Size<int> const & size, std::string_view label);
+    MonoDepthMap(basix::Size2d<int> const & size, std::string_view label);
 
     auto getTexture() const
-        -> glow::Texture const &;
+        -> glow::Texture2d const &;
 
     auto getFrameBuffer() const
         -> glow::FrameBufferObject const &;
 
     auto getSize() const
-        -> basix::Size<int>;
+        -> basix::Size2d<int>;
 
 private:
 
-    glow::Texture texture;
+    glow::Texture2d texture;
 
     glow::FrameBufferObject frameBuffer;
 
-    basix::Size<int> size;
+    basix::Size2d<int> size;
 
 };
 

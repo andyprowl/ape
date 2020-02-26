@@ -31,7 +31,7 @@ public:
         return window;
     }
 
-    auto createWindow(std::string_view title, basix::Size<int> const & size)
+    auto createWindow(std::string_view title, basix::Size2d<int> const & size)
         -> GlfwWindow
     {
         auto window = GlfwWindow{title, size};
@@ -72,7 +72,7 @@ auto GlfwGateway::createWindow(std::string_view title, CreateAsFullscreen)
     return impl->createWindow(title, CreateAsFullscreen{});
 }
 
-auto GlfwGateway::createWindow(std::string_view title, basix::Size<int> const & size)
+auto GlfwGateway::createWindow(std::string_view title, basix::Size2d<int> const & size)
     -> GlfwWindow
 {
     return impl->createWindow(title, size);

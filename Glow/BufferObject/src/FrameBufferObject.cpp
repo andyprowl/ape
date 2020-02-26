@@ -3,9 +3,9 @@
 #include <Glow/BufferObject/RenderBufferObject.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Texture/CubeTexture.hpp>
-#include <Glow/Texture/CubeTextureFace.hpp>
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
+#include <Glow/Texture/TextureCubeFace.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <glad/glad.h>
 
@@ -115,7 +115,7 @@ auto FrameBufferObject::isComplete() const
     return (status == GL_FRAMEBUFFER_COMPLETE);
 }
 
-auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment const attachment)
+auto FrameBufferObject::attach(Texture2d const & texture, FrameBufferAttachment const attachment)
     -> void
 {
     auto const glAttachment = convertToOpenGLAttachment(attachment);
@@ -127,7 +127,7 @@ auto FrameBufferObject::attach(Texture const & texture, FrameBufferAttachment co
     glNamedFramebufferTexture(getId(), glAttachment, textureId, mipmapLevel);
 }
 
-auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachment const attachment)
+auto FrameBufferObject::attach(TextureCube const & texture, FrameBufferAttachment const attachment)
     -> void
 {
     auto const glAttachment = convertToOpenGLAttachment(attachment);
@@ -140,8 +140,8 @@ auto FrameBufferObject::attach(CubeTexture const & texture, FrameBufferAttachmen
 }
 
 auto FrameBufferObject::attach(
-    CubeTexture const & texture,
-    CubeTextureFace const face,
+    TextureCube const & texture,
+    TextureCubeFace const face,
     FrameBufferAttachment const attachment)
     -> void
 {

@@ -12,7 +12,7 @@ namespace
 
 auto makePointLightDepthMapping(
     std::vector<PointLight> const & lights,
-    basix::Size<int> const & mapSize)
+    basix::Size2d<int> const & mapSize)
     -> std::vector<OmniDepthMap>
 {
     return basix::transform(lights, [&mapSize] (PointLight const & light)
@@ -24,7 +24,7 @@ auto makePointLightDepthMapping(
 template<typename LightContainer>
 auto makeOrientedLightDepthMapping(
     LightContainer const & lights,
-    basix::Size<int> const & mapSize)
+    basix::Size2d<int> const & mapSize)
     -> std::vector<MonoDepthMap>
 {
     return basix::transform(lights, [&mapSize] (auto const & light)
@@ -35,7 +35,7 @@ auto makeOrientedLightDepthMapping(
 
 } // unnamed namespace
 
-DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size<int> const & mapSize)
+DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size2d<int> const & mapSize)
     : lightSystem{&lightSystem}
     , mapSize{mapSize}
     , pointMapping{makePointLightDepthMapping(lightSystem.point, mapSize)}
@@ -45,7 +45,7 @@ DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size<int> con
 }
 
 auto DepthMapping::getMapSize() const
-    -> basix::Size<int>
+    -> basix::Size2d<int>
 {
     return mapSize;
 }

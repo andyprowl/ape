@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Glow/BufferObject/FrameBufferObject.hpp>
-#include <Glow/Texture/CubeTexture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
 
 #include <string_view>
 
@@ -13,15 +13,15 @@ class OmniDepthMap
 
 public:
 
-    explicit OmniDepthMap(basix::Size<int> const & size);
+    explicit OmniDepthMap(basix::Size2d<int> const & size);
 
-    OmniDepthMap(basix::Size<int> const & size, std::string_view const label);
+    OmniDepthMap(basix::Size2d<int> const & size, std::string_view const label);
 
     auto getTexture()
-        -> glow::CubeTexture &;
+        -> glow::TextureCube &;
 
     auto getTexture() const
-        -> glow::CubeTexture const &;
+        -> glow::TextureCube const &;
 
     auto getFrameBuffer()
         -> glow::FrameBufferObject &;
@@ -30,15 +30,15 @@ public:
         -> glow::FrameBufferObject const &;
 
     auto getSize() const
-        -> basix::Size<int>;
+        -> basix::Size2d<int>;
 
 private:
 
-    glow::CubeTexture texture;
+    glow::TextureCube texture;
 
     glow::FrameBufferObject frameBuffer;
 
-    basix::Size<int> size;
+    basix::Size2d<int> size;
 
 };
 

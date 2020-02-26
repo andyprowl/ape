@@ -5,7 +5,7 @@
 namespace glow
 {
 
-class CubeTexture;
+class TextureCube;
 
 } // namespace glow
 
@@ -32,7 +32,7 @@ private:
     auto setupUniforms(
         Camera const & camera,
         Fog const & fog,
-        glow::CubeTexture const & skybox) const
+        glow::TextureCube const & skybox) const
         -> void;
 
     auto drawCube() const

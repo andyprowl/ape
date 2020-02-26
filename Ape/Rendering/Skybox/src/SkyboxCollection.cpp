@@ -9,27 +9,27 @@ namespace ape
 namespace
 {
 
-auto makeUniqueSkyboxes(std::vector<glow::CubeTexture> skyboxes)
-    -> std::vector<std::unique_ptr<glow::CubeTexture>>
+auto makeUniqueSkyboxes(std::vector<glow::TextureCube> skyboxes)
+    -> std::vector<std::unique_ptr<glow::TextureCube>>
 {
-    return basix::transform(skyboxes, [] (glow::CubeTexture & skybox)
-        -> std::unique_ptr<glow::CubeTexture>
+    return basix::transform(skyboxes, [] (glow::TextureCube & skybox)
+        -> std::unique_ptr<glow::TextureCube>
     {
-        return std::make_unique<glow::CubeTexture>(std::move(skybox));
+        return std::make_unique<glow::TextureCube>(std::move(skybox));
     });
 }
 
 } // unnamed namespace
 
-SkyboxCollection::SkyboxCollection(std::vector<glow::CubeTexture> skyboxes)
+SkyboxCollection::SkyboxCollection(std::vector<glow::TextureCube> skyboxes)
     : skyboxes{makeUniqueSkyboxes(std::move(skyboxes))}
 {
 }
 
-auto SkyboxCollection::addSkybox(glow::CubeTexture skybox)
+auto SkyboxCollection::addSkybox(glow::TextureCube skybox)
     -> void
 {
-    skyboxes.push_back(std::make_unique<glow::CubeTexture>(std::move(skybox)));
+    skyboxes.push_back(std::make_unique<glow::TextureCube>(std::move(skybox)));
 
     onSkyboxAdded.fire(*skyboxes.back());
 }
@@ -41,12 +41,12 @@ auto SkyboxCollection::getNumOfSkyboxes() const
 }
 
 auto SkyboxCollection::getSkybox(int const i)
-    -> glow::CubeTexture &
+    -> glow::TextureCube &
 {
     return *(skyboxes[i]);
 }
 
-auto SkyboxCollection::getSkyboxIndex(glow::CubeTexture const & skybox) const
+auto SkyboxCollection::getSkyboxIndex(glow::TextureCube const & skybox) const
     -> int
 {
     auto const it = basix::findIf(skyboxes, [&skybox] (auto const & p)

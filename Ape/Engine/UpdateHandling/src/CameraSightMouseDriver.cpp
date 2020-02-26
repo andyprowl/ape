@@ -108,14 +108,14 @@ auto CameraSightMouseDriver::onFrame()
         return;
     }
 
-    auto const angularOffset = basix::Offset{
+    auto const angularOffset = basix::Offset2d{
         mouseOffset.deltaX * sensitivity,
         -mouseOffset.deltaY * sensitivity};
 
     moveBy(*activeCamera, angularOffset);
 }
 
-auto CameraSightMouseDriver::onMouseWheel(basix::Offset<int> const offset)
+auto CameraSightMouseDriver::onMouseWheel(basix::Offset2d<int> const offset)
     -> void
 {
     if (not isActive())
@@ -145,7 +145,7 @@ auto CameraSightMouseDriver::registerForActiveCameraChangeNotifications()
     });
 }
 
-auto CameraSightMouseDriver::moveBy(Camera & camera, basix::Offset<float> const & angularOffset)
+auto CameraSightMouseDriver::moveBy(Camera & camera, basix::Offset2d<float> const & angularOffset)
     -> void
 {
     angles.pitch = basix::clamp((angles.pitch + angularOffset.deltaY), -89.0f, 89.0f);

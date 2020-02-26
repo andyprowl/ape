@@ -7,7 +7,7 @@
 namespace glow
 {
 
-class Texture;
+class Texture2d;
 
 } // namespace glow
 
@@ -23,9 +23,9 @@ public:
 
     Material(
         glm::vec3 const & ambient,
-        glow::Texture const * diffuseMap,
-        glow::Texture const * specularMap,
-        glow::Texture const * normalMap,
+        glow::Texture2d const * diffuseMap,
+        glow::Texture2d const * specularMap,
+        glow::Texture2d const * normalMap,
         float const shininess)
         : ambient{ambient}
         , diffuseMap{diffuseMap}
@@ -39,11 +39,11 @@ public:
 
     glm::vec3 ambient;
 
-    glow::Texture const * diffuseMap;
+    glow::Texture2d const * diffuseMap;
 
-    glow::Texture const * specularMap;
+    glow::Texture2d const * specularMap;
 
-    glow::Texture const * normalMap;
+    glow::Texture2d const * normalMap;
 
     float shininess;
 

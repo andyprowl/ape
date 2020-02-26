@@ -1,4 +1,4 @@
-#include <Glow/Texture/CubeTexture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
@@ -36,7 +36,7 @@ auto setTextureWrapping(GpuResource::Id const textureId, TextureWrapping const w
     glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, wrappingMode);
 }
 
-auto determineNumOfMipmapLevels(CubeTextureDescriptor const & descriptor)
+auto determineNumOfMipmapLevels(TextureCubeDescriptor const & descriptor)
     -> int
 {
     if (descriptor.numOfMipmapLevels > 0)
@@ -87,7 +87,7 @@ auto setTextureImageData(
         bytes.get());
 }
 
-auto createTextureStorage(GpuResource::Id const textureId, CubeTextureDescriptor const & descriptor)
+auto createTextureStorage(GpuResource::Id const textureId, TextureCubeDescriptor const & descriptor)
     -> void
 {
     auto const & imageSize = descriptor.imageSet.right.size;
@@ -106,7 +106,7 @@ auto createTextureStorage(GpuResource::Id const textureId, CubeTextureDescriptor
 
 auto setTextureImageData(
     GpuResource::Id const textureId,
-    CubeTextureImageSet const & imageSet,
+    TextureCubeImageSet const & imageSet,
     bool const createMipmap)
     -> void
 {
@@ -128,7 +128,7 @@ auto setTextureImageData(
     }
 }
 
-auto makeOpenGLTextureObject(CubeTextureDescriptor const & descriptor, bool const createMipmap)
+auto makeOpenGLTextureObject(TextureCubeDescriptor const & descriptor, bool const createMipmap)
     -> GpuResource
 {
     auto textureId = GpuResource::Id{};
@@ -148,13 +148,13 @@ auto makeOpenGLTextureObject(CubeTextureDescriptor const & descriptor, bool cons
 
 } // unnamed namespace
 
-CubeTexture::CubeTexture(CubeTextureDescriptor const & descriptor)
-    : CubeTexture{descriptor, false, ""}
+TextureCube::TextureCube(TextureCubeDescriptor const & descriptor)
+    : TextureCube{descriptor, false, ""}
 {
 }
 
-CubeTexture::CubeTexture(
-    CubeTextureDescriptor const & descriptor,
+TextureCube::TextureCube(
+    TextureCubeDescriptor const & descriptor,
     bool const createMipmap,
     std::string_view const label)
     : resource{makeOpenGLTextureObject(descriptor, createMipmap)}
@@ -162,13 +162,13 @@ CubeTexture::CubeTexture(
     setLabel(label);
 }
 
-auto CubeTexture::getId() const
+auto TextureCube::getId() const
     -> GpuResource::Id
 {
     return resource.get();
 }
 
-auto CubeTexture::bind() const
+auto TextureCube::bind() const
     -> void
 {
     auto const id = resource.get();
@@ -176,19 +176,19 @@ auto CubeTexture::bind() const
     glBindTexture(GL_TEXTURE_CUBE_MAP, id);
 }
 
-auto CubeTexture::unbind() const
+auto TextureCube::unbind() const
     -> void
 {
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-auto CubeTexture::generateMipmap()
+auto TextureCube::generateMipmap()
     -> void
 {
     glGenerateTextureMipmap(getId());
 }
 
-auto CubeTexture::setLabel(std::string_view const label)
+auto TextureCube::setLabel(std::string_view const label)
     -> void
 {
     glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());

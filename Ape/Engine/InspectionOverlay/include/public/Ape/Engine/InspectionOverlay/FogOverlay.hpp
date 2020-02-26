@@ -19,8 +19,8 @@ class FogOverlay
 public:
 
     FogOverlay(
-        basix::Position<int> const & initialPosition,
-        basix::Size<int> const & initialSize,
+        basix::Position2d<int> const & initialPosition,
+        basix::Size2d<int> const & initialSize,
         Fog & fog);
 
     auto update()
@@ -33,9 +33,9 @@ private:
 
 private:
 
-    basix::Position<int> initialPosition;
+    basix::Position2d<int> initialPosition;
 
-    basix::Size<int> initialSize;
+    basix::Size2d<int> initialSize;
 
     Fog * fog;
 

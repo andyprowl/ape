@@ -58,7 +58,7 @@ auto readImageFromFile(std::filesystem::path const & path, bool const flipVertic
 {
     stbi_set_flip_vertically_on_load(flipVertically);
 
-    auto size = basix::Size<int>{0, 0};
+    auto size = basix::Size2d<int>{0, 0};
 
     auto numOfChannels = 0;
 

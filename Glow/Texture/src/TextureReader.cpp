@@ -1,6 +1,6 @@
-#include <Glow/Texture/TextureReader.hpp>
+#include <Glow/Texture/Texture2dReader.hpp>
 
-#include <Glow/Texture/CubeTextureFace.hpp>
+#include <Glow/Texture/TextureCubeFace.hpp>
 
 #include <Stb/stb_image.h>
 
@@ -16,7 +16,7 @@ auto readTextureDescriptor(
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels)
-    -> TextureDescriptor
+    -> Texture2dDescriptor
 {
     auto image = readImageFromFile(path, true);
 
@@ -27,19 +27,19 @@ auto readTextureDescriptor(
 
 } // unnamed namespace
 
-TextureReader::TextureReader(std::vector<std::filesystem::path> searchPaths)
+Texture2dReader::Texture2dReader(std::vector<std::filesystem::path> searchPaths)
     : fileFinder{std::move(searchPaths)}
 {
 }
 
-auto TextureReader::read(
+auto Texture2dReader::read(
     std::filesystem::path const & path,
     ColorSpace const imageColorSpace,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels,
     std::string_view const label) const
-    -> Texture
+    -> Texture2d
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
@@ -50,16 +50,16 @@ auto TextureReader::read(
         wrapping,
         numOfMipmapLevels);
     
-    return Texture{descriptor, true, label};
+    return Texture2d{descriptor, true, label};
 }
 
-auto TextureReader::getSearchPaths() const
+auto Texture2dReader::getSearchPaths() const
     -> std::vector<std::filesystem::path>
 {
     return fileFinder.getSearchPaths();
 }
 
-auto TextureReader::resolveToPathOfExistingFile(std::filesystem::path const & path) const
+auto Texture2dReader::resolveToPathOfExistingFile(std::filesystem::path const & path) const
     -> std::filesystem::path
 {
     auto const existingFilePath = fileFinder.findExistingPath(path);

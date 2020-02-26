@@ -5,7 +5,7 @@
 #include <Ape/World/Shape/BoxShapeBuilder.hpp>
 #include <Ape/World/Shape/Shape.hpp>
 
-#include <Glow/Texture/TextureReader.hpp>
+#include <Glow/Texture/Texture2dReader.hpp>
 
 #include <Basix/Memory/Null.hpp>
 
@@ -99,19 +99,19 @@ private:
         -> ape::Model &;
 
     auto createColorTextureFromLocalFile(std::string filename)
-        -> glow::Texture &;
+        -> glow::Texture2d &;
 
     auto createDataTextureFromLocalFile(std::string filename)
-        -> glow::Texture &;
+        -> glow::Texture2d &;
 
     auto createTextureFromLocalFile(std::string filename, glow::ColorSpace colorSpace)
-        -> glow::Texture &;
+        -> glow::Texture2d &;
 
 private:
 
     ape::AssetRepository assets;
 
-    glow::TextureReader textureReader;
+    glow::Texture2dReader textureReader;
 
 };
 
@@ -275,7 +275,7 @@ auto StatefulSimpleAssetBuilder::createLampMaterial()
 
     auto specularMap = &texture;
 
-    auto const normalMap = basix::nullPtr<glow::Texture>;
+    auto const normalMap = basix::nullPtr<glow::Texture2d>;
 
     auto const shininess = 32.0f;
 
@@ -310,7 +310,7 @@ auto StatefulSimpleAssetBuilder::createFlashlightMaterial()
 
     auto const specularMap = &texture;
 
-    auto const normalMap = basix::nullPtr<glow::Texture>;
+    auto const normalMap = basix::nullPtr<glow::Texture2d>;
 
     auto const shininess = 32.0f;
 
@@ -346,13 +346,13 @@ auto StatefulSimpleAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & me
 }
 
 auto StatefulSimpleAssetBuilder::createColorTextureFromLocalFile(std::string filename)
-    -> glow::Texture &
+    -> glow::Texture2d &
 {
     return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::perceptual);
 }
 
 auto StatefulSimpleAssetBuilder::createDataTextureFromLocalFile(std::string filename)
-    -> glow::Texture &
+    -> glow::Texture2d &
 {
     return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::linear);
 }
@@ -360,7 +360,7 @@ auto StatefulSimpleAssetBuilder::createDataTextureFromLocalFile(std::string file
 auto StatefulSimpleAssetBuilder::createTextureFromLocalFile(
     std::string filename,
     glow::ColorSpace const colorSpace)
-    -> glow::Texture &
+    -> glow::Texture2d &
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
 

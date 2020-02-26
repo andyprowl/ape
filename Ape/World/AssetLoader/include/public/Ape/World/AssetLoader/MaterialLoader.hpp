@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/TextureReader.hpp>
+#include <Glow/Texture/Texture2dReader.hpp>
 
 #include <glm/vec4.hpp>
 
@@ -18,7 +18,7 @@ namespace glow
 
 enum class ColorSpace;
 
-class Texture;
+class Texture2d;
 
 } // namespace glow
 
@@ -59,17 +59,17 @@ private:
         aiMaterial const & material,
         aiTextureType const type,
         std::filesystem::path const & directory) const
-        -> std::vector<glow::Texture const *>;
+        -> std::vector<glow::Texture2d const *>;
 
     auto getOrReadTexture(
         std::filesystem::path const & path,
         glow::ColorSpace const colorSpace) const
-        -> glow::Texture const &;
+        -> glow::Texture2d const &;
 
     auto readAndStoreTexture(
         std::filesystem::path const & path,
         glow::ColorSpace const colorSpace) const
-        -> glow::Texture const &;
+        -> glow::Texture2d const &;
 
 private:
 
@@ -77,7 +77,7 @@ private:
 
     TextureCache * textureCache;
 
-    glow::TextureReader textureReader;
+    glow::Texture2dReader textureReader;
 
 };
 

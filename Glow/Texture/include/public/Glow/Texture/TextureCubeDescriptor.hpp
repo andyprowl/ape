@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/CubeTextureImageSet.hpp>
+#include <Glow/Texture/TextureCubeImageSet.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
 #include <Glow/Texture/TextureInternalFormat.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
@@ -8,13 +8,13 @@
 namespace glow
 {
 
-class CubeTextureDescriptor
+class TextureCubeDescriptor
 {
 
 public:
 
-    CubeTextureDescriptor(
-        CubeTextureImageSet imageSet,
+    TextureCubeDescriptor(
+        TextureCubeImageSet imageSet,
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,
         TextureWrapping const wrapping,
@@ -29,7 +29,7 @@ public:
 
 public:
 
-    CubeTextureImageSet imageSet;
+    TextureCubeImageSet imageSet;
 
     TextureInternalFormat internalFormat;
 

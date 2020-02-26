@@ -46,7 +46,7 @@ public:
 
     TextureImage(
         ImageBytesPtr bytes,
-        basix::Size<int> const size,
+        basix::Size2d<int> const size,
         TextureImageFormat format,
         PixelType const pixelType)
         : bytes{std::move(bytes)}
@@ -60,7 +60,7 @@ public:
 
     ImageBytesPtr bytes;
 
-    basix::Size<int> const size;
+    basix::Size2d<int> const size;
 
     TextureImageFormat format;
 

@@ -26,7 +26,7 @@ class LightSystemView
 
 public:
 
-    LightSystemView(LightSystem const & lightSystem, basix::Size<int> const & viewSize);
+    LightSystemView(LightSystem const & lightSystem, basix::Size2d<int> const & viewSize);
     
     auto getLightSystem() const
         -> LightSystem const &;
@@ -40,14 +40,14 @@ public:
     auto getDirectionalView() const
         -> std::vector<DirectionalLightView> const &;
 
-    auto setViewSize(basix::Size<int> const & newViewSize)
+    auto setViewSize(basix::Size2d<int> const & newViewSize)
         -> void;
 
 private:
 
     LightSystem const * lightSystem;
 
-    basix::Size<int> viewSize;
+    basix::Size2d<int> viewSize;
 
     std::vector<PointLightView> pointView;
 

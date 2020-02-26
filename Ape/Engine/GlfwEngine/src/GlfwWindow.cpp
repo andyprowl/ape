@@ -24,7 +24,7 @@ auto onResize(GLFWwindow * const handle, int const width, int const height)
 
     auto const window = it->second;
 
-    window->onResize.fire(basix::Size<int>{width, height});
+    window->onResize.fire(basix::Size2d<int>{width, height});
 }
 
 auto onMouseWheel(GLFWwindow * const handle, double const xOffset, double const yOffset)
@@ -39,7 +39,7 @@ auto onMouseWheel(GLFWwindow * const handle, double const xOffset, double const 
 
     auto const window = it->second;
 
-    auto const offset = basix::Offset<int>{static_cast<int>(xOffset), static_cast<int>(yOffset)};
+    auto const offset = basix::Offset2d<int>{static_cast<int>(xOffset), static_cast<int>(yOffset)};
 
     window->onMouseWheel.fire(offset);
 }
@@ -88,7 +88,7 @@ auto onFocusChange(GLFWwindow * const handle, int const status)
     }
 }
 
-auto makeRegularGLFWWindow(std::string_view title, basix::Size<int> const & size)
+auto makeRegularGLFWWindow(std::string_view title, basix::Size2d<int> const & size)
     -> GLFWwindow &
 {
     auto const w = glfwCreateWindow(size.width, size.height, title.data(), nullptr, nullptr);
@@ -133,7 +133,7 @@ GlfwWindow::GlfwWindow(std::string_view title, CreateAsFullscreen const)
 {
 }
 
-GlfwWindow::GlfwWindow(std::string_view title, basix::Size<int> const & size)
+GlfwWindow::GlfwWindow(std::string_view title, basix::Size2d<int> const & size)
     : GlfwWindow{makeRegularGLFWWindow(title, size), false}
 {
 }
@@ -187,7 +187,7 @@ auto GlfwWindow::getAspectRatio() const
 
 // virtual (from Window)
 auto GlfwWindow::getSize() const
-    -> basix::Size<int>
+    -> basix::Size2d<int>
 {
     auto width = int{};
 
@@ -200,7 +200,7 @@ auto GlfwWindow::getSize() const
 
 // virtual (from Window)
 auto GlfwWindow::getPosition() const
-    -> basix::Position<int>
+    -> basix::Position2d<int>
 {
     auto x = int{};
 
@@ -213,7 +213,7 @@ auto GlfwWindow::getPosition() const
 
 // virtual (from Window)
 auto GlfwWindow::getMousePosition() const
-    -> basix::Position<int>
+    -> basix::Position2d<int>
 {
     auto x = double{};
 
@@ -248,7 +248,7 @@ auto GlfwWindow::setFullScreen()
 
     isFullScreenModeOn = true;
 
-    onResize.fire(basix::Size<int>{mode->width, mode->height});
+    onResize.fire(basix::Size2d<int>{mode->width, mode->height});
 }
 
 auto GlfwWindow::exitFullScreen()

@@ -2,7 +2,7 @@
 
 #include <Ape/Rendering/Skybox/SkyboxCollection.hpp>
 
-#include <Glow/Texture/TextureReader.hpp>
+#include <Glow/Texture/Texture2dReader.hpp>
 
 #include <filesystem>
 

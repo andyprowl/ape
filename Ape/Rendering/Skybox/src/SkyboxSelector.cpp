@@ -15,11 +15,11 @@ namespace
 {
 
 auto getAllSkyboxesFromCollection(SkyboxCollection & collection)
-    -> std::vector<glow::CubeTexture *>
+    -> std::vector<glow::TextureCube *>
 {
     auto const numOfSkyboxes = collection.getNumOfSkyboxes();
 
-    auto effects = std::vector<glow::CubeTexture *>{};
+    auto effects = std::vector<glow::TextureCube *>{};
 
     effects.reserve(numOfSkyboxes);
 
@@ -49,13 +49,13 @@ auto SkyboxSelector::getCollection() const
 }
 
 auto SkyboxSelector::getAvailableSkyboxes() const
-    -> std::vector<glow::CubeTexture *> const &
+    -> std::vector<glow::TextureCube *> const &
 {
     return availableSkyboxes;
 }
 
 auto SkyboxSelector::getActiveSkybox() const
-    -> glow::CubeTexture *
+    -> glow::TextureCube *
 {
     if (not activeSkyboxIndex)
     {
@@ -78,7 +78,7 @@ auto SkyboxSelector::activateSkybox(int const index)
     onActiveSkyboxChanged.fire(getActiveSkybox());
 }
 
-auto SkyboxSelector::activateSkybox(glow::CubeTexture const & effect)
+auto SkyboxSelector::activateSkybox(glow::TextureCube const & effect)
     -> void
 {
     if (getActiveSkybox() == &effect)

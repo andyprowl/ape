@@ -5,12 +5,12 @@
 namespace glow
 {
 
-class CubeTextureImageSet
+class TextureCubeImageSet
 {
 
 public:
 
-    CubeTextureImageSet(
+    TextureCubeImageSet(
         TextureImage right,
         TextureImage left,
         TextureImage top,

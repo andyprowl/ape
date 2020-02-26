@@ -31,7 +31,7 @@ public:
     auto onFrame(std::chrono::nanoseconds frameDuration)
         -> void;
 
-    auto onMouseWheel(basix::Offset<int> offset)
+    auto onMouseWheel(basix::Offset2d<int> offset)
         -> void;
 
     auto getCameraSelector() const

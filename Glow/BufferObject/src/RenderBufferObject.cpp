@@ -24,12 +24,12 @@ auto createRenderBufferResource()
 
 } // unnamed namespace
 
-RenderBufferObject::RenderBufferObject(basix::Size<int> const size)
+RenderBufferObject::RenderBufferObject(basix::Size2d<int> const size)
     : RenderBufferObject{size, ""}
 {
 }
 
-RenderBufferObject::RenderBufferObject(basix::Size<int> const size, std::string_view const label)
+RenderBufferObject::RenderBufferObject(basix::Size2d<int> const size, std::string_view const label)
     : BufferObject{createRenderBufferResource()}
 {
     setStorage(size);
@@ -53,7 +53,7 @@ auto RenderBufferObject::unbind() const
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
-auto RenderBufferObject::setStorage(basix::Size<int> const size)
+auto RenderBufferObject::setStorage(basix::Size2d<int> const size)
     -> void
 {
     glNamedRenderbufferStorage(getId(), GL_DEPTH24_STENCIL8, size.width, size.height);

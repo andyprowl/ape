@@ -5,7 +5,7 @@
 #include <Ape/World/Model/Model.hpp>
 #include <Ape/World/Shape/Shape.hpp>
 
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 
 #include <memory>
 #include <vector>
@@ -13,7 +13,7 @@
 namespace glow
 {
 
-class Texture;
+class Texture2d;
 
 } // namespace glow
 
@@ -27,7 +27,7 @@ public:
 
     std::vector<Shape> shapes;
 
-    std::vector<glow::Texture> textures;
+    std::vector<glow::Texture2d> textures;
 
     std::vector<Material> materials;
 

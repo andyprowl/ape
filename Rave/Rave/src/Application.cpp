@@ -15,7 +15,7 @@ public:
 
     Impl(bool const enableDebugOutput, bool const excludeSponza)
         : gateway{4, 5, enableDebugOutput}
-        , window{gateway.createWindow("Rave", basix::Size<int>{1920, 1080})}
+        , window{gateway.createWindow("Rave", basix::Size2d<int>{1920, 1080})}
         , engineFactory{excludeSponza}
         , engine{engineFactory.makeEngine<ape::GlfwEngine>(window)}
     {

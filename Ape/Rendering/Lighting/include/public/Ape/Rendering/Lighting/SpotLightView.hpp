@@ -15,7 +15,7 @@ class SpotLightView
 
 public:
 
-    SpotLightView(SpotLight const & light, basix::Size<int> const & viewSize);
+    SpotLightView(SpotLight const & light, basix::Size2d<int> const & viewSize);
     
     SpotLightView(SpotLightView const & rhs) = delete;
 
@@ -32,7 +32,7 @@ public:
     auto getCamera() const
         -> const Camera &;
 
-    auto setViewSize(basix::Size<int> const & newViewSize)
+    auto setViewSize(basix::Size2d<int> const & newViewSize)
         -> void;
 
 private:
@@ -53,7 +53,7 @@ private:
 
     SpotLight const * light;
 
-    basix::Size<int> viewSize;
+    basix::Size2d<int> viewSize;
 
     Camera camera;
 

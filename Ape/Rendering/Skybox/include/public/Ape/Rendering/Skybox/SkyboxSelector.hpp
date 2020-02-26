@@ -9,7 +9,7 @@
 namespace glow
 {
 
-class CubeTexture;
+class TextureCube;
 
 } // namespace glow
 
@@ -41,15 +41,15 @@ public:
         -> SkyboxCollection &;
 
     auto getAvailableSkyboxes() const
-        -> std::vector<glow::CubeTexture *> const &;
+        -> std::vector<glow::TextureCube *> const &;
 
     auto getActiveSkybox() const
-        -> glow::CubeTexture *;
+        -> glow::TextureCube *;
     
     auto activateSkybox(int index)
         -> void;
 
-    auto activateSkybox(glow::CubeTexture const & collection)
+    auto activateSkybox(glow::TextureCube const & collection)
         -> void;
 
     auto activateNextSkybox()
@@ -63,7 +63,7 @@ public:
 
 public:
 
-    basix::Signal<auto (glow::CubeTexture *) -> void> onActiveSkyboxChanged;
+    basix::Signal<auto (glow::TextureCube *) -> void> onActiveSkyboxChanged;
 
 private:
 
@@ -77,7 +77,7 @@ private:
 
     SkyboxCollection * collection;
 
-    std::vector<glow::CubeTexture *> availableSkyboxes;
+    std::vector<glow::TextureCube *> availableSkyboxes;
 
     std::optional<int> activeSkyboxIndex;
 

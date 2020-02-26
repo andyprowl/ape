@@ -34,7 +34,7 @@ public:
     auto onFrame()
         -> void;
 
-    auto onMouseWheel(basix::Offset<int> offset)
+    auto onMouseWheel(basix::Offset2d<int> offset)
         -> void;
 
 private:
@@ -42,7 +42,7 @@ private:
     auto registerForActiveCameraChangeNotifications()
         -> basix::ScopedSignalConnection;
 
-    auto moveBy(Camera & camera, basix::Offset<float> const & angularOffset)
+    auto moveBy(Camera & camera, basix::Offset2d<float> const & angularOffset)
         -> void;
 
     auto zoomBy(Camera & camera, float factor) const

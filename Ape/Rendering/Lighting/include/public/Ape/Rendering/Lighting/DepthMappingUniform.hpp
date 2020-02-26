@@ -59,11 +59,11 @@ public:
 
 public:
 
-    UniformArray<Uniform<CubeTexture>> point;
+    UniformArray<Uniform<TextureCube>> point;
 
-    UniformArray<Uniform<Texture>> spot;
+    UniformArray<Uniform<Texture2d>> spot;
 
-    UniformArray<Uniform<Texture>> directional;
+    UniformArray<Uniform<Texture2d>> directional;
 
 private:
 

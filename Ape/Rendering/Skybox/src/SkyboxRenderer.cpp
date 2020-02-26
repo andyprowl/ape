@@ -42,7 +42,7 @@ auto SkyboxRenderer::render(Camera const & camera, Fog const & fog) const
 auto SkyboxRenderer::setupUniforms(
     Camera const & camera,
     Fog const & fog,
-    glow::CubeTexture const & skybox) const
+    glow::TextureCube const & skybox) const
     -> void
 {
     auto const projection = camera.getProjection().getTransformation();

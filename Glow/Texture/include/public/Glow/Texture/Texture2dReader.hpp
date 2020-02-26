@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Glow/Texture/ColorSpace.hpp>
-#include <Glow/Texture/CubeTexture.hpp>
-#include <Glow/Texture/Texture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
+#include <Glow/Texture/Texture2d.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
@@ -17,7 +17,7 @@
 namespace glow
 {
 
-enum class CubeTextureFace;
+enum class TextureCubeFace;
 
 class CouldNotFindImageFile : public std::logic_error
 {
@@ -31,14 +31,14 @@ public:
 
 };
 
-class TextureReader
+class Texture2dReader
 {
 
 public:
 
-    TextureReader() = default;
+    Texture2dReader() = default;
 
-    explicit TextureReader(std::vector<std::filesystem::path> searchPaths);
+    explicit Texture2dReader(std::vector<std::filesystem::path> searchPaths);
 
     auto read(
         std::filesystem::path const & path,
@@ -47,7 +47,7 @@ public:
         TextureWrapping wrapping = TextureWrapping::repeat,
         int const numOfMipmapLevels = 0,
         std::string_view label = "") const
-        -> Texture;
+        -> Texture2d;
 
     auto getSearchPaths() const
         -> std::vector<std::filesystem::path>;

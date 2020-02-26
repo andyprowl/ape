@@ -3,8 +3,8 @@
 namespace glow
 {
 
-class Texture;
-class CubeTexture;
+class Texture2d;
+class TextureCube;
 
 class TextureUnit
 {
@@ -19,10 +19,10 @@ public:
     auto activate()
         -> void;
 
-    auto setTexture(Texture const *texture)
+    auto setTexture(Texture2d const *texture)
         -> void;
 
-    auto setTexture(CubeTexture const * texture)
+    auto setTexture(TextureCube const * texture)
         -> void;
 
 private:
@@ -39,9 +39,9 @@ private:
 
     int unitIndex;
 
-    Texture const * activeTexture2d;
+    Texture2d const * activeTexture2d;
 
-    CubeTexture const * activeCubeTexture;
+    TextureCube const * activeCubeTexture;
 
 };
 

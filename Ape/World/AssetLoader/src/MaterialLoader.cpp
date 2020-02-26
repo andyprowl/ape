@@ -47,7 +47,7 @@ auto getTextureColorSpace(aiTextureType const type)
         : glow::ColorSpace::linear;
 }
 
-auto setSwizzleIfGrayscale(glow::Texture & texture)
+auto setSwizzleIfGrayscale(glow::Texture2d & texture)
     -> void
 {
     if (texture.getInternalFormat() != glow::TextureInternalFormat::r8)
@@ -166,11 +166,11 @@ auto MaterialLoader::importTextures(
     aiMaterial const & material,
     aiTextureType const type,
     std::filesystem::path const & directory) const
-    -> std::vector<glow::Texture const *>
+    -> std::vector<glow::Texture2d const *>
 {
     auto numOfTextures = material.GetTextureCount(type);
 
-    auto textures = makeVectorWithCapacity<glow::Texture const *>(numOfTextures);
+    auto textures = makeVectorWithCapacity<glow::Texture2d const *>(numOfTextures);
 
     auto const colorSpace = getTextureColorSpace(type);
 
@@ -196,7 +196,7 @@ auto MaterialLoader::importTextures(
 auto MaterialLoader::getOrReadTexture(
     std::filesystem::path const & path,
     glow::ColorSpace const colorSpace) const
-    -> glow::Texture const &
+    -> glow::Texture2d const &
 {
     auto const existingTexture = textureCache->findTexture(path);
 
@@ -211,7 +211,7 @@ auto MaterialLoader::getOrReadTexture(
 auto MaterialLoader::readAndStoreTexture(
     std::filesystem::path const & path,
     glow::ColorSpace const colorSpace) const
-    -> glow::Texture const &
+    -> glow::Texture2d const &
 {
     auto const filtering = glow::TextureFiltering{
         glow::TextureMagnificationFilter::linear,

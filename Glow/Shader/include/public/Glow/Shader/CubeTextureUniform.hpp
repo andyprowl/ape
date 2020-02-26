@@ -2,13 +2,13 @@
 
 #include <Glow/Shader/GenericTextureUniform.hpp>
 
-#include <Glow/Texture/CubeTexture.hpp>
+#include <Glow/Texture/TextureCube.hpp>
 
 namespace glow
 {
 
 template<>
-class Uniform<CubeTexture> : public detail::GenericTextureUniform<CubeTexture>
+class Uniform<TextureCube> : public detail::GenericTextureUniform<TextureCube>
 {
 
 public:

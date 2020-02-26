@@ -13,8 +13,8 @@ ImGuiWindow::ImGuiWindow(std::string_view const title)
 
 ImGuiWindow::ImGuiWindow(
     std::string_view const title,
-    basix::Position<int> const & initialPosition,
-    basix::Size<int> const & initialSize)
+    basix::Position2d<int> const & initialPosition,
+    basix::Size2d<int> const & initialSize)
     : isValid{true}
 {
     ImGui::SetNextWindowPos(

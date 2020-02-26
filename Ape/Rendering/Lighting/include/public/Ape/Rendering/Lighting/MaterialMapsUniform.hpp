@@ -70,11 +70,11 @@ private:
 
 public:
 
-    glow::Uniform<glow::Texture> diffuseMap;
+    glow::Uniform<glow::Texture2d> diffuseMap;
 
-    glow::Uniform<glow::Texture> specularMap;
+    glow::Uniform<glow::Texture2d> specularMap;
 
-    glow::Uniform<glow::Texture> normalMap;
+    glow::Uniform<glow::Texture2d> normalMap;
 
 };
 

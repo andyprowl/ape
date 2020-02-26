@@ -20,7 +20,7 @@ auto makePointLightView(LightSystem const & lightSystem)
     });
 }
 
-auto makeSpotLightView(LightSystem const & lightSystem, basix::Size<int> const & viewSize)
+auto makeSpotLightView(LightSystem const & lightSystem, basix::Size2d<int> const & viewSize)
     -> std::vector<SpotLightView>
 {
     return basix::transform(lightSystem.spot, [&viewSize] (SpotLight const & light)
@@ -42,7 +42,7 @@ auto makeDirectionalLightView(LightSystem const & lightSystem)
 
 LightSystemView::LightSystemView(
     LightSystem const & lightSystem,
-    basix::Size<int> const & viewSize)
+    basix::Size2d<int> const & viewSize)
     : lightSystem{&lightSystem}
     , viewSize{viewSize}
     , pointView{makePointLightView(lightSystem)}
@@ -75,7 +75,7 @@ auto LightSystemView::getDirectionalView() const
     return directionalView;
 }
 
-auto LightSystemView::setViewSize(basix::Size<int> const & newViewSize)
+auto LightSystemView::setViewSize(basix::Size2d<int> const & newViewSize)
     -> void
 {
     viewSize = newViewSize;

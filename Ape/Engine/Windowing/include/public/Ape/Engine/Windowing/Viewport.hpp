@@ -11,7 +11,7 @@ class Viewport
 
 public:
 
-    Viewport(basix::Position<int> const & origin, basix::Size<int> const & size)
+    Viewport(basix::Position2d<int> const & origin, basix::Size2d<int> const & size)
         : origin{origin}
         , size{size}
     {
@@ -19,9 +19,9 @@ public:
 
 public:
 
-    basix::Position<int> origin;
+    basix::Position2d<int> origin;
 
-    basix::Size<int> size;
+    basix::Size2d<int> size;
 
 };
 
