@@ -72,8 +72,7 @@ private:
     auto renderLightDepth(
         BodySetView const & bodies,
         Camera const & viewerCamera,
-        Camera const & lightView,
-        OmniDepthMap & target) const
+        Camera const & lightViewt) const
         -> void;
 
     auto renderBody(Body const & body, Camera const & lightView, Culler const & culler) const

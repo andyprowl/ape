@@ -171,10 +171,6 @@ auto MonoDepthBodyRenderer::renderLightDepth(
 
     auto const binder = bind(target.getFrameBuffer());
 
-    auto const mapSize = target.getSize();
-
-    glViewport(0, 0, mapSize.width, mapSize.height);
-
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for (auto const & body : bodies)

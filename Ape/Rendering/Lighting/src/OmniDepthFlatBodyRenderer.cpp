@@ -156,15 +156,14 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
 
         auto const & faceCamera = getFaceCamera(lightCameras, face);
 
-        renderLightDepth(bodies, viewerCamera, faceCamera, target);
+        renderLightDepth(bodies, viewerCamera, faceCamera);
     }
 }
 
 auto OmniDepthFlatBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
-    Camera const & lightView,
-    OmniDepthMap & target) const
+    Camera const & lightView) const
     -> void
 {
     // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
@@ -178,10 +177,6 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
     {
         return;
     }
-
-    auto const mapSize = target.getSize();
-
-    glViewport(0, 0, mapSize.width, mapSize.height);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

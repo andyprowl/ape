@@ -44,6 +44,12 @@ DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size<int> con
 {
 }
 
+auto DepthMapping::getMapSize() const
+    -> basix::Size<int>
+{
+    return mapSize;
+}
+
 auto DepthMapping::getPointMapping()
     -> std::vector<OmniDepthMap> &
 {

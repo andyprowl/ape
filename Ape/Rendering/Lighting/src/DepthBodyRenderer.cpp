@@ -1,5 +1,9 @@
 #include <Ape/Rendering/Lighting/DepthBodyRenderer.hpp>
 
+#include <Ape/Rendering/Lighting/DepthMapping.hpp>
+
+#include <glad/glad.h>
+
 #include <iostream>
 
 namespace ape
@@ -38,6 +42,8 @@ auto DepthBodyRenderer::render(
     DepthMapping & target) const
     -> void
 {
+    setupViewport(target);
+
     monoRenderer.render(bodies, viewerCamera, lightSystemView, target);
 
     if (useOmniFlatRenderer)
@@ -86,6 +92,14 @@ auto DepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
     omniCubeRenderer.setProfiler(newProfiler);
 
     omniFlatRenderer.setProfiler(newProfiler);
+}
+
+auto DepthBodyRenderer::setupViewport(DepthMapping & target) const
+    -> void
+{
+    auto const mapSize = target.getMapSize();
+
+    glViewport(0, 0, mapSize.width, mapSize.height);
 }
 
 } // namespace ape

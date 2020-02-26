@@ -48,6 +48,11 @@ public:
 
 private:
 
+    auto setupViewport(DepthMapping & target) const
+        -> void;
+
+private:
+
     MonoDepthBodyRenderer monoRenderer;
     
     OmniDepthCubeBodyRenderer omniCubeRenderer;
