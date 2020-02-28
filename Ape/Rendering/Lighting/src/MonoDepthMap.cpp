@@ -21,7 +21,7 @@ auto enableShadowSampling(glow::Texture2d & texture)
 auto makeDepthMapTexture(basix::Size2d<int> const & size, std::string_view const labelPrefix)
     -> glow::Texture2d
 {
-    auto image = glow::TextureImage{
+    auto image = glow::Image2d{
         nullptr,
         size,
         glow::TextureImageFormat::depth,

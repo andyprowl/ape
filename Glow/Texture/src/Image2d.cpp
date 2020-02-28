@@ -1,4 +1,4 @@
-#include <Glow/Texture/TextureImage.hpp>
+#include <Glow/Texture/Image2d.hpp>
 
 #include <Stb/stb_image.h>
 
@@ -11,9 +11,9 @@ namespace
 {
 
 auto asBytes(stbi_uc * const imageData)
-    -> TextureImage::ImageBytesPtr
+    -> Image2d::ImageBytesPtr
 {
-    return TextureImage::ImageBytesPtr{reinterpret_cast<std::byte *>(imageData)};
+    return Image2d::ImageBytesPtr{reinterpret_cast<std::byte *>(imageData)};
 }
 
 auto determineImageFormat(int const numOfChannels)
@@ -47,14 +47,14 @@ auto determineImageFormat(int const numOfChannels)
 
 } // unnamed namespace
 
-auto TextureImage::ImageBytesDeleter::operator () (std::byte * const bytes) const
+auto Image2d::ImageBytesDeleter::operator () (std::byte * const bytes) const
     -> void
 {
     stbi_image_free(reinterpret_cast<void *>(bytes));
 }
 
 auto readImageFromFile(std::filesystem::path const & path, bool const flipVertically)
-    -> TextureImage
+    -> Image2d
 {
     stbi_set_flip_vertically_on_load(flipVertically);
 

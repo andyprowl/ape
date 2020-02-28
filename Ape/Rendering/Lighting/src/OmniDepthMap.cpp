@@ -11,7 +11,7 @@ namespace
 {
 
 auto makeOmniDepthMapFaceImage(basix::Size2d<int> const & size)
-    -> glow::TextureImage
+    -> glow::Image2d
 {
     return {nullptr, size, glow::TextureImageFormat::depth, glow::PixelType::floatingPoint};
 }

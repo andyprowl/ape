@@ -88,6 +88,10 @@ auto OpenGLLoader::prepareDebugOutput()
     -> void
 {
     glEnable(GL_DEBUG_OUTPUT);
+
+    // This will make sure the error handler is invoked in the same thread where the error occurs,
+    // so that the call stack is not lost and debugging is simpler.
+    glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     
     glDebugMessageCallback(onOpenGLError, 0);
 

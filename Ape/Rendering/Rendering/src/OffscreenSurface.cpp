@@ -13,7 +13,7 @@ namespace
 auto makeColorBuffer(basix::Size2d<int> const & size)
     -> glow::Texture2d
 {
-    auto image = glow::TextureImage{
+    auto image = glow::Image2d{
         nullptr,
         size,
         glow::TextureImageFormat::rgb,

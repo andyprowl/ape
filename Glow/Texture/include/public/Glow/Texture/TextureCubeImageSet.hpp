@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/TextureImage.hpp>
+#include <Glow/Texture/Image2d.hpp>
 
 namespace glow
 {
@@ -11,12 +11,12 @@ class TextureCubeImageSet
 public:
 
     TextureCubeImageSet(
-        TextureImage right,
-        TextureImage left,
-        TextureImage top,
-        TextureImage bottom,
-        TextureImage front,
-        TextureImage back)
+        Image2d right,
+        Image2d left,
+        Image2d top,
+        Image2d bottom,
+        Image2d front,
+        Image2d back)
         : right{std::move(right)}
         , left{std::move(left)}
         , top{std::move(top)}
@@ -28,17 +28,17 @@ public:
 
 public:
 
-    TextureImage right;
+    Image2d right;
 
-    TextureImage left;
+    Image2d left;
 
-    TextureImage top;
+    Image2d top;
 
-    TextureImage bottom;
+    Image2d bottom;
 
-    TextureImage front;
+    Image2d front;
 
-    TextureImage back;
+    Image2d back;
 
 };
 

@@ -25,7 +25,7 @@ public:
 
 };
 
-class TextureImage
+class Image2d
 {
 
 public:
@@ -44,7 +44,7 @@ public:
 
 public:
 
-    TextureImage(
+    Image2d(
         ImageBytesPtr bytes,
         basix::Size2d<int> const size,
         TextureImageFormat format,
@@ -69,6 +69,6 @@ public:
 };
 
 auto readImageFromFile(std::filesystem::path const & path, bool flipVertically)
-    -> TextureImage;
+    -> Image2d;
 
 } // namespace glow

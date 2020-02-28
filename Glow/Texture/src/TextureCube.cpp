@@ -53,7 +53,7 @@ auto determineNumOfMipmapLevels(TextureCubeDescriptor const & descriptor)
 auto setTextureImageData(
     GpuResource::Id const textureId,
     GLenum const target,
-    TextureImage const & image)
+    Image2d const & image)
     -> void
 {
     if (image.bytes == nullptr)
