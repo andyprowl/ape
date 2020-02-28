@@ -12,6 +12,7 @@ enum class TextureCubeFace;
 
 class RenderBufferObject;
 class Texture2d;
+class Texture2dArray;
 class TextureCube;
 
 class FrameBufferObject : public BufferObject
@@ -37,6 +38,9 @@ public:
         -> bool;
 
     auto attach(Texture2d const & texture, FrameBufferAttachment attachment)
+        -> void;
+
+    auto attach(Texture2dArray const & texture, int layer, FrameBufferAttachment attachment)
         -> void;
 
     auto attach(TextureCube const & texture, FrameBufferAttachment attachment)

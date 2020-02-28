@@ -3,9 +3,10 @@
 #include <Glow/BufferObject/RenderBufferObject.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
+#include <Glow/Texture/Texture2d.hpp>
+#include <Glow/Texture/Texture2dArray.hpp>
 #include <Glow/Texture/TextureCube.hpp>
 #include <Glow/Texture/TextureCubeFace.hpp>
-#include <Glow/Texture/Texture2d.hpp>
 
 #include <glad/glad.h>
 
@@ -118,25 +119,46 @@ auto FrameBufferObject::isComplete() const
 auto FrameBufferObject::attach(Texture2d const & texture, FrameBufferAttachment const attachment)
     -> void
 {
+    auto const framebufferId = getId();
+
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
     auto const textureId = texture.getId();
 
     auto const mipmapLevel = 0;
 
-    glNamedFramebufferTexture(getId(), glAttachment, textureId, mipmapLevel);
+    glNamedFramebufferTexture(framebufferId, glAttachment, textureId, mipmapLevel);
+}
+
+auto FrameBufferObject::attach(
+    Texture2dArray const & texture,
+    int const layer,
+    FrameBufferAttachment const attachment)
+    -> void
+{
+    auto const framebufferId = getId();
+
+    auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const textureId = texture.getId();
+
+    auto const mipmapLevel = 0;
+
+    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, layer);
 }
 
 auto FrameBufferObject::attach(TextureCube const & texture, FrameBufferAttachment const attachment)
     -> void
 {
+    auto const framebufferId = getId();
+
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
     auto const textureId = texture.getId();
 
     auto const mipmapLevel = 0;
 
-    glNamedFramebufferTexture(getId(), glAttachment, textureId, mipmapLevel);
+    glNamedFramebufferTexture(framebufferId, glAttachment, textureId, mipmapLevel);
 }
 
 auto FrameBufferObject::attach(
@@ -145,6 +167,8 @@ auto FrameBufferObject::attach(
     FrameBufferAttachment const attachment)
     -> void
 {
+    auto const framebufferId = getId();
+
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
     auto const glFace = static_cast<int>(face);
@@ -153,7 +177,7 @@ auto FrameBufferObject::attach(
 
     auto const mipmapLevel = 0;
 
-    glNamedFramebufferTextureLayer(getId(), glAttachment, textureId, mipmapLevel, glFace);
+    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, glFace);
 }
 
 auto FrameBufferObject::attach(
@@ -161,13 +185,15 @@ auto FrameBufferObject::attach(
     FrameBufferAttachment const attachment)
     -> void
 {
+    auto const framebufferId = getId();
+
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
     auto const bufferId = renderBuffer.getId();
 
     auto const mipmapLevel = 0;
 
-    glNamedFramebufferRenderbuffer(getId(), glAttachment, GL_RENDERBUFFER, bufferId);
+    glNamedFramebufferRenderbuffer(framebufferId, glAttachment, GL_RENDERBUFFER, bufferId);
 }
 
 auto FrameBufferObject::resetReadTarget()
