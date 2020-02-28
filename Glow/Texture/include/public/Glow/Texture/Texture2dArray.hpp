@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Glow/Texture/Texture2dDescriptor.hpp>
+
 #include <Glow/GpuResource/GpuResource.hpp>
 
 #include <string_view>
@@ -7,19 +9,17 @@
 namespace glow
 {
 
-class TextureArray2dDescriptor;
+class Image2d;
 
 class Texture2dArray
 {
 
 public:
 
-    explicit Texture2dArray(TextureArray2dDescriptor const & descriptor);
-
     Texture2dArray(
-        TextureArray2dDescriptor const & descriptor,
-        bool createMipmap,
-        std::string_view label);
+        Texture2dDescriptor const & layerDescriptor,
+        int numOfLayers,
+        std::string_view label = "");
 
     auto getId() const
         -> GpuResource::Id;
@@ -29,6 +29,26 @@ public:
 
     auto unbind() const
         -> void;
+
+    auto getLayerDescriptor() const
+        -> Texture2dDescriptor const &;
+
+    auto setLayerImage(int layer, Image2d const & image)
+        -> void;
+
+    auto generateMipmap()
+        -> void;
+
+    auto setLabel(std::string_view const label)
+        -> void;
+
+private:
+
+    GpuResource resource;
+
+    Texture2dDescriptor layerDescriptor;
+
+    int numOfLayers;
 
 };
 
