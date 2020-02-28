@@ -10,24 +10,6 @@ namespace ape
 namespace
 {
 
-auto makeOmniDepthMapFaceImage(basix::Size2d<int> const & size)
-    -> glow::Image2d
-{
-    return {nullptr, size, glow::TextureImageFormat::depth, glow::PixelType::floatingPoint};
-}
-
-auto makeOmniDepthMapImageSet(basix::Size2d<int> const & size)
-    -> glow::TextureCubeImageSet
-{
-    return {
-        makeOmniDepthMapFaceImage(size),
-        makeOmniDepthMapFaceImage(size),
-        makeOmniDepthMapFaceImage(size),
-        makeOmniDepthMapFaceImage(size),
-        makeOmniDepthMapFaceImage(size),
-        makeOmniDepthMapFaceImage(size)};
-}
-
 auto enableShadowSampling(glow::TextureCube & texture)
     -> void
 {
@@ -41,14 +23,12 @@ auto makeOmniDepthMapTexture(
     std::string_view const labelPrefix)
     -> glow::TextureCube
 {
-    auto imageSet = makeOmniDepthMapImageSet(size);
-
     // We do not want to allocate storage for additional mipmap levels for depth textures.
     auto numOfMipmapLevels = 1;
 
     // TODO: Should we use depth32 or depth32f here?
-    auto const descriptor = glow::TextureCubeDescriptor{
-        std::move(imageSet),
+    auto const faceeDescriptor = glow::Texture2dDescriptor{
+        size,
         glow::TextureInternalFormat::depth32,
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
@@ -56,7 +36,7 @@ auto makeOmniDepthMapTexture(
         glow::TextureWrapping::clampToEdge,
         numOfMipmapLevels};
 
-    auto texture = glow::TextureCube{descriptor, false, std::string{labelPrefix} + ".Texture2d"};
+    auto texture = glow::TextureCube{faceeDescriptor, std::string{labelPrefix} + ".Texture2d"};
 
     enableShadowSampling(texture);
 

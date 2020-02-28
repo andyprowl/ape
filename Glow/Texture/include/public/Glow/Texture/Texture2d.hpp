@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Glow/Texture/Texture2dDescriptor.hpp>
-#include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Glow/GpuResource/GpuResource.hpp>
 

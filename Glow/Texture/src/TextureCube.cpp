@@ -1,5 +1,7 @@
 #include <Glow/Texture/TextureCube.hpp>
 
+#include <Glow/Texture/TextureCubeImageSet.hpp>
+
 #include <Glow/GpuResource/ScopedBinder.hpp>
 
 #include <Basix/Mathematics/Math.hpp>
@@ -36,18 +38,15 @@ auto setTextureWrapping(GpuResource::Id const textureId, TextureWrapping const w
     glTextureParameteri(textureId, GL_TEXTURE_WRAP_T, wrappingMode);
 }
 
-auto determineNumOfMipmapLevels(TextureCubeDescriptor const & descriptor)
+auto determineNumOfMipmapLevels(Texture2dDescriptor const & faceDescriptor)
     -> int
 {
-    if (descriptor.numOfMipmapLevels > 0)
+    if (faceDescriptor.numOfMipmapLevels > 0)
     {
-        return descriptor.numOfMipmapLevels;
+        return faceDescriptor.numOfMipmapLevels;
     }
 
-    // Assuming face images all have the same size, we pick the front one.
-    auto const & baseSize = descriptor.imageSet.front.size;
-
-    return basix::log2(std::max(baseSize.width, baseSize.height));
+    return basix::log2(std::max(faceDescriptor.size.width, faceDescriptor.size.height));
 }
 
 auto setTextureImageData(
@@ -65,11 +64,7 @@ auto setTextureImageData(
 
     auto const pixelType = convertToOpenGLPixelType(image.pixelType);
 
-    auto const width = image.size.width;
-
-    auto const height = image.size.height;
-
-    auto const & bytes = image.bytes;
+    auto const bytes = image.bytes.get();
 
     auto const faceIndex = target - GL_TEXTURE_CUBE_MAP_POSITIVE_X;
 
@@ -79,22 +74,24 @@ auto setTextureImageData(
         0,
         0,
         faceIndex,
-        width,
-        height,
+        image.size.width,
+        image.size.height,
         1,
         imageFormat,
         pixelType,
-        bytes.get());
+        bytes);
 }
 
-auto createTextureStorage(GpuResource::Id const textureId, TextureCubeDescriptor const & descriptor)
+auto createTextureStorage(
+    GpuResource::Id const textureId,
+    Texture2dDescriptor const & faceDescriptor)
     -> void
 {
-    auto const & imageSize = descriptor.imageSet.right.size;
+    auto const & imageSize = faceDescriptor.size;
     
-    auto const internalFormat = convertToOpenGLInternalFormat(descriptor.internalFormat);
+    auto const internalFormat = convertToOpenGLInternalFormat(faceDescriptor.internalFormat);
 
-    auto const numOfMimaps = determineNumOfMipmapLevels(descriptor);
+    auto const numOfMimaps = determineNumOfMipmapLevels(faceDescriptor);
 
     glTextureStorage2D(
         textureId,
@@ -104,31 +101,7 @@ auto createTextureStorage(GpuResource::Id const textureId, TextureCubeDescriptor
         imageSize.height);
 }
 
-auto setTextureImageData(
-    GpuResource::Id const textureId,
-    TextureCubeImageSet const & imageSet,
-    bool const createMipmap)
-    -> void
-{
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_X, imageSet.right);
-
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, imageSet.left);
-
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, imageSet.top);
-
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, imageSet.bottom);
-
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, imageSet.front);
-
-    setTextureImageData(textureId, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, imageSet.back);
-
-    if (createMipmap)
-    {
-        glGenerateTextureMipmap(textureId);
-    }
-}
-
-auto makeOpenGLTextureObject(TextureCubeDescriptor const & descriptor, bool const createMipmap)
+auto makeOpenGLTextureObject(Texture2dDescriptor const & descriptor)
     -> GpuResource
 {
     auto textureId = GpuResource::Id{};
@@ -141,23 +114,21 @@ auto makeOpenGLTextureObject(TextureCubeDescriptor const & descriptor, bool cons
 
     setTextureWrapping(textureId, descriptor.wrapping);
 
-    setTextureImageData(textureId, descriptor.imageSet, createMipmap);
-
     return GpuResource{textureId, [] (GpuResource::Id const id) { glDeleteTextures(1, &id); }};
 }
 
 } // unnamed namespace
 
-TextureCube::TextureCube(TextureCubeDescriptor const & descriptor)
-    : TextureCube{descriptor, false, ""}
+TextureCube::TextureCube(Texture2dDescriptor const & faceDescriptor)
+    : TextureCube{faceDescriptor, ""}
 {
 }
 
 TextureCube::TextureCube(
-    TextureCubeDescriptor const & descriptor,
-    bool const createMipmap,
+    Texture2dDescriptor const & faceDescriptor,
     std::string_view const label)
-    : resource{makeOpenGLTextureObject(descriptor, createMipmap)}
+    : resource{makeOpenGLTextureObject(faceDescriptor)}
+    , faceDescriptor{faceDescriptor}
 {
     setLabel(label);
 }
@@ -182,16 +153,49 @@ auto TextureCube::unbind() const
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+auto TextureCube::getFaceDescriptor() const
+    -> Texture2dDescriptor const &
+{
+    return faceDescriptor;
+}
+
+auto TextureCube::setFaceImages(TextureCubeImageSet const & images, bool const createMipmap)
+    -> void
+{
+    auto const id = getId();
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_POSITIVE_X, images.right);
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, images.left);
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, images.top);
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, images.bottom);
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, images.front);
+
+    setTextureImageData(id, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, images.back);
+
+    if (createMipmap)
+    {
+        generateMipmap();
+    }
+}
+
 auto TextureCube::generateMipmap()
     -> void
 {
-    glGenerateTextureMipmap(getId());
+    auto const id = getId();
+
+    glGenerateTextureMipmap(id);
 }
 
 auto TextureCube::setLabel(std::string_view const label)
     -> void
 {
-    glObjectLabel(GL_TEXTURE, getId(), static_cast<GLsizei>(label.size()), label.data());
+    auto const id = getId();
+
+    glObjectLabel(GL_TEXTURE, id, static_cast<GLsizei>(label.size()), label.data());
 }
 
 } // namespace glow

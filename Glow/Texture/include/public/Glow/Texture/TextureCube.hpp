@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Glow/Texture/TextureCubeDescriptor.hpp>
-#include <Glow/Texture/TextureWrapping.hpp>
+#include <Glow/Texture/Texture2dDescriptor.hpp>
 
 #include <Glow/GpuResource/GpuResource.hpp>
 
@@ -10,17 +9,16 @@ namespace glow
 
 enum class TextureStorageType;
 
+class TextureCubeImageSet;
+
 class TextureCube
 {
 
 public:
 
-    explicit TextureCube(TextureCubeDescriptor const & descriptor);
+    explicit TextureCube(Texture2dDescriptor const & faceDescriptor);
 
-    TextureCube(
-        TextureCubeDescriptor const & descriptor,
-        bool createMipmap,
-        std::string_view label);
+    TextureCube(Texture2dDescriptor const & faceDescriptor, std::string_view label);
 
     auto getId() const
         -> GpuResource::Id;
@@ -29,6 +27,12 @@ public:
         -> void;
 
     auto unbind() const
+        -> void;
+
+    auto getFaceDescriptor() const
+        -> Texture2dDescriptor const &;
+
+    auto setFaceImages(TextureCubeImageSet const & images, bool createMipmap)
         -> void;
 
     auto generateMipmap()
@@ -40,6 +44,8 @@ public:
 private:
 
     GpuResource resource;
+
+    Texture2dDescriptor faceDescriptor;
 
 };
 

@@ -1,6 +1,7 @@
 #include <Glow/Texture/TextureCubeReader.hpp>
 
 #include <Glow/Texture/TextureCubeFace.hpp>
+#include <Glow/Texture/TextureCubeImageSet.hpp>
 
 #include <Stb/stb_image.h>
 
@@ -70,21 +71,6 @@ auto readImageSetFromFolder(std::filesystem::path const & folderPath)
         readImageFromFile(facePathProvider.getFacePath(TextureCubeFace::back), false)};
 }
 
-auto readTextureDescriptor(
-    std::filesystem::path const & folder,
-    ColorSpace const colorSpace,
-    TextureFiltering const filtering,
-    TextureWrapping const wrapping,
-    int const numOfMipmapLevels)
-    -> TextureCubeDescriptor
-{
-    auto imageSet = readImageSetFromFolder(folder);
-
-    auto const internalFormat = determineInternalFormat(imageSet.front.format, colorSpace);
-
-    return {std::move(imageSet), internalFormat, filtering, wrapping, numOfMipmapLevels};
-}
-
 } // unnamed namespace
 
 TextureCubeReader::TextureCubeReader(std::vector<std::filesystem::path> searchPaths)
@@ -103,14 +89,22 @@ auto TextureCubeReader::read(
 {
     auto const absolutePath = resolveToPathOfExistingFolder(folderPath);
 
-    auto const descriptor = readTextureDescriptor(
-        absolutePath,
-        imageColorSpace,
+    auto const imageSet = readImageSetFromFolder(absolutePath);
+
+    auto const internalFormat = determineInternalFormat(imageSet.front.format, imageColorSpace);
+
+    auto const faceDescriptor = Texture2dDescriptor{
+        imageSet.front.size,
+        internalFormat,
         filtering,
         wrapping,
-        numOfMipmapLevels);
+        numOfMipmapLevels};
     
-    return TextureCube{descriptor, true, label};
+    auto texture = TextureCube{faceDescriptor, label};
+
+    texture.setFaceImages(imageSet, true);
+
+    return texture;
 }
 
 auto TextureCubeReader::getSearchPaths() const

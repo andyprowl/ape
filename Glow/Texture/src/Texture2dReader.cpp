@@ -1,5 +1,6 @@
 #include <Glow/Texture/Texture2dReader.hpp>
 
+#include <Glow/Texture/Image2d.hpp>
 #include <Glow/Texture/TextureCubeFace.hpp>
 
 #include <Stb/stb_image.h>
