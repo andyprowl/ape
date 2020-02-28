@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Glow/Texture/Image2d.hpp>
 #include <Glow/Texture/TextureInternalFormat.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
@@ -19,12 +18,12 @@ class Texture2dDescriptor
 public:
 
     Texture2dDescriptor(
-        Image2d image,
+        basix::Size2d<int> const& size,
         TextureInternalFormat const internalFormat,
         TextureFiltering const filtering,
         TextureWrapping const wrapping,
         int const numOfMipmapLevels = 1)
-        : image{std::move(image)}
+        : size{size}
         , internalFormat{internalFormat}
         , filtering{filtering}
         , wrapping{wrapping}
@@ -34,7 +33,7 @@ public:
 
 public:
 
-    Image2d image;
+    basix::Size2d<int> size;
 
     TextureInternalFormat internalFormat;
 

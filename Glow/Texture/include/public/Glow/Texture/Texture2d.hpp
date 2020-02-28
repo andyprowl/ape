@@ -10,6 +10,7 @@
 namespace glow
 {
 
+class Image2d;
 class TextureSwizzleMask;
 
 class Texture2d
@@ -19,7 +20,7 @@ public:
 
     explicit Texture2d(Texture2dDescriptor const & descriptor);
 
-    Texture2d(Texture2dDescriptor const & descriptor, bool createMipmap, std::string_view label);
+    Texture2d(Texture2dDescriptor const & descriptor, std::string_view label);
 
     auto getId() const
         -> GpuResource::Id;
@@ -30,19 +31,16 @@ public:
     auto unbind() const
         -> void;
 
-    auto getImageFormat() const
-        -> TextureImageFormat;
+    auto getDescriptor() const
+        -> Texture2dDescriptor const &;
 
-    auto getInternalFormat() const
-        -> TextureInternalFormat;
-
-    auto getSize() const
-        -> basix::Size2d<int>;
-
-    auto setSwizzleMask(TextureSwizzleMask const & mask)
+    auto setImage(Image2d const & image, bool createMipmap)
         -> void;
 
     auto generateMipmap()
+        -> void;
+
+    auto setSwizzleMask(TextureSwizzleMask const & mask)
         -> void;
 
     auto setLabel(std::string_view label)
@@ -52,15 +50,7 @@ private:
 
     GpuResource resource;
 
-    basix::Size2d<int> size;
-
-    TextureImageFormat imageFormat;
-
-    TextureInternalFormat internalFormat;
-
-    PixelType pixelType;
-
-    TextureWrapping wrapping;
+    Texture2dDescriptor descriptor;
 
 };
 

@@ -13,27 +13,21 @@ namespace
 auto makeColorBuffer(basix::Size2d<int> const & size)
     -> glow::Texture2d
 {
-    auto image = glow::Image2d{
-        nullptr,
-        size,
-        glow::TextureImageFormat::rgb,
-        glow::PixelType::unsignedByte};
-
     auto const descriptor = glow::Texture2dDescriptor{
-        std::move(image),
+        size,
         glow::TextureInternalFormat::srgb8,
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linear},
         glow::TextureWrapping::clampToEdge};
 
-    return glow::Texture2d{descriptor};
+    return glow::Texture2d{descriptor, "Offscreen surface color buffer"};
 }
 
 auto makeDepthAndStencilBuffer(basix::Size2d<int> const & size)
     -> glow::RenderBufferObject
 {
-    return glow::RenderBufferObject{size};
+    return glow::RenderBufferObject{size, "Offscreen surface render buffer"};
 }
 
 auto makeFrameBufferForTarget(

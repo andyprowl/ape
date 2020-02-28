@@ -21,18 +21,12 @@ auto enableShadowSampling(glow::Texture2d & texture)
 auto makeDepthMapTexture(basix::Size2d<int> const & size, std::string_view const labelPrefix)
     -> glow::Texture2d
 {
-    auto image = glow::Image2d{
-        nullptr,
-        size,
-        glow::TextureImageFormat::depth,
-        glow::PixelType::floatingPoint};
-
     // We do not want to allocate storage for additional mipmap levels for depth textures.
     auto numOfMipmapLevels = 1;
 
     // TODO: Should we use depth32 or depth32f here?
     auto const descriptor = glow::Texture2dDescriptor{
-        std::move(image),
+        size,
         glow::TextureInternalFormat::depth32,
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
@@ -40,7 +34,7 @@ auto makeDepthMapTexture(basix::Size2d<int> const & size, std::string_view const
         glow::TextureWrapping::clampToEdge,
         numOfMipmapLevels};
 
-    auto texture = glow::Texture2d{descriptor, false, std::string{labelPrefix} + ".Texture2d"};
+    auto texture = glow::Texture2d{descriptor, std::string{labelPrefix} + ".Texture2d"};
 
     enableShadowSampling(texture);
 

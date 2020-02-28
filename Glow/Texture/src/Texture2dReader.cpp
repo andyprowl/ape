@@ -7,26 +7,6 @@
 namespace glow
 {
 
-namespace
-{
-
-auto readTextureDescriptor(
-    std::filesystem::path const & path,
-    ColorSpace const colorSpace,
-    TextureFiltering const filtering,
-    TextureWrapping const wrapping,
-    int const numOfMipmapLevels)
-    -> Texture2dDescriptor
-{
-    auto image = readImageFromFile(path, true);
-
-    auto const internalFormat = determineInternalFormat(image.format, colorSpace);
-
-    return {std::move(image), internalFormat, filtering, wrapping, numOfMipmapLevels};
-}
-
-} // unnamed namespace
-
 Texture2dReader::Texture2dReader(std::vector<std::filesystem::path> searchPaths)
     : fileFinder{std::move(searchPaths)}
 {
@@ -43,14 +23,22 @@ auto Texture2dReader::read(
 {
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
-    auto const descriptor = readTextureDescriptor(
-        absolutePath,
-        imageColorSpace,
+    auto const image = readImageFromFile(absolutePath, true);
+
+    auto const internalFormat = determineInternalFormat(image.format, imageColorSpace);
+
+    auto const descriptor = Texture2dDescriptor{
+        image.size,
+        internalFormat,
         filtering,
         wrapping,
-        numOfMipmapLevels);
+        numOfMipmapLevels};
     
-    return Texture2d{descriptor, true, label};
+    auto texture = Texture2d{descriptor, label};
+    
+    texture.setImage(image, true);
+
+    return texture;
 }
 
 auto Texture2dReader::getSearchPaths() const

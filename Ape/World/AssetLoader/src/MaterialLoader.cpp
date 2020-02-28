@@ -50,7 +50,7 @@ auto getTextureColorSpace(aiTextureType const type)
 auto setSwizzleIfGrayscale(glow::Texture2d & texture)
     -> void
 {
-    if (texture.getInternalFormat() != glow::TextureInternalFormat::r8)
+    if (texture.getDescriptor().internalFormat != glow::TextureInternalFormat::r8)
     {
         return;
     }
