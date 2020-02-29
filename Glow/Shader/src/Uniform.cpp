@@ -82,9 +82,11 @@ template<>
 auto Uniform<bool>::set(bool const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform1i(uniformLocation, value);
+    glProgramUniform1i(shaderId, uniformLocation, static_cast<int>(value));
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -110,9 +112,11 @@ template<>
 auto Uniform<float>::set(float const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform1f(uniformLocation, value);
+    glProgramUniform1f(shaderId, uniformLocation, value);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -138,9 +142,11 @@ template<>
 auto Uniform<int>::set(int const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform1i(uniformLocation, value);
+    glProgramUniform1i(shaderId, uniformLocation, value);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -166,9 +172,11 @@ template<>
 auto Uniform<glm::mat3>::set(glm::mat3 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniformMatrix3fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+    glProgramUniformMatrix3fv(shaderId, uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -194,9 +202,11 @@ template<>
 auto Uniform<glm::mat4>::set(glm::mat4 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
+    glProgramUniformMatrix4fv(shaderId, uniformLocation, 1, GL_FALSE, glm::value_ptr(value));
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -222,9 +232,11 @@ template<>
 auto Uniform<glm::vec2>::set(glm::vec2 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform2f(uniformLocation, value.x, value.y);
+    glProgramUniform2f(shaderId, uniformLocation, value.x, value.y);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -250,9 +262,11 @@ template<>
 auto Uniform<glm::ivec2>::set(glm::ivec2 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform2i(uniformLocation, value.x, value.y);
+    glProgramUniform2i(shaderId, uniformLocation, value.x, value.y);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -278,9 +292,11 @@ template<>
 auto Uniform<glm::vec3>::set(glm::vec3 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform3f(uniformLocation, value.x, value.y, value.z);
+    glProgramUniform3f(shaderId, uniformLocation, value.x, value.y, value.z);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -306,9 +322,11 @@ template<>
 auto Uniform<glm::ivec3>::set(glm::ivec3 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform3i(uniformLocation, value.x, value.y, value.z);
+    glProgramUniform3i(shaderId, uniformLocation, value.x, value.y, value.z);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -334,9 +352,11 @@ template<>
 auto Uniform<glm::vec4>::set(glm::vec4 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform4f(uniformLocation, value.x, value.y, value.z, value.w);
+    glProgramUniform4f(shaderId, uniformLocation, value.x, value.y, value.z, value.w);
 
     assert(glGetError() == GL_NO_ERROR);
 }
@@ -362,9 +382,11 @@ template<>
 auto Uniform<glm::ivec4>::set(glm::ivec4 const & value)
     -> void
 {
+    auto const shaderId = getShader().getId();
+
     auto const uniformLocation = getLocation();
 
-    glUniform4i(uniformLocation, value.x, value.y, value.z, value.w);
+    glProgramUniform4i(shaderId, uniformLocation, value.x, value.y, value.z, value.w);
 
     assert(glGetError() == GL_NO_ERROR);
 }
