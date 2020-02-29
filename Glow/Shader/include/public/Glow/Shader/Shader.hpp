@@ -14,14 +14,19 @@ class CouldNotCompileShader : public std::logic_error
 
 public:
 
-    CouldNotCompileShader(std::string compilerMessage, std::string type)
+    CouldNotCompileShader(std::string compilerMessage, std::string type, std::string code)
         : logic_error{
             "Failed to compile " +
             std::move(type) +
             " shader: " +
             std::move(compilerMessage)}
+        , code{std::move(code)}
     {
     }
+
+public:
+
+    std::string code;
 
 };
 

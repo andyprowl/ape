@@ -14,7 +14,7 @@ class MonoDepthMap
 
 public:
 
-    MonoDepthMap(basix::Size2d<int> const & size, int const numOfLayers, std::string_view label);
+    MonoDepthMap(basix::Size2d<int> const & size, int numOfLayers, std::string_view label);
 
     auto getTexture() const
         -> glow::Texture2dArray const &;

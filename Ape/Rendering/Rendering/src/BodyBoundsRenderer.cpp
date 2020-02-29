@@ -95,7 +95,7 @@ auto BodyBoundsRenderer::render(BodySetView const & bodies, Camera const & camer
 {
     glDisable(GL_CULL_FACE);
 
-    auto const shaderBinder = bind(*shader);
+    auto const shaderBinder = glow::bind(*shader);
 
     for (auto const & body : bodies)
     {

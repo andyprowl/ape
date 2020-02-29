@@ -59,13 +59,14 @@ private:
         Camera const & viewerCamera,
         std::vector<PointLight> const & lights,
         std::vector<PointLightView> const & lightViews,
-        std::vector<OmniDepthMap> & depthMaps) const
+        OmniDepthMap & depthMap) const
         -> void;
 
     auto renderLightDepth(
         BodySetView const & bodies,
         Camera const & viewerCamera,
         PointLightView const & lightView,
+        int lightIndex,
         OmniDepthMap & target) const
         -> void;
 

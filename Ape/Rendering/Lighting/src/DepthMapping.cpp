@@ -7,31 +7,12 @@
 namespace ape
 {
 
-namespace
-{
-
-auto makePointLightDepthMapping(
-    std::vector<PointLight> const & lights,
-    basix::Size2d<int> const & mapSize)
-    -> std::vector<OmniDepthMap>
-{
-    return basix::transform(lights, [&mapSize] (PointLight const & light)
-    {
-        return OmniDepthMap{mapSize, std::string{light.getName()} + ".DepthMap"};
-    });
-}
-
-} // unnamed namespace
-
 DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size2d<int> const & mapSize)
     : lightSystem{&lightSystem}
     , mapSize{mapSize}
-    , pointMapping{makePointLightDepthMapping(lightSystem.point, mapSize)}
-    , spotMapping{mapSize, static_cast<int>(lightSystem.spot.size()), "DepthMap.Spot"}
-    , directionalMapping{
-        mapSize, 
-        static_cast<int>(lightSystem.directional.size()),
-        "DepthMap.Directional"}
+    , point{mapSize, static_cast<int>(lightSystem.point.size()), "DepthMap.Point"}
+    , spot{mapSize, static_cast<int>(lightSystem.spot.size()), "DepthMap.Spot"}
+    , directional{mapSize, static_cast<int>(lightSystem.directional.size()), "DepthMap.Directional"}
 {
 }
 
@@ -42,39 +23,39 @@ auto DepthMapping::getMapSize() const
 }
 
 auto DepthMapping::getPointMapping()
-    -> std::vector<OmniDepthMap> &
+    -> OmniDepthMap &
 {
-    return pointMapping;
+    return point;
 }
 
 auto DepthMapping::getPointMapping() const
-    -> std::vector<OmniDepthMap> const &
+    -> OmniDepthMap const &
 {
-    return pointMapping;
+    return point;
 }
 
 auto DepthMapping::getSpotMapping()
     -> MonoDepthMap &
 {
-    return spotMapping;
+    return spot;
 }
 
 auto DepthMapping::getSpotMapping() const
     -> MonoDepthMap const &
 {
-    return spotMapping;
+    return spot;
 }
 
 auto DepthMapping::getDirectionalMapping()
     -> MonoDepthMap &
 {
-    return directionalMapping;
+    return directional;
 }
 
 auto DepthMapping::getDirectionalMapping() const
     -> MonoDepthMap const &
 {
-    return directionalMapping;
+    return directional;
 }
 
 } // namespace ape

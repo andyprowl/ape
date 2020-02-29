@@ -21,10 +21,10 @@ public:
         -> basix::Size2d<int>;
 
     auto getPointMapping()
-        -> std::vector<OmniDepthMap> &;
+        -> OmniDepthMap &;
 
     auto getPointMapping() const
-        -> std::vector<OmniDepthMap> const &;
+        -> OmniDepthMap const &;
 
     auto getSpotMapping() const
         -> MonoDepthMap const &;
@@ -44,11 +44,11 @@ private:
 
     basix::Size2d<int> mapSize;
 
-    std::vector<OmniDepthMap> pointMapping;
+    OmniDepthMap point;
 
-    MonoDepthMap spotMapping;
+    MonoDepthMap spot;
 
-    MonoDepthMap directionalMapping;
+    MonoDepthMap directional;
 
 };
 

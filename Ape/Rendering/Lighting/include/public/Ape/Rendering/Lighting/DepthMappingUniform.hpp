@@ -5,7 +5,7 @@
 #include <Glow/GpuResource/ScopedBinder.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
 #include <Glow/Shader/Texture2dArrayUniform.hpp>
-#include <Glow/Shader/TextureCubeUniform.hpp>
+#include <Glow/Shader/TextureCubeArrayUniform.hpp>
 #include <Glow/Shader/UniformArray.hpp>
 
 #include <string>
@@ -31,7 +31,6 @@ public:
         : point{program, prefix + ".point"}
         , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
-        , maxNumOfPointLights{15}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
         bindSamplers(program);
@@ -57,7 +56,7 @@ public:
 
 public:
 
-    UniformArray<Uniform<TextureCube>> point;
+    Uniform<TextureCubeArray> point;
 
     Uniform<Texture2dArray> spot;
 
@@ -72,10 +71,7 @@ private:
 
         auto index = firstDepthMapUnit;
 
-        for (auto i = 0; i < maxNumOfPointLights; ++i)
-        {
-            point[i].setTextureUnit(index++);
-        }
+        point.setTextureUnit(index++);
 
         spot.setTextureUnit(index++);
 
@@ -85,7 +81,11 @@ private:
     auto setPointMapping(ape::DepthMapping const & mapping)
         -> void
     {
-        setTextures(mapping.getPointMapping(), point);
+        auto & pointMapping = mapping.getPointMapping();
+
+        auto & texture = pointMapping.getTexture();
+
+        point.set(texture);
     }
 
     auto setSpotMapping(ape::DepthMapping const & mapping)
@@ -108,23 +108,7 @@ private:
         directional.set(texture);
     }
 
-    template<typename DepthMapType, typename TextureType>
-    auto setTextures(
-        std::vector<DepthMapType> const & source,
-        UniformArray<Uniform<TextureType>> & target)
-        -> void
-    {
-        for (auto i = 0; i < static_cast<int>(source.size()); ++i)
-        {
-            auto const & texture = source[i].getTexture();
-
-            target[i].set(texture);
-        }
-    }
-
 private:
-
-    int maxNumOfPointLights;
 
     int firstDepthMapUnit;
 

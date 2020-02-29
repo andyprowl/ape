@@ -49,13 +49,10 @@ private:
         BodySetView const & bodies,
         std::vector<PointLight> const & lights,
         std::vector<PointLightView> const & lightViews,
-        std::vector<OmniDepthMap> & depthMaps) const
+        OmniDepthMap & depthMap) const
         -> void;
 
-    auto renderLightDepth(
-        BodySetView const & bodies,
-        PointLightView const & lightView,
-        OmniDepthMap & target) const
+    auto renderLightDepth(BodySetView const & bodies, PointLightView const & lightView) const
         -> void;
 
     auto renderBody(Body const & body, PointLightView const & lightView) const

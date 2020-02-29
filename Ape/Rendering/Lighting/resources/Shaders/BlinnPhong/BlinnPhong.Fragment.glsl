@@ -165,7 +165,8 @@ float calculateOmnidirectionalShadowBias(const vec3 lightToVertex)
 float calculateOmnidirectionalShadowFactor(
     const bool isCastingShadow,
     const vec3 lightPosition,
-    const samplerCubeShadow depthMap)
+    const samplerCubeArrayShadow depthMap,
+    const int layer)
 {
     if (!isCastingShadow)
     {
@@ -185,9 +186,9 @@ float calculateOmnidirectionalShadowFactor(
 
     const float bias = calculateOmnidirectionalShadowBias(lightToVertex);
 
-    const vec4 coords = vec4(lightToVertex, currentDepthNormalized - bias);
+    const vec4 coords = vec4(lightToVertex, float(layer));
 
-    return texture(depthMap, coords).r;
+    return texture(depthMap, coords, currentDepthNormalized - bias).r;
 }
 
 vec3 computeAmbientLight(const LightColor color)
@@ -298,7 +299,8 @@ vec3 computePointLighting()
         const float shadow = calculateOmnidirectionalShadowFactor(
             light.isCastingShadow,
             light.position,
-            depthMapping.point[i]);
+            depthMapping.point,
+            i);
 
         if (shadow > 0.0)
         {

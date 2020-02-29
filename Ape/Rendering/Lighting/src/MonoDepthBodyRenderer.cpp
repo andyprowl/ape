@@ -59,7 +59,7 @@ auto MonoDepthBodyRenderer::render(
 {
     auto const profiling = profiler->startTimingCpuGpuTask("Monodirectional shadow mapping");
 
-    auto const shaderBinder = bind(*shader);
+    auto const shaderBinder = glow::bind(*shader);
 
     renderSpotLightSetDepth(bodies, viewerCamera, lightSystemView, target);
 
@@ -171,7 +171,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
         return;
     }
 
-    auto const binder = bind(target);
+    auto const binder = glow::bind(target);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

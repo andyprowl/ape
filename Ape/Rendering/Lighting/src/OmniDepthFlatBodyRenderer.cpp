@@ -82,7 +82,7 @@ auto OmniDepthFlatBodyRenderer::render(
 {
     auto const profiling = profiler->startTimingCpuGpuTask("Omnidirectional flat shadow mapping");
 
-    auto const shaderBinder = bind(*shader);
+    auto const shaderBinder = glow::bind(*shader);
     
     renderLightSetDepth(
         bodies,
@@ -115,7 +115,7 @@ auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
     Camera const & viewerCamera,
     std::vector<PointLight> const & lights,
     std::vector<PointLightView> const & lightViews,
-    std::vector<OmniDepthMap> & depthMaps) const
+    OmniDepthMap & depthMap) const
     -> void
 {
     for (auto i = 0u; i < lights.size(); ++i)
@@ -129,9 +129,7 @@ auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
 
         auto const & lightView = lightViews[i];
 
-        auto & depthMap = depthMaps[i];
-
-        renderLightDepth(bodies, viewerCamera, lightView, depthMap);
+        renderLightDepth(bodies, viewerCamera, lightView, i, depthMap);
     }
 }
 
@@ -139,20 +137,17 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     PointLightView const & lightView,
+    int const lightIndex,
     OmniDepthMap & target) const
     -> void
 {
-    auto & frameBuffer = target.getFrameBuffer();
-
-    auto & depthTexture = target.getTexture();
-
     auto const & lightCameras = lightView.getFaceCameras();
-
-    auto const binder = bind(frameBuffer);
 
     for (auto const face : glow::getCubeTextureFaces())
     {
-        frameBuffer.attach(depthTexture, face, glow::FrameBufferAttachment::depth);
+        auto const & frameBuffer = target.getFrameBuffer(lightIndex, face);
+
+        auto const binder = glow::bind(frameBuffer);
 
         auto const & faceCamera = getFaceCamera(lightCameras, face);
 

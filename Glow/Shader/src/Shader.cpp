@@ -55,7 +55,10 @@ auto convertFromOpenGLShaderType(GLenum const type)
     return Shader::Type::unknown;
 }
 
-auto checkShaderCompilationOutcome(int const shaderId, Shader::Type const shaderType)
+auto checkShaderCompilationOutcome(
+    int const shaderId,
+    Shader::Type const shaderType,
+    std::string_view const sourceCode)
     -> void
 {
     auto success = int{};
@@ -71,7 +74,10 @@ auto checkShaderCompilationOutcome(int const shaderId, Shader::Type const shader
 
     glGetShaderInfoLog(shaderId, sizeof(infoLog), nullptr, infoLog.data());
 
-    throw CouldNotCompileShader{infoLog.data(), shaderTypeFormatMap.at(shaderType)};
+    throw CouldNotCompileShader{
+        infoLog.data(),
+        shaderTypeFormatMap.at(shaderType),
+        std::string{sourceCode}};
 }
 
 } // unnamed namespace
@@ -93,7 +99,7 @@ auto Shader::compile(std::string_view sourceCode)
 
     glCompileShader(id);
 
-    checkShaderCompilationOutcome(id, getType());
+    checkShaderCompilationOutcome(id, getType(), sourceCode);
 
     assert(getSourceCode() == sourceCode);
 }

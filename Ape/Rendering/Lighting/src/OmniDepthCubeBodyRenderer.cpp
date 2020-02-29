@@ -55,7 +55,7 @@ auto OmniDepthCubeBodyRenderer::render(
 {
     auto const profiling = profiler->startTimingCpuGpuTask("Omnidirectional cube shadow mapping");
 
-    auto const shaderBinder = bind(*shader);
+    auto const shaderBinder = glow::bind(*shader);
     
     renderLightSetDepth(
         bodies,
@@ -74,7 +74,7 @@ auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     std::vector<PointLight> const & lights,
     std::vector<PointLightView> const & lightViews,
-    std::vector<OmniDepthMap> & depthMaps) const
+    OmniDepthMap & depthMap) const
     -> void
 {
     for (auto i = 0u; i < lights.size(); ++i)
@@ -88,26 +88,22 @@ auto OmniDepthCubeBodyRenderer::renderLightSetDepth(
 
         auto const & lightView = lightViews[i];
 
-        auto & depthMap = depthMaps[i];
+        // TODO: IMPORTANT! THIS IS INCORRECT AND ONLY DONE BECAUSE WE NEED IT TO COMPILE.
+        // THE CORRECT SOLUTION IS TO HAVE A VERSION OF OmniDepthMap ADAPTED TO THE LOGIC OF THIS
+        // RENDERING TECHNIQUE (i.e. on FBO per cubemap array layer rather than one FBO per face).
+        auto & frameBuffer = depthMap.getFrameBuffers()[i];
 
-        renderLightDepth(bodies, lightView, depthMap);
+        auto const binder = glow::bind(frameBuffer);
+
+        renderLightDepth(bodies, lightView);
     }
 }
 
 auto OmniDepthCubeBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
-    PointLightView const & lightView,
-    OmniDepthMap & target) const
+    PointLightView const & lightView) const
     -> void
 {
-    auto & frameBuffer = target.getFrameBuffer();
-
-    auto & depthTexture = target.getTexture();
-
-    auto const binder = bind(frameBuffer);
-
-    frameBuffer.attach(depthTexture, glow::FrameBufferAttachment::depth);
-
     glClear(GL_DEPTH_BUFFER_BIT);
 
     for (auto const & body : bodies)

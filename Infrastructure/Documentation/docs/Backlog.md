@@ -1,7 +1,12 @@
 - Extract Rendering::ShapeDrawer out of World::Shape, move the contents of World::Shape into Model
-- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
+- Use glPushDebugGroup/glPopDebugGroup to mark rendering steps
+- Use DSA for setting uniforms (glUniformProgramXX instead of glUniformXX)
+- Separate shadow handling logic of Blinn-Phong fragment shader to make it a plug-in
+ - Create a separate fragment shader that gets linked in with a generic API
+ - Allow switching between shadow mapping techniques (e.g. flat/cube for omnidirection lights) at
+   run-time by defining abstract interfaces
+ - Try GS + instancing approach to generate all shadow maps of the same kind in a single pass
 - Optimization hints
- - Use texture compression
  - Define an additional drawer that puts EBO and VBO in a single buffer (requires design change in
    Glow, currently EBO/VBO distinction is enforced at type system level)
  - Skip point light in B-P shader if point is out of reach (determine radius based on attenuation)

@@ -200,7 +200,7 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
 
         renderDepthMapping();
 
-        auto const frameBufferBinder = bind(offscreenSurface.getFrameBuffer());
+        auto const binder = glow::bind(offscreenSurface.getFrameBuffer());
 
         renderSceneBodies();
 

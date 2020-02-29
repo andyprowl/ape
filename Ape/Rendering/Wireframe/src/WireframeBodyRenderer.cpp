@@ -27,11 +27,10 @@ WireframeBodyRenderer::WireframeBodyRenderer(
 {
 }
 
-
 auto WireframeBodyRenderer::render(BodyRange const & bodies, Camera const & camera) const
     -> void
 {
-    auto const shaderBinder = bind(*shader);
+    auto const binder = glow::bind(*shader);
 
     setupLineStyleUniforms();
 

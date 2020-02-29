@@ -170,7 +170,7 @@ struct Fog
 struct DepthMapping
 {
 
-    samplerCubeShadow point[MAX_NUM_OF_POINT_LIGHTS];
+    samplerCubeArrayShadow point;
 
     sampler2DArrayShadow spot;
 

@@ -28,7 +28,7 @@ auto SkyboxRenderer::render(Camera const & camera, Fog const & fog) const
         return;
     }
 
-    auto const shaderBinder = bind(*shader);
+    auto const binder = glow::bind(*shader);
 
     setupUniforms(camera, fog, *skybox);
 

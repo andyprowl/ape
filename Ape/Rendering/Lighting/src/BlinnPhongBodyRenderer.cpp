@@ -64,7 +64,7 @@ auto BlinnPhongBodyRenderer::render(
     ShadowMapping const & shadowMapping) const
     -> void
 {
-    auto const shaderBinder = bind(*shader);
+    auto const shaderBinder = glow::bind(*shader);
 
     setupInvariantUniforms(camera, fog, shadowMapping);
 
