@@ -1,12 +1,14 @@
 - Extract Rendering::ShapeDrawer out of World::Shape, move the contents of World::Shape into Model
+- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Optimization hints
- - Let Blinn-Phong fragment shader only receive lights that are turned on
-  - This way we do not need to perform the conditional on the GPU, which is a performance issue
- - Skip point light if point is out of reach (determine radius based on attenuation)
+ - Use texture compression
+ - Define an additional drawer that puts EBO and VBO in a single buffer (requires design change in
+   Glow, currently EBO/VBO distinction is enforced at type system level)
+ - Skip point light in B-P shader if point is out of reach (determine radius based on attenuation)
  - Use instancing for drawing several instances at once (e.g. ground/wall tiles)
+ - Use indirect rendering for issuing all drawing commands into a single batch
  - Do not regenerate shadow maps at every frame, only when the light moves or a shadow caster moves
    within the light's frustum/range
- - Store all materials in a single UBO and pass in only the material index to reference material
  - Use samplers for linear atan() (exp()?) interpolation instead of relying on computation in shader
  - Replace expensive fragment shader ops (e.g. pow()?) with sampling from 1D texture
 - Troubleshoot issue with Sponza model, likely due to normal mapping
@@ -35,8 +37,8 @@
     - Actually, try rendering all the objects without culling them and regenerate the shadow maps
       only when the lights (not camera) move
         - This won't actually work because we need different resolutions based on camera position
-- Try glPushDebugGroup/glPopDebugGroup to mark rendering steps
 - Implement occlusion culling
+- Implement bloom
 - Implement outlining by pushing vertices in the direction of normals
 - Is it correct that DepthBodyRenderer sets viewport while other renderers do not?
     - The reason for this is that depth body renderer has to bind framebuffer targets

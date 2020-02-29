@@ -6,6 +6,7 @@
 #include <Glow/Texture/Texture2d.hpp>
 #include <Glow/Texture/Texture2dArray.hpp>
 #include <Glow/Texture/TextureCube.hpp>
+#include <Glow/Texture/TextureCubeArray.hpp>
 #include <Glow/Texture/TextureCubeFace.hpp>
 
 #include <glad/glad.h>
@@ -171,13 +172,52 @@ auto FrameBufferObject::attach(
 
     auto const glAttachment = convertToOpenGLAttachment(attachment);
 
-    auto const glFace = static_cast<int>(face);
+    auto const layer = static_cast<int>(face);
 
     auto const textureId = texture.getId();
 
     auto const mipmapLevel = 0;
 
-    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, glFace);
+    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, layer);
+}
+
+auto FrameBufferObject::attach(
+    TextureCubeArray const & texture,
+    int const layer,
+    FrameBufferAttachment attachment)
+    -> void
+{
+    auto const framebufferId = getId();
+
+    auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const layerFace = layer * 6;
+
+    auto const textureId = texture.getId();
+
+    auto const mipmapLevel = 0;
+
+    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, layerFace);
+}
+
+auto FrameBufferObject::attach(
+    TextureCubeArray const & texture,
+    int const layer,
+    TextureCubeFace face,
+    FrameBufferAttachment attachment)
+    -> void
+{
+    auto const framebufferId = getId();
+
+    auto const glAttachment = convertToOpenGLAttachment(attachment);
+
+    auto const layerFace = layer * 6 + static_cast<int>(face);
+
+    auto const textureId = texture.getId();
+
+    auto const mipmapLevel = 0;
+
+    glNamedFramebufferTextureLayer(framebufferId, glAttachment, textureId, mipmapLevel, layerFace);
 }
 
 auto FrameBufferObject::attach(
@@ -199,13 +239,17 @@ auto FrameBufferObject::attach(
 auto FrameBufferObject::resetReadTarget()
     -> void
 {
-    glNamedFramebufferReadBuffer(getId(), GL_NONE);
+    auto const id = getId();
+
+    glNamedFramebufferReadBuffer(id, GL_NONE);
 }
 
 auto FrameBufferObject::resetDrawTarget()
     -> void
 {
-    glNamedFramebufferReadBuffer(getId(), GL_NONE);
+    auto const id = getId();
+
+    glNamedFramebufferReadBuffer(id, GL_NONE);
 }
 
 auto FrameBufferObject::setLabel(std::string_view const label)

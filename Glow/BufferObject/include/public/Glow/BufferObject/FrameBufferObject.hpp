@@ -14,6 +14,7 @@ class RenderBufferObject;
 class Texture2d;
 class Texture2dArray;
 class TextureCube;
+class TextureCubeArray;
 
 class FrameBufferObject : public BufferObject
 {
@@ -48,6 +49,16 @@ public:
 
     auto attach(
         TextureCube const & texture,
+        TextureCubeFace face,
+        FrameBufferAttachment attachment)
+        -> void;
+
+    auto attach(TextureCubeArray const & texture, int layer, FrameBufferAttachment attachment)
+        -> void;
+
+    auto attach(
+        TextureCubeArray const & texture,
+        int layer,
         TextureCubeFace face,
         FrameBufferAttachment attachment)
         -> void;

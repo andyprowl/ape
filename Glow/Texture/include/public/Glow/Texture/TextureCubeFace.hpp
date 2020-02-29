@@ -9,7 +9,7 @@ using GLenum = unsigned int;
 
 enum class TextureCubeFace
 {
-    right,
+    right = 0, // ATTENTION: Enumeration values are currently relied upon.
     left,
     top,
     bottom,
