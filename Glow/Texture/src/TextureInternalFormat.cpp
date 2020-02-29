@@ -28,17 +28,11 @@ auto const internalFormatMap = std::unordered_map<TextureInternalFormat, GLenum>
     {TextureInternalFormat::depth32, GL_DEPTH_COMPONENT32},
     {TextureInternalFormat::depth32f, GL_DEPTH_COMPONENT32F},
     {TextureInternalFormat::depth24Stencil8, GL_DEPTH24_STENCIL8},
-    {TextureInternalFormat::depth32fStencil8, GL_DEPTH32F_STENCIL8}};
-
-auto const linearSpaceFormatMap = std::unordered_map<TextureImageFormat, TextureInternalFormat>{
-    {TextureImageFormat::r, TextureInternalFormat::r8},
-    {TextureImageFormat::rgb, TextureInternalFormat::rgb8},
-    {TextureImageFormat::rgba, TextureInternalFormat::rgba8}};
-
-auto const gammaSpaceFormatMap = std::unordered_map<TextureImageFormat, TextureInternalFormat>{
-    {TextureImageFormat::r, TextureInternalFormat::r8},
-    {TextureImageFormat::rgb, TextureInternalFormat::srgb8},
-    {TextureImageFormat::rgba, TextureInternalFormat::srgba8}};
+    {TextureInternalFormat::depth32fStencil8, GL_DEPTH32F_STENCIL8},
+    {TextureInternalFormat::compressedRgbaBptcUNorm, GL_COMPRESSED_RGBA_BPTC_UNORM},
+    {TextureInternalFormat::compressedSrgbaBptcUNorm, GL_COMPRESSED_SRGB_ALPHA_BPTC_UNORM},
+    {TextureInternalFormat::compressedRgbBptcSignedFloat, GL_COMPRESSED_RGB_BPTC_SIGNED_FLOAT},
+    {TextureInternalFormat::compressedRgbBptcUnsignedFloat, GL_COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT}};
 
 } // unnamed namespace
 
@@ -71,21 +65,6 @@ auto convertFromOpenGLInternalFormat(GLenum const format)
     assert(false);
 
     return TextureInternalFormat::unknown;
-}
-
-auto determineInternalFormat(TextureImageFormat const format, ColorSpace const imageColorSpace)
-    -> TextureInternalFormat
-{
-    if (imageColorSpace == ColorSpace::linear)
-    {
-        return linearSpaceFormatMap.at(format);
-    }
-    else
-    {
-        assert(imageColorSpace == ColorSpace::perceptual);
-
-        return gammaSpaceFormatMap.at(format);
-    }
 }
 
 } // namespace glow

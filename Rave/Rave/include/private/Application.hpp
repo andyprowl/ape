@@ -12,7 +12,7 @@ public:
 
     Application();
 
-    Application(bool enableDebugOutput, bool excludeSponza);
+    Application(bool enableDebugOutput, bool excludeSponza, bool enableTextureCompression);
 
     Application(Application const & rhs) = delete;
 

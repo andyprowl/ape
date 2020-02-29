@@ -13,10 +13,13 @@ class Application::Impl
 
 public:
 
-    Impl(bool const enableDebugOutput, bool const excludeSponza)
+    Impl(
+        bool const enableDebugOutput,
+        bool const excludeSponza,
+        bool const enableTextureCompression)
         : gateway{4, 5, enableDebugOutput}
         , window{gateway.createWindow("Rave", basix::Size2d<int>{1920, 1080})}
-        , engineFactory{excludeSponza}
+        , engineFactory{excludeSponza, enableTextureCompression}
         , engine{engineFactory.makeEngine<ape::GlfwEngine>(window)}
     {
     }
@@ -54,12 +57,15 @@ private:
 };
 
 Application::Application()
-    : Application{false, false}
+    : Application{false, false, false}
 {
 }
 
-Application::Application(bool const enableDebugOutput, bool const excludeSponza)
-    : impl{std::make_unique<Impl>(enableDebugOutput, excludeSponza)}
+Application::Application(
+    bool const enableDebugOutput,
+    bool const excludeSponza,
+    bool const enableTextureCompression)
+    : impl{std::make_unique<Impl>(enableDebugOutput, excludeSponza, enableTextureCompression)}
 {
 }
 

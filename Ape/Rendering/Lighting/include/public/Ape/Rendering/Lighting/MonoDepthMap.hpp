@@ -1,9 +1,10 @@
 #pragma once
 
 #include <Glow/BufferObject/FrameBufferObject.hpp>
-#include <Glow/Texture/Texture2d.hpp>
+#include <Glow/Texture/Texture2dArray.hpp>
 
 #include <string_view>
+#include <vector>
 
 namespace ape
 {
@@ -13,24 +14,22 @@ class MonoDepthMap
 
 public:
 
-    explicit MonoDepthMap(basix::Size2d<int> const & size);
-
-    MonoDepthMap(basix::Size2d<int> const & size, std::string_view label);
+    MonoDepthMap(basix::Size2d<int> const & size, int const numOfLayers, std::string_view label);
 
     auto getTexture() const
-        -> glow::Texture2d const &;
+        -> glow::Texture2dArray const &;
 
-    auto getFrameBuffer() const
-        -> glow::FrameBufferObject const &;
+    auto getFrameBuffers() const
+        -> std::vector<glow::FrameBufferObject> const &;
 
     auto getSize() const
         -> basix::Size2d<int>;
 
 private:
 
-    glow::Texture2d texture;
+    glow::Texture2dArray texture;
 
-    glow::FrameBufferObject frameBuffer;
+    std::vector<glow::FrameBufferObject> frameBuffers;
 
     basix::Size2d<int> size;
 

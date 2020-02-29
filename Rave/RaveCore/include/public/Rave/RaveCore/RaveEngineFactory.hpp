@@ -19,7 +19,7 @@ class RaveEngineFactory
 
 public:
 
-    explicit RaveEngineFactory(bool const excludeSponza);
+    RaveEngineFactory(bool excludeSponza, bool enableTextureCompression);
 
     RaveEngineFactory(RaveEngineFactory && rhs) noexcept;
 

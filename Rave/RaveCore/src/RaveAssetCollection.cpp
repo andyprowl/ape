@@ -48,6 +48,8 @@ class StatefulSimpleAssetBuilder
 
 public:
 
+    explicit StatefulSimpleAssetBuilder(bool enableTextureCompression);
+
     auto build()
         -> ape::AssetRepository;
 
@@ -104,7 +106,9 @@ private:
     auto createDataTextureFromLocalFile(std::string filename)
         -> glow::Texture2d &;
 
-    auto createTextureFromLocalFile(std::string filename, glow::ColorSpace colorSpace)
+    auto createTextureFromLocalFile(
+        std::string filename,
+        glow::TextureInternalFormat internalFormat)
         -> glow::Texture2d &;
 
 private:
@@ -113,7 +117,14 @@ private:
 
     glow::Texture2dReader textureReader;
 
+    bool enableTextureCompression;
+
 };
+
+StatefulSimpleAssetBuilder::StatefulSimpleAssetBuilder(bool const enableTextureCompression)
+    : enableTextureCompression{enableTextureCompression}
+{
+}
 
 auto StatefulSimpleAssetBuilder::build()
     -> ape::AssetRepository
@@ -348,18 +359,26 @@ auto StatefulSimpleAssetBuilder::createTrivialModelFromMesh(ape::Mesh const & me
 auto StatefulSimpleAssetBuilder::createColorTextureFromLocalFile(std::string filename)
     -> glow::Texture2d &
 {
-    return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::perceptual);
+    auto const format = enableTextureCompression
+        ? glow::TextureInternalFormat::compressedSrgbaBptcUNorm
+        : glow::TextureInternalFormat::srgb8;
+
+    return createTextureFromLocalFile(std::move(filename), format);
 }
 
 auto StatefulSimpleAssetBuilder::createDataTextureFromLocalFile(std::string filename)
     -> glow::Texture2d &
 {
-    return createTextureFromLocalFile(std::move(filename), glow::ColorSpace::linear);
+    auto const format = enableTextureCompression
+        ? glow::TextureInternalFormat::compressedRgbaBptcUNorm
+        : glow::TextureInternalFormat::rgb8;
+
+    return createTextureFromLocalFile(std::move(filename), format);
 }
 
 auto StatefulSimpleAssetBuilder::createTextureFromLocalFile(
     std::string filename,
-    glow::ColorSpace const colorSpace)
+    glow::TextureInternalFormat const internalFormat)
     -> glow::Texture2d &
 {
     auto const filepath = std::filesystem::path{resourceFolder} / "textures" / filename;
@@ -369,7 +388,7 @@ auto StatefulSimpleAssetBuilder::createTextureFromLocalFile(
 
     auto texture = textureReader.read(
         filepath,
-        colorSpace,
+        internalFormat,
         glow::TextureFiltering{
             glow::TextureMagnificationFilter::linear,
             glow::TextureMinificationFilter::linearMipmapLinear},
@@ -382,7 +401,11 @@ auto StatefulSimpleAssetBuilder::createTextureFromLocalFile(
 
 } // unnamed namespace
 
-RaveAssetCollection::RaveAssetCollection(bool excludeSponza)
+RaveAssetCollection::RaveAssetCollection(
+    bool const excludeSponza,
+    bool const enableTextureCompression)
+    : enableTextureCompression{enableTextureCompression}
+    , assetLoader{enableTextureCompression}
 {
     createSimpleAssets();
 
@@ -494,7 +517,7 @@ auto RaveAssetCollection::getSponzaModel()
 
 void RaveAssetCollection::createSimpleAssets()
 {
-    auto builder = StatefulSimpleAssetBuilder{};
+    auto builder = StatefulSimpleAssetBuilder{enableTextureCompression};
 
     auto repository = builder.build();
 
@@ -505,7 +528,7 @@ void RaveAssetCollection::loadAssets(std::filesystem::path const & path, std::st
 {
     auto const resolvedPath = resolveModelFilepath(path);
 
-    auto repository = loader.load(resolvedPath, modelName);
+    auto repository = assetLoader.load(resolvedPath, modelName);
 
     addAssets(std::move(modelName), std::move(repository));
 }

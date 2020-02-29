@@ -36,7 +36,7 @@ auto makeOmniDepthMapTexture(
         glow::TextureWrapping::clampToEdge,
         numOfMipmapLevels};
 
-    auto texture = glow::TextureCube{faceeDescriptor, std::string{labelPrefix} + ".Texture2d"};
+    auto texture = glow::TextureCube{faceeDescriptor, std::string{labelPrefix} + ".Texture"};
 
     enableShadowSampling(texture);
 

@@ -15,6 +15,11 @@
 namespace ape
 {
 
+AssetLoader::AssetLoader(bool const enableTextureCompression)
+    : enableTextureCompression{enableTextureCompression}
+{
+}
+
 auto AssetLoader::load(std::filesystem::path const & path, std::string modelName) const
     -> AssetRepository
 {
@@ -84,7 +89,7 @@ auto AssetLoader::importMaterials(
     AssetRepository & target) const
     -> void
 {
-    auto const loader = MaterialLoader{target, textureCache};
+    auto const loader = MaterialLoader{target, textureCache, enableTextureCompression};
 
     loader.load(scene, searchPath);
 }

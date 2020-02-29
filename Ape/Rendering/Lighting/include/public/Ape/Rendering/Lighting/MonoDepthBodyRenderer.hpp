@@ -72,7 +72,7 @@ private:
         Camera const & viewerCamera,
         std::vector<LightType> const & lights,
         std::vector<LightViewType> const & lightViews,
-        std::vector<MonoDepthMap> & depthMaps) const
+        MonoDepthMap const & depthMaps) const
         -> void;
 
     template<typename LightViewType>
@@ -80,7 +80,7 @@ private:
         BodySetView const & bodies,
         Camera const & viewerCamera,
         LightViewType const & lightView,
-        MonoDepthMap & target) const
+        glow::FrameBufferObject const & target) const
         -> void;
 
     auto renderBody(

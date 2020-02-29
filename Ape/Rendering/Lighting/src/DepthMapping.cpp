@@ -21,26 +21,17 @@ auto makePointLightDepthMapping(
     });
 }
 
-template<typename LightContainer>
-auto makeOrientedLightDepthMapping(
-    LightContainer const & lights,
-    basix::Size2d<int> const & mapSize)
-    -> std::vector<MonoDepthMap>
-{
-    return basix::transform(lights, [&mapSize] (auto const & light)
-    {
-        return MonoDepthMap{mapSize, std::string{light.getName()} + ".DepthMap"};
-    });
-}
-
 } // unnamed namespace
 
 DepthMapping::DepthMapping(LightSystem const & lightSystem, basix::Size2d<int> const & mapSize)
     : lightSystem{&lightSystem}
     , mapSize{mapSize}
     , pointMapping{makePointLightDepthMapping(lightSystem.point, mapSize)}
-    , spotMapping{makeOrientedLightDepthMapping(lightSystem.spot, mapSize)}
-    , directionalMapping{makeOrientedLightDepthMapping(lightSystem.directional, mapSize)}
+    , spotMapping{mapSize, static_cast<int>(lightSystem.spot.size()), "DepthMap.Spot"}
+    , directionalMapping{
+        mapSize, 
+        static_cast<int>(lightSystem.directional.size()),
+        "DepthMap.Directional"}
 {
 }
 
@@ -63,25 +54,25 @@ auto DepthMapping::getPointMapping() const
 }
 
 auto DepthMapping::getSpotMapping()
-    -> std::vector<MonoDepthMap> &
+    -> MonoDepthMap &
 {
     return spotMapping;
 }
 
 auto DepthMapping::getSpotMapping() const
-    -> std::vector<MonoDepthMap> const &
+    -> MonoDepthMap const &
 {
     return spotMapping;
 }
 
 auto DepthMapping::getDirectionalMapping()
-    -> std::vector<MonoDepthMap> &
+    -> MonoDepthMap &
 {
     return directionalMapping;
 }
 
 auto DepthMapping::getDirectionalMapping() const
-    -> std::vector<MonoDepthMap> const &
+    -> MonoDepthMap const &
 {
     return directionalMapping;
 }

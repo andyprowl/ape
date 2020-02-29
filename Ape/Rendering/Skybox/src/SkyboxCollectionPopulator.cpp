@@ -50,7 +50,7 @@ auto SkyboxCollectionPopulator::addAllSkyboxesInFolder(
 
         auto skybox = textureReader.read(
             folder,
-            glow::ColorSpace::perceptual,
+            glow::TextureInternalFormat::srgb8,
             glow::TextureFiltering{
                 glow::TextureMagnificationFilter::linear,
                 glow::TextureMinificationFilter::linear},

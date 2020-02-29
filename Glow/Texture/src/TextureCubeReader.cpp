@@ -80,7 +80,7 @@ TextureCubeReader::TextureCubeReader(std::vector<std::filesystem::path> searchPa
 
 auto TextureCubeReader::read(
     std::filesystem::path const & folderPath,
-    ColorSpace const imageColorSpace,
+    TextureInternalFormat const internalFormat,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels,
@@ -90,8 +90,6 @@ auto TextureCubeReader::read(
     auto const absolutePath = resolveToPathOfExistingFolder(folderPath);
 
     auto const imageSet = readImageSetFromFolder(absolutePath);
-
-    auto const internalFormat = determineInternalFormat(imageSet.front.format, imageColorSpace);
 
     auto const faceDescriptor = Texture2dDescriptor{
         imageSet.front.size,

@@ -14,7 +14,7 @@ class RaveAssetCollection : public ape::AssetCollection
 
 public:
 
-    explicit RaveAssetCollection(bool excludeSponza);
+    RaveAssetCollection(bool excludeSponza, bool enableTextureCompression);
 
     auto getSimpleAssets()
         -> ape::AssetRepository &;
@@ -63,7 +63,9 @@ private:
 
 private:
 
-    ape::AssetLoader loader;
+    ape::AssetLoader assetLoader;
+
+    bool enableTextureCompression;
 
 };
 

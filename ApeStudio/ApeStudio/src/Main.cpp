@@ -102,6 +102,13 @@ auto isSponzaExcluded(std::vector<std::string> const & arguments)
     return basix::contains(arguments, "--exclude-sponza");
 }
 
+auto isTextureCompressionEnabled(std::vector<std::string> const & arguments)
+    -> bool
+{
+    return basix::contains(arguments, "--texture-compression");
+}
+
+
 int main(int argc, char *argv[])
 {
     auto const arguments = std::vector<std::string>{argv, argv + argc};
@@ -109,6 +116,8 @@ int main(int argc, char *argv[])
     auto const enableDebugOutput = isDebugOutputEnabled(arguments);
 
     auto const excludeSponza = isSponzaExcluded(arguments);
+
+    auto const enableTextureCompression = isTextureCompressionEnabled(arguments);
 
     auto gateway = ape::qt::QtGateway{enableDebugOutput};
 
@@ -190,7 +199,7 @@ int main(int argc, char *argv[])
 
     sceneView1.makeCurrent();
 
-    auto engineFactory = rave::RaveEngineFactory{excludeSponza};
+    auto engineFactory = rave::RaveEngineFactory{excludeSponza, enableTextureCompression};
 
     auto const backgroundColor = glm::vec3{0.0f, 0.0f, 0.0f};
     

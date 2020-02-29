@@ -39,14 +39,6 @@ auto getTextureFilename(aiMaterial const & m, aiTextureType const type, int cons
     return toString(filename);
 }
 
-auto getTextureColorSpace(aiTextureType const type)
-    -> glow::ColorSpace
-{
-    return (type == aiTextureType_DIFFUSE)
-        ? glow::ColorSpace::perceptual
-        : glow::ColorSpace::linear;
-}
-
 auto setSwizzleIfGrayscale(glow::Texture2d & texture)
     -> void
 {
@@ -64,9 +56,13 @@ auto setSwizzleIfGrayscale(glow::Texture2d & texture)
 
 } // unnamed
 
-MaterialLoader::MaterialLoader(AssetRepository & assets, TextureCache & textureCache)
+MaterialLoader::MaterialLoader(
+    AssetRepository & assets,
+    TextureCache & textureCache,
+    bool const enableTextureCompression)
     : assets{&assets}
     , textureCache{&textureCache}
+    , enableTextureCompression{enableTextureCompression}
 {
 }
 
@@ -172,7 +168,7 @@ auto MaterialLoader::importTextures(
 
     auto textures = makeVectorWithCapacity<glow::Texture2d const *>(numOfTextures);
 
-    auto const colorSpace = getTextureColorSpace(type);
+    auto const internalFormat = getTextureInternalFormat(type);
 
     for (auto i = 0u; i < numOfTextures; ++i)
     {
@@ -185,7 +181,7 @@ auto MaterialLoader::importTextures(
 
         auto const path = directory / std::move(filename);
 
-        auto const & texture = getOrReadTexture(path, colorSpace);
+        auto const & texture = getOrReadTexture(path, internalFormat);
 
         textures.push_back(&texture);
     }
@@ -195,7 +191,7 @@ auto MaterialLoader::importTextures(
 
 auto MaterialLoader::getOrReadTexture(
     std::filesystem::path const & path,
-    glow::ColorSpace const colorSpace) const
+    glow::TextureInternalFormat const internalFormat) const
     -> glow::Texture2d const &
 {
     auto const existingTexture = textureCache->findTexture(path);
@@ -205,12 +201,12 @@ auto MaterialLoader::getOrReadTexture(
         return *existingTexture;
     }
 
-    return readAndStoreTexture(path, colorSpace);
+    return readAndStoreTexture(path, internalFormat);
 }
 
 auto MaterialLoader::readAndStoreTexture(
     std::filesystem::path const & path,
-    glow::ColorSpace const colorSpace) const
+    glow::TextureInternalFormat const internalFormat) const
     -> glow::Texture2d const &
 {
     auto const filtering = glow::TextureFiltering{
@@ -224,7 +220,7 @@ auto MaterialLoader::readAndStoreTexture(
 
     auto readTexture = textureReader.read(
         path,
-        colorSpace,
+        internalFormat,
         filtering,
         wrapping,
         numOfMipmapLevels,
@@ -237,6 +233,23 @@ auto MaterialLoader::readAndStoreTexture(
     textureCache->registerTexture(storedTexture, path);
 
     return storedTexture;
+}
+
+auto MaterialLoader::getTextureInternalFormat(aiTextureType const type) const
+    -> glow::TextureInternalFormat
+{
+    if (enableTextureCompression)
+    {
+        return (type == aiTextureType_DIFFUSE)
+            ? glow::TextureInternalFormat::compressedSrgbaBptcUNorm
+            : glow::TextureInternalFormat::compressedRgbaBptcUNorm;
+    }
+    else
+    {
+        return (type == aiTextureType_DIFFUSE)
+            ? glow::TextureInternalFormat::srgb8
+            : glow::TextureInternalFormat::rgb8;
+    }
 }
 
 } // namespace ape

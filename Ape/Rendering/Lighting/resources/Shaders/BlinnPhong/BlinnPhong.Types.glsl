@@ -172,9 +172,9 @@ struct DepthMapping
 
     samplerCubeShadow point[MAX_NUM_OF_POINT_LIGHTS];
 
-    sampler2DShadow spot[MAX_NUM_OF_SPOT_LIGHTS];
+    sampler2DArrayShadow spot;
 
-    sampler2DShadow directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];
+    sampler2DArrayShadow directional;
 
 };
 

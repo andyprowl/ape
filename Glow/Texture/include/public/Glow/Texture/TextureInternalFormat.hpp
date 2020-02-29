@@ -24,7 +24,11 @@ enum class TextureInternalFormat
     depth32,
     depth32f,
     depth24Stencil8,
-    depth32fStencil8
+    depth32fStencil8,
+    compressedRgbaBptcUNorm,
+    compressedSrgbaBptcUNorm,
+    compressedRgbBptcSignedFloat,
+    compressedRgbBptcUnsignedFloat
 };
 
 auto convertToOpenGLInternalFormat(TextureInternalFormat format)

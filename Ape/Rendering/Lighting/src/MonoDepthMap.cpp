@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include <cassert>
+#include <string>
 
 namespace ape
 {
@@ -10,7 +11,7 @@ namespace ape
 namespace
 {
 
-auto enableShadowSampling(glow::Texture2d & texture)
+auto enableShadowSampling(glow::Texture2dArray & texture)
     -> void
 {
     glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
@@ -18,14 +19,17 @@ auto enableShadowSampling(glow::Texture2d & texture)
     glTextureParameteri(texture.getId(), GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
 }
 
-auto makeDepthMapTexture(basix::Size2d<int> const & size, std::string_view const labelPrefix)
-    -> glow::Texture2d
+auto makeDepthMapTexture(
+    basix::Size2d<int> const & size,
+    int const numOfLayers,
+    std::string_view const labelPrefix)
+    -> glow::Texture2dArray
 {
     // We do not want to allocate storage for additional mipmap levels for depth textures.
     auto numOfMipmapLevels = 1;
 
     // TODO: Should we use depth32 or depth32f here?
-    auto const descriptor = glow::Texture2dDescriptor{
+    auto const layerDescriptor = glow::Texture2dDescriptor{
         size,
         glow::TextureInternalFormat::depth32,
         glow::TextureFiltering{
@@ -34,19 +38,27 @@ auto makeDepthMapTexture(basix::Size2d<int> const & size, std::string_view const
         glow::TextureWrapping::clampToEdge,
         numOfMipmapLevels};
 
-    auto texture = glow::Texture2d{descriptor, std::string{labelPrefix} + ".Texture2d"};
+    auto texture = glow::Texture2dArray{
+        layerDescriptor,
+        numOfLayers,
+        std::string{labelPrefix} + ".Texture"};
 
     enableShadowSampling(texture);
 
     return texture;
 }
 
-auto makeDepthMapFrameBuffer(glow::Texture2d & depthMapTexture, std::string_view const labelPrefix)
+auto makeDepthMapFrameBuffer(
+    glow::Texture2dArray & depthMapTexture,
+    int const layer,
+    std::string_view const labelPrefix)
     -> glow::FrameBufferObject
 {
-    auto frameBuffer = glow::FrameBufferObject{std::string{labelPrefix} + ".Framebuffer"};
+    auto const label = std::string{labelPrefix} + ".Framebuffer." + std::to_string(layer);
 
-    frameBuffer.attach(depthMapTexture, glow::FrameBufferAttachment::depth);
+    auto frameBuffer = glow::FrameBufferObject{label};
+
+    frameBuffer.attach(depthMapTexture, layer, glow::FrameBufferAttachment::depth);
 
     frameBuffer.resetDrawTarget();
 
@@ -57,30 +69,48 @@ auto makeDepthMapFrameBuffer(glow::Texture2d & depthMapTexture, std::string_view
     return frameBuffer;
 }
 
-} // unnamed namespace
-
-MonoDepthMap::MonoDepthMap(basix::Size2d<int> const & size)
-    : MonoDepthMap{size, ""}
+auto makeDepthMapFrameBuffers(
+    glow::Texture2dArray & depthMapTexture,
+    int const numOfLayers,
+    std::string_view const labelPrefix)
+    -> std::vector<glow::FrameBufferObject>
 {
+    auto frameBuffers = std::vector<glow::FrameBufferObject>{};
+
+    frameBuffers.reserve(numOfLayers);
+
+    for (auto i = 0; i < numOfLayers; ++i)
+    {
+        auto framebuffer = makeDepthMapFrameBuffer(depthMapTexture, i, labelPrefix);
+
+        frameBuffers.push_back(std::move(framebuffer));
+    }
+
+    return frameBuffers;
 }
 
-MonoDepthMap::MonoDepthMap(basix::Size2d<int> const & size, std::string_view const label)
-    : texture{makeDepthMapTexture(size, label)}
-    , frameBuffer{makeDepthMapFrameBuffer(texture, label)}
+} // unnamed namespace
+
+MonoDepthMap::MonoDepthMap(
+    basix::Size2d<int> const & size,
+    int const numOfLayers,
+    std::string_view const label)
+    : texture{makeDepthMapTexture(size, numOfLayers, label)}
+    , frameBuffers{makeDepthMapFrameBuffers(texture, numOfLayers, label)}
     , size{size}
 {
 }
 
 auto MonoDepthMap::getTexture() const
-    -> glow::Texture2d const &
+    -> glow::Texture2dArray const &
 {
     return texture;
 }
 
-auto MonoDepthMap::getFrameBuffer() const
-    -> glow::FrameBufferObject const &
+auto MonoDepthMap::getFrameBuffers() const
+    -> std::vector<glow::FrameBufferObject> const &
 {
-    return frameBuffer;
+    return frameBuffers;
 }
 
 auto MonoDepthMap::getSize() const

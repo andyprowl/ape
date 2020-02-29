@@ -19,6 +19,12 @@ auto isSponzaExcluded(std::vector<std::string> const & arguments)
     return basix::contains(arguments, "--exclude-sponza");
 }
 
+auto isTextureCompressionEnabled(std::vector<std::string> const & arguments)
+    -> bool
+{
+    return basix::contains(arguments, "--texture-compression");
+}
+
 auto main(int argc, char const * * argv)
     -> int
 {
@@ -28,9 +34,11 @@ auto main(int argc, char const * * argv)
 
     auto const excludeSponza = isSponzaExcluded(arguments);
 
+    auto const enableTextureCompression = isTextureCompressionEnabled(arguments);
+
     try
     {
-        auto app = rave::Application{enableDebugOutput, excludeSponza};
+        auto app = rave::Application{enableDebugOutput, excludeSponza, enableTextureCompression};
 
         app.run();
     }

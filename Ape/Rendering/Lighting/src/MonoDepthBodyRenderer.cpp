@@ -131,9 +131,11 @@ auto MonoDepthBodyRenderer::renderLightSetDepth(
     Camera const & viewerCamera,
     std::vector<LightType> const & lights,
     std::vector<LightViewType> const & lightViews,
-    std::vector<MonoDepthMap> & depthMaps) const
+    MonoDepthMap const & depthMaps) const
     -> void
 {
+    auto & framebuffers = depthMaps.getFrameBuffers();
+
     for (auto i = 0u; i < lights.size(); ++i)
     {
         if ((not lights[i].isTurnedOn()) || (not lights[i].isCastingShadow()))
@@ -143,9 +145,9 @@ auto MonoDepthBodyRenderer::renderLightSetDepth(
 
         auto const & lightView = lightViews[i];
 
-        auto & depthMap = depthMaps[i];
+        auto & target = framebuffers[i];
 
-        renderLightDepth(bodies, viewerCamera, lightView, depthMap);
+        renderLightDepth(bodies, viewerCamera, lightView, target);
     }
 }
 
@@ -154,7 +156,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     LightViewType const & lightView,
-    MonoDepthMap & target) const
+    glow::FrameBufferObject const & target) const
     -> void
 {
     // TODO: benchmark performance benefit of PerspectiveLightCuller by temporarily replacing it
@@ -169,7 +171,7 @@ auto MonoDepthBodyRenderer::renderLightDepth(
         return;
     }
 
-    auto const binder = bind(target.getFrameBuffer());
+    auto const binder = bind(target);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

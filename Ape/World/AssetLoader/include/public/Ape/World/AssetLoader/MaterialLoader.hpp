@@ -33,7 +33,10 @@ class MaterialLoader
 
 public:
 
-    MaterialLoader(AssetRepository & assets, TextureCache & textureCache);
+    MaterialLoader(
+        AssetRepository & assets,
+        TextureCache & textureCache,
+        bool enableTextureCompression);
 
     auto load(aiScene const & scene, std::filesystem::path const & directory) const
         -> void;
@@ -63,13 +66,16 @@ private:
 
     auto getOrReadTexture(
         std::filesystem::path const & path,
-        glow::ColorSpace const colorSpace) const
+        glow::TextureInternalFormat internalFormat) const
         -> glow::Texture2d const &;
 
     auto readAndStoreTexture(
         std::filesystem::path const & path,
-        glow::ColorSpace const colorSpace) const
+        glow::TextureInternalFormat internalFormat) const
         -> glow::Texture2d const &;
+
+    auto getTextureInternalFormat(aiTextureType const type) const
+        -> glow::TextureInternalFormat;
 
 private:
 
@@ -78,6 +84,8 @@ private:
     TextureCache * textureCache;
 
     glow::Texture2dReader textureReader;
+
+    bool enableTextureCompression;
 
 };
 

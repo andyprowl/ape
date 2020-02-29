@@ -34,6 +34,8 @@ class AssetLoader
 
 public:
 
+    explicit AssetLoader(bool enableTextureCompression);
+
     auto load(std::filesystem::path const & path, std::string modelName) const
         -> AssetRepository;
 
@@ -72,6 +74,10 @@ private:
 
     auto importModel(aiScene const & scene, AssetRepository & target, std::string name) const
         -> void;
+
+private:
+
+    bool enableTextureCompression;
 
 };
 

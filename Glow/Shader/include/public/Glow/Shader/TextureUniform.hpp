@@ -1,20 +1,63 @@
 #pragma once
 
-#include <Glow/Shader/GenericTextureUniform.hpp>
+#include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/Uniform.hpp>
 
-#include <Glow/Texture/Texture2d.hpp>
+#include <Glow/Texture/TextureUnitSet.hpp>
 
-namespace glow
+#include <string_view>
+
+namespace glow::detail
 {
 
-template<>
-class Uniform<Texture2d> : public detail::GenericTextureUniform<Texture2d>
+template<typename TextureType>
+class TextureUniform
 {
 
 public:
-     
-    using GenericTextureUniform::GenericTextureUniform;
+
+    using ValueType = TextureType;
+
+public:
+ 
+    TextureUniform(ShaderProgram & program, std::string_view name)
+        : textureUnit{nullptr}
+        , sampler{program, name}
+    {
+    }
+
+    TextureUniform(ShaderProgram & program, std::string_view name, int const textureUnit)
+        : textureUnit{&textureUnits[textureUnit]}
+        , sampler{program, name, textureUnit}
+    {
+    }
+
+    auto setTextureUnit(int const newTextureUnit)
+        -> void
+    {
+        textureUnit = &textureUnits[newTextureUnit];
+
+        sampler.set(newTextureUnit);
+    }
+
+    auto set(ValueType const & texture)
+        -> void
+    {
+        textureUnit->setTexture(&texture);
+    }
+
+    auto getUnit() const
+        -> int
+    {
+        return textureUnit;
+    }
+
+public:
+
+    TextureUnit * textureUnit;
+
+    Uniform<int> sampler;
 
 };
 
-} // namespace glow
+} // namespace glow::detail

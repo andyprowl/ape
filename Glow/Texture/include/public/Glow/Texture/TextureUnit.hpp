@@ -4,7 +4,9 @@ namespace glow
 {
 
 class Texture2d;
+class Texture2dArray;
 class TextureCube;
+class TextureCubeArray;
 
 class TextureUnit
 {
@@ -19,10 +21,16 @@ public:
     auto activate()
         -> void;
 
-    auto setTexture(Texture2d const *texture)
+    auto setTexture(Texture2d const * texture)
+        -> void;
+
+    auto setTexture(Texture2dArray const * texture)
         -> void;
 
     auto setTexture(TextureCube const * texture)
+        -> void;
+
+    auto setTexture(TextureCubeArray const * texture)
         -> void;
 
 private:
@@ -41,7 +49,11 @@ private:
 
     Texture2d const * activeTexture2d;
 
-    TextureCube const * activeCubeTexture;
+    Texture2dArray const * activeTexture2dArray;
+
+    TextureCube const * activeTextureCube;
+
+    TextureCubeArray const * activeTextureCubeArray;
 
 };
 

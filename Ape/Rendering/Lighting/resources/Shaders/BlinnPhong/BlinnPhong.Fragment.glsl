@@ -87,7 +87,7 @@ float computeAttenuationFactor(const Attenuation attenuation, const float source
 }
 
 float sampleShadowWithPercentageCloserFiltering(
-    const sampler2DShadow depthMap,
+    const sampler2DArrayShadow depthMap,
     const vec4 depthMapPositionAndTestDepth)
 {
     float shadow = 0.0;
@@ -96,7 +96,7 @@ float sampleShadowWithPercentageCloserFiltering(
     {
         for (int y = -1; y <= 1; ++y)
         {
-            shadow += textureProjOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
+            shadow += textureOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
         }
     }
 
@@ -128,7 +128,8 @@ float calculateMonodirectionalShadowFactor(
     const bool isCastingShadow,
     const vec3 lightDirection,
     vec4 depthMapPositionAndTestDepth,
-    const sampler2DShadow depthMap)
+    const sampler2DArrayShadow depthMap,
+    const int layer)
 {
     if (!isCastingShadow)
     {
@@ -137,7 +138,11 @@ float calculateMonodirectionalShadowFactor(
 
     const float bias = calculateMonodirectionalShadowBias(lightDirection);
 
-    depthMapPositionAndTestDepth.z -= bias * depthMapPositionAndTestDepth.w;
+    depthMapPositionAndTestDepth /= depthMapPositionAndTestDepth.w;
+
+    depthMapPositionAndTestDepth.w = depthMapPositionAndTestDepth.z - bias;
+
+    depthMapPositionAndTestDepth.z = float(layer);
 
     if (usePercentageCloserFiltering)
     {
@@ -145,7 +150,7 @@ float calculateMonodirectionalShadowFactor(
     }
     else
     {
-        return textureProj(depthMap, depthMapPositionAndTestDepth).r;
+        return texture(depthMap, depthMapPositionAndTestDepth).r;
     }
 }
 
@@ -358,7 +363,8 @@ vec3 computeSpotLighting()
             light.isCastingShadow,
             light.direction,
             lightSpacePosition,
-            depthMapping.spot[i]);
+            depthMapping.spot,
+            i);
 
         if (shadow > 0.0)
         {
@@ -411,7 +417,8 @@ vec3 computeDirectionalLighting()
             light.isCastingShadow,
             light.direction,
             lightSpacePosition,
-            depthMapping.directional[i]);
+            depthMapping.directional,
+            i);
 
         if (shadow > 0.0)
         {

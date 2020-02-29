@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Glow/Texture/ColorSpace.hpp>
 #include <Glow/Texture/TextureCube.hpp>
 #include <Glow/Texture/Texture2d.hpp>
 #include <Glow/Texture/TextureFiltering.hpp>
+#include <Glow/Texture/TextureInternalFormat.hpp>
 #include <Glow/Texture/TextureWrapping.hpp>
 
 #include <Basix/FileSystem/FileFinder.hpp>
@@ -53,7 +53,7 @@ public:
 
     auto read(
         std::filesystem::path const & folderPath,
-        ColorSpace imageColorSpace,
+        TextureInternalFormat internalFormat,
         TextureFiltering filtering,
         TextureWrapping wrapping = TextureWrapping::clampToEdge,
         int numOfMipmapLevels = 0,

@@ -64,8 +64,8 @@ class RaveResources
 
 public:
 
-    explicit RaveResources(bool excludeSponza)
-        : assets{excludeSponza}
+    RaveResources(bool excludeSponza, bool const enableTextureCompression)
+        : assets{excludeSponza, enableTextureCompression}
         , effectCollection{RaveEffectCollectionReader{}.read()}
         , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
     {
@@ -88,9 +88,9 @@ class RaveEngineFactory::EngineObjects
 
 public:
 
-    explicit EngineObjects(bool const excludeSponza)
+    EngineObjects(bool const excludeSponza, bool const enableTextureCompression)
         : shaders{}
-        , resources{excludeSponza}
+        , resources{excludeSponza, enableTextureCompression}
         , scene{createRaveScene(resources.assets, excludeSponza)}
         , lightSystemView{scene.getLightSystem(), basix::Size2d<int>{1024, 1024}}
         , lightSystemSetter{scene.getLightSystem(), shaders.blinnPhongShader.lightSystem}
@@ -132,8 +132,8 @@ public:
 
 };
 
-RaveEngineFactory::RaveEngineFactory(bool const excludeSponza)
-    : engineObjects{std::make_unique<EngineObjects>(excludeSponza)}
+RaveEngineFactory::RaveEngineFactory(bool const excludeSponza, bool const enableTextureCompression)
+    : engineObjects{std::make_unique<EngineObjects>(excludeSponza, enableTextureCompression)}
 {
 }
 

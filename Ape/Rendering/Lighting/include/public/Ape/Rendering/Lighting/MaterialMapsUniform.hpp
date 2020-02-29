@@ -3,7 +3,7 @@
 #include <Ape/World/Model/Material.hpp>
 
 #include <Glow/Shader/ShaderProgram.hpp>
-#include <Glow/Shader/TextureUniform.hpp>
+#include <Glow/Shader/Texture2dUniform.hpp>
 
 namespace ape
 {

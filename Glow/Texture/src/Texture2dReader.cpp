@@ -15,7 +15,7 @@ Texture2dReader::Texture2dReader(std::vector<std::filesystem::path> searchPaths)
 
 auto Texture2dReader::read(
     std::filesystem::path const & path,
-    ColorSpace const imageColorSpace,
+    TextureInternalFormat const internalFormat,
     TextureFiltering const filtering,
     TextureWrapping const wrapping,
     int const numOfMipmapLevels,
@@ -25,8 +25,6 @@ auto Texture2dReader::read(
     auto const absolutePath = resolveToPathOfExistingFile(path);
 
     auto const image = readImageFromFile(absolutePath, true);
-
-    auto const internalFormat = determineInternalFormat(image.format, imageColorSpace);
 
     auto const descriptor = Texture2dDescriptor{
         image.size,

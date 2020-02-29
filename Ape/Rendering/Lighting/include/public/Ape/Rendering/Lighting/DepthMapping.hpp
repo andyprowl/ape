@@ -27,16 +27,16 @@ public:
         -> std::vector<OmniDepthMap> const &;
 
     auto getSpotMapping() const
-        -> std::vector<MonoDepthMap> const &;
+        -> MonoDepthMap const &;
 
     auto getSpotMapping()
-        -> std::vector<MonoDepthMap> &;
+        -> MonoDepthMap &;
 
     auto getDirectionalMapping()
-        -> std::vector<MonoDepthMap> &;
+        -> MonoDepthMap &;
 
     auto getDirectionalMapping() const
-        -> std::vector<MonoDepthMap> const &;
+        -> MonoDepthMap const &;
 
 private:
 
@@ -46,9 +46,9 @@ private:
 
     std::vector<OmniDepthMap> pointMapping;
 
-    std::vector<MonoDepthMap> spotMapping;
+    MonoDepthMap spotMapping;
 
-    std::vector<MonoDepthMap> directionalMapping;
+    MonoDepthMap directionalMapping;
 
 };
 

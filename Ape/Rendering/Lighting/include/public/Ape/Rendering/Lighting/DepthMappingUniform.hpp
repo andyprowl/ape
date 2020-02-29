@@ -3,9 +3,9 @@
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
 
 #include <Glow/GpuResource/ScopedBinder.hpp>
-#include <Glow/Shader/CubeTextureUniform.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
-#include <Glow/Shader/TextureUniform.hpp>
+#include <Glow/Shader/Texture2dArrayUniform.hpp>
+#include <Glow/Shader/TextureCubeUniform.hpp>
 #include <Glow/Shader/UniformArray.hpp>
 
 #include <string>
@@ -32,8 +32,6 @@ public:
         , spot{program, prefix + ".spot"}
         , directional{program, std::move(prefix) + ".directional"}
         , maxNumOfPointLights{15}
-        , maxNumOfSpotLights{8}
-        , maxNumOfDirectionalLights{4}
         , firstDepthMapUnit{firstDepthMapUnit}
     {
         bindSamplers(program);
@@ -61,9 +59,9 @@ public:
 
     UniformArray<Uniform<TextureCube>> point;
 
-    UniformArray<Uniform<Texture2d>> spot;
+    Uniform<Texture2dArray> spot;
 
-    UniformArray<Uniform<Texture2d>> directional;
+    Uniform<Texture2dArray> directional;
 
 private:
 
@@ -79,15 +77,9 @@ private:
             point[i].setTextureUnit(index++);
         }
 
-        for (auto i = 0; i < maxNumOfSpotLights; ++i)
-        {
-            spot[i].setTextureUnit(index++);
-        }
+        spot.setTextureUnit(index++);
 
-        for (auto i = 0; i < maxNumOfDirectionalLights; ++i)
-        {
-            directional[i].setTextureUnit(index++);
-        }
+        directional.setTextureUnit(index++);
     }
 
     auto setPointMapping(ape::DepthMapping const & mapping)
@@ -99,13 +91,21 @@ private:
     auto setSpotMapping(ape::DepthMapping const & mapping)
         -> void
     {
-        setTextures(mapping.getSpotMapping(), spot);
+        auto & spotMapping = mapping.getSpotMapping();
+
+        auto & texture = spotMapping.getTexture();
+
+        spot.set(texture);
     }
 
     auto setDirectionalMapping(ape::DepthMapping const & mapping)
         -> void
     {
-        setTextures(mapping.getDirectionalMapping(), directional);
+        auto & directionalMapping = mapping.getDirectionalMapping();
+
+        auto & texture = directionalMapping.getTexture();
+
+        directional.set(texture);
     }
 
     template<typename DepthMapType, typename TextureType>
@@ -125,10 +125,6 @@ private:
 private:
 
     int maxNumOfPointLights;
-
-    int maxNumOfSpotLights;
-
-    int maxNumOfDirectionalLights;
 
     int firstDepthMapUnit;
 

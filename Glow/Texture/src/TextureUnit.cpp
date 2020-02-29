@@ -1,7 +1,9 @@
 #include <Glow/Texture/TextureUnit.hpp>
 
-#include <Glow/Texture/TextureCube.hpp>
 #include <Glow/Texture/Texture2d.hpp>
+#include <Glow/Texture/Texture2dArray.hpp>
+#include <Glow/Texture/TextureCube.hpp>
+#include <Glow/Texture/TextureCubeArray.hpp>
 
 #include <glad/glad.h>
 
@@ -10,8 +12,10 @@ namespace glow
 
 TextureUnit::TextureUnit(int const unitIndex)
     : unitIndex{unitIndex}
-    , activeTexture2d{0}
-    , activeCubeTexture{0}
+    , activeTexture2d{nullptr}
+    , activeTexture2dArray{nullptr}
+    , activeTextureCube{nullptr}
+    , activeTextureCubeArray{nullptr}
 {
 }
 
@@ -33,10 +37,22 @@ auto TextureUnit::setTexture(Texture2d const * texture)
     setTexture(texture, activeTexture2d);
 }
 
+auto TextureUnit::setTexture(Texture2dArray const * texture)
+    -> void
+{
+    setTexture(texture, activeTexture2dArray);
+}
+
 auto TextureUnit::setTexture(TextureCube const * texture)
     -> void
 {
-    setTexture(texture, activeCubeTexture);
+    setTexture(texture, activeTextureCube);
+}
+
+auto TextureUnit::setTexture(TextureCubeArray const * texture)
+    -> void
+{
+    setTexture(texture, activeTextureCubeArray);
 }
 
 template<typename TextureType>

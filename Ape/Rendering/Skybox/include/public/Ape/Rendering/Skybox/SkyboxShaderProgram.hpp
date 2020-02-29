@@ -2,8 +2,8 @@
 
 #include <Ape/Rendering/Lighting/FogUniform.hpp>
 
-#include <Glow/Shader/CubeTextureUniform.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
+#include <Glow/Shader/TextureCubeUniform.hpp>
 
 #include <glm/mat4x4.hpp>
 
