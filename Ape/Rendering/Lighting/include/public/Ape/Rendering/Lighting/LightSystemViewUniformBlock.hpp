@@ -35,6 +35,7 @@ public:
         {
             auto const & matrix = spotView[i].getCamera().getTransformation();
 
+            // Renormalizes clip space coordinates. See the comment below for normalizationMatrix.
             spot.set(normalizationMatrix * matrix, i, buffer);
         }
 
@@ -44,6 +45,7 @@ public:
         {
             auto const & matrix = directionalView[i].getCamera().getTransformation();
 
+            // Renormalizes clip space coordinates. See the comment below for normalizationMatrix.
             directional.set(normalizationMatrix * matrix, i, buffer);
         }
     }
@@ -56,6 +58,11 @@ public:
 
 private:
 
+    /**
+        * Renormalizes clip space coordinates in the [-w, +w] range produced by light camera
+        * projection matrices to the [0, +w] range. This way we do not need to perform the same
+        * normalization in the fragment shader in order to fetch texels from shadow maps.
+    **/
     static constexpr auto const normalizationMatrix = glm::mat4{
         {0.5f, 0.0f, 0.0f, 0.0f},
         {0.0f, 0.5f, 0.0f, 0.0f},
