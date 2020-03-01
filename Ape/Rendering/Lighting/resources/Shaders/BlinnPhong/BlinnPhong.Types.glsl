@@ -1,8 +1,8 @@
-#define MAX_NUM_OF_POINT_LIGHTS 15
+const int MAX_NUM_OF_POINT_LIGHTS = 15;
 
-#define MAX_NUM_OF_SPOT_LIGHTS 8
+const int MAX_NUM_OF_SPOT_LIGHTS = 8;
 
-#define MAX_NUM_OF_DIRECTIONAL_LIGHTS 4
+const int MAX_NUM_OF_DIRECTIONAL_LIGHTS = 4;
 
 struct Vertex
 {
