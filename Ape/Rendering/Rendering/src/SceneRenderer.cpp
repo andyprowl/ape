@@ -196,7 +196,7 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
     // VAO here.
     with(arrayObject, [this]
     {
-        shapeDrawer->beginRenderBatch();
+        shapeDrawer->beginDrawBatch();
 
         renderDepthMapping();
 
@@ -204,7 +204,7 @@ auto SceneRenderer::renderSceneToOffscreenSurface()
 
         renderSceneBodies();
 
-        shapeDrawer->endRenderBatch();
+        shapeDrawer->endDrawBatch();
 
         renderBodyBounds();
 
@@ -222,7 +222,7 @@ auto SceneRenderer::renderSceneToScreenSurface()
     // VAO here.
     with(arrayObject, [this]
     {
-        shapeDrawer->beginRenderBatch();
+        shapeDrawer->beginDrawBatch();
 
         renderDepthMapping();
 
@@ -230,7 +230,7 @@ auto SceneRenderer::renderSceneToScreenSurface()
 
         renderSceneBodies();
 
-        shapeDrawer->endRenderBatch();
+        shapeDrawer->endDrawBatch();
 
         renderBodyBounds();
 
@@ -297,7 +297,7 @@ auto SceneRenderer::renderNonPickedBodies() const
 
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.blinnPhongBodyRenderer.render(nonSelectedBodies, *activeCamera, fog, *shadowMapping);
+    renderers.blinnPhongBodyRenderer.render(nonSelectedBodies, *activeCamera, fog);
 }
 
 auto SceneRenderer::renderPickedBodies() const
@@ -318,7 +318,7 @@ auto SceneRenderer::renderPickedBodies() const
 
     auto const & fog = cameraSelector->getScene().getFog();
 
-    renderers.outlinedBodyRenderer.render(selectedBodies, *activeCamera, fog, *shadowMapping);
+    renderers.outlinedBodyRenderer.render(selectedBodies, *activeCamera, fog);
 }
 
 auto SceneRenderer::renderBodyBounds() const

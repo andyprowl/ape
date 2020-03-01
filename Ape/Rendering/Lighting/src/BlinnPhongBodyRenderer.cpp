@@ -30,6 +30,102 @@ namespace ape
 namespace
 {
 
+class StatefulMeshRenderer
+{
+
+public:
+
+    StatefulMeshRenderer(BlinnPhongShaderProgram & shader, ShapeDrawer & drawer)
+        : shader{&shader}
+        , drawer{&drawer}
+        , lastRenderedPart{nullptr}
+        , lastRenderedMaterial{nullptr}
+    {
+    }
+
+    auto render(std::vector<const BodyPartMesh *> const & meshes)
+        -> void
+    {
+        for (auto const mesh : meshes)
+        {
+            renderMesh(*mesh);
+        }
+    }
+
+private:
+
+    auto renderMesh(BodyPartMesh const & mesh)
+        -> void
+    {
+        setupBodyPartUniforms(mesh);
+
+        setupMaterialUniforms(mesh);
+
+        drawShape(mesh);
+    }
+
+    auto setupBodyPartUniforms(BodyPartMesh const & mesh)
+        -> void
+    {
+        auto const & part = mesh.getPart();
+
+        if (&part == lastRenderedPart)
+        {
+            return;
+        }
+
+        auto const & worldTransformation = part.getWorldTransformation();
+
+        shader->objectToWorldTransformation.set(worldTransformation);
+
+        auto const & normalTransformation = part.getWorldNormalTransformation();
+
+        shader->normalTransformation.set(normalTransformation);
+
+        lastRenderedPart = &part;
+    }
+
+    auto setupMaterialUniforms(BodyPartMesh const & mesh)
+        -> void
+    {
+        auto const & meshModel = mesh.getModel();
+
+        auto const & material = meshModel.getMaterial();
+
+        if (&material == lastRenderedMaterial)
+        {
+            return;
+        }
+
+        shader->materialMaps.set(material);
+
+        shader->activeMaterialIndex.set(material.getInstanceIndex());
+
+        lastRenderedMaterial = &material;
+    }
+
+    auto drawShape(BodyPartMesh const & mesh) const
+        -> void
+    {
+        auto const & meshModel = mesh.getModel();
+
+        auto const & shape = meshModel.getShape();
+    
+        drawer->draw(shape);
+    }
+
+private:
+
+    BlinnPhongShaderProgram * shader;
+
+    ShapeDrawer * drawer;
+
+    BodyPart const * lastRenderedPart;
+
+    Material const * lastRenderedMaterial;
+
+};
+
 auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
     -> float
 {
@@ -47,12 +143,14 @@ BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
     LightSystemUniformSetter & lightSystemSetter,
     LightSystemViewUniformSetter & lightSystemViewSetter,
     MaterialSetUniformSetter & materialSetSetter,
-    ShapeDrawer & shapeRenderer)
+    ShadowMapping const & shadowMapping,
+    ShapeDrawer & shapeDrawer)
     : shader{&shader}
     , lightSystemSetter{&lightSystemSetter}
     , lightSystemViewSetter{&lightSystemViewSetter}
     , materialSetSetter{&materialSetSetter}
-    , shapeRenderer{&shapeRenderer}
+    , shadowMapping{&shadowMapping}
+    , shapeDrawer{&shapeDrawer}
     , performFrustumCulling{true}
 {
 }
@@ -60,24 +158,18 @@ BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
 auto BlinnPhongBodyRenderer::render(
     BodyRange const & bodies,
     Camera const & camera,
-    Fog const & fog,
-    ShadowMapping const & shadowMapping) const
+    Fog const & fog) const
     -> void
 {
     auto const shaderBinder = glow::bind(*shader);
 
-    setupInvariantUniforms(camera, fog, shadowMapping);
+    setupInvariantUniforms(camera, fog);
+
+    auto renderer = StatefulMeshRenderer{*shader, *shapeDrawer};
 
     auto const sortedMeshes = getVisibleMeshesSortedByDistanceFromCamera(bodies, camera);
 
-    for (auto const mesh : sortedMeshes)
-    {
-        auto const & part = mesh->getPart();
-
-        setupBodyPartUniforms(part);
-    
-        renderMesh(*mesh);
-    }
+    renderer.render(sortedMeshes);
 }
 
 auto BlinnPhongBodyRenderer::isFrustumCullingEnabled() const
@@ -92,10 +184,7 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
     performFrustumCulling = enable;
 }
 
-auto BlinnPhongBodyRenderer::setupInvariantUniforms(
-    Camera const & camera,
-    Fog const & fog,
-    ShadowMapping const & shadowMapping) const
+auto BlinnPhongBodyRenderer::setupInvariantUniforms(Camera const & camera, Fog const & fog) const
     -> void
 {
     lightSystemSetter->flush();
@@ -114,7 +203,7 @@ auto BlinnPhongBodyRenderer::setupInvariantUniforms(
     
     shader->worldToClipTransformation.set(camera.getTransformation());
 
-    shader->depthMapping.set(shadowMapping.depthMapping);
+    shader->depthMapping.set(shadowMapping->depthMapping);
 
     shader->fog.set(fog);
 }
@@ -162,18 +251,6 @@ auto BlinnPhongBodyRenderer::getVisibleMeshes(
     return meshes;
 }
 
-auto BlinnPhongBodyRenderer::setupBodyPartUniforms(BodyPart const & part) const
-    -> void
-{
-    auto const & worldTransformation = part.getWorldTransformation();
-
-    shader->objectToWorldTransformation.set(worldTransformation);
-
-    auto const & normalTransformation = part.getWorldNormalTransformation();
-
-    shader->normalTransformation.set(normalTransformation);
-}
-
 auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const & culler) const
     -> bool
 {
@@ -187,22 +264,6 @@ auto BlinnPhongBodyRenderer::isVisible(BodyPartMesh const & mesh, Culler const &
     auto const relation = culler.isSphereContained(boundingSphere);
 
     return (relation != ContainmentRelation::fullyOutside);
-}
-
-auto BlinnPhongBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
-    -> void
-{
-    auto const & meshModel = mesh.getModel();
-
-    auto const & material = meshModel.getMaterial();
-
-    shader->materialMaps.set(material);
-
-    shader->activeMaterialIndex.set(material.getInstanceIndex());
-
-    auto const & shape = meshModel.getShape();
-    
-    shapeRenderer->render(shape);
 }
 
 } // namespace ape

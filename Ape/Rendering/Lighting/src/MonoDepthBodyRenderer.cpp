@@ -245,7 +245,7 @@ auto MonoDepthBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
 
     auto const & shape = meshModel.getShape();
     
-    shapeRenderer->render(shape);
+    shapeRenderer->draw(shape);
 }
 
 } // namespace ape

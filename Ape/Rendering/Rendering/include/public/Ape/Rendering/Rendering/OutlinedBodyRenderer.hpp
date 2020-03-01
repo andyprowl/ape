@@ -26,8 +26,7 @@ public:
     auto render(
         BodyRange const & bodies,
         Camera const & camera,
-        Fog const & fog,
-        ShadowMapping const & shadowMapping) const
+        Fog const & fog) const
         -> void;
 
 private:
@@ -35,8 +34,7 @@ private:
     auto performStandardRenderingAndFillStencilBuffer(
         BodyRange const & bodies,
         Camera const & camera,
-        Fog const & fog,
-        ShadowMapping const & shadowMapping) const
+        Fog const & fog) const
         -> void;
 
     auto performWireframeRenderingWhereStencilBuffferIsNotFilled(

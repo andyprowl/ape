@@ -54,7 +54,7 @@ SharedBufferObjectDrawer::SharedBufferObjectDrawer(std::vector<Shape *> const & 
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::beginRenderBatch()
+auto SharedBufferObjectDrawer::beginDrawBatch()
     -> void
 {
     bufferObjects.vertex.bind();
@@ -65,7 +65,7 @@ auto SharedBufferObjectDrawer::beginRenderBatch()
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::render(Shape const & shape)
+auto SharedBufferObjectDrawer::draw(Shape const & shape)
     -> void
 {
     auto const & offsets = getBufferOffsetsForShape(shape);
@@ -83,7 +83,7 @@ auto SharedBufferObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto SharedBufferObjectDrawer::endRenderBatch()
+auto SharedBufferObjectDrawer::endDrawBatch()
     -> void
 {
     bufferObjects.element.unbind();

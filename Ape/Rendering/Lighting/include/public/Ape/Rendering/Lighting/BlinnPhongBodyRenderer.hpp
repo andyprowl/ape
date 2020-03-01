@@ -33,13 +33,10 @@ public:
         LightSystemUniformSetter & lightSystemSetter,
         LightSystemViewUniformSetter & lightSystemViewSetter,
         MaterialSetUniformSetter & materialSetSetter,
-        ShapeDrawer & shapeRenderer);
+        ShadowMapping const & shadowMapping,
+        ShapeDrawer & shapeDrawer);
 
-    auto render(
-        BodyRange const & bodies,
-        Camera const & camera,
-        Fog const & fog,
-        ShadowMapping const & shadowMapping) const
+    auto render(BodyRange const & bodies, Camera const & camera, Fog const & fog) const
         -> void;
 
     auto isFrustumCullingEnabled() const
@@ -50,10 +47,7 @@ public:
 
 private:
 
-    auto setupInvariantUniforms(
-        Camera const & camera,
-        Fog const & fog,
-        ShadowMapping const & shadowMapping) const
+    auto setupInvariantUniforms(Camera const & camera, Fog const & fog) const
         -> void;
 
     auto getVisibleMeshesSortedByDistanceFromCamera(
@@ -64,14 +58,8 @@ private:
     auto getVisibleMeshes(BodyRange const & bodies, Camera const & camera) const
         -> std::vector<const BodyPartMesh *>;
 
-    auto setupBodyPartUniforms(BodyPart const & part) const
-        -> void;
-
     auto isVisible(BodyPartMesh const & mesh, Culler const & culler) const
         -> bool;
-
-    auto renderMesh(BodyPartMesh const & mesh) const
-        -> void;
 
 private:
 
@@ -83,7 +71,9 @@ private:
 
     MaterialSetUniformSetter * materialSetSetter;
 
-    ShapeDrawer * shapeRenderer;
+    ShadowMapping const * shadowMapping;
+
+    ShapeDrawer * shapeDrawer;
 
     bool performFrustumCulling;
 

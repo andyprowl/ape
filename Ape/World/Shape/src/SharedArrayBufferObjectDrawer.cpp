@@ -130,14 +130,14 @@ SharedArrayBufferObjectDrawer::SharedArrayBufferObjectDrawer(std::vector<Shape *
 }
 
 // virtual (from ShapeDrawer)
-auto SharedArrayBufferObjectDrawer::beginRenderBatch()
+auto SharedArrayBufferObjectDrawer::beginDrawBatch()
     -> void
 {
     bufferObjects.array.bind();
 }
 
 // virtual (from ShapeDrawer)
-auto SharedArrayBufferObjectDrawer::render(Shape const & shape)
+auto SharedArrayBufferObjectDrawer::draw(Shape const & shape)
     -> void
 {
     auto const & bufferPortion = getBufferPortionForShape(shape);
@@ -153,7 +153,7 @@ auto SharedArrayBufferObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto SharedArrayBufferObjectDrawer::endRenderBatch()
+auto SharedArrayBufferObjectDrawer::endDrawBatch()
     -> void
 {
     bufferObjects.array.unbind();

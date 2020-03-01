@@ -20,15 +20,15 @@ public:
     explicit SharedBufferObjectDrawer(std::vector<Shape *> const & shapes);
 
     // virtual (from ShapeDrawer)
-    auto beginRenderBatch()
+    auto beginDrawBatch()
         -> void override;
 
     // virtual (from ShapeDrawer)
-    auto render(Shape const & shape)
+    auto draw(Shape const & shape)
         -> void override;
 
     // virtual (from ShapeDrawer)
-    auto endRenderBatch()
+    auto endDrawBatch()
         -> void override;
 
 private:

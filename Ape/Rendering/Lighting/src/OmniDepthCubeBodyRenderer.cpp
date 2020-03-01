@@ -152,7 +152,7 @@ auto OmniDepthCubeBodyRenderer::renderMesh(Mesh const & mesh) const
 {
     auto const & shape = mesh.getShape();
     
-    shapeRenderer->render(shape);
+    shapeRenderer->draw(shape);
 }
 
 } // namespace ape

@@ -183,6 +183,7 @@ auto RaveEngineFactory::makeSceneRenderer(
         engineObjects->lightSystemSetter,
         engineObjects->lightSystemViewSetter,
         engineObjects->materialSetSetter,
+        *shadowMapping,
         *shapeDrawer};
 
     auto wireframeBodyRenderer = ape::WireframeBodyRenderer{

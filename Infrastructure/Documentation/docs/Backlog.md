@@ -7,6 +7,11 @@
    run-time by defining abstract interfaces
  - Try GS + instancing approach to generate all shadow maps of the same kind in a single pass
 - Optimization hints
+ - Use SPIR-V for shaders
+  - https://www.khronos.org/opengl/wiki/SPIR-V
+  - https://github.com/KhronosGroup/glslang
+ - Try using more smaller floor/wall tiles (smaller mipmaps, less fragment, more opportunities for
+   culling), possibly in combination with instancing (but then how to combine with culling?)
  - Use bounding boxes instead of (or in addition to) bounding spheres for clipping
  - Add support for compressed textures
  - Define an additional drawer that puts EBO and VBO in a single buffer (requires design change in

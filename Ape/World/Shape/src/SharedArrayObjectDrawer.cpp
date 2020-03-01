@@ -24,13 +24,13 @@ SharedArrayObjectDrawer::SharedArrayObjectDrawer(std::vector<Shape *> const & sh
 }
 
 // virtual (from ShapeDrawer)
-auto SharedArrayObjectDrawer::beginRenderBatch()
+auto SharedArrayObjectDrawer::beginDrawBatch()
     -> void
 {
     arrayObject.bind();
 }
 
-auto SharedArrayObjectDrawer::render(Shape const & shape)
+auto SharedArrayObjectDrawer::draw(Shape const & shape)
     -> void
 {
     auto const & shapeBuffers = getBufferObjectsForShape(shape);
@@ -50,7 +50,7 @@ auto SharedArrayObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto SharedArrayObjectDrawer::endRenderBatch()
+auto SharedArrayObjectDrawer::endDrawBatch()
     -> void
 {
     arrayObject.unbind();

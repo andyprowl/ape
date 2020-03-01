@@ -26,13 +26,13 @@ ShapeArrayObjectDrawer::ShapeArrayObjectDrawer(std::vector<Shape *> const & shap
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeArrayObjectDrawer::beginRenderBatch()
+auto ShapeArrayObjectDrawer::beginDrawBatch()
     -> void
 {
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeArrayObjectDrawer::render(Shape const & shape)
+auto ShapeArrayObjectDrawer::draw(Shape const & shape)
     -> void
 {
     auto & arrayObject = getArrayObjectForShape(shape);
@@ -45,7 +45,7 @@ auto ShapeArrayObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeArrayObjectDrawer::endRenderBatch()
+auto ShapeArrayObjectDrawer::endDrawBatch()
     -> void
 {
 }

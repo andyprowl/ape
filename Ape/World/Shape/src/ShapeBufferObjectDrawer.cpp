@@ -22,12 +22,12 @@ ShapeBufferObjectDrawer::ShapeBufferObjectDrawer(std::vector<Shape *> const & sh
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeBufferObjectDrawer::beginRenderBatch()
+auto ShapeBufferObjectDrawer::beginDrawBatch()
     -> void
 {
 }
 
-auto ShapeBufferObjectDrawer::render(Shape const & shape)
+auto ShapeBufferObjectDrawer::draw(Shape const & shape)
     -> void
 {
     auto const & shapeBuffers = getBufferObjectsForShape(shape);
@@ -44,7 +44,7 @@ auto ShapeBufferObjectDrawer::render(Shape const & shape)
 }
 
 // virtual (from ShapeDrawer)
-auto ShapeBufferObjectDrawer::endRenderBatch() 
+auto ShapeBufferObjectDrawer::endDrawBatch() 
     -> void
 {
 }

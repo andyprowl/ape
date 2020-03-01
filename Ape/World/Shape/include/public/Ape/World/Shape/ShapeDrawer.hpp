@@ -12,13 +12,13 @@ public:
 
     virtual ~ShapeDrawer() = default;
 
-    virtual auto beginRenderBatch()
+    virtual auto beginDrawBatch()
         -> void = 0;
 
-    virtual auto render(Shape const & shape)
+    virtual auto draw(Shape const & shape)
         -> void = 0;
 
-    virtual auto endRenderBatch()
+    virtual auto endDrawBatch()
         -> void = 0;
 
 };
