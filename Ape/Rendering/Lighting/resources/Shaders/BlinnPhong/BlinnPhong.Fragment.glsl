@@ -38,6 +38,12 @@ uniform bool renderNormals = false;
 
 const Material material = materials[activeMaterialIndex];
 
+const vec3 specularColor = vec3(texture(materialMaps.specularMap, vertex.textureCoords));
+
+const vec3 diffuseColor = vec3(texture(materialMaps.diffuseMap, vertex.textureCoords));
+
+const vec3 ambientColor = material.ambient * diffuseColor;
+
 const vec3 viewDirection = normalize(camera.position - vertex.position);
 
 // Extern, defined in separate shader.
@@ -91,6 +97,8 @@ vec3 getNormal()
     }
 }
 
+vec3 mappedNormal = getNormal();
+
 float computeAttenuationFactor(const Attenuation attenuation, const float sourceDistance)
 {    
     return 
@@ -102,9 +110,7 @@ float computeAttenuationFactor(const Attenuation attenuation, const float source
 
 vec3 computeAmbientLight(const LightColor color)
 {
-    const vec3 diffuseColor = vec3(texture(materialMaps.diffuseMap, vertex.textureCoords));
-
-    return (color.ambient * material.ambient * diffuseColor);
+    return (color.ambient * ambientColor);
 }
 
 vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
@@ -114,7 +120,7 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
         return vec3(0.0, 0.0, 0.0);
     }
 
-    const float diffusion = dot(getNormal(), lightDirection);
+    const float diffusion = dot(mappedNormal, lightDirection);
 
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
@@ -122,8 +128,6 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
     const float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
 
     const float cappedDiffusion = max(correctedDiffusion, 0.0);
-
-    const vec3 diffuseColor = vec3(texture(materialMaps.diffuseMap, vertex.textureCoords));
 
     return (color.diffuse * (cappedDiffusion * diffuseColor));
 }
@@ -134,7 +138,7 @@ float computeSpecularLightReflectivity(const vec3 lightDirection)
     {
         // Uses classical Phong model
 
-        const vec3 reflectDirection = reflect(-lightDirection, getNormal());
+        const vec3 reflectDirection = reflect(-lightDirection, mappedNormal);
 
         return pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
     }
@@ -148,7 +152,7 @@ float computeSpecularLightReflectivity(const vec3 lightDirection)
 
         const float shininess = material.shininess * shininessAdjuster;
 
-        const float factor = dot(getNormal(), halfwayDirection);
+        const float factor = dot(mappedNormal, halfwayDirection);
 
         return pow(max(factor, 0.0), shininess);
     }
@@ -168,20 +172,18 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
     const float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
 
-    const vec3 specularColor = vec3(texture(materialMaps.specularMap, vertex.textureCoords));
-
     return (color.specular * (correctedReflectivity * specularColor));
 }
 
 vec3 computePointLight(const PointLight light)
 {
-    const vec3 lightDirection = normalize(light.position - vertex.position);
+    const vec3 vertexToLight = normalize(light.position - vertex.position);
 
     const vec3 ambientLight = computeAmbientLight(light.color);
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
 
-    const vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+    const vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
 
     const float sourceDistance = length(light.position - vertex.position);
 
@@ -350,7 +352,7 @@ void main()
 {
     if (renderNormals)
     {
-        fragmentColor = vec4(getNormal() * 0.5 + 0.5, 1.0);
+        fragmentColor = vec4(mappedNormal * 0.5 + 0.5, 1.0);
     }
     else
     {
