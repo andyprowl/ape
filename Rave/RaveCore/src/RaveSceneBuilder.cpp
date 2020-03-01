@@ -1034,7 +1034,7 @@ auto StatefulSceneBuilder::createPointLight(
     std::string name)
     -> ape::PointLight &
 {
-    auto const attenuation = ape::Attenuation{1.0f, 0.01f, 0.06f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.06f};
 
     auto const isTurnedOn = true;
 
@@ -1107,7 +1107,7 @@ auto StatefulSceneBuilder::createSpotLight(
 {
     auto const cutoff = ape::SpotLight::CutoffAngle{glm::radians(10.0f), glm::radians(20.0f)};
 
-    auto const attenuation = ape::Attenuation{1.0f, 0.005f, 0.062f};
+    auto const attenuation = ape::Attenuation{1.0f, 0.062f};
 
     auto const isTurnedOn = true;
 

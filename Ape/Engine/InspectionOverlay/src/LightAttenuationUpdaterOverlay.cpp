@@ -23,11 +23,9 @@ auto LightAttenuationUpdaterOverlay<LightType>::updateLightAttenuation(LightType
 
     auto const isConstantComponentUpdated = updateConstantComponent(attenuation);
 
-    auto const isLinearComponentUpdated = updateLinearComponent(attenuation);
-
     auto const isQuadraticComponentUpdated = updateQuadraticComponent(attenuation);
 
-    if (isConstantComponentUpdated || isLinearComponentUpdated || isQuadraticComponentUpdated)
+    if (isConstantComponentUpdated || isQuadraticComponentUpdated)
     {
         light.setAttenuation(attenuation);
     }
@@ -42,15 +40,6 @@ auto LightAttenuationUpdaterOverlay<LightType>::updateConstantComponent(Attenuat
     auto component = reinterpret_cast<float *>(&attenuation.constant);
 
     return ImGui::SliderFloat("Constant", component, 0.0f, 1.0f);
-}
-
-template<typename LightType>
-auto LightAttenuationUpdaterOverlay<LightType>::updateLinearComponent(Attenuation & attenuation)
-    -> bool
-{
-    auto component = reinterpret_cast<float *>(&attenuation.linear);
-
-    return ImGui::SliderFloat("Linear", component, 0.0f, 1.0f);
 }
 
 template<typename LightType>

@@ -103,8 +103,7 @@ float computeAttenuationFactor(const Attenuation attenuation, const float source
 {    
     return 
         1.0 / 
-        (attenuation.constant + 
-         attenuation.linear * sourceDistance +
+        (attenuation.constant +
          attenuation.quadratic * (sourceDistance * sourceDistance));
 }
 

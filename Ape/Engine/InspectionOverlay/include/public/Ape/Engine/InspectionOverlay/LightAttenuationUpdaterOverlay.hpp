@@ -19,9 +19,6 @@ private:
     auto updateConstantComponent(Attenuation & attenuation)
         -> bool;
 
-    auto updateLinearComponent(Attenuation & attenuation)
-        -> bool;
-
     auto updateQuadraticComponent(Attenuation & attenuation)
         -> bool;
 

@@ -8,9 +8,8 @@ class Attenuation
 
 public:
 
-    Attenuation(float const constant, float const linear, float const quadratic)
+    Attenuation(float const constant, float const quadratic)
         : constant{constant}
-        , linear{linear}
         , quadratic{quadratic}
     {
     }
@@ -18,8 +17,6 @@ public:
 public:
 
     float constant;
-
-    float linear;
 
     float quadratic;
 

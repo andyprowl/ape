@@ -22,7 +22,6 @@ public:
 
     UniformBlockMember(UniformBlock & block, std::string const name)
         : constant{block, std::string{name} + ".constant"}
-        , linear{block, std::string{name} + ".linear"}
         , quadratic{block, std::string{name} + ".quadratic"}
     {
     }
@@ -32,16 +31,12 @@ public:
     {
         constant.set(attenuation.constant, buffer);
 
-        linear.set(attenuation.linear, buffer);
-
         quadratic.set(attenuation.quadratic, buffer);
     }
 
 public:
 
     UniformBlockMember<float> constant;
-
-    UniformBlockMember<float> linear;
 
     UniformBlockMember<float> quadratic;
 

@@ -88,16 +88,16 @@ auto SpotLightView::computeFarDistance() const
      *
      * Our far distance is equal to the distance d such that a(d) = t. Therefore:
      *
-     *     1 / (q * d^2 + l * d + k) = t
-     *               ==>
-     *     q * d^2 + l * d + k = (1 / t)
-     *               ==>
-     *     q * d^2 + l * d + k - (1 / t) = 0
+     *     1 / (q * d^2 + k) = t
+     *             ==>
+     *     q * d^2 + k = (1 / t)
+     *             ==>
+     *     q * d^2 + k - (1 / t) = 0
      *
      * This is a quadratic equation of the form ax^2 + bx + c = 0, with:
      *
      *     a = q;
-     *     b = l;
+     *     b = 0;
      *     c = k - 1 / t;
      *
      * In order to determine a meaningful minimum contribution, we recognize that color intensities
@@ -115,11 +115,9 @@ auto SpotLightView::computeFarDistance() const
 
     auto const a = attenuation.quadratic;
 
-    auto const b = attenuation.linear;
-
     auto const c = attenuation.constant - minimumContributionInverse;
 
-    auto const lightReach = (-b + glm::sqrt(b * b - 4.0f * a * c)) / (2.0f * a);
+    auto const lightReach = (glm::sqrt(-4.0f * a * c)) / (2.0f * a);
 
     return (glm::min(lightReach, 100.0f));
 }

@@ -20,7 +20,6 @@ public:
 
     Uniform(ShaderProgram & program, std::string const & prefix)
         : constant{program, prefix + ".constant"}
-        , linear{program, prefix + ".linear"}
         , quadratic{program, prefix + ".quadratic"}
     {
     }
@@ -28,7 +27,7 @@ public:
     auto get() const
         -> ValueType
     {
-        return {constant.get(), linear.get(), quadratic.get()};
+        return {constant.get(), quadratic.get()};
     }
 
     auto set(ValueType const & attenuation)
@@ -36,16 +35,12 @@ public:
     {
         constant.set(attenuation.constant);
 
-        linear.set(attenuation.linear);
-
         quadratic.set(attenuation.quadratic);
     }
 
 public:
 
     Uniform<float> constant;
-
-    Uniform<float> linear;
 
     Uniform<float> quadratic;
 
