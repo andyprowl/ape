@@ -15,8 +15,6 @@ uniform LightSystemUniformBlock
 
 };
 
-uniform DepthMapping depthMapping;
-
 uniform Camera camera;
 
 uniform MaterialSetBlock
@@ -34,8 +32,6 @@ uniform int activeMaterialIndex;
 
 uniform bool usePhongModel = false;
 
-uniform bool usePercentageCloserFiltering = false;
-
 uniform bool useNormalMapping = true;
 
 uniform bool renderNormals = false;
@@ -43,6 +39,29 @@ uniform bool renderNormals = false;
 const Material material = materials[activeMaterialIndex];
 
 const vec3 viewDirection = normalize(camera.position - vertex.position);
+
+// Extern, defined in separate shader.
+float calculatePointLightShadowFactor(
+    const bool isCastingShadow,
+    const vec3 lightPosition,
+    const int layer);
+
+// Extern, defined in separate shader.
+float calculateSpotLightShadowFactor(
+    const bool isCastingShadow,
+    const vec3 lightDirection,
+    vec4 depthMapPositionAndTestDepth,
+    const int layer);
+
+// Extern, defined in separate shader.
+float calculateDirectionalLightShadowFactor(
+    const bool isCastingShadow,
+    const vec3 lightDirection,
+    vec4 depthMapPositionAndTestDepth,
+    const int layer);
+
+// Extern, defined in separate shader.
+vec3 applyFog(const vec3 color, const vec3 cameraToFragment);
 
 vec3 getMappedNormalInTangentSpace()
 {
@@ -79,111 +98,6 @@ float computeAttenuationFactor(const Attenuation attenuation, const float source
         (attenuation.constant + 
          attenuation.linear * sourceDistance +
          attenuation.quadratic * (sourceDistance * sourceDistance));
-}
-
-float sampleShadowWithPercentageCloserFiltering(
-    const sampler2DArrayShadow depthMap,
-    const vec4 depthMapPositionAndTestDepth)
-{
-    float shadow = 0.0;
-
-    for (int x = -1; x <= 1; ++x)
-    {
-        for (int y = -1; y <= 1; ++y)
-        {
-            shadow += textureOffset(depthMap, depthMapPositionAndTestDepth, ivec2(x, y)).r;
-        }
-    }
-
-    shadow /= 9.0;
-
-    return shadow;
-}
-
-float calculateMonodirectionalShadowBias(const vec3 lightDirection)
-{
-    // TODO: EXPERIMENTAL
-    // Notice: not using bumped normal!
-    
-    const float sine = length(cross(vertex.normal, lightDirection));
-    
-    const float cosine = abs(dot(vertex.normal, lightDirection));
-    
-    const float tangent = sine / cosine;
-    
-    return clamp(0.005 * tangent, 0.0, 0.001);
-
-    // ALTERNATIVE TECHNIQUE below: seems to be OK for spot lights, but not for directional lights.
-    // We probably shouldn't use bumped normals for shadow mapping as they generate more artifacts.
-    
-    // return max(0.0002 * (1.0 - abs(dot(vertex.normal, lightDirection))), 0.000005);
-}
-
-float calculateMonodirectionalShadowFactor(
-    const bool isCastingShadow,
-    const vec3 lightDirection,
-    vec4 depthMapPositionAndTestDepth,
-    const sampler2DArrayShadow depthMap,
-    const int layer)
-{
-    if (!isCastingShadow)
-    {
-        return 1.0;
-    }
-
-    const float bias = calculateMonodirectionalShadowBias(lightDirection);
-
-    depthMapPositionAndTestDepth /= depthMapPositionAndTestDepth.w;
-
-    depthMapPositionAndTestDepth.w = depthMapPositionAndTestDepth.z - bias;
-
-    depthMapPositionAndTestDepth.z = float(layer);
-
-    if (usePercentageCloserFiltering)
-    {
-        return sampleShadowWithPercentageCloserFiltering(depthMap, depthMapPositionAndTestDepth);
-    }
-    else
-    {
-        return texture(depthMap, depthMapPositionAndTestDepth).r;
-    }
-}
-
-float calculateOmnidirectionalShadowBias(const vec3 lightToVertex)
-{
-    // TODO: Figure out if we can use the same calcualtion as for monodirectional lights
-    // return calculateMonodirectionalShadowBias(normalize(lightToVertex));
-    
-    return 0.00005 * length(lightToVertex) * (1.0 - dot(vertex.normal, lightToVertex));
-}
-
-float calculateOmnidirectionalShadowFactor(
-    const bool isCastingShadow,
-    const vec3 lightPosition,
-    const samplerCubeArrayShadow depthMap,
-    const int layer)
-{
-    if (!isCastingShadow)
-    {
-        return 1.0;
-    }
-
-    // TODO: This can be different for each light! This is a hack.
-    // The far plane should either be passed a part of the light uniform or the algorithm should be
-    // changed to not make use of the far plane.
-    const float farPlaneDistance = 100.0;
-
-    const vec3 lightToVertex = vertex.position - lightPosition;
-
-    const float lightToVertexDistance = length(lightToVertex);
-
-    const float currentDepthNormalized = lightToVertexDistance / farPlaneDistance;
-
-    const float bias = calculateOmnidirectionalShadowBias(lightToVertex);
-
-    const vec4 coords = vec4(lightToVertex, float(layer));
-
-    return texture(depthMap, coords, currentDepthNormalized - bias).r;
 }
 
 vec3 computeAmbientLight(const LightColor color)
@@ -289,10 +203,9 @@ vec3 computePointLighting()
             continue;
         }
         
-        const float shadow = calculateOmnidirectionalShadowFactor(
+        const float shadow = calculatePointLightShadowFactor(
             light.isCastingShadow,
             light.position,
-            depthMapping.point,
             i);
 
         if (shadow > 0.0)
@@ -354,11 +267,10 @@ vec3 computeSpotLighting()
             continue;
         }
 
-        const float shadow = calculateMonodirectionalShadowFactor(
+        const float shadow = calculateSpotLightShadowFactor(
             light.isCastingShadow,
             light.direction,
             lightSpacePosition,
-            depthMapping.spot,
             i);
 
         if (shadow > 0.0)
@@ -408,11 +320,10 @@ vec3 computeDirectionalLighting()
             continue;
         }
 
-        const float shadow = calculateMonodirectionalShadowFactor(
+        const float shadow = calculateDirectionalLightShadowFactor(
             light.isCastingShadow,
             light.direction,
             lightSpacePosition,
-            depthMapping.directional,
             i);
 
         if (shadow > 0.0)
@@ -434,9 +345,6 @@ vec3 renderLighting()
 
     return (pointLighting + directionalLighting + spotLighting);
 }
-
-// Extern, defined in separate shader.
-vec3 applyFog(const vec3 color, const vec3 cameraToFragment);
 
 void main()
 {

@@ -29,6 +29,7 @@ auto buildBlinnPhongShader()
         std::vector<glow::GeometryShaderPath>{},
         std::vector<glow::FragmentShaderPath>{
             "BlinnPhong/BlinnPhong.Fragment.glsl",
+            "Shadow/Shadow.Fragment.glsl",
             "Fog/Fog.Fragment.glsl"},
         std::string{"BlinnPhong"});
 }

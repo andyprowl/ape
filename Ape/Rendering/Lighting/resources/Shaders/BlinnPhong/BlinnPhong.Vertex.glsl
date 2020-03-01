@@ -76,8 +76,7 @@ void main()
 
     for (int i = 0; i < lightSystem.numOfSpotLights; ++i)
     {
-        // The light space position of the vertex is only relevant for shadow mapping.
-        if (lightSystem.spot[i].isTurnedOn && lightSystem.spot[i].isCastingShadow)
+        if (lightSystem.spot[i].isTurnedOn)
         {
             lightSpacePositioning.spot[i] = lightSystemView.spot[i] * worldPosition;
         }
@@ -85,8 +84,7 @@ void main()
 
     for (int i = 0; i < lightSystem.numOfDirectionalLights; ++i)
     {
-        // The light space position of the vertex is only relevant for shadow mapping.
-        if (lightSystem.directional[i].isTurnedOn && lightSystem.spot[i].isCastingShadow)
+        if (lightSystem.directional[i].isTurnedOn)
         {
             lightSpacePositioning.directional[i] = lightSystemView.directional[i] * worldPosition;
         }
