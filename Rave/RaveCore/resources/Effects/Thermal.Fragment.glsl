@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 
 // Source:
 // https://www.geeks3d.com/20101123/shader-library-predators-thermal-vision-post-processing-filter-glsl/

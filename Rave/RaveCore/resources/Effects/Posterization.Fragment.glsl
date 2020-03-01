@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 
 // Source:
 // https://www.geeks3d.com/20091027/shader-library-posterization-post-processing-effect-glsl/
