@@ -15,13 +15,6 @@ uniform LightSystemUniformBlock
 
 };
 
-uniform LightSystemViewUniformBlock
-{
-
-    LightSystemView lightSystemView;
-
-};
-
 uniform DepthMapping depthMapping;
 
 uniform Camera camera;
@@ -48,6 +41,8 @@ uniform bool useNormalMapping = true;
 uniform bool renderNormals = false;
 
 const Material material = materials[activeMaterialIndex];
+
+const vec3 viewDirection = normalize(camera.position - vertex.position);
 
 vec3 getMappedNormalInTangentSpace()
 {
@@ -219,7 +214,7 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
     return (color.diffuse * (cappedDiffusion * diffuseColor));
 }
 
-float computeSpecularLightReflectivity(const vec3 viewDirection, const vec3 lightDirection)
+float computeSpecularLightReflectivity(const vec3 lightDirection)
 {
     if (usePhongModel)
     {
@@ -252,9 +247,7 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
         return vec3(0.0, 0.0, 0.0);
     }
 
-    const vec3 viewDirection = normalize(camera.position - vertex.position);
-
-    const float reflectivity = computeSpecularLightReflectivity(viewDirection, lightDirection);
+    const float reflectivity = computeSpecularLightReflectivity(lightDirection);
 
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we

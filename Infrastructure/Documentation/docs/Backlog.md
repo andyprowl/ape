@@ -7,6 +7,7 @@
    run-time by defining abstract interfaces
  - Try GS + instancing approach to generate all shadow maps of the same kind in a single pass
 - Optimization hints
+ - Use bounding boxes instead of (or in addition to) bounding spheres for clipping
  - Add support for compressed textures
  - Define an additional drawer that puts EBO and VBO in a single buffer (requires design change in
    Glow, currently EBO/VBO distinction is enforced at type system level)
