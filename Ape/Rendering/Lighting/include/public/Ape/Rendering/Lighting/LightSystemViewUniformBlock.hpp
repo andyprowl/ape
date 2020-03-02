@@ -21,7 +21,8 @@ public:
 public:
 
     UniformBlockMember(UniformBlock & block, std::string const & prefix)
-        : spot{block, prefix + ".spot", 8}
+        : point{block, prefix + ".point", 15}
+        , spot{block, prefix + ".spot", 8}
         , directional{block, prefix + ".directional", 4}
     {
     }
@@ -29,25 +30,11 @@ public:
     auto set(ValueType const & lightSystem, std::byte * const buffer)
         -> void
     {
-        auto const & spotView = lightSystem.getSpotView();
+        setPointLightView(lightSystem, buffer);
 
-        for (auto i = 0; i < static_cast<int>(spotView.size()); ++i)
-        {
-            auto const & matrix = spotView[i].getCamera().getTransformation();
+        setSpotLightView(lightSystem, buffer);
 
-            // Renormalizes clip space coordinates. See the comment below for normalizationMatrix.
-            spot.set(normalizationMatrix * matrix, i, buffer);
-        }
-
-        auto const & directionalView = lightSystem.getDirectionalView();
-
-        for (auto i = 0; i < static_cast<int>(directionalView.size()); ++i)
-        {
-            auto const & matrix = directionalView[i].getCamera().getTransformation();
-
-            // Renormalizes clip space coordinates. See the comment below for normalizationMatrix.
-            directional.set(normalizationMatrix * matrix, i, buffer);
-        }
+        setDirectionalLightView(lightSystem, buffer);
     }
 
 public:
@@ -55,6 +42,8 @@ public:
     UniformArrayBlockMember<glm::mat4> spot;
 
     UniformArrayBlockMember<glm::mat4> directional;
+
+    UniformArrayBlockMember<float> point;
 
 private:
 
@@ -68,6 +57,52 @@ private:
         {0.0f, 0.5f, 0.0f, 0.0f},
         {0.0f, 0.0f, 0.5f, 0.0f},
         {0.5f, 0.5f, 0.5f, 1.0f}};
+
+    auto setPointLightView(ValueType const & lightSystem, std::byte * const buffer)
+        -> void
+    {
+        auto const & pointView = lightSystem.getPointView();
+
+        for (auto i = 0; i < static_cast<int>(pointView.size()); ++i)
+        {
+            auto const & faceCameras = pointView[i].getFaceCameras();
+
+            auto const & projection = faceCameras.front.getProjection();
+
+            auto const & frustum = projection.as<ape::PerspectiveProjection>().getFrustum();
+
+            // Renormalizes clip space coordinates. See the comment for normalizationMatrix.
+            point.set(frustum.far, i, buffer);
+        }
+    }
+
+    auto setSpotLightView(ValueType const & lightSystem, std::byte * const buffer)
+        -> void
+    {
+        auto const & spotView = lightSystem.getSpotView();
+
+        for (auto i = 0; i < static_cast<int>(spotView.size()); ++i)
+        {
+            auto const & matrix = spotView[i].getCamera().getTransformation();
+
+            // Renormalizes clip space coordinates. See the comment for normalizationMatrix.
+            spot.set(normalizationMatrix * matrix, i, buffer);
+        }
+    }
+
+    auto setDirectionalLightView(ValueType const & lightSystem, std::byte * const buffer)
+        -> void
+    {
+        auto const & directionalView = lightSystem.getDirectionalView();
+
+        for (auto i = 0; i < static_cast<int>(directionalView.size()); ++i)
+        {
+            auto const & matrix = directionalView[i].getCamera().getTransformation();
+
+            // Renormalizes clip space coordinates. See the comment for normalizationMatrix.
+            directional.set(normalizationMatrix * matrix, i, buffer);
+        }
+    }
 
 };
 

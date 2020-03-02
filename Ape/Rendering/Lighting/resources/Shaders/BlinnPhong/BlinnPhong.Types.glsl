@@ -150,6 +150,8 @@ struct LightSystem
 struct LightSystemView
 {
 
+    float point[MAX_NUM_OF_POINT_LIGHTS];
+
     mat4 spot[MAX_NUM_OF_SPOT_LIGHTS];
 
     mat4 directional[MAX_NUM_OF_DIRECTIONAL_LIGHTS];

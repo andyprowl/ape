@@ -15,6 +15,13 @@ uniform LightSystemUniformBlock
 
 };
 
+uniform LightSystemViewUniformBlock
+{
+
+    LightSystemView lightSystemView;
+
+};
+
 uniform Camera camera;
 
 uniform MaterialSetBlock
@@ -174,19 +181,25 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
     return (color.specular * (correctedReflectivity * specularColor));
 }
 
-vec3 computePointLight(const PointLight light)
+vec3 computePointLight(const PointLight light, vec3 vertexToLight, float distanceFromLight)
 {
-    const vec3 vertexToLight = normalize(light.position - vertex.position);
+    const vec3 vertexToLightDirection = vertexToLight / distanceFromLight;
+
+    const float attenuation = computeAttenuationFactor(light.attenuation, distanceFromLight);
+
+    // If attenuation is very low we can skip complex calculations and return a black color.
+    // Note: conditionals are expensive, so it is not clear whether this brings a benefit.
+    
+    //if (attenuation < 0.02)
+    //{
+    //    return vec3(0.0, 0.0, 0.0);
+    //}
 
     const vec3 ambientLight = computeAmbientLight(light.color);
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLightDirection);
 
-    const vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
-
-    const float sourceDistance = length(light.position - vertex.position);
-
-    const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
+    const vec3 specularLight = computeSpecularLight(light.color, vertexToLightDirection);
 
     return (attenuation * (ambientLight + diffuseLight + specularLight));
 }
@@ -203,6 +216,15 @@ vec3 computePointLighting()
         {
             continue;
         }
+
+        const vec3 vertexToLight = light.position - vertex.position;
+
+        const float distanceFromLight = length(vertexToLight);
+
+        //if (distanceFromLight > lightSystemView.point[i])
+        //{
+        //    continue;
+        //}
         
         const float shadow = calculatePointLightShadowFactor(
             light.isCastingShadow,
@@ -211,7 +233,7 @@ vec3 computePointLighting()
 
         if (shadow > 0.0)
         {
-            color += shadow * computePointLight(light);
+            color += shadow * computePointLight(light, vertexToLight, distanceFromLight);
         }
     }
 
@@ -220,24 +242,35 @@ vec3 computePointLighting()
 
 vec3 computeSpotLight(const SpotLight light)
 {
-    const vec3 vertexToLight = normalize(light.position - vertex.position);
+    const vec3 vertexToLight = light.position - vertex.position;
+
+    const float distanceFromLight = length(vertexToLight);
+
+    const vec3 vertexToLightDirection = vertexToLight / distanceFromLight;
 
     // We are assuming light direction was normalized on the CPU side.
-    const float angleCosine = dot(vertexToLight, -light.direction);
+    const float angleCosine = dot(vertexToLightDirection, -light.direction);
     
     const float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
 
     const float cutoff = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
 
+    const float attenuation = computeAttenuationFactor(light.attenuation, distanceFromLight);
+
+    // If cutoff and/or attenuation are very low we can skip the following calculations and just
+    // return a black color.
+    // Note: conditionals are expensive, so it is not clear whether this brings a benefit.
+    
+    //if (cutoff * attenuation < 0.001)
+    //{
+    //    return vec3(0.0, 0.0, 0.0);
+    //}
+
     const vec3 ambientLight = computeAmbientLight(light.color);
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLight);
+    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLightDirection);
 
-    const vec3 specularLight = computeSpecularLight(light.color, vertexToLight);
-
-    const float sourceDistance = length(light.position - vertex.position);
-
-    const float attenuation = computeAttenuationFactor(light.attenuation, sourceDistance);
+    const vec3 specularLight = computeSpecularLight(light.color, vertexToLightDirection);
 
     const vec3 color = cutoff * (ambientLight + diffuseLight + specularLight);
 

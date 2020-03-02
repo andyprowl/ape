@@ -12,7 +12,7 @@ auto computeAttenuationDistance(Attenuation const & attenuation)
      * Attenuation is a multiplier in the [0..1] range depending on distance from the light as per
      * the following formula:
      *
-     *     a(d) = 1 / (q * d^2 + l * d + k)
+     *     a(d) = 1 / (q * d^2 + k)
      *
      * Where 'q' is the quadratic component, 'l' is the linear component and 'k' is the constant
      * component. **All of these components are non-negative**.
