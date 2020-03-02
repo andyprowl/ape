@@ -56,7 +56,8 @@ const vec3 viewDirection = normalize(camera.position - vertex.position);
 // Extern, defined in separate shader.
 float calculatePointLightShadowFactor(
     const bool isCastingShadow,
-    const vec3 lightPosition,
+    const vec3 lightToVertex,
+    const float distanceFromLight,
     const int layer);
 
 // Extern, defined in separate shader.
@@ -190,10 +191,10 @@ vec3 computePointLight(const PointLight light, vec3 vertexToLight, float distanc
     // If attenuation is very low we can skip complex calculations and return a black color.
     // Note: conditionals are expensive, so it is not clear whether this brings a benefit.
     
-    //if (attenuation < 0.02)
-    //{
-    //    return vec3(0.0, 0.0, 0.0);
-    //}
+    if (attenuation < 0.02)
+    {
+        return vec3(0.0, 0.0, 0.0);
+    }
 
     const vec3 ambientLight = computeAmbientLight(light.color);
 
@@ -221,14 +222,15 @@ vec3 computePointLighting()
 
         const float distanceFromLight = length(vertexToLight);
 
-        //if (distanceFromLight > lightSystemView.point[i])
-        //{
-        //    continue;
-        //}
+        if (distanceFromLight > lightSystemView.point[i])
+        {
+            continue;
+        }
         
         const float shadow = calculatePointLightShadowFactor(
             light.isCastingShadow,
-            light.position,
+            -vertexToLight,
+            distanceFromLight,
             i);
 
         if (shadow > 0.0)
@@ -261,10 +263,10 @@ vec3 computeSpotLight(const SpotLight light)
     // return a black color.
     // Note: conditionals are expensive, so it is not clear whether this brings a benefit.
     
-    //if (cutoff * attenuation < 0.001)
-    //{
-    //    return vec3(0.0, 0.0, 0.0);
-    //}
+    if (cutoff * attenuation < 0.001)
+    {
+        return vec3(0.0, 0.0, 0.0);
+    }
 
     const vec3 ambientLight = computeAmbientLight(light.color);
 

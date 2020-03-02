@@ -10,17 +10,13 @@ uniform DepthMapping depthMapping;
 
 uniform bool usePercentageCloserFiltering = false;
 
-float calculateOmnidirectionalShadowBias(const vec3 lightToVertex)
+float calculateOmnidirectionalShadowBias(const vec3 lightToVertex, const float distanceFromLight)
 {
-    // TODO: Figure out if we can use the same calcualtion as for monodirectional lights
-    // return calculateMonodirectionalShadowBias(normalize(lightToVertex));
-    
-    return 0.00005 * length(lightToVertex) * (1.0 - dot(vertex.normal, lightToVertex));
+    return 0.00005 * distanceFromLight * (1.0 - dot(vertex.normal, lightToVertex));
 }
 
 float calculateMonodirectionalShadowBias(const vec3 lightDirection)
 {
-    // TODO: EXPERIMENTAL
     // Notice: not using bumped normal!
     
     const float sine = length(cross(vertex.normal, lightDirection));
@@ -116,7 +112,8 @@ float calculateDirectionalLightShadowFactor(
 
 float calculatePointLightShadowFactor(
     const bool isCastingShadow,
-    const vec3 lightPosition,
+    const vec3 lightToVertex,
+    const float distanceFromLight,
     const int layer)
 {
     if (!isCastingShadow)
@@ -129,13 +126,9 @@ float calculatePointLightShadowFactor(
     // changed to not make use of the far plane.
     const float farPlaneDistance = 100.0;
 
-    const vec3 lightToVertex = vertex.position - lightPosition;
+    const float currentDepthNormalized = distanceFromLight / farPlaneDistance;
 
-    const float lightToVertexDistance = length(lightToVertex);
-
-    const float currentDepthNormalized = lightToVertexDistance / farPlaneDistance;
-
-    const float bias = calculateOmnidirectionalShadowBias(lightToVertex);
+    const float bias = calculateOmnidirectionalShadowBias(lightToVertex, distanceFromLight);
 
     const vec4 coords = vec4(lightToVertex, float(layer));
 
