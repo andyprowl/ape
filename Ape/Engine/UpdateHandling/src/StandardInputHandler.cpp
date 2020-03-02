@@ -89,8 +89,6 @@ auto StandardInputHandler::onKeyPress(Key const key, KeyModifier const modifier)
 
     processFrustumCullingToggling(key, modifier);
 
-    processOmniShadowModeToggling(key, modifier);
-
     processLightToggling(key, modifier);
 
     processCameraSwitching(key, modifier);
@@ -250,23 +248,6 @@ auto StandardInputHandler::processFrustumCullingToggling(
     auto const isFrustumCullingEnabled = renderer->isFrustumCullingEnabled();
 
     renderer->enableFrustumCulling(!isFrustumCullingEnabled);
-}
-
-auto StandardInputHandler::processOmniShadowModeToggling(
-    ape::Key const key,
-    ape::KeyModifier const modifier) const
-    -> void
-{
-    if ((key != ape::Key::keyM) || (modifier != KeyModifier::none))
-    {
-        return;
-    }
-
-    auto & depthRenderer = renderer->getRenderers().depthBodyRenderer;
-
-    auto const isOmniFlatMappingEnabled = depthRenderer.isOmniFlatShadowMappingEnabled();
-
-    depthRenderer.enableOmniFlatShadowMapping(!isOmniFlatMappingEnabled);
 }
 
 auto StandardInputHandler::processLightToggling(

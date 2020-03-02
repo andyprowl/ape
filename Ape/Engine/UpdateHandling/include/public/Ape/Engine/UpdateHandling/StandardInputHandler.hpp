@@ -97,9 +97,6 @@ private:
     auto processFrustumCullingToggling(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 
-    auto processOmniShadowModeToggling(ape::Key key, ape::KeyModifier modifier) const
-        -> void;
-
     auto processLightToggling(ape::Key key, ape::KeyModifier modifier) const
         -> void;
 

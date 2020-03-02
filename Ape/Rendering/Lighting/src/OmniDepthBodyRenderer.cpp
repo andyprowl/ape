@@ -1,8 +1,8 @@
-#include <Ape/Rendering/Lighting/OmniDepthFlatBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/DepthMapping.hpp>
 #include <Ape/Rendering/Lighting/LightSystemView.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
 
 #include <Ape/Rendering/Culling/PerspectiveLightCuller.hpp>
 #include <Ape/Rendering/Culling/RadarFrustumCuller.hpp>
@@ -63,8 +63,8 @@ auto getFaceCamera(
 
 } // unnamed namespace
 
-OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
-    OmniDepthFlatShaderProgram & shader,
+OmniDepthBodyRenderer::OmniDepthBodyRenderer(
+    OmniDepthShaderProgram & shader,
     ShapeDrawer & shapeRenderer)
     : shader{&shader}
     , shapeRenderer{&shapeRenderer}
@@ -73,7 +73,7 @@ OmniDepthFlatBodyRenderer::OmniDepthFlatBodyRenderer(
 {
 }
 
-auto OmniDepthFlatBodyRenderer::render(
+auto OmniDepthBodyRenderer::render(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     LightSystemView const & lightSystemView,
@@ -92,25 +92,25 @@ auto OmniDepthFlatBodyRenderer::render(
         target.getPointMapping());
 }
 
-auto OmniDepthFlatBodyRenderer::isFrustumCullingEnabled() const
+auto OmniDepthBodyRenderer::isFrustumCullingEnabled() const
     -> bool
 {
     return performFrustumCulling;
 }
 
-auto OmniDepthFlatBodyRenderer::enableFrustumCulling(bool const enable)
+auto OmniDepthBodyRenderer::enableFrustumCulling(bool const enable)
     -> void
 {
     performFrustumCulling = enable;
 }
 
-auto OmniDepthFlatBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
+auto OmniDepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
     -> void
 {
     profiler = &newProfiler;
 }
 
-auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
+auto OmniDepthBodyRenderer::renderLightSetDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     std::vector<PointLight> const & lights,
@@ -133,7 +133,7 @@ auto OmniDepthFlatBodyRenderer::renderLightSetDepth(
     }
 }
 
-auto OmniDepthFlatBodyRenderer::renderLightDepth(
+auto OmniDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     PointLightView const & lightView,
@@ -155,7 +155,7 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
     }
 }
 
-auto OmniDepthFlatBodyRenderer::renderLightDepth(
+auto OmniDepthBodyRenderer::renderLightDepth(
     BodySetView const & bodies,
     Camera const & viewerCamera,
     Camera const & lightView) const
@@ -181,7 +181,7 @@ auto OmniDepthFlatBodyRenderer::renderLightDepth(
     }
 }
 
-auto OmniDepthFlatBodyRenderer::renderBody(
+auto OmniDepthBodyRenderer::renderBody(
     Body const & body,
     Camera const & lightView,
     Culler const & culler) const
@@ -198,7 +198,7 @@ auto OmniDepthFlatBodyRenderer::renderBody(
     }
 }
 
-auto OmniDepthFlatBodyRenderer::renderBodyPart(
+auto OmniDepthBodyRenderer::renderBodyPart(
     BodyPart const & part,
     Camera const & lightView,
     Culler const & culler) const
@@ -223,7 +223,7 @@ auto OmniDepthFlatBodyRenderer::renderBodyPart(
     }
 }
 
-auto OmniDepthFlatBodyRenderer::isVisible(
+auto OmniDepthBodyRenderer::isVisible(
     BodyPartMesh const & mesh,
     Culler const & culler) const
     -> bool
@@ -240,7 +240,7 @@ auto OmniDepthFlatBodyRenderer::isVisible(
     return (relation != ContainmentRelation::fullyOutside);
 }
 
-auto OmniDepthFlatBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
+auto OmniDepthBodyRenderer::renderMesh(BodyPartMesh const & mesh) const
     -> void
 {
     auto const & meshModel = mesh.getModel();

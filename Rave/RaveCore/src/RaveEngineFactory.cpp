@@ -12,8 +12,7 @@
 #include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MaterialSetUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthCubeShaderProgram.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthFlatShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
@@ -47,9 +46,7 @@ public:
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
-    ape::OmniDepthCubeShaderProgram omniDepthCubeShader;
-
-    ape::OmniDepthFlatShaderProgram omniDepthFlatShader;
+    ape::OmniDepthShaderProgram omniDepthFlatShader;
 
     ape::WireframeShaderProgram wireframeShader;
 
@@ -175,7 +172,6 @@ auto RaveEngineFactory::makeSceneRenderer(
 
     auto depthBodyRenderer = ape::DepthBodyRenderer{
         {engineObjects->shaders.monoDepthShader, *shapeDrawer},
-        {engineObjects->shaders.omniDepthCubeShader, *shapeDrawer},
         {engineObjects->shaders.omniDepthFlatShader, *shapeDrawer}};
 
     auto standardBodyRenderer = ape::BlinnPhongBodyRenderer{

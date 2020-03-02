@@ -1,8 +1,7 @@
 #pragma once
 
 #include <Ape/Rendering/Lighting/MonoDepthBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthCubeBodyRenderer.hpp>
-#include <Ape/Rendering/Lighting/OmniDepthFlatBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/OmniDepthBodyRenderer.hpp>
 
 namespace ape
 {
@@ -21,8 +20,7 @@ public:
 
     DepthBodyRenderer(
         MonoDepthBodyRenderer monoRenderer,
-        OmniDepthCubeBodyRenderer omniCubeRenderer,
-        OmniDepthFlatBodyRenderer omniFlatRenderer);
+        OmniDepthBodyRenderer omniFlatRenderer);
 
     auto render(
         BodySetView const & bodies,
@@ -37,12 +35,6 @@ public:
     auto enableFrustumCulling(bool enable)
         -> void;
 
-    auto isOmniFlatShadowMappingEnabled() const
-        -> bool;
-
-    auto enableOmniFlatShadowMapping(bool enable)
-        -> void;
-
     auto setProfiler(TaskTimeProfiler & newProfiler)
         -> void;
 
@@ -54,12 +46,9 @@ private:
 private:
 
     MonoDepthBodyRenderer monoRenderer;
-    
-    OmniDepthCubeBodyRenderer omniCubeRenderer;
 
-    OmniDepthFlatBodyRenderer omniFlatRenderer;
+    OmniDepthBodyRenderer omniRenderer;
 
-    bool useOmniFlatRenderer;
 
 };
 

@@ -7,12 +7,12 @@
 namespace ape
 {
 
-class OmniDepthFlatShaderProgram : public glow::ShaderProgram
+class OmniDepthShaderProgram : public glow::ShaderProgram
 {
 
 public:
 
-    OmniDepthFlatShaderProgram();
+    OmniDepthShaderProgram();
 
 public:
 

@@ -17,13 +17,13 @@ class Culler;
 class DepthMapping;
 class LightSystemView;
 class Mesh;
-class OmniDepthFlatShaderProgram;
+class OmniDepthShaderProgram;
 class PointLight;
 class PointLightView;
 class ShapeDrawer;
 class TaskTimeProfiler;
 
-class OmniDepthFlatBodyRenderer
+class OmniDepthBodyRenderer
 {
 
 public:
@@ -32,8 +32,8 @@ public:
 
 public:
 
-    OmniDepthFlatBodyRenderer(
-        OmniDepthFlatShaderProgram & shader,
+    OmniDepthBodyRenderer(
+        OmniDepthShaderProgram & shader,
         ShapeDrawer & shapeRenderer);
 
     auto render(
@@ -95,7 +95,7 @@ private:
 
 private:
 
-    OmniDepthFlatShaderProgram * shader;
+    OmniDepthShaderProgram * shader;
 
     ShapeDrawer * shapeRenderer;
 

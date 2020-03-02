@@ -9,30 +9,12 @@
 namespace ape
 {
 
-namespace
-{
-
-auto printOmnidirectionalFlatMappingStatus(bool const enabled)
-    -> void
-{
-    std::cout
-        << "Omnidirectional shadow flat mapping "
-        << (enabled ? "enabled" : "disabled")
-        << "\n";
-}
-
-} // unnamed namespace
-
 DepthBodyRenderer::DepthBodyRenderer(
     MonoDepthBodyRenderer monoRenderer,
-    OmniDepthCubeBodyRenderer omniCubeRenderer,
-    OmniDepthFlatBodyRenderer omniFlatRenderer)
+    OmniDepthBodyRenderer omniRenderer)
     : monoRenderer{std::move(monoRenderer)}
-    , omniCubeRenderer{std::move(omniCubeRenderer)}
-    , omniFlatRenderer{std::move(omniFlatRenderer)}
-    , useOmniFlatRenderer{true}
+    , omniRenderer{std::move(omniRenderer)}
 {
-    printOmnidirectionalFlatMappingStatus(useOmniFlatRenderer);
 }
 
 auto DepthBodyRenderer::render(
@@ -46,14 +28,7 @@ auto DepthBodyRenderer::render(
 
     monoRenderer.render(bodies, viewerCamera, lightSystemView, target);
 
-    if (useOmniFlatRenderer)
-    {
-        omniFlatRenderer.render(bodies, viewerCamera, lightSystemView, target);
-    }
-    else
-    {
-        omniCubeRenderer.render(bodies, lightSystemView, target);
-    }
+    omniRenderer.render(bodies, viewerCamera, lightSystemView, target);
 }
 
 auto DepthBodyRenderer::isFrustumCullingEnabled() const
@@ -67,21 +42,7 @@ auto DepthBodyRenderer::enableFrustumCulling(bool const enable)
 {
     monoRenderer.enableFrustumCulling(enable);
 
-    omniFlatRenderer.enableFrustumCulling(enable);
-}
-
-auto DepthBodyRenderer::isOmniFlatShadowMappingEnabled() const
-    -> bool
-{
-    return useOmniFlatRenderer;
-}
-
-auto DepthBodyRenderer::enableOmniFlatShadowMapping(bool const enable)
-    -> void
-{
-    useOmniFlatRenderer = enable;
-
-    printOmnidirectionalFlatMappingStatus(useOmniFlatRenderer);
+    omniRenderer.enableFrustumCulling(enable);
 }
 
 auto DepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
@@ -89,9 +50,7 @@ auto DepthBodyRenderer::setProfiler(TaskTimeProfiler & newProfiler)
 {
     monoRenderer.setProfiler(newProfiler);
 
-    omniCubeRenderer.setProfiler(newProfiler);
-
-    omniFlatRenderer.setProfiler(newProfiler);
+    omniRenderer.setProfiler(newProfiler);
 }
 
 auto DepthBodyRenderer::setupViewport(DepthMapping & target) const
