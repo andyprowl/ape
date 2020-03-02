@@ -61,9 +61,13 @@ auto MonoDepthBodyRenderer::render(
 
     auto const shaderBinder = glow::bind(*shader);
 
+    glEnable(GL_RASTERIZER_DISCARD);
+
     renderSpotLightSetDepth(bodies, viewerCamera, lightSystemView, target);
 
     renderDirectionalLightSetDepth(bodies, viewerCamera, lightSystemView, target);
+
+    glDisable(GL_RASTERIZER_DISCARD);
 }
 
 auto MonoDepthBodyRenderer::isFrustumCullingEnabled() const
