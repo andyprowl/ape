@@ -22,4 +22,7 @@ public:
 
 };
 
+auto computeAttenuationDistance(Attenuation const & attenuation)
+    -> float;
+
 } // namespace ape

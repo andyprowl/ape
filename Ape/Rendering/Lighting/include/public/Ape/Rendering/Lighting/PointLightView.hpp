@@ -78,6 +78,12 @@ private:
     auto makeLightFaceCameras() const
         -> FaceCameraSet;
 
+    auto makeLightFaceCamera(CameraView::System const & system, float farPlaneDistance) const
+        -> Camera;
+
+    auto computeCameraFarDistance() const
+        -> float;
+
     auto updateLightFaceCameras()
         -> void;
 

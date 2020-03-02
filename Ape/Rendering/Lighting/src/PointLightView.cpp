@@ -5,36 +5,6 @@
 namespace ape
 {
 
-namespace
-{
-
-auto makePointLightDirectionView(
-    glm::vec3 const & position,
-    glm::vec3 const & direction,
-    glm::vec3 const & viewUp)
-    -> Camera
-{
-    // TODO: Is it correct not to compute the aspect ratio from the view's aspect ratio?
-    // (like we do for spot lights)
-    auto const aspectRatio = 1.0f;
-
-    auto const fieldOfView = glm::radians(90.0f);
-
-    auto const nearPlaneDistance = 0.1f;
-    
-    auto const farPlaneDistance = 100.0f;
-
-    return {
-        CameraView::System{position, direction, viewUp},
-        PerspectiveProjection::Frustum{
-            fieldOfView,
-            aspectRatio,
-            nearPlaneDistance,
-            farPlaneDistance}};
-}
-
-} // unnamed namespace
-
 PointLightView::PointLightView(PointLight const & light)
     : light{&light}
     , faceCameras{makeLightFaceCameras()}
@@ -72,16 +42,48 @@ auto PointLightView::makeLightFaceCameras() const
 {
     auto const & position = light->getPosition();
 
+    auto const farDistance = computeCameraFarDistance();
+
     // The choice of the "up" vectors is due to the OpenGL's convention for cube maps.
     // See https://stackoverflow.com/a/11694336/1932150 for a convenient diagram.
 
     return {
-        makePointLightDirectionView(position, {+1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}),
-        makePointLightDirectionView(position, {-1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}),
-        makePointLightDirectionView(position, {0.0f, +1.0f, 0.0f}, {0.0f, 0.0f, +1.0f}),
-        makePointLightDirectionView(position, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}),
-        makePointLightDirectionView(position, {0.0f, 0.0f, +1.0f}, {0.0f, -1.0f, 0.0f}),
-        makePointLightDirectionView(position, {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f})};
+        makeLightFaceCamera({position, {+1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}}, farDistance),
+        makeLightFaceCamera({position, {-1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}}, farDistance),
+        makeLightFaceCamera({position, {0.0f, +1.0f, 0.0f}, {0.0f, 0.0f, +1.0f}}, farDistance),
+        makeLightFaceCamera({position, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}}, farDistance),
+        makeLightFaceCamera({position, {0.0f, 0.0f, +1.0f}, {0.0f, -1.0f, 0.0f}}, farDistance),
+        makeLightFaceCamera({position, {0.0f, 0.0f, -1.0f}, {0.0f, -1.0f, 0.0f}}, farDistance)};
+}
+
+auto PointLightView::makeLightFaceCamera(
+    CameraView::System const & system,
+    float const farPlaneDistance) const
+    -> Camera
+{
+    // TODO: Is it correct not to compute the aspect ratio from the depth map's aspect ratio?
+    // (like we do for spot lights)
+    constexpr auto const aspectRatio = 1.0f;
+
+    constexpr auto const fieldOfView = glm::radians(90.0f);
+
+    constexpr auto const nearPlaneDistance = 0.1f;
+
+    auto const frustum = PerspectiveProjection::Frustum{
+        fieldOfView,
+        aspectRatio,
+        nearPlaneDistance,
+        farPlaneDistance};
+
+    return {system, frustum};
+}
+
+auto PointLightView::computeCameraFarDistance() const
+    -> float
+{
+    auto const & attenuation = light->getAttenuation();
+
+    return ape::computeAttenuationDistance(attenuation);
 }
 
 auto PointLightView::updateLightFaceCameras()
