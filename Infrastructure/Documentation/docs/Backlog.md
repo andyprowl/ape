@@ -1,12 +1,14 @@
+- Give effects and skyboxes names, allow selecting effects and skyboxes by name
+- Have FXAA effect selected as a default by name rather than by index (same for Skybox)
 - Extract Rendering::ShapeDrawer out of World::Shape, move the contents of World::Shape into Model
 - Use glPushDebugGroup/glPopDebugGroup to mark rendering steps
-- Use DSA for setting uniforms (glUniformProgramXX instead of glUniformXX)
 - Separate shadow handling logic of Blinn-Phong fragment shader to make it a plug-in
  - Create a separate fragment shader that gets linked in with a generic API
  - Allow switching between shadow mapping techniques (e.g. flat/cube for omnidirection lights) at
    run-time by defining abstract interfaces
  - Try GS + instancing approach to generate all shadow maps of the same kind in a single pass
 - Optimization hints
+ - Try GS frustum culling, possibly in combination with instancing
  - Use SPIR-V for shaders
   - https://www.khronos.org/opengl/wiki/SPIR-V
   - https://github.com/KhronosGroup/glslang
@@ -23,7 +25,7 @@
    within the light's frustum/range
  - Use samplers for linear atan() (exp()?) interpolation instead of relying on computation in shader
  - Replace expensive fragment shader ops (e.g. pow()?) with sampling from 1D texture
-- Troubleshoot issue with Sponza model, likely due to normal mapping
+- Troubleshoot issue with Sponza model, likely due to\ normal mapping
  - It also seems to cause a huge slowdown even when looking away from it, so maybe culling does not
    work correctly either?
 - Implement CSM

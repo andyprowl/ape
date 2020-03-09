@@ -107,12 +107,9 @@ vec3 getNormal()
 
 vec3 mappedNormal = getNormal();
 
-float computeAttenuationFactor(const Attenuation attenuation, const float sourceDistance)
+float computeAttenuationFactor(const Attenuation attenuation, const float squareDistance)
 {    
-    return 
-        1.0 / 
-        (attenuation.constant +
-         attenuation.quadratic * (sourceDistance * sourceDistance));
+    return (1.0 / (attenuation.constant + attenuation.quadratic * squareDistance));
 }
 
 vec3 computeAmbientLight(const LightColor color)
@@ -120,7 +117,10 @@ vec3 computeAmbientLight(const LightColor color)
     return (color.ambient * ambientColor);
 }
 
-vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
+vec3 computeDiffuseLight(
+    const LightColor color,
+    const vec3 lightDirection,
+    const float dotNormalLightDir)
 {
     if (!material.hasDiffuseMap)
     {
@@ -132,7 +132,7 @@ vec3 computeDiffuseLight(const LightColor color, const vec3 lightDirection)
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the diffusion by the dot product of light and (non-bumped) surface normal.
-    const float correctedDiffusion = diffusion * dot(vertex.normal, lightDirection);
+    const float correctedDiffusion = diffusion * dotNormalLightDir;
 
     const float cappedDiffusion = max(correctedDiffusion, 0.0);
 
@@ -165,7 +165,10 @@ float computeSpecularLightReflectivity(const vec3 lightDirection)
     }
 }
 
-vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
+vec3 computeSpecularLight(
+    const LightColor color,
+    const vec3 lightDirection,
+    const float dotNormalLightDir)
 {
     if (!material.hasSpecularMap)
     {
@@ -177,16 +180,18 @@ vec3 computeSpecularLight(const LightColor color, const vec3 lightDirection)
     // If the normal is perpendicular to light direction (i.e. the non-bumped surface is parallel
     // to the light direction) we do not want the surface to be illuminated. Because of this, we
     // multiply the reflectivity by the dot product of light and (non-bumped) surface normal.
-    const float correctedReflectivity = reflectivity * dot(vertex.normal, lightDirection);
+    const float correctedReflectivity = reflectivity * dotNormalLightDir;
 
     return (color.specular * (correctedReflectivity * specularColor));
 }
 
-vec3 computePointLight(const PointLight light, vec3 vertexToLight, float distanceFromLight)
+vec3 computePointLight(
+    const PointLight light,
+    const vec3 vertexToLight,
+    const float distanceFromLight,
+    const float squareDistanceFromLight)
 {
-    const vec3 vertexToLightDirection = vertexToLight / distanceFromLight;
-
-    const float attenuation = computeAttenuationFactor(light.attenuation, distanceFromLight);
+    const float attenuation = computeAttenuationFactor(light.attenuation, squareDistanceFromLight);
 
     // If attenuation is very low we can skip complex calculations and return a black color.
     // Note: conditionals are expensive, so it is not clear whether this brings a benefit.
@@ -196,13 +201,17 @@ vec3 computePointLight(const PointLight light, vec3 vertexToLight, float distanc
         return vec3(0.0, 0.0, 0.0);
     }
 
-    const vec3 ambientLight = computeAmbientLight(light.color);
+    const vec3 vertexToLightDir = vertexToLight / distanceFromLight;
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLightDirection);
+    const float dotNormalLightDir = dot(vertex.normal, vertexToLightDir);
 
-    const vec3 specularLight = computeSpecularLight(light.color, vertexToLightDirection);
+    const vec3 ambient = computeAmbientLight(light.color);
 
-    return (attenuation * (ambientLight + diffuseLight + specularLight));
+    const vec3 diffuse = computeDiffuseLight(light.color, vertexToLightDir, dotNormalLightDir);
+
+    const vec3 specular = computeSpecularLight(light.color, vertexToLightDir, dotNormalLightDir);
+
+    return (attenuation * (ambient + diffuse + specular));
 }
 
 vec3 computePointLighting()
@@ -220,7 +229,9 @@ vec3 computePointLighting()
 
         const vec3 vertexToLight = light.position - vertex.position;
 
-        const float distanceFromLight = length(vertexToLight);
+        const float squareDistanceFromLight = dot(vertexToLight, vertexToLight);
+
+        const float distanceFromLight = sqrt(squareDistanceFromLight);
 
         if (distanceFromLight > lightSystemView.point[i])
         {
@@ -235,7 +246,11 @@ vec3 computePointLighting()
 
         if (shadow > 0.0)
         {
-            color += shadow * computePointLight(light, vertexToLight, distanceFromLight);
+            color += shadow * computePointLight(
+                light,
+                vertexToLight,
+                distanceFromLight,
+                squareDistanceFromLight);
         }
     }
 
@@ -246,18 +261,20 @@ vec3 computeSpotLight(const SpotLight light)
 {
     const vec3 vertexToLight = light.position - vertex.position;
 
-    const float distanceFromLight = length(vertexToLight);
+    const float squareDistanceFromLight = dot(vertexToLight, vertexToLight);
 
-    const vec3 vertexToLightDirection = vertexToLight / distanceFromLight;
+    const float distanceFromLight = sqrt(squareDistanceFromLight);
+
+    const vec3 vertexToLightDir = vertexToLight / distanceFromLight;
 
     // We are assuming light direction was normalized on the CPU side.
-    const float angleCosine = dot(vertexToLightDirection, -light.direction);
+    const float angleCosine = dot(vertexToLightDir, -light.direction);
     
     const float epsilon = light.innerCutoffCosine - light.outerCutoffCosine;
 
     const float cutoff = clamp((angleCosine - light.outerCutoffCosine) / epsilon, 0.0, 1.0);
 
-    const float attenuation = computeAttenuationFactor(light.attenuation, distanceFromLight);
+    const float attenuation = computeAttenuationFactor(light.attenuation, squareDistanceFromLight);
 
     // If cutoff and/or attenuation are very low we can skip the following calculations and just
     // return a black color.
@@ -268,13 +285,15 @@ vec3 computeSpotLight(const SpotLight light)
         return vec3(0.0, 0.0, 0.0);
     }
 
-    const vec3 ambientLight = computeAmbientLight(light.color);
+    const float dotNormalLightDir = dot(vertex.normal, vertexToLightDir);
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, vertexToLightDirection);
+    const vec3 ambient = computeAmbientLight(light.color);
 
-    const vec3 specularLight = computeSpecularLight(light.color, vertexToLightDirection);
+    const vec3 diffuse = computeDiffuseLight(light.color, vertexToLightDir, dotNormalLightDir);
 
-    const vec3 color = cutoff * (ambientLight + diffuseLight + specularLight);
+    const vec3 specular = computeSpecularLight(light.color, vertexToLightDir, dotNormalLightDir);
+
+    const vec3 color = cutoff * (ambient + diffuse + specular);
 
     return (attenuation * min(vec3(1.0, 1.0, 1.0), color));
 }
@@ -323,13 +342,15 @@ vec3 computeDirectionalLight(const DirectionalLight light)
     // We are assuming light direction was normalized on the CPU side.
     const vec3 lightDirection = -light.direction;
 
-    const vec3 ambientLight = computeAmbientLight(light.color);
+    const float dotNormalLightDir = dot(vertex.normal, lightDirection);
 
-    const vec3 diffuseLight = computeDiffuseLight(light.color, lightDirection);
+    const vec3 ambient = computeAmbientLight(light.color);
 
-    const vec3 specularLight = computeSpecularLight(light.color, lightDirection);
+    const vec3 diffuse = computeDiffuseLight(light.color, lightDirection, dotNormalLightDir);
 
-    return (ambientLight + diffuseLight + specularLight);
+    const vec3 specular = computeSpecularLight(light.color, lightDirection, dotNormalLightDir);
+
+    return (ambient + diffuse + specular);
 }
 
 vec3 computeDirectionalLighting()
