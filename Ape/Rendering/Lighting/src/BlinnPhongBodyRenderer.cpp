@@ -1,6 +1,7 @@
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
 
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderSelector.hpp>
 #include <Ape/Rendering/Lighting/LightSystemUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/LightSystemViewUniformSetter.hpp>
 #include <Ape/Rendering/Lighting/MaterialSetUniformSetter.hpp>
@@ -139,13 +140,13 @@ auto getDistance(BodyPartMesh const & mesh, Camera const & camera)
 } // unnamed namespace
 
 BlinnPhongBodyRenderer::BlinnPhongBodyRenderer(
-    BlinnPhongShaderProgram & shader,
+    BlinnPhongShaderSelector & shaderSelector,
     LightSystemUniformSetter & lightSystemSetter,
     LightSystemViewUniformSetter & lightSystemViewSetter,
     MaterialSetUniformSetter & materialSetSetter,
     ShadowMapping const & shadowMapping,
     ShapeDrawer & shapeDrawer)
-    : shader{&shader}
+    : shaderSelector{&shaderSelector}
     , lightSystemSetter{&lightSystemSetter}
     , lightSystemViewSetter{&lightSystemViewSetter}
     , materialSetSetter{&materialSetSetter}
@@ -161,9 +162,16 @@ auto BlinnPhongBodyRenderer::render(
     Fog const & fog) const
     -> void
 {
+    auto const shader = shaderSelector->getActiveShader();
+
+    if (shader == nullptr)
+    {
+        return;
+    }
+
     auto const shaderBinder = glow::bind(*shader);
 
-    setupInvariantUniforms(camera, fog);
+    setupInvariantUniforms(*shader, camera, fog);
 
     auto renderer = StatefulMeshRenderer{*shader, *shapeDrawer};
 
@@ -184,28 +192,31 @@ auto BlinnPhongBodyRenderer::enableFrustumCulling(bool const enable)
     performFrustumCulling = enable;
 }
 
-auto BlinnPhongBodyRenderer::setupInvariantUniforms(Camera const & camera, Fog const & fog) const
+auto BlinnPhongBodyRenderer::setupInvariantUniforms(
+    BlinnPhongShaderProgram & shader,
+    Camera const & camera,
+    Fog const & fog) const
     -> void
 {
-    lightSystemSetter->flush();
+    lightSystemSetter->flush(shader.lightSystem);
 
-    glow::setBlockDataSource(lightSystemSetter->getUniformBuffer(), shader->lightSystem);
+    glow::setBlockDataSource(lightSystemSetter->getUniformBuffer(), shader.lightSystem);
 
-    lightSystemViewSetter->flush();
+    lightSystemViewSetter->flush(shader.lightSystemView);
 
-    glow::setBlockDataSource(lightSystemViewSetter->getUniformBuffer(), shader->lightSystemView);
+    glow::setBlockDataSource(lightSystemViewSetter->getUniformBuffer(), shader.lightSystemView);
 
-    materialSetSetter->flush();
+    materialSetSetter->flush(shader.materialSet);
 
-    glow::setBlockDataSource(materialSetSetter->getUniformBuffer(), shader->materialSet);
+    glow::setBlockDataSource(materialSetSetter->getUniformBuffer(), shader.materialSet);
 
-    shader->cameraPosition.set(camera.getView().getPosition());
+    shader.cameraPosition.set(camera.getView().getPosition());
     
-    shader->worldToClipTransformation.set(camera.getTransformation());
+    shader.worldToClipTransformation.set(camera.getTransformation());
 
-    shader->depthMapping.set(shadowMapping->depthMapping);
+    shader.depthMapping.set(shadowMapping->depthMapping);
 
-    shader->fog.set(fog);
+    shader.fog.set(fog);
 }
 
 auto BlinnPhongBodyRenderer::getVisibleMeshesSortedByDistanceFromCamera(

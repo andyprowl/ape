@@ -13,6 +13,7 @@ enum class KeyAction;
 enum class KeyModifier;
 
 class BlinnPhongShaderProgram;
+class BlinnPhongShaderSelector;
 class BodySelector;
 class CameraSelector;
 class EffectSelector;
@@ -41,7 +42,7 @@ public:
         ape::SkyboxSelector & skyboxSelector,
         ape::EffectSelector & effectSelector,
         ape::BodySelector & bodyPicker,
-        ape::BlinnPhongShaderProgram & standardShader,
+        ape::BlinnPhongShaderSelector & blinnPhongShaderSelector,
         ape::LineStyleProvider & outlineStyleProvider,
         RaveScene & scene);
 
@@ -91,11 +92,14 @@ private:
     auto increaseOutlineWidth(float amount) const
         -> void;
 
+    auto activateNextBlinnPhongShader() const
+        -> void;
+
 private:
 
     ape::BodySelector * bodyPicker;
 
-    ape::BlinnPhongShaderProgram * standardShader;
+    ape::BlinnPhongShaderSelector * blinnPhongShaderSelector;
 
     ape::LineStyleProvider * outlineStyleProvider;
 

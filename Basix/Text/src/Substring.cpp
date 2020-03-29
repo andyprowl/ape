@@ -3,6 +3,12 @@
 namespace basix
 {
 
+auto beginsWith(std::string_view s, std::string_view suffix)
+    -> bool
+{
+    return (s.compare(0, suffix.length(), suffix) == 0);
+}
+
 auto endsWith(std::string_view s, std::string_view suffix)
     -> bool
 {

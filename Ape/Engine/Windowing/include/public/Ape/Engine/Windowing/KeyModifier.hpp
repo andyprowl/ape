@@ -22,4 +22,21 @@ enum class KeyModifier
 
 };
 
+inline auto operator & (KeyModifier const lhs, KeyModifier const rhs)
+    -> KeyModifier
+{
+    return static_cast<KeyModifier>(static_cast<int>(lhs) & static_cast<int>(rhs));
+}
+
+inline auto operator | (KeyModifier const lhs, KeyModifier const rhs)
+    -> KeyModifier
+{
+    return static_cast<KeyModifier>(static_cast<int>(lhs) | static_cast<int>(rhs));
+}
+
+inline auto hasModifier(KeyModifier const combination, KeyModifier const modifier)
+{
+    return ((combination & modifier) == modifier);
+}
+
 } // namespace ape

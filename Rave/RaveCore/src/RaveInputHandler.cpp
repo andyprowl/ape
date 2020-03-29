@@ -5,6 +5,7 @@
 #include <Ape/Engine/Engine/Engine.hpp>
 #include <Ape/Engine/Windowing/Window.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderSelector.hpp>
 #include <Ape/Rendering/Wireframe/LineStyleProvider.hpp>
 #include <Ape/World/Scene/BodySelector.hpp>
 #include <Ape/World/Scene/CameraSelector.hpp>
@@ -76,12 +77,12 @@ RaveInputHandler::RaveInputHandler(
     ape::SkyboxSelector & skyboxSelector,
     ape::EffectSelector & effectSelector,
     ape::BodySelector & bodyPicker,
-    ape::BlinnPhongShaderProgram & standardShader,
+    ape::BlinnPhongShaderSelector & blinnPhongShaderSelector,
     ape::LineStyleProvider & outlineStyleProvider,
     maybeUnused RaveScene & scene)
     : StandardInputHandler{window, renderer, cameraSelector, skyboxSelector, effectSelector}
     , bodyPicker{&bodyPicker}
-    , standardShader{&standardShader}
+    , blinnPhongShaderSelector{&blinnPhongShaderSelector}
     , outlineStyleProvider{&outlineStyleProvider}
 {
     assert(&scene == &cameraSelector.getScene());
@@ -138,6 +139,10 @@ auto RaveInputHandler::onKeyPress(ape::Key const key, ape::KeyModifier const mod
     else if ((key == ape::Key::keyE) && (modifier == ape::KeyModifier::control))
     {
         increaseOutlineWidth(-0.01f);
+    }
+    else if ((key == ape::Key::keyS) && (modifier == ape::KeyModifier::control))
+    {
+        activateNextBlinnPhongShader();
     }
     else if (key == ape::Key::keyEscape)
     {
@@ -247,31 +252,43 @@ auto RaveInputHandler::processLightRevolution(double const lastFrameDuration) co
 auto RaveInputHandler::toggleBlinnPhongModel() const
     -> void
 {
-    standardShader->bind();
+    auto const shader = blinnPhongShaderSelector->getActiveShader();
 
-    auto const isPhongModelUsed = standardShader->usePhongModel.get();
+    assert(shader != nullptr);
 
-    standardShader->usePhongModel.set(not isPhongModelUsed);
+    auto const binder = glow::bind(*shader);
+
+    auto const isPhongModelUsed = shader->usePhongModel.get();
+
+    shader->usePhongModel.set(not isPhongModelUsed);
 }
 
 auto RaveInputHandler::togglePercentageCloserFiltering() const
     -> void
 {
-    standardShader->bind();
+    auto const shader = blinnPhongShaderSelector->getActiveShader();
 
-    auto const isFilteringUsed = standardShader->usePercentageCloserFiltering.get();
+    assert(shader != nullptr);
 
-    standardShader->usePercentageCloserFiltering.set(not isFilteringUsed);
+    auto const binder = glow::bind(*shader);
+
+    auto const isFilteringUsed = shader->usePercentageCloserFiltering.get();
+
+    shader->usePercentageCloserFiltering.set(not isFilteringUsed);
 }
 
 auto RaveInputHandler::toggleNormalMapping() const
     -> void
 {
-    standardShader->bind();
+    auto const shader = blinnPhongShaderSelector->getActiveShader();
 
-    auto const isNormalMappingUsed = standardShader->useNormalMapping.get();
+    assert(shader != nullptr);
 
-    standardShader->useNormalMapping.set(not isNormalMappingUsed);
+    auto const binder = glow::bind(*shader);
+
+    auto const isNormalMappingUsed = shader->useNormalMapping.get();
+
+    shader->useNormalMapping.set(not isNormalMappingUsed);
 }
 
 auto RaveInputHandler::togglePickedObjects() const
@@ -317,6 +334,12 @@ auto RaveInputHandler::increaseOutlineWidth(float amount) const
     auto const newStyle = ape::LineStyle{newWidth, outliningStyle.color};
 
     outlineStyleProvider->setStyle(newStyle);
+}
+
+auto RaveInputHandler::activateNextBlinnPhongShader() const
+    -> void
+{
+    blinnPhongShaderSelector->activateNextShader();
 }
 
 } // namespace rave

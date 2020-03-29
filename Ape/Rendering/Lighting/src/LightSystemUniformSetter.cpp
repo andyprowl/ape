@@ -9,20 +9,17 @@
 namespace ape
 {
 
-LightSystemUniformSetter::LightSystemUniformSetter(
-    LightSystem & lightSystem,
-    LightSystemUniformBlock & block)
+LightSystemUniformSetter::LightSystemUniformSetter(LightSystem & lightSystem, int const size)
     : lightSystem{&lightSystem}
-    , block{&block}
-    , uniformBuffer{makeUniformBuffer()}
-    , mappedBuffer{mapUniformBuffer()}
+    , uniformBuffer{makeUniformBuffer(size)}
+    , mappedBuffer{mapUniformBuffer(size)}
 {
 }
 
-auto LightSystemUniformSetter::flush()
+auto LightSystemUniformSetter::flush(LightSystemUniformBlock & block)
     -> void
 {
-    block->set(*lightSystem, mappedBuffer);
+    block.set(*lightSystem, mappedBuffer);
 }
 
 auto LightSystemUniformSetter::getUniformBuffer()
@@ -31,12 +28,10 @@ auto LightSystemUniformSetter::getUniformBuffer()
     return uniformBuffer;
 }
 
-auto LightSystemUniformSetter::makeUniformBuffer() const
+auto LightSystemUniformSetter::makeUniformBuffer(int const size) const
     -> glow::UniformBufferObject
 {
     auto buffer = glow::UniformBufferObject{};
-
-    auto const size = block->getSize();
 
     auto const storageFlags = 
         glow::BufferStorageFlags::mapWrite |
@@ -48,16 +43,14 @@ auto LightSystemUniformSetter::makeUniformBuffer() const
     return buffer;
 }
 
-auto LightSystemUniformSetter::mapUniformBuffer() const
+auto LightSystemUniformSetter::mapUniformBuffer(int const size) const
     -> std::byte *
 {
     auto const mappingFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
 
-    auto const bytes = glMapNamedBufferRange(
-        uniformBuffer.getId(),
-        0,
-        block->getSize(),
-        mappingFlags);
+    auto const bufferId = uniformBuffer.getId();
+
+    auto const bytes = glMapNamedBufferRange(bufferId, 0, size, mappingFlags);
 
     assert(bytes != nullptr);
 

@@ -1,6 +1,6 @@
 #version 450 core
 
-#include "BlinnPhong/BlinnPhong.Types.glsl"
+#include "BlinnPhong.Types.glsl"
 
 layout (location = 0) in vec3 positionAttribute;
 

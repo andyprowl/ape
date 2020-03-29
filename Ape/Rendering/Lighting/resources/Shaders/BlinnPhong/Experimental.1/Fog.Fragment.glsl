@@ -1,6 +1,6 @@
 #version 450 core
 
-#include "BlinnPhong/BlinnPhong.Types.glsl"
+#include "BlinnPhong.Types.glsl"
 
 uniform LightSystemUniformBlock
 {

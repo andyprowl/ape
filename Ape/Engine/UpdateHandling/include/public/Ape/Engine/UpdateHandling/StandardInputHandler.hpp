@@ -85,28 +85,28 @@ private:
     auto registerFocusLostHandlerConnection()
         -> basix::ScopedSignalConnection;
 
-    auto processInputCaptureToggling(ape::Key key, KeyModifier const modifier)
+    auto processInputCaptureToggling(Key key, KeyModifier const modifier)
         -> void;
 
-    auto processInspectionOverlayToggling(ape::Key key, KeyModifier modifier) const
+    auto processInspectionOverlayToggling(Key key, KeyModifier modifier) const
         -> void;
 
-    auto processFullScreenToggling(ape::Key key, KeyModifier modifier) const
+    auto processFullScreenToggling(Key key, KeyModifier modifier) const
         -> void;
 
-    auto processFrustumCullingToggling(ape::Key key, ape::KeyModifier modifier) const
+    auto processFrustumCullingToggling(Key key, KeyModifier modifier) const
         -> void;
 
-    auto processLightToggling(ape::Key key, ape::KeyModifier modifier) const
+    auto processLightToggling(Key key, KeyModifier modifier) const
         -> void;
 
-    auto processCameraSwitching(ape::Key key, ape::KeyModifier modifier)
+    auto processCameraSwitching(Key key, KeyModifier modifier)
         -> void;
 
-    auto processSkyboxSwitching(ape::Key key, ape::KeyModifier modifier)
+    auto processSkyboxSwitching(Key key, KeyModifier modifier)
         -> void;
 
-    auto processEffectSwitching(ape::Key key, ape::KeyModifier modifier)
+    auto processEffectSwitching(Key key, KeyModifier modifier)
         -> void;
 
     auto togglePointLight(int index) const

@@ -17,27 +17,28 @@ auto const lightSystemViewBlockBindingPoint = 1;
 
 auto const materialSetBindingPoint = 2;
 
-auto buildBlinnPhongShader()
+auto buildBlinnPhongShader(
+    glow::VertexShaderPath const & vertexShader,
+    std::vector<glow::FragmentShaderPath> const & fragmentShaders)
     -> glow::ShaderProgram
 {
     auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
 
-    auto const builder = glow::ShaderBuilder{{resourceFolder "/shaders"}, logger};
+    auto folder = vertexShader.parent_path();
 
-    return builder.buildProgram(
-        std::vector<glow::VertexShaderPath>{"BlinnPhong/BlinnPhong.Vertex.glsl"},
-        std::vector<glow::GeometryShaderPath>{},
-        std::vector<glow::FragmentShaderPath>{
-            "BlinnPhong/BlinnPhong.Fragment.glsl",
-            "Shadow/Shadow.Fragment.glsl",
-            "Fog/Fog.Fragment.glsl"},
-        std::string{"BlinnPhong"});
+    auto const builder = glow::ShaderBuilder{{std::move(folder)}, logger};
+
+    auto const geometryShaders = std::vector<glow::GeometryShaderPath>{};
+
+    return builder.buildProgram({vertexShader}, geometryShaders, fragmentShaders, "BlinnPhong");
 }
 
 } // unnamed namespace
 
-BlinnPhongShaderProgram::BlinnPhongShaderProgram()
-    : ShaderProgram{buildBlinnPhongShader()}
+BlinnPhongShaderProgram::BlinnPhongShaderProgram(
+    glow::VertexShaderPath const & vertexShader,
+    std::vector<glow::FragmentShaderPath> const & fragmentShaders)
+    : ShaderProgram{buildBlinnPhongShader(vertexShader, fragmentShaders)}
     , objectToWorldTransformation{*this, "transform.objectToWorld"}
     , worldToClipTransformation{*this, "transform.worldToClip"}
     , normalTransformation{*this, "transform.normal"}

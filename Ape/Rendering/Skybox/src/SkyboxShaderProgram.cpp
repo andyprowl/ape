@@ -17,16 +17,14 @@ auto buildSkyboxShader()
     auto logger = glow::logging::ShaderBuilderStreamLogger{std::cout};
 
     auto const builder = glow::ShaderBuilder{{
-        resourceFolder "/shaders",
-        resourceFolder_Ape_Rendering_Lighting "/shaders"},
+        resourceFolder "/shaders/Skybox",
+        resourceFolder_Ape_Rendering_Lighting "/shaders/BlinnPhong/Standard"},
         logger};
 
     return builder.buildProgram(
-        std::vector<glow::VertexShaderPath>{"Skybox/Skybox.Vertex.glsl"},
+        std::vector<glow::VertexShaderPath>{"Skybox.Vertex.glsl"},
         std::vector<glow::GeometryShaderPath>{},
-        std::vector<glow::FragmentShaderPath>{
-            "Skybox/Skybox.Fragment.glsl",
-            "Fog/Fog.Fragment.glsl"},
+        std::vector<glow::FragmentShaderPath>{"Skybox.Fragment.glsl", "Fog.Fragment.glsl"},
         "Skybox");
 }
 

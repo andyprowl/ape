@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "BlinnPhong/BlinnPhong.Types.glsl"
+#include "BlinnPhong.Types.glsl"
 
 in Vertex vertex;
 

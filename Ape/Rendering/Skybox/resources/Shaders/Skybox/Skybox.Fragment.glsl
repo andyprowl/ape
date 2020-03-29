@@ -1,6 +1,11 @@
 #version 460 core
 
-#include "BlinnPhong/BlinnPhong.Types.glsl"
+struct Camera
+{
+
+    vec3 position;
+
+};
 
 uniform Camera camera;
 

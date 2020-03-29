@@ -14,7 +14,10 @@
 #include <Ape/Rendering/Lighting/MonoDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/OmniDepthShaderProgram.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongBodyRenderer.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderCollection.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderCollectionPopulator.hpp>
 #include <Ape/Rendering/Lighting/BlinnPhongShaderProgram.hpp>
+#include <Ape/Rendering/Lighting/BlinnPhongShaderSelector.hpp>
 #include <Ape/Rendering/Rendering/BodyBoundsShaderProgram.hpp>
 #include <Ape/Rendering/Rendering/OutlinedBodyRenderer.hpp>
 #include <Ape/Rendering/Rendering/SceneRenderer.hpp>
@@ -42,7 +45,20 @@ class RenderingShaders
 
 public:
 
-    ape::BlinnPhongShaderProgram blinnPhongShader;
+    RenderingShaders()
+        : blinnPhongShadersPopulator{blinnPhongShaders}
+        , blinnPhongShaderSelector{blinnPhongShaders}
+    {
+        blinnPhongShaderSelector.activateNextShader();
+    }
+
+public:
+
+    ape::BlinnPhongShaderCollection blinnPhongShaders;
+
+    ape::BlinnPhongShaderCollectionPopulator blinnPhongShadersPopulator;
+
+    ape::BlinnPhongShaderSelector blinnPhongShaderSelector;
 
     ape::MonoDepthShaderProgram monoDepthShader;
 
@@ -61,7 +77,7 @@ class RaveResources
 
 public:
 
-    RaveResources(bool excludeSponza, bool const enableTextureCompression)
+    RaveResources(bool const excludeSponza, bool const enableTextureCompression)
         : assets{excludeSponza, enableTextureCompression}
         , effectCollection{RaveEffectCollectionReader{}.read()}
         , skyboxCollection{RaveSkyboxCollectionReader{}.read()}
@@ -90,9 +106,15 @@ public:
         , resources{excludeSponza, enableTextureCompression}
         , scene{createRaveScene(resources.assets, excludeSponza)}
         , lightSystemView{scene.getLightSystem(), basix::Size2d<int>{1024, 1024}}
-        , lightSystemSetter{scene.getLightSystem(), shaders.blinnPhongShader.lightSystem}
-        , lightSystemViewSetter{lightSystemView, shaders.blinnPhongShader.lightSystemView}
-        , materialSetSetter{resources.assets.getMaterials(), shaders.blinnPhongShader.materialSet}
+        , lightSystemSetter{
+            scene.getLightSystem(),
+            shaders.blinnPhongShaders.getShader(0).lightSystem.getSize()}
+        , lightSystemViewSetter{
+            lightSystemView,
+            shaders.blinnPhongShaders.getShader(0).lightSystemView.getSize()}
+        , materialSetSetter{
+            resources.assets.getMaterials(),
+            shaders.blinnPhongShaders.getShader(0).materialSet.getSize()}
         , effectSelector{resources.effectCollection}
         , skyboxSelector{resources.skyboxCollection}
         , bodyPicker{scene}
@@ -175,7 +197,7 @@ auto RaveEngineFactory::makeSceneRenderer(
         {engineObjects->shaders.omniDepthFlatShader, *shapeDrawer}};
 
     auto standardBodyRenderer = ape::BlinnPhongBodyRenderer{
-        engineObjects->shaders.blinnPhongShader,
+        engineObjects->shaders.blinnPhongShaderSelector,
         engineObjects->lightSystemSetter,
         engineObjects->lightSystemViewSetter,
         engineObjects->materialSetSetter,
@@ -231,7 +253,7 @@ auto RaveEngineFactory::makeInputHandler(
         engineObjects->skyboxSelector,
         engineObjects->effectSelector,
         engineObjects->bodyPicker,
-        engineObjects->shaders.blinnPhongShader,
+        engineObjects->shaders.blinnPhongShaderSelector,
         engineObjects->wireframeStyleProvider,
         engineObjects->scene);
 }

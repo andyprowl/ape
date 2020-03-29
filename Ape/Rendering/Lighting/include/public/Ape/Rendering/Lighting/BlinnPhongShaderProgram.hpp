@@ -7,6 +7,7 @@
 #include <Ape/Rendering/Lighting/MaterialMapsUniform.hpp>
 #include <Ape/Rendering/Lighting/MaterialSetUniformBlock.hpp>
 
+#include <Glow/Shader/ShaderPath.hpp>
 #include <Glow/Shader/ShaderProgram.hpp>
 
 namespace ape
@@ -17,7 +18,9 @@ class BlinnPhongShaderProgram : public glow::ShaderProgram
 
 public:
 
-    BlinnPhongShaderProgram();
+    BlinnPhongShaderProgram(
+        glow::VertexShaderPath const & vertexShader,
+        std::vector<glow::FragmentShaderPath> const & fragmentShaders);
 
 public:
 

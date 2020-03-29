@@ -171,12 +171,10 @@ auto StandardInputHandler::registerFocusLostHandlerConnection()
     });
 }
 
-auto StandardInputHandler::processInputCaptureToggling(
-    ape::Key const key, 
-    KeyModifier const modifier)
+auto StandardInputHandler::processInputCaptureToggling(Key const key, KeyModifier const modifier)
     -> void
 {
-    if ((key != ape::Key::keyI) || (modifier != KeyModifier::none))
+    if ((key != Key::keyI) || (modifier != KeyModifier::none))
     {
         return;
     }
@@ -196,11 +194,11 @@ auto StandardInputHandler::processInputCaptureToggling(
 }
 
 auto StandardInputHandler::processInspectionOverlayToggling(
-    ape::Key const key, 
+    Key const key, 
     KeyModifier const modifier) const
     -> void
 {
-    if ((key != ape::Key::keyI) || (modifier != KeyModifier::control))
+    if ((key != Key::keyI) || (modifier != KeyModifier::control))
     {
         return;
     }
@@ -216,11 +214,11 @@ auto StandardInputHandler::processInspectionOverlayToggling(
 }
 
 auto StandardInputHandler::processFullScreenToggling(
-    ape::Key const key, 
+    Key const key, 
     KeyModifier const modifier) const
     -> void
 {
-    if ((key != ape::Key::keyF11) || (modifier != KeyModifier::none))
+    if ((key != Key::keyF11) || (modifier != KeyModifier::none))
     {
         return;
     }
@@ -236,11 +234,11 @@ auto StandardInputHandler::processFullScreenToggling(
 }
 
 auto StandardInputHandler::processFrustumCullingToggling(
-    ape::Key const key,
-    ape::KeyModifier const modifier) const
+    Key const key,
+    KeyModifier const modifier) const
     -> void
 {
-    if ((key != ape::Key::keyF) || (modifier != KeyModifier::none))
+    if ((key != Key::keyF) || (modifier != KeyModifier::none))
     {
         return;
     }
@@ -250,61 +248,62 @@ auto StandardInputHandler::processFrustumCullingToggling(
     renderer->enableFrustumCulling(!isFrustumCullingEnabled);
 }
 
-auto StandardInputHandler::processLightToggling(
-    ape::Key const key,
-    ape::KeyModifier const modifier) const
+auto StandardInputHandler::processLightToggling(Key const key, KeyModifier const modifier) const
     -> void
 {
-    if ((key < ape::Key::key1) || (key > ape::Key::key9))
+    if ((key < Key::key1) || (key > Key::key9))
     {
         return;
     }
 
-    auto const index = static_cast<int>(key) - static_cast<int>(ape::Key::key1);
+    auto const index = static_cast<int>(key) - static_cast<int>(Key::key1);
 
-    if (modifier == ape::KeyModifier::shift)
+    if (modifier == KeyModifier::shift)
     {
         togglePointLight(index);
     }
-    else if (modifier == ape::KeyModifier::alt)
+    else if (modifier == KeyModifier::alt)
     {
         toggleDirectionalLight(index);
     }
-    else if (modifier == ape::KeyModifier::none)
+    else if (modifier == KeyModifier::none)
     {
         toggleSpotLight(index);
     }
 }
 
 auto StandardInputHandler::processCameraSwitching(
-    ape::Key const key,
-    ape::KeyModifier const modifier)
+    Key const key,
+    KeyModifier const modifier)
     -> void
 {
-    if ((key < ape::Key::key1) || (key > ape::Key::key9))
+    if ((key < Key::key1) || (key > Key::key9))
     {
         return;
     }
 
-    auto const index = static_cast<int>(key) - static_cast<int>(ape::Key::key1);
+    auto const index = static_cast<int>(key) - static_cast<int>(Key::key1);
 
-    if (modifier == ape::KeyModifier::control)
+    if (modifier == KeyModifier::control)
     {
         switchToCamera(index);
     }
 }
 
-auto StandardInputHandler::processSkyboxSwitching(
-    ape::Key const key,
-    ape::KeyModifier const modifier)
+auto StandardInputHandler::processSkyboxSwitching(Key const key, KeyModifier const modifier)
     -> void
 {
-    if (key != ape::Key::keyS)
+    if (key != Key::keyS)
     {
         return;
     }
 
-    if (modifier == ape::KeyModifier::shift)
+    if ((modifier & KeyModifier::control) != KeyModifier::none)
+    {
+        return;
+    }
+
+    if (hasModifier(modifier, KeyModifier::shift))
     {
         skyboxSelector->activateNextSkybox();
     }
@@ -314,17 +313,15 @@ auto StandardInputHandler::processSkyboxSwitching(
     }
 }
 
-auto StandardInputHandler::processEffectSwitching(
-    ape::Key const key,
-    ape::KeyModifier const modifier)
+auto StandardInputHandler::processEffectSwitching(Key const key, KeyModifier const modifier)
     -> void
 {
-    if (key != ape::Key::keyE)
+    if (key != Key::keyE)
     {
         return;
     }
 
-    if (modifier == ape::KeyModifier::shift)
+    if (modifier == KeyModifier::shift)
     {
         effectSelector->activateNextEffect();
     }

@@ -13,9 +13,9 @@ class LightSystemUniformSetter
 
 public:
 
-    LightSystemUniformSetter(LightSystem & lightSystem, LightSystemUniformBlock & block);
+    LightSystemUniformSetter(LightSystem & lightSystem, int size);
 
-    auto flush()
+    auto flush(LightSystemUniformBlock & block)
         -> void;
 
     auto getUniformBuffer()
@@ -23,17 +23,15 @@ public:
 
 private:
 
-    auto makeUniformBuffer() const
+    auto makeUniformBuffer(int size) const
         -> glow::UniformBufferObject;
 
-    auto mapUniformBuffer() const
+    auto mapUniformBuffer(int size) const
         -> std::byte *;
 
 private:
 
     LightSystem * lightSystem;
-
-    LightSystemUniformBlock * block;
 
     glow::UniformBufferObject uniformBuffer;
 

@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "BlinnPhong/BlinnPhong.Types.glsl"
+#include "BlinnPhong.Types.glsl"
 
 in Vertex vertex;
 
@@ -41,7 +41,7 @@ uniform bool usePhongModel = false;
 
 uniform bool useNormalMapping = true;
 
-uniform bool renderNormals = false;
+uniform bool renderNormals = true;
 
 const Material material = materials[activeMaterialIndex];
 
@@ -394,13 +394,13 @@ vec3 computeDirectionalLighting()
 
 vec3 renderLighting()
 {
-    const vec3 pointLighting = computePointLighting();
+    const vec3 point = computePointLighting();
 
-    const vec3 spotLighting = computeSpotLighting();
+    const vec3 spot = computeSpotLighting();
 
-    const vec3 directionalLighting = computeDirectionalLighting();
+    const vec3 directional = computeDirectionalLighting();
 
-    return (pointLighting + directionalLighting + spotLighting);
+    return (point + spot + directional);
 }
 
 void main()

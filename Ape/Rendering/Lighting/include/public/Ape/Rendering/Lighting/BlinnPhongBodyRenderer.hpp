@@ -10,6 +10,7 @@ namespace ape
 {
 
 class BlinnPhongShaderProgram;
+class BlinnPhongShaderSelector;
 class Body;
 class BodyPart;
 class BodyPartMesh;
@@ -29,7 +30,7 @@ class BlinnPhongBodyRenderer
 public:
 
     BlinnPhongBodyRenderer(
-        BlinnPhongShaderProgram & shader,
+        BlinnPhongShaderSelector & shaderSelector,
         LightSystemUniformSetter & lightSystemSetter,
         LightSystemViewUniformSetter & lightSystemViewSetter,
         MaterialSetUniformSetter & materialSetSetter,
@@ -47,7 +48,10 @@ public:
 
 private:
 
-    auto setupInvariantUniforms(Camera const & camera, Fog const & fog) const
+    auto setupInvariantUniforms(
+        BlinnPhongShaderProgram & shader,
+        Camera const & camera,
+        Fog const & fog) const
         -> void;
 
     auto getVisibleMeshesSortedByDistanceFromCamera(
@@ -63,7 +67,7 @@ private:
 
 private:
 
-    BlinnPhongShaderProgram * shader;
+    BlinnPhongShaderSelector * shaderSelector;
 
     LightSystemUniformSetter * lightSystemSetter;
 

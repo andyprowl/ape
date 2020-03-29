@@ -17,9 +17,9 @@ public:
 
 public:
 
-    MaterialSetUniformSetter(MaterialSet const & materials, MaterialSetUniformBlock & block);
+    MaterialSetUniformSetter(MaterialSet const & materials, int size);
 
-    auto flush()
+    auto flush(MaterialSetUniformBlock & block)
         -> void;
 
     auto getUniformBuffer()
@@ -27,17 +27,15 @@ public:
 
 private:
 
-    auto makeUniformBuffer() const
+    auto makeUniformBuffer(int size) const
         -> glow::UniformBufferObject;
 
-    auto mapUniformBuffer() const
+    auto mapUniformBuffer(int size) const
         -> std::byte *;
 
 private:
 
     MaterialSet const * materials;
-
-    MaterialSetUniformBlock * block;
 
     glow::UniformBufferObject uniformBuffer;
 

@@ -11,16 +11,15 @@ namespace ape
 
 MaterialSetUniformSetter::MaterialSetUniformSetter(
     MaterialSet const & materials,
-    MaterialSetUniformBlock & block)
+    int const size)
     : materials{&materials}
-    , block{&block}
-    , uniformBuffer{makeUniformBuffer()}
-    , mappedBuffer{mapUniformBuffer()}
+    , uniformBuffer{makeUniformBuffer(size)}
+    , mappedBuffer{mapUniformBuffer(size)}
     , dirty{true}
 {
 }
 
-auto MaterialSetUniformSetter::flush()
+auto MaterialSetUniformSetter::flush(MaterialSetUniformBlock & block)
     -> void
 {
     if (not dirty)
@@ -28,7 +27,7 @@ auto MaterialSetUniformSetter::flush()
         return;
     }
 
-    block->set(*materials, mappedBuffer);
+    block.set(*materials, mappedBuffer);
 
     dirty = false;
 }
@@ -39,12 +38,10 @@ auto MaterialSetUniformSetter::getUniformBuffer()
     return uniformBuffer;
 }
 
-auto MaterialSetUniformSetter::makeUniformBuffer() const
+auto MaterialSetUniformSetter::makeUniformBuffer(int const size) const
     -> glow::UniformBufferObject
 {
     auto buffer = glow::UniformBufferObject{};
-
-    auto const size = block->getSize();
 
     auto const storageFlags = 
         glow::BufferStorageFlags::mapWrite |
@@ -56,16 +53,14 @@ auto MaterialSetUniformSetter::makeUniformBuffer() const
     return buffer;
 }
 
-auto MaterialSetUniformSetter::mapUniformBuffer() const
+auto MaterialSetUniformSetter::mapUniformBuffer(int const size) const
     -> std::byte *
 {
     auto const mappingFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_UNSYNCHRONIZED_BIT;
 
-    auto const bytes = glMapNamedBufferRange(
-        uniformBuffer.getId(),
-        0,
-        block->getSize(),
-        mappingFlags);
+    auto const bufferId = uniformBuffer.getId();
+
+    auto const bytes = glMapNamedBufferRange(bufferId, 0, size, mappingFlags);
 
     assert(bytes != nullptr);
 
